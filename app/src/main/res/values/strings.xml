@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">NiceFeed</string>
+    <string name="sample_feed_url">www.example.com/feed</string>
+    <string name="cancel">Cancel</string>
+    <string name="submit">Submit</string>
+    <string name="add_feed_by_url">Add feed by URL</string>
+    <string name="enter_address">Please enter an address.</string>
+    <string name="enter_valid_address">Please enter a valid address.</string>
+    <string name="add_feed">Add Feed</string>
+    <string name="no_feed_found">No feed found. Please try again.</string>
+    <string name="feed_already_added">That feed has already been added.</string>
+    <string name="settings">Settings</string>
+    <string name="no_entries_found">Failed to retrieve entries. Please try again.</string>
+    <string name="refresh">Refresh</string>
+    <string name="all_entries">All Entries</string>
+    <string name="search_feeds">Search feeds</string>
+    <string name="search_feeds...">Search feeds…</string>
+    <string name="key_words">Enter keywords…</string>
+    <string name="search">Search</string>
+    <string name="feed_added">\'%s\' added to feeds.</string>
+    <string name="delete_feed">Delete Feed</string>
+    <string name="feed_removed">Removed \'%s\' from feeds.</string>
+    <string name="loading">Loading…</string>
+    <string name="failed_to_get_feed">Failed to get feed. Please try again.</string>
+    <string name="failed_to_connect">Failed to connect to feed. Please retry later or enter the address manually.</string>
+    <string name="view">View</string>
+
+</resources>
