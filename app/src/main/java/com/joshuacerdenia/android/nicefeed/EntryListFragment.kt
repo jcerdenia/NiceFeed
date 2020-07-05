@@ -1,6 +1,7 @@
 package com.joshuacerdenia.android.nicefeed
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -12,11 +13,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_entry_list.*
-import kotlinx.android.synthetic.main.fragment_feed_list.*
 
 private const val TAG = "EntryListFragment"
+private const val MAX_ENTRIES = 30 // TODO: user setting
+
+private fun List<Entry>.sortedByDate() = this.sortedByDescending{ entry -> entry.date}
 
 class EntryListFragment : Fragment() {
 
@@ -36,19 +38,18 @@ class EntryListFragment : Fragment() {
         }
     }
 
-    private val fragment = this@EntryListFragment
     private var callbacks: Callbacks? = null
 
     private lateinit var progressBar: ProgressBar
     private lateinit var entryRecyclerView: RecyclerView
     private var adapter: EntryAdapter = EntryAdapter()
 
-    private val mainViewModel: MainViewModel by lazy {
-        ViewModelProvider(this).get(MainViewModel::class.java)
+    private val entryListViewModel: EntryListViewModel by lazy {
+        ViewModelProvider(this).get(EntryListViewModel::class.java)
     }
 
-    private var feed: Feed? = null
-    private var entries: List<Entry>? = null
+    private var currentFeed: Feed? = null
+    private var currentEntries: List<Entry> = listOf()
 
     interface Callbacks {
         fun onFeedLoaded(feedTitle: String)
@@ -102,42 +103,36 @@ class EntryListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /* // TODO: Enable auto-refresh?
-        val url = feed?.url
-        if (url != null) {
-            if (mainViewModel.isNotYetRequested) {
-                //Log.d(TAG, "Requesting channel: $url")
-                //mainViewModel.requestChannel(url)
+        // TODO: Enable auto-refresh?
 
-                //progressBar.visibility = View.VISIBLE
-                mainViewModel.isNotYetRequested = false
-            }
-        } */
-
-        getWebsite()?.let { mainViewModel.getFeedWithEntries(it) }
         progressBar.visibility = View.VISIBLE
 
-        websiteLiveData.observe(this, Observer { website ->
+        websiteLiveData.observe(viewLifecycleOwner, Observer { website ->
             if (website != null) {
-                mainViewModel.getFeedWithEntries(website)
+                entryListViewModel.getFeedWithEntries(website)
             } else {
                 progressBar.visibility = View.GONE
             }
         })
 
-        mainViewModel.feedWithEntriesLiveData.observe(this, Observer { feedWithEntries ->
-            if (feedWithEntries != null) {
-                Log.d(TAG, "Found ${feedWithEntries.feed.title} with " +
-                            "${feedWithEntries.entries.size} entries")
+        entryListViewModel.feedWithEntriesLiveData.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                Log.d(TAG, "Retrieved ${it.feed.title} with ${it.entries.size} entries")
+                it.feed.title?.let { title -> callbacks?.onFeedLoaded(title) }
 
-                // TODO: Do something about observer firing multiple times?
+                currentFeed = it.feed
+                currentEntries = it.entries
 
-                feed = feedWithEntries.feed
-                entries = feedWithEntries.entries
+                if (it.entries.size > MAX_ENTRIES) {
+                    val entriesToDelete = it.entries.sortedByDate().subList(
+                        it.entries.sortedByDate().lastIndex - (it.entries.size - MAX_ENTRIES),
+                        it.entries.sortedByDate().lastIndex
+                    )
+                    entryListViewModel.deleteEntries(entriesToDelete)
+                    return@Observer
+                }
 
-                feed?.title?.let { callbacks?.onFeedLoaded(it) }
-                adapter.submitList(entries)
-
+                adapter.submitList(it.entries.sortedByDate())
             } else {
                 adapter.submitList(emptyList())
                 callbacks?.onFeedDeleted()
@@ -146,14 +141,48 @@ class EntryListFragment : Fragment() {
             progressBar.visibility = View.GONE
         })
 
-        /*
-        mainViewModel.feedRequestLiveData?.observe(this, Observer {
-            // TODO: Receive and map data to Entries; add new data to database, ignore the rest
-            if (it != null) {
-                Log.d(TAG, "Retrieved ${it.feed.title}")
+        entryListViewModel.feedRequestLiveData?.observe(this, Observer {
+            it?.let {
+                handleNewEntries(it.entries)
             }
+
             progressBar.visibility = View.GONE
-        }) */
+        })
+    }
+
+    private fun handleNewEntries(entries: List<Entry>) {
+        // Get all current entries by GUID
+        val currentEntriesByGuid = mutableListOf<String>()
+        for (entry in currentEntries) {
+            currentEntriesByGuid.add(entry.guid)
+        }
+
+        // Determine if entries are new or updated by comparing them to current entries
+        val newEntries = mutableListOf<Entry>()
+        val updatedEntries = mutableListOf<Entry>()
+
+        for (entry in entries) {
+            if (!currentEntries.contains(entry)) {
+                if (currentEntriesByGuid.contains(entry.guid)) {
+                    updatedEntries.add(entry)
+                } else {
+                    newEntries.add(entry)
+                }
+            }
+        }
+        Log.d(TAG, "Refreshed. Got ${newEntries.size} new and ${updatedEntries.size} updated entries.")
+
+        // Save to database
+        entryListViewModel.saveEntries(newEntries)
+        entryListViewModel.updateEntries(updatedEntries)
+
+        if (newEntries.size > 0) {
+            Snackbar.make(entry_list_view,
+                getString(R.string.entries_added, newEntries.size.toString()),
+                Snackbar.LENGTH_SHORT)
+                .show()
+            entryListViewModel.saveEntries(newEntries)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -164,22 +193,22 @@ class EntryListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_item_refresh -> {
-                val url = feed?.url
+                val url = currentFeed?.url
                 if (url != null) {
-                    mainViewModel.requestFeed(url)
+                    entryListViewModel.requestFeed(url)
                 }
                 progressBar.visibility = View.VISIBLE
                 Log.d(TAG, "Requesting channel: $url")
                 true
             }
             R.id.menu_item_delete_feed -> {
-                if (feed != null && entries != null) {
+                if (currentFeed != null) {
                     Snackbar.make(
                         entry_list_view,
-                        getString(R.string.feed_removed, feed!!.title),
+                        getString(R.string.feed_removed, currentFeed!!.title),
                         Snackbar.LENGTH_SHORT
                     ).show()
-                    mainViewModel.deleteFeedAndEntries(feed!!, entries!!)
+                    entryListViewModel.deleteFeedAndEntries(currentFeed!!, currentEntries)
                 }
                 true
             }
@@ -194,11 +223,6 @@ class EntryListFragment : Fragment() {
             SharedPreferences.saveWebsite(context!!, getWebsite()!!)
             Log.d(TAG, "${getWebsite()} saved to Shared Prefererences.")
         }
-    }
-
-    override fun onAttachFragment(childFragment: Fragment) {
-        super.onAttachFragment(childFragment)
-        Log.d(TAG, "onAttachFrag called")
     }
 
     private inner class EntryAdapter
@@ -216,7 +240,7 @@ class EntryListFragment : Fragment() {
         private inner class EntryHolder(view: View)
             : RecyclerView.ViewHolder(view), View.OnClickListener {
 
-            private var thisEntry = Entry()
+            private var currentEntry = Entry()
 
             val titleTextView: TextView = itemView.findViewById(R.id.title)
             val dateTextView: TextView = itemView.findViewById(R.id.date)
@@ -226,18 +250,23 @@ class EntryListFragment : Fragment() {
             }
 
             fun bind(entry: Entry) {
-                thisEntry = entry
+                currentEntry = entry
 
                 titleTextView.text = entry.title
-                dateTextView.text = entry.date
+                dateTextView.text = entry.date.toString() // TODO: format
+
+                if (!entry.isUnread) {
+                    titleTextView.setTextColor(Color.GRAY)
+                }
 
                 // TODO: Option to view/hide description
             }
 
             override fun onClick(v: View) {
                 // TODO: View entry, mark as read
-                Log.d(TAG, "${thisEntry.title} clicked!")
-                //titleTextView.setTextColor(Color.GRAY)
+                //currentEntry.isUnread = false
+                Log.d(TAG, "Clicked ${currentEntry.title}. Unread: ${currentEntry.isUnread}")
+                //entryListViewModel.updateEntry(currentEntry)
             }
         }
     }

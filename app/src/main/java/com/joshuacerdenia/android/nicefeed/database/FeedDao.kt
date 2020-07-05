@@ -5,7 +5,6 @@ import androidx.room.*
 import com.joshuacerdenia.android.nicefeed.Entry
 import com.joshuacerdenia.android.nicefeed.Feed
 import com.joshuacerdenia.android.nicefeed.FeedWithEntries
-import java.util.*
 
 @Dao
 interface FeedDao {

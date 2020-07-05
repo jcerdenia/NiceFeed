@@ -3,19 +3,12 @@ package com.joshuacerdenia.android.nicefeed
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_add_feed.*
-import kotlinx.android.synthetic.main.fragment_feed_list.*
 
 private const val TAG = "MainActivityLogs"
-private const val REQUEST_CODE_FEED_URL = 0
 private const val REQUEST_CODE_NEW_FEED = 1
 
 class MainActivity : AppCompatActivity(),
@@ -60,9 +53,9 @@ class MainActivity : AppCompatActivity(),
         if (resultCode != Activity.RESULT_OK) {
             return
         } else if (requestCode == REQUEST_CODE_NEW_FEED) {
-            val title = data?.getStringExtra(EXTRA_FEED_TITLE)
-            if (title != null) {
-                Snackbar.make(left_drawer, getString(R.string.feed_added, title), Snackbar.LENGTH_SHORT).show()
+            val website = data?.getStringExtra(EXTRA_FEED_WEBSITE)
+            if (website != null) {
+                onFeedSelected(website)
             }
         }
     }
@@ -84,12 +77,5 @@ class MainActivity : AppCompatActivity(),
     override fun onFeedDeleted() {
         supportActionBar?.title = getString(R.string.app_name)
         drawerLayout.openDrawer(GravityCompat.START, true)
-    }
-
-    private fun replaceMainFragmentWith(fragment: Fragment) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.main_fragment_container, fragment)
-            .commit()
     }
 }

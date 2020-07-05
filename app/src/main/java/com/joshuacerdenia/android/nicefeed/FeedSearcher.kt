@@ -43,7 +43,7 @@ class FeedSearcher {
             .build()
             .toString()
 
-        Log.d(TAG, "URL created: $BASE_URL$path")
+        Log.d(TAG, "URL generated: $BASE_URL$path")
         return path
     }
 

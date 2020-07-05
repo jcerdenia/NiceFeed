@@ -24,7 +24,7 @@ private fun String?.pathified() = this?.substringAfter(
     this.substringAfter("://")
 )
 
-open class AddFeedFragment: Fragment(), ConfirmAddDialogFragment.Callbacks {
+open class AddFeedFragment: Fragment() {
 
     companion object {
         private lateinit var enterUrlEditText: EditText
@@ -40,14 +40,13 @@ open class AddFeedFragment: Fragment(), ConfirmAddDialogFragment.Callbacks {
         ViewModelProvider(this).get(AddFeedViewModel::class.java)
     }
 
-    private val currentFeedPaths: MutableList<String> = mutableListOf()
-    var feedWithEntries: FeedWithEntries? = null
+    var currentFeeds: MutableSet<String> = mutableSetOf()
     lateinit var progressBar: ProgressBar
 
     private var callbacks: Callbacks? = null
 
     interface Callbacks {
-        fun onNewFeedAdded(title: String)
+        fun onNewFeedAdded(website: String)
         fun onQuerySubmitted(query: String)
     }
 
@@ -80,15 +79,18 @@ open class AddFeedFragment: Fragment(), ConfirmAddDialogFragment.Callbacks {
         super.onViewCreated(view, savedInstanceState)
 
         addFeedViewModel.feedListLiveData.observe(viewLifecycleOwner, Observer {
-            getCurrentFeedPaths(it)
+            for (feed in it) {
+                currentFeeds.add(feed.website)
+            }
         })
 
-        addFeedViewModel.feedRequestLiveData?.observe(viewLifecycleOwner, Observer { event ->
-            event.getContentIfNotHandled()?.let {
-                feedWithEntries = it
-                addFeedViewModel.requestFailedNoticeEnabled = false
-                showConfirmDialog(this@AddFeedFragment, it.feed)
-            } ?: showRequestFailedNotice(R.string.failed_to_get_feed)
+        addFeedViewModel.feedRequestLiveData?.observe(viewLifecycleOwner, Observer {
+            handleFeedRequestResult(
+                addFeedViewModel,
+                linear_layout,
+                it,
+                R.string.failed_to_get_feed
+            )
 
             progressBar.visibility = View.GONE
             submitButton.apply {
@@ -97,7 +99,7 @@ open class AddFeedFragment: Fragment(), ConfirmAddDialogFragment.Callbacks {
             }
         })
 
-        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(queryText: String): Boolean {
                 if (queryText.isNotBlank()) {
                     callbacks?.onQuerySubmitted(queryText)
@@ -114,68 +116,59 @@ open class AddFeedFragment: Fragment(), ConfirmAddDialogFragment.Callbacks {
             val address = enterUrlEditText.text.toString().substringAfter("://")
                 .toLowerCase(Locale.ROOT).trim()
 
-            if (isAlreadyAdded(address)) {
-                showAlreadyAddedNotice()
-            } else {
-                val url = "https://$address"
-                addFeedViewModel.apply{
-                    requestFeed(url)
-                    requestFailedNoticeEnabled = true
-                }
+            val url = "https://$address"
+            addFeedViewModel.requestFeed(url)
+            Log.d(TAG, "Requesting $url...")
 
-                Log.d(TAG, "Requesting $url...")
-                progressBar.visibility = View.VISIBLE
-                submitButton.apply {
-                    isEnabled = false
-                    text = getString(R.string.loading)
-                }
+            progressBar.visibility = View.VISIBLE
+            submitButton.apply {
+                isEnabled = false
+                text = getString(R.string.loading)
             }
-
             activity?.let { view -> Utils.hideSoftKeyBoard(view, it) }
         }
     }
 
-    fun getCurrentFeedPaths(feeds: List<Feed>) {
-        currentFeedPaths.clear()
-        for (feed in feeds) {
-            val path = feed.url?.pathified()
-            path?.let { currentFeedPaths.add(it) }
-        }
-        Log.d(TAG, "Current feeds: $currentFeedPaths")
+    fun handleFeedRequestResult(
+        viewModel: AddFeedViewModel,
+        view: View,
+        feedWithEntries: FeedWithEntries?,
+        errorMessageResId: Int) {
+
+        feedWithEntries?.let {
+            if (!isAlreadyAdded(it.feed)) {
+                viewModel.saveFeedWithEntries(it)
+                showFeedAddedNotice(viewModel, view, it.feed)
+            } else {
+                showAlreadyAddedNotice(viewModel, view)
+            }
+        } ?: showRequestFailedNotice(viewModel, view, errorMessageResId)
     }
 
-    fun showRequestFailedNotice(messageResId: Int) {
-        if (addFeedViewModel.requestFailedNoticeEnabled) {
-            Snackbar.make(linear_layout,
-                getString(messageResId),
-                Snackbar.LENGTH_SHORT
-            ).show()
-            addFeedViewModel.requestFailedNoticeEnabled = false
+    private fun showRequestFailedNotice(viewModel: AddFeedViewModel, view: View, messageResId: Int) {
+        if (viewModel.requestFailedNoticeEnabled) {
+            Snackbar.make(view, getString(messageResId), Snackbar.LENGTH_SHORT).show()
+            viewModel.requestFailedNoticeEnabled = false
         }
     }
 
-    fun showAlreadyAddedNotice() {
-        Snackbar.make(
-            linear_layout,
-            getString(R.string.feed_already_added),
-            Snackbar.LENGTH_SHORT)
+    private fun showFeedAddedNotice(viewModel: AddFeedViewModel, view: View, feed: Feed) {
+        Snackbar.make(view, getString(R.string.feed_added, feed.title), Snackbar.LENGTH_LONG)
+            .setAction(R.string.view_feed) {
+                callbacks?.onNewFeedAdded(feed.website)
+            }
             .show()
+        viewModel.alreadyAddedNoticeEnabled = false
     }
 
-    fun showConfirmDialog(fragment: Fragment, feed: Feed) {
-        ConfirmAddDialogFragment.newInstance(feed).apply {
-            show(fragment.requireFragmentManager(), "preview")
-            setTargetFragment(fragment, 0)
+    private fun showAlreadyAddedNotice(viewModel: AddFeedViewModel, view: View) {
+        if (viewModel.alreadyAddedNoticeEnabled) {
+            Snackbar.make(view, getString(R.string.feed_already_added), Snackbar.LENGTH_SHORT).show()
+            viewModel.alreadyAddedNoticeEnabled = false
         }
     }
 
-    fun isAlreadyAdded(url: String?): Boolean {
-        val path = url.pathified()
-        return currentFeedPaths.contains(path)
-    }
-
-    override fun onAddConfirmed(title: String) {
-        feedWithEntries?.let { addFeedViewModel.saveFeedWithEntries(it) }
-        callbacks?.onNewFeedAdded(title)
+    private fun isAlreadyAdded(feed: Feed): Boolean {
+        return currentFeeds.contains(feed.website)
     }
 }

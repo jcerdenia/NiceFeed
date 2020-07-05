@@ -1,17 +1,17 @@
 package com.joshuacerdenia.android.nicefeed
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Button
-import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_feed_search.*
 import kotlinx.android.synthetic.main.list_item_search_result.view.*
 
 private const val TAG = "FeedSearchFragment"
@@ -34,24 +34,10 @@ class FeedSearchFragment: AddFeedFragment(), ConfirmAddDialogFragment.Callbacks 
     }
 
     private lateinit var feedRecyclerView: RecyclerView
+    private lateinit var searchView: SearchView
     private val adapter: FeedAdapter = FeedAdapter()
-
-    private var callbacks: Callbacks? = null
-
-    interface Callbacks {
-        fun onSearchItemSelected(url: String) // TODO send selection back to MainActivity
-        fun onNewFeedAdded(title: String)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        callbacks = activity as Callbacks?
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
-    }
+    
+    private val rssUrlGenerator = RssUrlGenerator()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,23 +50,27 @@ class FeedSearchFragment: AddFeedFragment(), ConfirmAddDialogFragment.Callbacks 
         val initialQuery = arguments?.getString(ARG_INITIAL_QUERY) ?: ""
 
         val searchItem: MenuItem = menu.findItem(R.id.menu_item_search)
-        val searchView = searchItem.actionView as SearchView
+        searchView = searchItem.actionView as SearchView
 
         searchView.apply {
+            isIconified = false
+            queryHint = getString(R.string.search_feeds___)
+
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(queryText: String): Boolean {
                     if (queryText.isNotEmpty()) {
-                        Log.d(TAG, "Searching '$queryText'...")
                         feedSearchViewModel.performSearch(queryText)
                         progressBar.visibility = View.VISIBLE
                     }
-                    //activity?.let { Utils.hideSoftKeyBoard(it, this@apply) }
+
+                    clearFocus()
+                    activity?.let { Utils.hideSoftKeyBoard(it, this@apply) }
                     return true
                 }
 
                 override fun onQueryTextChange(queryText: String): Boolean {
                     feedSearchViewModel.newQuery = queryText
-                    return true
+                    return false
                 }
             })
 
@@ -89,11 +79,11 @@ class FeedSearchFragment: AddFeedFragment(), ConfirmAddDialogFragment.Callbacks 
                 feedSearchViewModel.initialQueryIsMade = true
             } else {
                 setQuery(feedSearchViewModel.newQuery, false)
+                clearFocus()
             }
-
-            isIconified = false
-            queryHint = getString(R.string.search_feeds___)
         }
+
+        activity?.let { Utils.hideSoftKeyBoard(it, searchView) }
     }
 
     override fun onCreateView(
@@ -120,34 +110,55 @@ class FeedSearchFragment: AddFeedFragment(), ConfirmAddDialogFragment.Callbacks 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        feedSearchViewModel.feedListLiveData.observe(viewLifecycleOwner, Observer {
+            for (feed in it) {
+                currentFeeds.add(feed.website)
+            }
+        })
+
         feedSearchViewModel.searchResultLiveData.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
             progressBar.visibility = View.GONE
         })
 
-        feedSearchViewModel.feedListLiveData.observe(viewLifecycleOwner, Observer {
-            getCurrentFeedPaths(it)
-        })
+        feedSearchViewModel.feedRequestLiveData?.observe(viewLifecycleOwner, Observer {
+            handleFeedRequestResult(
+                feedSearchViewModel,
+                constraint_layout,
+                it,
+                R.string.failed_to_connect
+            )
 
-        feedSearchViewModel.feedRequestLiveData?.observe(viewLifecycleOwner, Observer { event ->
-            event.getContentIfNotHandled()?.let {
-                if (!isAlreadyAdded(it.feed.url)) {
-                    feedWithEntries = it
-                    feedSearchViewModel.requestFailedNoticeEnabled = false
-                    showConfirmDialog(this@FeedSearchFragment, it.feed)
-                } else {
-                    showAlreadyAddedNotice()
-                }
-            } ?: showRequestFailedNotice(R.string.failed_to_connect)
-
-            progressBar.visibility = View.GONE
+            feedSearchViewModel.selectedItemProgressBar?.visibility = View.INVISIBLE
+            feedSearchViewModel.itemSelectionEnabled = true
         })
+    }
+
+    private fun showConfirmDialog(fragment: Fragment, searchResultItem: SearchResultItem) {
+        ConfirmAddDialogFragment.newInstance(searchResultItem).apply {
+            setTargetFragment(fragment, 0)
+            show(fragment.requireFragmentManager(), "confirm add")
+        }
+    }
+
+    override fun onAddConfirmed(feed: SearchResultItem) {
+        feedSearchViewModel.selectedItemProgressBar?.visibility = View.VISIBLE
+        feedSearchViewModel.itemSelectionEnabled = false
+
+        val url = feed.id?.let { rssUrlGenerator.getUrl(it) }
+
+        // Good to have backup because "website" property is also a usable URL
+        val backupUrl = feed.website?.let { rssUrlGenerator.getUrl(it) }
+        BackupUrls.setBase(backupUrl)
+
+        Log.d(TAG, "URLs generated: $url, backup: ${BackupUrls.get()}. Requesting...")
+        if (url != null) {
+            feedSearchViewModel.requestFeed(url)
+        }
     }
 
     private inner class FeedAdapter
         : ListAdapter<SearchResultItem, FeedAdapter.FeedHolder>(DiffCallback()) {
-
-        private val rssUrlGenerator = RssUrlGenerator()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedHolder {
             val view = layoutInflater.inflate(R.layout.list_item_search_result, parent, false)
@@ -165,6 +176,7 @@ class FeedSearchFragment: AddFeedFragment(), ConfirmAddDialogFragment.Callbacks 
 
             val titleTextView: TextView = itemView.findViewById(R.id.title)
             val descriptionTextView: TextView = itemView.findViewById(R.id.description)
+            val itemProgressBar: ProgressBar = itemView.findViewById(R.id.item_progress_bar)
 
             init {
                 itemView.setOnClickListener(this)
@@ -178,22 +190,17 @@ class FeedSearchFragment: AddFeedFragment(), ConfirmAddDialogFragment.Callbacks 
 
                 Picasso.get()
                     .load(feed.imageUrl)
-                    .resize(48, 48)
                     .placeholder(R.drawable.ic_rss_feed)
                     .into(itemView.image)
             }
 
             override fun onClick(v: View) {
-                val url = feed.id?.let { rssUrlGenerator.getUrl(it) }
-                val backupUrl = feed.website?.let { rssUrlGenerator.getUrl(it) }
-                    // Useful to have a backup because the "website" property is also an URL
+                searchView.clearFocus()
+                activity?.let { Utils.hideSoftKeyBoard(it, feedRecyclerView) }
 
-                BackupUrl.setUrl(backupUrl)
-                Log.d(TAG, "URLS generated: $url, backup: ${BackupUrl.getUrl()}")
-
-                if (url != null) {
-                    feedSearchViewModel.requestFeed(url)
-                    progressBar.visibility = View.VISIBLE
+                if (feedSearchViewModel.itemSelectionEnabled) {
+                    feedSearchViewModel.selectedItemProgressBar = itemProgressBar
+                    showConfirmDialog(this@FeedSearchFragment, feed)
                 }
             }
         }

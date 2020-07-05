@@ -65,6 +65,12 @@ class Repository private constructor(context: Context) {
         }
     }
 
+    fun updateEntries(entries: List<Entry>) {
+        executor.execute {
+            entryDao.updateEntries(entries)
+        }
+    }
+
     fun addFeed(feed: Feed) {
         executor.execute {
             feedDao.addFeed(feed)
@@ -105,6 +111,12 @@ class Repository private constructor(context: Context) {
     fun deleteEntry(entry: Entry) {
         executor.execute {
             entryDao.deleteEntry(entry)
+        }
+    }
+
+    fun deleteEntries(entries: List<Entry>) {
+        executor.execute {
+            entryDao.deleteEntries(entries)
         }
     }
 }

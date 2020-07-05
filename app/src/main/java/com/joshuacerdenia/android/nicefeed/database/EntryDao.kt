@@ -3,7 +3,6 @@ package com.joshuacerdenia.android.nicefeed.database
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.joshuacerdenia.android.nicefeed.Entry
-import java.util.*
 
 @Dao
 interface EntryDao {
@@ -20,6 +19,9 @@ interface EntryDao {
     @Update
     fun updateEntry(entry: Entry)
 
+    @Update
+    fun updateEntries(entries: List<Entry>)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addEntry(entry: Entry)
 
@@ -28,4 +30,7 @@ interface EntryDao {
 
     @Delete
     fun deleteEntry(entry: Entry)
+
+    @Delete
+    fun deleteEntries(entries: List<Entry>)
 }

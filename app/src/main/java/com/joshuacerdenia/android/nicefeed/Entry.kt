@@ -3,6 +3,7 @@ package com.joshuacerdenia.android.nicefeed
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
+import java.util.*
 
 @Entity
 data class Entry(
@@ -12,7 +13,7 @@ data class Entry(
     var description: String? = null,
     var author: String? = null,
     var url: String? = null,
-    var date: String? = null,
+    var date: Date? = null,
     var content: String? = null,
     var image: String? = null,
     var audio: String? = null,

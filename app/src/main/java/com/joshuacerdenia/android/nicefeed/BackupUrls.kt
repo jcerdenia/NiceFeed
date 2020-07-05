@@ -2,42 +2,45 @@ package com.joshuacerdenia.android.nicefeed
 
 import android.util.Log
 
-object BackupUrl {
+object BackupUrls {
 
-    private const val COUNTER_MAX = 3
+    private const val COUNTER_MAX = 4
     private var attemptCount = 0
 
-    private var url: String? = null
-
+    private var url: String? = null // Base URL
     private var urlPlusFeed: String? = null
     private var urlPlusRss: String? = null
+    private var urlPlusRssXml: String? = null
 
-    fun getUrl(): String? {
-        Log.d("MainViewModel", "Backup URL tried, count: $attemptCount")
+    fun get(): String? {
+        Log.d("FeedParser", "Backup URL tried, count: $attemptCount")
 
         return when (attemptCount) {
             0 -> url
             1 -> urlPlusFeed
             2 -> urlPlusRss
+            3 -> urlPlusRssXml
             else -> {
                 attemptCount = 0
-                setUrl(null)
+                setBase(null)
                 null
             }
         }
     }
 
-    fun setUrl(url: String?) {
+    fun setBase(url: String?) {
         this.url = url
 
         if (url != null) {
             urlPlusFeed = "$url/feed"
             urlPlusRss = "$url/rss"
+            urlPlusRssXml = "$url/rss.xml"
             // Expandable to other possible suffixes, just increase max count
 
         } else {
             urlPlusFeed = null
             urlPlusRss = null
+            urlPlusRssXml = null
             attemptCount = 0
         }
     }
@@ -46,7 +49,7 @@ object BackupUrl {
         attemptCount += 1
         if (attemptCount == COUNTER_MAX) {
             attemptCount = 0
-            setUrl(null)
+            setBase(null)
         }
     }
 }

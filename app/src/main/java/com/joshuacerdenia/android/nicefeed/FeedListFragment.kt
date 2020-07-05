@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.list_item_feed.view.*
 
 private const val TAG = "FeedListFragment"
 
-fun List<Feed>.sortedByTitle() = this.sortedBy{ (_, _, title) -> title }
+private fun List<Feed>.sortedByTitle() = this.sortedBy{ (_, _, title) -> title }
 
 class FeedListFragment: Fragment() {
 
@@ -71,7 +71,7 @@ class FeedListFragment: Fragment() {
             feedRecyclerView.context,
             (feedRecyclerView.layoutManager as LinearLayoutManager).orientation
         )
-        feedRecyclerView.addItemDecoration(divider)
+        //feedRecyclerView.addItemDecoration(divider)
         feedRecyclerView.adapter = adapter
 
         return view
@@ -86,7 +86,7 @@ class FeedListFragment: Fragment() {
 
         feedListViewModel.feedListLiveData.observe(viewLifecycleOwner, Observer { feeds ->
             // TODO: Sort feeds by title, date updated, etc.
-            adapter.submitList(feeds) // initial UI population
+            adapter.submitList(feeds.sortedByTitle()) // initial UI population
             progressBar.visibility = View.GONE
         })
     }

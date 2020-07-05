@@ -7,12 +7,12 @@ import androidx.lifecycle.ViewModel
 
 private const val TAG = "MainViewModel"
 
-class MainViewModel: ViewModel() {
+class EntryListViewModel: ViewModel() {
 
     private val repository = Repository.get()
 
     private val feedParser = FeedParser()
-    //val feedRequestLiveData: LiveData<FeedWithEntries>? = feedParser.feedRequestLiveData
+    val feedRequestLiveData: LiveData<FeedWithEntries>? = feedParser.feedRequestLiveData
 
     var nullFeedIsRetrieved = false
     var isManagingFeeds = false
@@ -61,6 +61,14 @@ class MainViewModel: ViewModel() {
 
     fun updateEntry(entry: Entry) {
         repository.updateEntry(entry)
+    }
+
+    fun updateEntries(entries: List<Entry>) {
+        repository.updateEntries(entries)
+    }
+
+    fun deleteEntries(entries: List<Entry>) {
+        repository.deleteEntries(entries)
     }
 
     fun deleteFeedAndEntries(feed: Feed, entries: List<Entry>) {

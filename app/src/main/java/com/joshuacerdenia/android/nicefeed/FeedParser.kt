@@ -13,18 +13,19 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 private const val TAG = "FeedParser"
+private const val MAX_ENTRIES = 30
 
 class FeedParser: ViewModel() {
 
     private val parser = Parser.Builder().build()
     private val channelConverter = ChannelConverter()
 
-    private val _feedRequestLiveData = MutableLiveData<Event<FeedWithEntries>>()
-    val feedRequestLiveData: LiveData<Event<FeedWithEntries>>
+    private val _feedRequestLiveData = MutableLiveData<FeedWithEntries>()
+    val feedRequestLiveData: LiveData<FeedWithEntries>?
         get() = _feedRequestLiveData
 
     fun requestFeed(url: String) {
-        // Automatically makes up to 4 requests with 4 different possible URLs
+        // Automatically makes several requests with different possible URLs
 
         Log.d(TAG, "Requesting: $url")
 
@@ -34,24 +35,24 @@ class FeedParser: ViewModel() {
                 val feedWithEntries = channelConverter.makeFeedWithEntries(url, channel)
 
                 _feedRequestLiveData.postValue(
-                    if (!feedWithEntries.feed.title.isNullOrEmpty()) {
-                        Event(feedWithEntries)
+                    if (feedWithEntries.feed.website.isNotEmpty()) {
+                        feedWithEntries
                     } else {
                         null
                     }
                 )
 
-                BackupUrl.setUrl(null) // Reset if request succeeds
+                BackupUrls.setBase(null) // Reset if request succeeds
 
             } catch (e: Exception) {
                 e.printStackTrace()
 
                 // If the initial request fails, try backup URL in different variations
-                if (BackupUrl.getUrl() != null) {
-                    requestFeed(BackupUrl.getUrl()!!) // Keep trying until the request succeeds
-                    BackupUrl.countUp() // Ticked when a request fails
+                if (BackupUrls.get() != null) {
+                    requestFeed(BackupUrls.get()!!) // Keep trying until the request succeeds
+                    BackupUrls.countUp() // Ticked when a request fails
                 } else {
-                    _feedRequestLiveData.postValue(Event(null))
+                    _feedRequestLiveData.postValue(null)
                 }
             }
         }
@@ -61,34 +62,48 @@ class FeedParser: ViewModel() {
         // Converts RSS Parser library data classes to my own
 
         fun makeFeedWithEntries(url: String, channel: Channel): FeedWithEntries {
-            val feed = Feed()
             val entries = mutableListOf<Entry>()
+            val feed = Feed()
+
+            for (article in channel.articles) {
+                if (entries.size < MAX_ENTRIES) {
+                    val entry = Entry()
+                    entry.apply {
+                        guid = article.guid ?: article.link ?: ""
+                        this.url = article.link // Possibly not needed?
+                        website = channel.link
+                        title = article.title
+                        description = article.description
+                        date = parseDate(article.pubDate)
+                        image = article.image
+                    }
+                    entries.add(entry)
+                }
+            }
 
             feed.apply {
                 website = channel.link ?: ""
                 this.url = url // The URL that successfully completes the request is applied
                 title = channel.title
                 description = channel.description
-                updated = formatDate(channel.lastBuildDate)
+                updated = parseDate(channel.lastBuildDate)
                 imageUrl = channel.image?.url
-                unreadCount = channel.articles.size
+                unreadCount = entries.size
             }
 
-            for (article in channel.articles) {
-                val entry = Entry()
-                entry.apply {
-                    guid = article.guid ?: article.link ?: ""
-                    this.url = article.link // Possibly not needed?
-                    website = channel.link
-                    title = article.title
-                    description = article.description
-                    date = formatDate(article.pubDate)
-                    image = article.image
-                }
-                entries.add(entry)
-            }
-
+            Log.d(TAG, "${entries.size} entries obtained")
             return FeedWithEntries(feed, entries)
+        }
+
+        private fun parseDate(stringDate: String?): Date? {
+            val pattern = "EEE, d MMM yyyy HH:mm:ss Z"
+            val simpleDateFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
+
+            return if (stringDate != null) {
+                simpleDateFormat.parse(stringDate)
+            } else {
+                null
+            }
         }
 
         private fun formatDate(stringDate: String?): String? {

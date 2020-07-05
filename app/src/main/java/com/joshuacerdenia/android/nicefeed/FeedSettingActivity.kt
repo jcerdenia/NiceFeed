@@ -6,12 +6,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 
-const val EXTRA_FEED_URL = "EXTRA_FEED_URL"
-const val EXTRA_FEED_TITLE = "EXTRA_FEED_TITLE"
+const val EXTRA_FEED_WEBSITE = "EXTRA_FEED_WEBSITE"
 
 class FeedSettingActivity : AppCompatActivity(),
-    AddFeedFragment.Callbacks,
-    FeedSearchFragment.Callbacks {
+    AddFeedFragment.Callbacks {
 
     private lateinit var toolbar: Toolbar
 
@@ -23,7 +21,7 @@ class FeedSettingActivity : AppCompatActivity(),
 
         this.setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Add Feed" // temporary
+        supportActionBar?.title = getString(R.string.add_feed)
 
         val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
 
@@ -36,29 +34,19 @@ class FeedSettingActivity : AppCompatActivity(),
         }
     }
 
-    /*
-    override fun onFeedUrlSubmitted(url: String) {
-        //BackupUrl.setUrl(null)
+    override fun onNewFeedAdded(website: String) {
         val data = Intent().apply {
-            putExtra(EXTRA_FEED_URL, url)
-        }
-        setResult(Activity.RESULT_OK, data)
-        finish()
-    }*/
-
-    override fun onNewFeedAdded(title: String) {
-        val data = Intent().apply {
-            putExtra(EXTRA_FEED_TITLE, title)
+            putExtra(EXTRA_FEED_WEBSITE, website)
         }
         setResult(Activity.RESULT_OK, data)
         finish()
     }
 
     override fun onQuerySubmitted(query: String) {
-        val newFragment = FeedSearchFragment.newInstance(query)
+        val fragment = FeedSearchFragment.newInstance(query)
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fragment_container, newFragment)
+            .replace(R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
     }
@@ -66,13 +54,5 @@ class FeedSettingActivity : AppCompatActivity(),
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
-    }
-
-    override fun onSearchItemSelected(url: String) {
-        val data = Intent().apply {
-            putExtra(EXTRA_FEED_URL, url)
-        }
-        setResult(Activity.RESULT_OK, data)
-        finish()
     }
 }

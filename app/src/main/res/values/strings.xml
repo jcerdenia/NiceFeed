@@ -24,5 +24,9 @@
     <string name="failed_to_get_feed">Failed to get feed. Please try again.</string>
     <string name="failed_to_connect">Failed to connect to feed. Please retry later or enter the address manually.</string>
     <string name="view">View</string>
+    <string name="view_feeds">View Feeds</string>
+    <string name="last_updated">Last updated %s</string>
+    <string name="view_feed">View Feed</string>
+    <string name="entries_added">%s new entries added.</string>
 
 </resources>
