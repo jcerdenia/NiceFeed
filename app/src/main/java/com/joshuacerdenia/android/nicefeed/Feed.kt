@@ -14,5 +14,5 @@ data class Feed(
     var updated: Date? = null,
     var imageUrl: String? = null,
     var category: String = "Uncategorized",
-    var unreadCount: Int? = null
+    var unreadCount: Int = 0
 ): Serializable

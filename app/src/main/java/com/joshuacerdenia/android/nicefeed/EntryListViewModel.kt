@@ -14,8 +14,9 @@ class EntryListViewModel: ViewModel() {
     private val feedParser = FeedParser()
     val feedRequestLiveData: LiveData<FeedWithEntries>? = feedParser.feedRequestLiveData
 
-    var nullFeedIsRetrieved = false
     var isManagingFeeds = false
+    var newEntriesHaveBeenHandled = false
+
 
     val feedListLiveData = repository.getFeeds()
     val entryListLiveData = repository.getEntries()
@@ -27,7 +28,7 @@ class EntryListViewModel: ViewModel() {
         }
 
     fun requestFeed(url: String) {
-        nullFeedIsRetrieved = false
+        newEntriesHaveBeenHandled = false
         feedParser.requestFeed(url)
     }
 

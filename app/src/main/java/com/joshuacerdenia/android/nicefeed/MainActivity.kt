@@ -22,6 +22,8 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.main_fragment_container)
+
         drawerLayout = findViewById(R.id.drawer_layout)
         toolbar = findViewById(R.id.toolbar)
 
@@ -31,10 +33,12 @@ class MainActivity : AppCompatActivity(),
 
         toolbar.setNavigationIcon(R.drawable.ic_menu)
         toolbar.setNavigationOnClickListener {
+            currentFragment?.let {
+                val fragment = it as EntryListFragment
+                fragment.updateUnreadEntriesCount()
+            }
             drawerLayout.openDrawer(GravityCompat.START, true)
         }
-
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.main_fragment_container)
 
         if (currentFragment == null) {
             val mainFragment = EntryListFragment.newInstance()
@@ -77,5 +81,10 @@ class MainActivity : AppCompatActivity(),
     override fun onFeedDeleted() {
         supportActionBar?.title = getString(R.string.app_name)
         drawerLayout.openDrawer(GravityCompat.START, true)
+    }
+
+    override fun onEntrySelected(entry: Entry) {
+        val intent = ReadingActivity.newIntent(this@MainActivity, entry)
+        startActivity(intent)
     }
 }

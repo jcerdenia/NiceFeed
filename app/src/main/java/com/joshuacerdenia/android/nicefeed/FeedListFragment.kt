@@ -18,7 +18,8 @@ import kotlinx.android.synthetic.main.list_item_feed.view.*
 
 private const val TAG = "FeedListFragment"
 
-private fun List<Feed>.sortedByTitle() = this.sortedBy{ (_, _, title) -> title }
+private fun List<Feed>.sortedByTitle() = this.sortedBy{ it.title }
+private fun List<Feed>.sortedByUnreadCount() = this.sortedByDescending{ it.unreadCount }
 
 class FeedListFragment: Fragment() {
 
@@ -85,8 +86,8 @@ class FeedListFragment: Fragment() {
         }
 
         feedListViewModel.feedListLiveData.observe(viewLifecycleOwner, Observer { feeds ->
-            // TODO: Sort feeds by title, date updated, etc.
-            adapter.submitList(feeds.sortedByTitle()) // initial UI population
+            // TODO: Sort feeds by title, date updated, etc. Also, get only needed data for UI
+            adapter.submitList(feeds.sortedByUnreadCount()) // initial UI population
             progressBar.visibility = View.GONE
         })
     }
@@ -121,7 +122,11 @@ class FeedListFragment: Fragment() {
                 this.feed = feed
 
                 titleTextView.text = feed.title
-                unreadCount.text = feed.unreadCount.toString() // TODO: change dynamically
+                unreadCount.text = if (feed.unreadCount > 0) {
+                    feed.unreadCount.toString()
+                } else {
+                    null
+                }
 
                 // TODO: Option to hide description
                 descriptionTextView.apply {

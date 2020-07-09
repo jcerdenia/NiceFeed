@@ -8,12 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.prof.rssparser.Channel
 import com.prof.rssparser.Parser
 import kotlinx.coroutines.launch
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
 private const val TAG = "FeedParser"
-private const val MAX_ENTRIES = 30
+private const val MAX_ENTRIES = 500 // Arbitrary
 
 class FeedParser: ViewModel() {
 
@@ -74,6 +73,7 @@ class FeedParser: ViewModel() {
                         website = channel.link
                         title = article.title
                         description = article.description
+                        content = article.content
                         date = parseDate(article.pubDate)
                         image = article.image
                     }
@@ -101,18 +101,6 @@ class FeedParser: ViewModel() {
 
             return if (stringDate != null) {
                 simpleDateFormat.parse(stringDate)
-            } else {
-                null
-            }
-        }
-
-        private fun formatDate(stringDate: String?): String? {
-            val pattern = "EEE, d MMM yyyy HH:mm:ss Z"
-            val simpleDateFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
-
-            return if (stringDate != null) {
-                val parsedDate: Date = simpleDateFormat.parse(stringDate)!!
-                DateFormat.getDateInstance(DateFormat.LONG).format(parsedDate)
             } else {
                 null
             }

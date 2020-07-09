@@ -13,7 +13,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_entry_list.*
+import kotlinx.android.synthetic.main.list_item_feed.view.*
+import java.text.DateFormat
 
 private const val TAG = "EntryListFragment"
 private const val MAX_ENTRIES = 30 // TODO: user setting
@@ -38,7 +41,9 @@ class EntryListFragment : Fragment() {
         }
     }
 
-    private var callbacks: Callbacks? = null
+    private var currentFeed: Feed? = null
+    private var currentEntries: List<Entry> = listOf()
+        get() = field.sortedByDate()
 
     private lateinit var progressBar: ProgressBar
     private lateinit var entryRecyclerView: RecyclerView
@@ -48,12 +53,12 @@ class EntryListFragment : Fragment() {
         ViewModelProvider(this).get(EntryListViewModel::class.java)
     }
 
-    private var currentFeed: Feed? = null
-    private var currentEntries: List<Entry> = listOf()
+    private var callbacks: Callbacks? = null
 
     interface Callbacks {
         fun onFeedLoaded(feedTitle: String)
         fun onFeedDeleted()
+        fun onEntrySelected(entry: Entry)
     }
 
     override fun onAttach(context: Context) {
@@ -116,72 +121,129 @@ class EntryListFragment : Fragment() {
         })
 
         entryListViewModel.feedWithEntriesLiveData.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                Log.d(TAG, "Retrieved ${it.feed.title} with ${it.entries.size} entries")
+            var entries: List<Entry> = emptyList()
+
+            it?.let {
+                Log.d(TAG, "Retrieved ${it.feed.title}, ${it.entries.size} entries")
                 it.feed.title?.let { title -> callbacks?.onFeedLoaded(title) }
 
                 currentFeed = it.feed
                 currentEntries = it.entries
 
-                if (it.entries.size > MAX_ENTRIES) {
-                    val entriesToDelete = it.entries.sortedByDate().subList(
-                        it.entries.sortedByDate().lastIndex - (it.entries.size - MAX_ENTRIES),
-                        it.entries.sortedByDate().lastIndex
-                    )
-                    entryListViewModel.deleteEntries(entriesToDelete)
-                    return@Observer
-                }
+                entries = it.entries.sortedByDate()
+            } ?: callbacks?.onFeedDeleted()
 
-                adapter.submitList(it.entries.sortedByDate())
-            } else {
-                adapter.submitList(emptyList())
-                callbacks?.onFeedDeleted()
-            }
-
+            adapter.submitList(entries)
             progressBar.visibility = View.GONE
         })
 
         entryListViewModel.feedRequestLiveData?.observe(this, Observer {
             it?.let {
-                handleNewEntries(it.entries)
+                Log.d(TAG, "Request successful. Got ${it.entries.size} entries")
+
+                if (!entryListViewModel.newEntriesHaveBeenHandled) {
+                    handleNewEntries(it.entries, currentEntries)
+
+                    entryListViewModel.newEntriesHaveBeenHandled = true
+                }
             }
 
             progressBar.visibility = View.GONE
         })
     }
 
-    private fun handleNewEntries(entries: List<Entry>) {
-        // Get all current entries by GUID
-        val currentEntriesByGuid = mutableListOf<String>()
-        for (entry in currentEntries) {
-            currentEntriesByGuid.add(entry.guid)
-        }
-
-        // Determine if entries are new or updated by comparing them to current entries
-        val newEntries = mutableListOf<Entry>()
-        val updatedEntries = mutableListOf<Entry>()
-
+    private fun getUnreadCount(entries: List<Entry>): Int {
+        var unreadCount = 0
         for (entry in entries) {
-            if (!currentEntries.contains(entry)) {
+            if (!entry.isRead) {
+                unreadCount += 1
+            }
+        }
+        return unreadCount
+    }
+
+    private fun handleNewEntries(newEntries: List<Entry>, currentEntries: List<Entry>) {
+        val newEntriesByGuid = getEntriesByGuid(newEntries)
+        val currentEntriesByGuid = getEntriesByGuid(currentEntries)
+
+        val entriesToSave = mutableListOf<Entry>()
+        val entriesToUpdate = mutableListOf<Entry>()
+        val entriesToDelete = mutableListOf<Entry>()
+
+        for (entry in newEntries) {
+            if (!isAddedAndUnchanged(entry, currentEntries)) {
                 if (currentEntriesByGuid.contains(entry.guid)) {
-                    updatedEntries.add(entry)
+                    // i.e., if an old version of the entry already exists
+                    entriesToUpdate.add(entry)
+                    Log.d(TAG, "Updating entry... Guid: ${entry.guid}")
                 } else {
-                    newEntries.add(entry)
+                    entriesToSave.add(entry)
+                    Log.d(TAG, "Adding entry... Guid: ${entry.guid}")
                 }
             }
         }
-        Log.d(TAG, "Refreshed. Got ${newEntries.size} new and ${updatedEntries.size} updated entries.")
 
-        // Save to database
-        entryListViewModel.saveEntries(newEntries)
-        entryListViewModel.updateEntries(updatedEntries)
+        for (entry in currentEntries) {
+            if (!newEntriesByGuid.contains(entry.guid)) {
+                entriesToDelete.add(entry)
+            }
+        }
 
-        if (newEntries.size > 0) {
-            Snackbar.make(entry_list_view,
-                getString(R.string.entries_added, newEntries.size.toString()),
-                Snackbar.LENGTH_SHORT)
-                .show()
-            entryListViewModel.saveEntries(newEntries)
+        entryListViewModel.deleteEntries(entriesToDelete)
+        entryListViewModel.saveEntries(entriesToSave)
+        entryListViewModel.updateEntries(entriesToUpdate)
+
+        Log.d(TAG, "Saving ${entriesToSave.size}, " +
+                "updating ${entriesToUpdate.size}, and deleting ${entriesToDelete.size} entries...")
+        showRefreshedNotice(entriesToSave.size, entriesToUpdate.size)
+    }
+
+    private fun getEntriesByGuid(entries: List<Entry>): List<String> {
+        val entriesByGuid = mutableListOf<String>()
+        for (entry in entries) {
+            entriesByGuid.add(entry.guid)
+        }
+        return entriesByGuid
+    }
+
+    private fun isAddedAndUnchanged(entry: Entry, currentEntries: List<Entry>): Boolean {
+        // Checks a new entry against all current entries to see if the content is the same
+        var isAddedAndUnchanged = false
+        for (currentEntry in currentEntries) {
+            if (entry.isTheSameAs(currentEntry)) {
+                isAddedAndUnchanged = true
+                break
+            }
+        }
+        return isAddedAndUnchanged
+    }
+
+    private fun showRefreshedNotice(newCount: Int, updatedCount: Int) {
+        val entriesAdded = resources.getQuantityString(R.plurals.numberOfNewEntries, newCount, newCount)
+        val entriesUpdated = resources.getQuantityString(R.plurals.numberOfEntries, updatedCount, updatedCount)
+
+        val message = when {
+            newCount > 0 && updatedCount > 0 -> getString(R.string.added_and_updated, entriesAdded, updatedCount)
+            newCount > 0 && updatedCount == 0 -> getString(R.string.added, entriesAdded)
+            newCount == 0 && updatedCount > 0 -> getString(R.string.updated, entriesUpdated)
+            else -> null
+        }
+
+        if (newCount + updatedCount > 0) {
+            Snackbar.make(
+                entry_list_view,
+                message as CharSequence,
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    fun updateUnreadEntriesCount() {
+        currentFeed?.let { feed ->
+            feed.unreadCount = getUnreadCount(currentEntries)
+            entryListViewModel.updateFeed(feed)
+
+            Log.d(TAG, "Updating unread count...")
         }
     }
 
@@ -219,6 +281,8 @@ class EntryListFragment : Fragment() {
     override fun onStop() {
         super.onStop()
 
+        updateUnreadEntriesCount()
+
         if (context != null && getWebsite() != null) {
             SharedPreferences.saveWebsite(context!!, getWebsite()!!)
             Log.d(TAG, "${getWebsite()} saved to Shared Prefererences.")
@@ -238,7 +302,7 @@ class EntryListFragment : Fragment() {
         }
 
         private inner class EntryHolder(view: View)
-            : RecyclerView.ViewHolder(view), View.OnClickListener {
+            : RecyclerView.ViewHolder(view), View.OnClickListener, View.OnLongClickListener {
 
             private var currentEntry = Entry()
 
@@ -247,26 +311,41 @@ class EntryListFragment : Fragment() {
 
             init {
                 itemView.setOnClickListener(this)
+                itemView.setOnLongClickListener(this)
             }
 
             fun bind(entry: Entry) {
                 currentEntry = entry
 
                 titleTextView.text = entry.title
-                dateTextView.text = entry.date.toString() // TODO: format
+                dateTextView.text = entry.date?.let {DateFormat.getDateTimeInstance().format(it)}
 
-                if (!entry.isUnread) {
+                Picasso.get()
+                    .load(entry.image)
+                    .resize(48, 48)
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_rss_feed)
+                    .into(itemView.image)
+
+                if (entry.isRead) {
                     titleTextView.setTextColor(Color.GRAY)
+                } else {
+                    titleTextView.setTextColor(Color.BLACK)
                 }
 
                 // TODO: Option to view/hide description
             }
 
             override fun onClick(v: View) {
-                // TODO: View entry, mark as read
-                //currentEntry.isUnread = false
-                Log.d(TAG, "Clicked ${currentEntry.title}. Unread: ${currentEntry.isUnread}")
-                //entryListViewModel.updateEntry(currentEntry)
+                callbacks?.onEntrySelected(currentEntry)
+            }
+
+            override fun onLongClick(v: View?): Boolean {
+                // TODO: Manage feeds
+                entryListViewModel.isManagingFeeds = !entryListViewModel.isManagingFeeds
+
+                Log.d(TAG, "Managing feeds: ${entryListViewModel.isManagingFeeds}")
+                return true
             }
         }
     }

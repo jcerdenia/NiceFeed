@@ -27,6 +27,17 @@
     <string name="view_feeds">View Feeds</string>
     <string name="last_updated">Last updated %s</string>
     <string name="view_feed">View Feed</string>
-    <string name="entries_added">%s new entries added.</string>
+    <string name="added">Added %s.</string>
+    <string name="updated">Updated %s.</string>
+    <string name="added_and_updated">Added %1$s and updated %2$d.</string>
+
+    <plurals name="numberOfEntries">
+        <item quantity="one">%d entry</item>
+        <item quantity="other">%d entries</item>
+    </plurals>
+    <plurals name="numberOfNewEntries">
+        <item quantity="one">%d new entry</item>
+        <item quantity="other">%d new entries</item>
+    </plurals>
 
 </resources>

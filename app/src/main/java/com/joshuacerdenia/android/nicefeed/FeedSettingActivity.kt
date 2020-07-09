@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 
-const val EXTRA_FEED_WEBSITE = "EXTRA_FEED_WEBSITE"
+const val EXTRA_FEED_WEBSITE = "com.joshuacerdenia.android.nicefeed.feed_website"
 
 class FeedSettingActivity : AppCompatActivity(),
     AddFeedFragment.Callbacks {
