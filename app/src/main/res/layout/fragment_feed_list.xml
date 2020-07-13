@@ -1,67 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/left_drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/left_drawer">
+    android:background="@android:color/background_light">
 
-    <Button
-        android:id="@+id/add_feed"
-        android:padding="8dp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_add"
-        android:drawablePadding="8dp"
-        android:gravity="start|center"
-        android:text="@string/add_feed"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Add Feed" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_feed"
-        tools:visibility="visible" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/feeds"
+            android:padding="16dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/feed_recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/settings"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progress_bar">
+        <Button
+            android:id="@+id/manage_feeds"
+            style="@style/DrawerMenuButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_manage_feeds"
+            android:text="@string/manage" />
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <Button
+            android:id="@+id/add_feed"
+            style="@style/DrawerMenuButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_add"
+            android:text="@string/add" />
 
-    <Button
-        android:id="@+id/settings"
-        android:layout_width="0dp"
-        android:padding="8dp"
-        android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_settings"
-        android:drawablePadding="8dp"
-        android:gravity="start|center"
-        android:text="@string/settings"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="Settings" />
+        <View style="@style/Divider"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/feed_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:choiceMode="singleChoice"
+            android:nestedScrollingEnabled="false"/>
+
+        <View style="@style/Divider"/>
+
+        <Button
+            android:id="@+id/settings"
+            style="@style/DrawerMenuButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_settings"
+            android:text="@string/settings" />
+
+        <Button
+            android:id="@+id/about"
+            style="@style/DrawerMenuButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_info"
+            android:text="@string/about" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

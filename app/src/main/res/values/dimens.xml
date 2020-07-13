@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="iconPadding">24dp</dimen>
+    <dimen name="drawerTextSize_default">14sp</dimen>
+    <dimen name="mainItemTextSize_default">16sp</dimen>
+</resources>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_item_edit"
+        android:title="@string/edit_category"
+        android:icon="@drawable/ic_edit"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_item_delete"
+        android:title="@string/delete_selected"
+        android:icon="@drawable/ic_delete"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_item_select_all"
+        android:title="@string/select_all"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_item_sort"
+        android:title="@string/sort"
+        android:icon="@drawable/ic_sort"
+        app:showAsAction="never" />
+
+</menu>

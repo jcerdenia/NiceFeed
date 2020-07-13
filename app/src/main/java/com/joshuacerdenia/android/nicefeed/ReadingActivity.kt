@@ -5,6 +5,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
+import com.joshuacerdenia.android.nicefeed.data.model.Entry
+import com.joshuacerdenia.android.nicefeed.ui.EntryFragment
 
 private const val EXTRA_ENTRY = "com.joshuacerdenia.android.nicefeed.entry"
 

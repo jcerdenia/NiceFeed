@@ -7,9 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import com.joshuacerdenia.android.nicefeed.data.model.Entry
+import com.joshuacerdenia.android.nicefeed.ui.EntryListFragment
+import com.joshuacerdenia.android.nicefeed.ui.FeedListFragment
 
 private const val TAG = "MainActivityLogs"
-private const val REQUEST_CODE_NEW_FEED = 1
+private const val REQUEST_CODE_ADD_FEED = 0
+const val MANAGE_FEEDS = 0
+const val ADD_FEEDS = 1
 
 class MainActivity : AppCompatActivity(),
     FeedListFragment.Callbacks,
@@ -22,8 +28,7 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.main_fragment_container)
-
+        //tabLayout = findViewById(R.id.tabs)
         drawerLayout = findViewById(R.id.drawer_layout)
         toolbar = findViewById(R.id.toolbar)
 
@@ -31,16 +36,34 @@ class MainActivity : AppCompatActivity(),
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
 
-        toolbar.setNavigationIcon(R.drawable.ic_menu)
-        toolbar.setNavigationOnClickListener {
-            currentFragment?.let {
-                val fragment = it as EntryListFragment
-                fragment.updateUnreadEntriesCount()
+        toolbar.apply {
+            setNavigationIcon(R.drawable.ic_menu)
+
+            setOnClickListener {
+                (getCurrentMainFragment() as EntryListFragment?)?.scrollToTop()
             }
-            drawerLayout.openDrawer(GravityCompat.START, true)
+
+            setNavigationOnClickListener {
+                (getCurrentMainFragment() as EntryListFragment?)?.updateUnreadEntriesCount()
+                drawerLayout.openDrawer(GravityCompat.START, true)
+            }
         }
 
-        if (currentFragment == null) {
+        /*
+        val unreadTab = tabLayout.newTab()
+        val allTab = tabLayout.newTab()
+        val favoritesTab = tabLayout.newTab()
+
+        //unreadTab.text = "Unread"
+        allTab.text = "All"
+        favoritesTab.text = "Favorites"
+        unreadTab.setIcon(R.drawable.ic_new)
+
+        tabLayout.addTab(unreadTab)
+        tabLayout.addTab(allTab)
+        tabLayout.addTab(favoritesTab) */
+
+        if (getCurrentMainFragment() == null) {
             val mainFragment = EntryListFragment.newInstance()
             val drawerFragment = FeedListFragment.newInstance()
             supportFragmentManager
@@ -51,12 +74,16 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    private fun getCurrentMainFragment(): Fragment? {
+        return supportFragmentManager.findFragmentById(R.id.main_fragment_container)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode != Activity.RESULT_OK) {
             return
-        } else if (requestCode == REQUEST_CODE_NEW_FEED) {
+        } else if (requestCode == REQUEST_CODE_ADD_FEED) {
             val website = data?.getStringExtra(EXTRA_FEED_WEBSITE)
             if (website != null) {
                 onFeedSelected(website)
@@ -64,9 +91,14 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    override fun onManageFeedsSelected() {
+        val intent = FeedSettingActivity.newIntent(this@MainActivity, MANAGE_FEEDS)
+        startActivity(intent)
+    }
+
     override fun onAddFeedSelected() {
-        val intent = Intent(this, FeedSettingActivity::class.java)
-        startActivityForResult(intent, REQUEST_CODE_NEW_FEED)
+        val intent = FeedSettingActivity.newIntent(this@MainActivity, ADD_FEEDS)
+        startActivityForResult(intent, REQUEST_CODE_ADD_FEED)
     }
 
     override fun onFeedSelected(website: String) {

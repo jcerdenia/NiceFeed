@@ -30,6 +30,22 @@
     <string name="added">Added %s.</string>
     <string name="updated">Updated %s.</string>
     <string name="added_and_updated">Added %1$s and updated %2$d.</string>
+    <string name="feed_up_to_date">Feed is up to date.</string>
+    <string name="manage_feeds">Manage Feeds</string>
+    <string name="select_all">Select All</string>
+    <string name="sort">Sort</string>
+    <string name="delete_selected">Delete Selected</string>
+    <string name="edit_selected">Edit Selected</string>
+    <string name="confirm">Confirm</string>
+    <string name="editing_feeds">Editing %s</string>
+    <string name="set_category">Set category</string>
+    <string name="nothing_selected">Nothing selected.</string>
+    <string name="about">About</string>
+    <string name="manage">Manage</string>
+    <string name="add">Add</string>
+    <string name="feeds">Feeds</string>
+    <string name="edit_category">Edit Category</string>
+    <string name="number_selected">%d selected</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>
@@ -38,6 +54,10 @@
     <plurals name="numberOfNewEntries">
         <item quantity="one">%d new entry</item>
         <item quantity="other">%d new entries</item>
+    </plurals>
+    <plurals name="numberOfFeeds">
+        <item quantity="one">feed</item>
+        <item quantity="other">%d feeds</item>
     </plurals>
 
 </resources>
