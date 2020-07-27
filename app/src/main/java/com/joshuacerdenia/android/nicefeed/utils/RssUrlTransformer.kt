@@ -1,9 +1,8 @@
 package com.joshuacerdenia.android.nicefeed.utils
 
-object RssUrlGenerator {
+object RssUrlTransformer {
 
     fun getUrl(link: String): String {
-
         val url = link.removePrefix("feed/")
             .removeSuffix("/")
             .replace("http://", "https://")

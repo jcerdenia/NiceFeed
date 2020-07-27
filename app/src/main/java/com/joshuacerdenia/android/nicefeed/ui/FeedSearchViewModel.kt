@@ -5,13 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
-import com.joshuacerdenia.android.nicefeed.ui.AddFeedViewModel
 
 class FeedSearchViewModel: AddFeedViewModel() {
 
     var newQuery: String = ""
     var initialQueryIsMade = false
-    var selectedItemProgressBar: ProgressBar? = null
+    var itemBeingLoaded: SearchResultItem? = null
     var itemSelectionEnabled = true
 
     private val mutableQuery = MutableLiveData<String>()

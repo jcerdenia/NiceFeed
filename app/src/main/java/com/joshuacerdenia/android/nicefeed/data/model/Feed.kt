@@ -7,7 +7,7 @@ import java.util.*
 
 @Entity
 data class Feed(
-    @PrimaryKey var website: String = "", // formerly link
+    @PrimaryKey var website: String = "", // Feed ID
     var url: String? = null,
     var title: String? = null,
     var description: String? = null,

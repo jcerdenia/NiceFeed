@@ -6,9 +6,11 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.joshuacerdenia.android.nicefeed.data.FeedParser
 import com.joshuacerdenia.android.nicefeed.data.Repository
+import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
+import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFilterEntriesFragment
 
 private const val TAG = "MainViewModel"
 
@@ -20,9 +22,8 @@ class EntryListViewModel: ViewModel() {
         FeedParser()
     val feedRequestLiveData: LiveData<FeedWithEntries>? = feedParser.feedRequestLiveData
 
-    var isManagingFeeds = false
     var newEntriesHaveBeenHandled = false
-
+    var hasAutoRefreshed = false
 
     val feedListLiveData = repository.getFeeds()
     val entryListLiveData = repository.getEntries()

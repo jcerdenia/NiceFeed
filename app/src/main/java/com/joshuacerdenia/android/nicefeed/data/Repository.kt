@@ -4,10 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.joshuacerdenia.android.nicefeed.data.local.database.Database
-import com.joshuacerdenia.android.nicefeed.data.model.Entry
-import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
-import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
+import com.joshuacerdenia.android.nicefeed.data.model.*
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedSearcher
 import java.util.concurrent.Executors
 
@@ -48,6 +45,8 @@ class Repository private constructor(context: Context) {
             = feedSearcher.performSearch(query)
 
     fun getFeeds(): LiveData<List<Feed>> = feedDao.getFeeds()
+
+    fun getFeedsInfo(): LiveData<List<FeedInfo>> = feedDao.getFeedsInfo()
 
     fun getFeed(website: String): LiveData<Feed?> = feedDao.getFeed(website)
 
@@ -116,6 +115,12 @@ class Repository private constructor(context: Context) {
         }
     }
 
+    fun deleteFeeds(feeds: List<Feed>) {
+        executor.execute {
+            feedDao.deleteFeeds(feeds)
+        }
+    }
+
     fun deleteFeedAndEntries(feed: Feed, entries: List<Entry>) {
         executor.execute {
             feedDao.deleteFeedAndEntries(feed, entries)
@@ -137,6 +142,18 @@ class Repository private constructor(context: Context) {
     fun deleteEntries(entries: List<Entry>) {
         executor.execute {
             entryDao.deleteEntries(entries)
+        }
+    }
+
+    fun deleteEntriesByWebsite(websites: List<String>) {
+        executor.execute {
+            entryDao.deleteEntriesByWebsite(websites)
+        }
+    }
+
+    fun deleteFeedsByWebsite(websites: List<String>) {
+        executor.execute {
+            feedDao.deleteFeedsByWebsite(websites)
         }
     }
 }

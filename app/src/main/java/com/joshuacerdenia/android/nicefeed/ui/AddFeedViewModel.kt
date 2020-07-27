@@ -12,16 +12,16 @@ open class AddFeedViewModel: ViewModel() {
     private val feedParser =
         FeedParser()
 
-    val feedRequestLiveData: LiveData<FeedWithEntries>? = feedParser.feedRequestLiveData
-    val feedListLiveData = repository.getFeeds()
-
     var requestFailedNoticeEnabled = false
     var alreadyAddedNoticeEnabled = false
 
-    fun requestFeed(url: String) {
+    val feedRequestLiveData: LiveData<FeedWithEntries>? = feedParser.feedRequestLiveData
+    val feedListLiveData = repository.getFeeds()
+
+    fun requestFeed(vararg url: String) {
         requestFailedNoticeEnabled = true
         alreadyAddedNoticeEnabled = true
-        feedParser.requestFeed(url)
+        feedParser.requestFeed(*url)
     }
 
     fun saveFeedWithEntries (feedWithEntries: FeedWithEntries) {

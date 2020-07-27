@@ -19,7 +19,7 @@ private const val BASE_URL = "https://cloud.feedly.com/"
 
 class FeedSearcher {
 
-    private var feedSearchResults: List<SearchResultItem>? = null
+    private var feedSearchResultItems: List<SearchResultItem>? = null
 
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
@@ -63,10 +63,10 @@ class FeedSearcher {
                 response: Response<SearchResult>
             ) {
                 val feedSearchResult: SearchResult? = response.body()
-                feedSearchResults = feedSearchResult?.items
+                feedSearchResultItems = feedSearchResult?.items
                 Log.d(TAG, "Response received!")
 
-                searchResultLiveData.value = feedSearchResults
+                searchResultLiveData.value = feedSearchResultItems
             }
         })
 

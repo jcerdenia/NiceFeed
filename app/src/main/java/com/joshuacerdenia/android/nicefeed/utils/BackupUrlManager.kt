@@ -2,9 +2,11 @@ package com.joshuacerdenia.android.nicefeed.utils
 
 import android.util.Log
 
-object BackupUrls {
+private const val TAG = "BackupUrls"
+private const val COUNTER_MAX = 4
 
-    private const val COUNTER_MAX = 4
+class BackupUrlManager {
+
     private var attemptCount = 0
 
     private var url: String? = null // Base URL
@@ -12,8 +14,8 @@ object BackupUrls {
     private var urlPlusRss: String? = null
     private var urlPlusRssXml: String? = null
 
-    fun get(): String? {
-        Log.d("FeedParser", "Backup URL tried, count: $attemptCount")
+    fun getUrl(): String? {
+        Log.d(TAG, "Backup URL tried, count: $attemptCount")
 
         return when (attemptCount) {
             0 -> url
@@ -29,7 +31,7 @@ object BackupUrls {
     }
 
     fun setBase(url: String?) {
-        BackupUrls.url = url
+        this.url = url
 
         if (url != null) {
             urlPlusFeed = "$url/feed"

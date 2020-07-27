@@ -2,31 +2,25 @@ package com.joshuacerdenia.android.nicefeed.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.FeedInfo
+import com.joshuacerdenia.android.nicefeed.data.model.FeedListItem
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.sortedByUnreadCount
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.list_item_feed.view.*
 
 private const val TAG = "FeedListFragment"
-private const val TYPE_ITEM = 0
-private const val TYPE_HEADER = 1
 
-class FeedListFragment: Fragment() {
+class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
 
     companion object {
         fun newInstance(): FeedListFragment {
@@ -34,21 +28,21 @@ class FeedListFragment: Fragment() {
         }
     }
 
-    private val feedListViewModel: FeedListViewModel by lazy {
+    val viewModel: FeedListViewModel by lazy {
         ViewModelProvider(this).get(FeedListViewModel::class.java)
     }
 
-    private lateinit var manageFeedsButton: Button
-    private lateinit var addFeedButton: Button
-    private lateinit var feedRecyclerView: RecyclerView
-    private var adapter: FeedAdapter = FeedAdapter()
-
+    private lateinit var manageButton: Button
+    private lateinit var addButton: Button
+    private lateinit var bottomDivider: View
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: FeedListAdapter
     private var callbacks: Callbacks? = null
 
     interface Callbacks {
         fun onManageFeedsSelected()
         fun onAddFeedSelected()
-        fun onFeedSelected(website: String)
+        fun onFeedSelected(currentFeedId: String?, newFeedId: String)
     }
 
     override fun onAttach(context: Context) {
@@ -61,19 +55,24 @@ class FeedListFragment: Fragment() {
         callbacks = null
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        adapter = FeedListAdapter(context, this, viewModel.currentFeedId)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_feed_list, container, false)
+        manageButton = view.findViewById(R.id.button_manage)
+        addButton = view.findViewById(R.id.button_add)
+        bottomDivider = view.findViewById(R.id.divider_bottom)
+        recyclerView = view.findViewById(R.id.recyclerView_feed)
 
-        manageFeedsButton = view.findViewById(R.id.manage_feeds)
-        addFeedButton = view.findViewById(R.id.add_feed)
-        feedRecyclerView = view.findViewById(R.id.feed_recycler_view)
-
-        feedRecyclerView.layoutManager = LinearLayoutManager(context)
-        feedRecyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = adapter
 
         return view
     }
@@ -81,146 +80,76 @@ class FeedListFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        manageFeedsButton.setOnClickListener {
+        manageButton.setOnClickListener {
             callbacks?.onManageFeedsSelected()
         }
 
-        addFeedButton.setOnClickListener {
+        addButton.setOnClickListener {
             callbacks?.onAddFeedSelected()
         }
 
-        feedListViewModel.feedListLiveData.observe(viewLifecycleOwner, Observer { feeds ->
-            // TODO: Sort feeds by title, date updated, etc. Also, get only needed data for UI
-            val arrangedList = arrangeFeedsAndCategories(feeds.sortedByUnreadCount())
+        /*
+        viewModel.feedListLiveData.observe(viewLifecycleOwner, Observer {
+            if (it.isNotEmpty()) {
+                manageButton.isEnabled = true
+                bottomDivider.visibility = View.VISIBLE
+            } else {
+                manageButton.isEnabled = false
+                bottomDivider.visibility = View.GONE
+            }
+
+            // TODO: Sort feeds by title, date updated, etc.
+            val arrangedList = arrangeFeedsAndCategories(it.sortedByUnreadCount())
+            adapter.submitList(arrangedList)
+        }) */
+
+        viewModel.feedsInfoLiveData.observe(viewLifecycleOwner, Observer {
+            if (it.isNotEmpty()) {
+                manageButton.isEnabled = true
+                bottomDivider.visibility = View.VISIBLE
+            } else {
+                manageButton.isEnabled = false
+                bottomDivider.visibility = View.GONE
+            }
+
+            val arrangedList = arrangeFeedsAndCategories(it.sortedByUnreadCount())
             adapter.submitList(arrangedList)
         })
     }
 
-    private fun arrangeFeedsAndCategories(feeds: List<Feed>): List<FeedAdapterItem> {
-        val categories = Utils.getCategories(feeds)
-        val arrangedList: MutableList<FeedAdapterItem> = mutableListOf()
+    private fun arrangeFeedsAndCategories(feeds: List<FeedInfo>): List<FeedListItem> {
+        viewModel.categories = getCategories(feeds)
+        val arrangedList: MutableList<FeedListItem> = mutableListOf()
 
-        for (category in categories) {
-            arrangedList.add(
-                FeedAdapterItem(
-                    category
-                )
-            )
+        for (category in viewModel.categories) {
+            arrangedList.add(FeedListItem(category))
 
             for (feed in feeds) {
                 if (feed.category == category) {
-                    arrangedList.add(
-                        FeedAdapterItem(
-                            feed
-                        )
-                    )
+                    arrangedList.add(FeedListItem(feed))
                 }
             }
         }
 
         return arrangedList
     }
-    
-    private inner class FeedAdapter : ListAdapter<FeedAdapterItem, RecyclerView.ViewHolder>(DiffCallback()) {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            return when (viewType) {
-                TYPE_ITEM -> {
-                    val view = layoutInflater.inflate(R.layout.list_item_feed, parent, false)
-                    FeedHolder(view)
-                }
-                TYPE_HEADER -> {
-                    val view = layoutInflater.inflate(R.layout.list_item_category, parent, false)
-                    CategoryHolder(view)
-                }
-                else -> throw IllegalArgumentException()
-            }
+    // TODO Fix later
+    private fun getCategories(feeds: List<FeedInfo>): List<String> {
+        val categories: MutableSet<String> = mutableSetOf()
+        for (feed in feeds) {
+            categories.add(feed.category)
         }
-
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            when (holder) {
-                is FeedHolder -> holder.bind(getItem(position).content as Feed)
-                is CategoryHolder -> holder.bind(getItem(position).content as String)
-            }
-        }
-
-        override fun getItemViewType(position: Int): Int {
-            return when (getItem(position).content) {
-                is Feed -> TYPE_ITEM
-                is String -> TYPE_HEADER
-                else -> throw IllegalArgumentException()
-            }
-        }
-
-        private inner class FeedHolder(view: View) : RecyclerView.ViewHolder(view),
-            View.OnClickListener, View.OnLongClickListener {
-
-            private var feed =
-                Feed()
-
-            val titleTextView: TextView = itemView.findViewById(R.id.title)
-            val unreadCount: TextView = itemView.findViewById(R.id.item_count)
-
-            init {
-                itemView.setOnClickListener(this)
-                itemView.setOnLongClickListener(this)
-            }
-
-            fun bind(feed: Feed) {
-                this.feed = feed
-
-                titleTextView.text = feed.title
-                unreadCount.text = if (feed.unreadCount > 0) {
-                    feed.unreadCount.toString()
-                } else {
-                    null
-                }
-
-                Picasso.get()
-                    .load(feed.imageUrl)
-                    .resize(24, 24)
-                    .placeholder(R.drawable.ic_rss_feed)
-                    .into(itemView.image)
-            }
-
-            override fun onClick(v: View) {
-                callbacks?.onFeedSelected(feed.website)
-            }
-
-            // TODO: Manage feeds (delete, edit, etc.)
-            override fun onLongClick(v: View?): Boolean {
-                feedListViewModel.isManagingFeeds = !feedListViewModel.isManagingFeeds
-                Log.d(TAG, "User is managing feeds: ${feedListViewModel.isManagingFeeds}")
-                return true
-            }
-        }
-
-        private inner class CategoryHolder(view: View) : RecyclerView.ViewHolder(view) {
-
-            val headerTextView: TextView = itemView.findViewById(R.id.category)
-
-            fun bind(category: String) {
-                headerTextView.text = category
-            }
-        }
+        return categories.toList().sorted()
     }
 
-    private inner class DiffCallback : DiffUtil.ItemCallback<FeedAdapterItem>() {
-
-        override fun areItemsTheSame(oldItem: FeedAdapterItem, newItem: FeedAdapterItem): Boolean {
-            return when {
-                oldItem.content is Feed && newItem.content is Feed ->
-                    oldItem.content.website == newItem.content.website
-                oldItem.content is String && newItem.content is String ->
-                    oldItem.content == newItem.content
-                else -> false
-            }
-        }
-
-        override fun areContentsTheSame(oldItem: FeedAdapterItem, newItem: FeedAdapterItem): Boolean {
-            return oldItem == newItem
-        }
+    fun setActiveSelection(feedId: String?) {
+        viewModel.currentFeedId = feedId
+        adapter.currentFeedId = feedId
+        recyclerView.adapter = adapter
     }
 
-    private data class FeedAdapterItem(val content: Any) // Can be a Feed item or Category header
+    override fun onItemClicked(feedId: String) {
+        callbacks?.onFeedSelected(viewModel.currentFeedId, feedId)
+    }
 }

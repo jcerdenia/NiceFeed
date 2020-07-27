@@ -16,7 +16,8 @@ const val EXTRA_FEED_WEBSITE = "com.joshuacerdenia.android.nicefeed.feed_website
 private const val EXTRA_FEED_SETTING = "com.joshuacerdenia.android.nicefeed.feed_setting"
 
 class FeedSettingActivity : AppCompatActivity(),
-    AddFeedFragment.Callbacks, ManageFeedsFragment.Callbacks {
+    AddFeedFragment.Callbacks,
+    ManageFeedsFragment.Callbacks {
 
     companion object {
         fun newIntent(packageContext: Context, command: Int): Intent {
@@ -87,12 +88,16 @@ class FeedSettingActivity : AppCompatActivity(),
         return true
     }
 
-    override fun onItemsSelected(count: Int) {
+    override fun onSelectedItemsChanged(count: Int) {
         val title = if (count > 0) {
             getString(R.string.number_selected, count)
         } else {
             getString(R.string.manage_feeds)
         }
         supportActionBar?.title = title
+    }
+
+    override fun onDoneManaging() {
+        finish()
     }
 }

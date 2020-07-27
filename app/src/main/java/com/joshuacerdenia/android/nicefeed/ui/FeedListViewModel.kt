@@ -6,8 +6,9 @@ import com.joshuacerdenia.android.nicefeed.data.Repository
 open class FeedListViewModel: ViewModel() {
 
     val repository = Repository.get()
-
     val feedListLiveData = repository.getFeeds()
+    val feedsInfoLiveData = repository.getFeedsInfo()
 
-    var isManagingFeeds = false
+    var currentFeedId: String? = null
+    var categories: List<String> = listOf()
 }

@@ -10,36 +10,24 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.utils.pathified
+import com.joshuacerdenia.android.nicefeed.utils.simplified
 
-private const val TAG = "FeedManagerAdapter"
+class FeedManagerAdapter(
+    private val listener: ItemCheckBoxListener,
+    private val selectedItems: List<Feed>
+) : ListAdapter<Feed, FeedManagerAdapter.FeedHolder>(DiffCallback()) {
 
-class FeedManagerAdapter(private val listener: ItemCheckBoxListener, private val selectedItems: List<Feed>)
-    : ListAdapter<Feed, FeedManagerAdapter.FeedHolder>(DiffCallback()) {
-
-    val checkBoxes = mutableListOf<CheckBox>()
+    private val checkBoxes = mutableSetOf<CheckBox>()
 
     interface ItemCheckBoxListener {
         fun onItemClicked(feed: Feed, isChecked: Boolean)
         fun onAllItemsChecked(isChecked: Boolean)
     }
 
-    fun onSelectAllChecked(isChecked: Boolean) {
-        if (isChecked) {
-            for (checkBox in checkBoxes) {
-                checkBox.isChecked = true
-                //listener.onAllItemsChecked(true)
-            }
-        } else {
-            for (checkBox in checkBoxes) {
-                checkBox.isChecked = false
-                //listener.onAllItemsChecked(false)
-            }
+    fun handleCheckBoxes(checkAll: Boolean) {
+        for (checkBox in checkBoxes) {
+            checkBox.isChecked = checkAll
         }
-    }
-
-    interface OnSelectAllCheckedListener {
-        fun onSelectAllChecked(isChecked: Boolean)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedHolder {
@@ -63,7 +51,7 @@ class FeedManagerAdapter(private val listener: ItemCheckBoxListener, private val
         private val categoryTextView: TextView = itemView.findViewById(R.id.feed_category)
 
         fun bind(feed: Feed, listener: ItemCheckBoxListener, isChecked: Boolean) {
-            websiteTextView.text = feed.website.pathified()
+            websiteTextView.text = feed.website.simplified()
             categoryTextView.text = feed.category
 
             titleCheckBox.apply {
@@ -71,12 +59,8 @@ class FeedManagerAdapter(private val listener: ItemCheckBoxListener, private val
                 this.isChecked = isChecked
                 checkBoxes.add(this)
 
-                setOnClickListener() {
-                    if (this.isChecked) {
-                        listener.onItemClicked(feed, true)
-                    } else {
-                        listener.onItemClicked(feed, false)
-                    }
+                setOnClickListener {
+                    listener.onItemClicked(feed, this.isChecked)
                 }
             }
         }
@@ -89,7 +73,7 @@ class FeedManagerAdapter(private val listener: ItemCheckBoxListener, private val
         }
 
         override fun areContentsTheSame(oldItem: Feed, newItem: Feed): Boolean {
-            return oldItem == newItem
+            return oldItem.category == newItem.category
         }
     }
 }

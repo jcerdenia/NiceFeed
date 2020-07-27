@@ -12,26 +12,33 @@ data class Entry(
     var title: String? = null,
     var description: String? = null,
     var author: String? = null,
-    var url: String? = null,
+    //var url: String? = null, // Probably not needed
     var date: Date? = null,
     var content: String? = null,
     var image: String? = null,
-    var audio: String? = null,
-    var video: String? = null,
+    //var audio: String? = null,
+    //var video: String? = null,
+    var isStarred: Boolean = false,
     var isRead: Boolean = false
-): Serializable {
+) : Serializable {
 
     fun isTheSameAs(entry: Entry): Boolean {
-        // Determines whether an entry's contents are the same, except for isRead property
-        return guid == entry.guid &&
-                title == entry.title &&
-                description == entry.description &&
-                author == entry.author &&
-                //url == entry.url &&
-                date == entry.date &&
-                content == entry.content &&
-                image == entry.image &&
-                audio == entry.audio &&
-                video == entry.video
+        // Compares new and existing versions of an entry, ignoring certain properties
+        val checklist = arrayOf(
+            (entry.guid == guid),
+            (entry.title == title),
+            (entry.description == description),
+            (entry.author == author),
+            (entry.date == date),
+            (entry.content == content),
+            (entry.image == image)
+        )
+
+        var count = 0
+        for (check in checklist) {
+            if (check) count += 1 else break
+        }
+
+        return count == checklist.size
     }
 }

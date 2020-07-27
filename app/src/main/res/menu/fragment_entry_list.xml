@@ -3,15 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_item_refresh"
+        android:id="@+id/menuItem_refresh"
         android:icon="@drawable/ic_refresh"
         android:title="@string/refresh"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/menu_item_delete_feed"
+        android:id="@+id/menuItem_about_feed"
+        android:title="@string/about_feed"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menuItem_sort_filter"
+        android:title="@string/sort_or_filter"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menuItem_mark_all"
+        android:title="@string/mark_all_as_read"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menuItem_star_all"
+        android:title="@string/star_all"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menuItem_visit_website"
+        android:title="@string/visit_website"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menuItem_delete_feed"
         android:icon="@drawable/ic_delete"
-        android:title="@string/delete_feed"
+        android:title="@string/remove_feed"
         app:showAsAction="never"/>
 
 </menu>

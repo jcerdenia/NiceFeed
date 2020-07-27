@@ -46,6 +46,56 @@
     <string name="feeds">Feeds</string>
     <string name="edit_category">Edit Category</string>
     <string name="number_selected">%d selected</string>
+    <string name="edit_category_dialog_message">Change will be applied to %s.</string>
+    <string name="category">Category</string>
+    <string name="select_feeds_to">Select feeds to %s.</string>
+    <string name="edit">edit</string>
+    <string name="delete">delete</string>
+    <string name="updated_feeds">Updated %s.</string>
+    <string name="category_assigned">Assigned category \'%1$s\' to %2$s.</string>
+    <string name="done">Done</string>
+    <string name="confirm_remove">Remove %s?</string>
+    <string name="confirm_remove_dialog_message">You can subscribe again later if you change your mind.</string>
+    <string name="Yes">Yes</string>
+    <string name="no">No</string>
+    <string name="feed">feed</string>
+    <string name="unsubscribe">Unsubscribe</string>
+    <string name="remove">remove</string>
+    <string name="remove_selected">Remove selected</string>
+    <string name="removed_feeds">Removed %s.</string>
+    <string name="sort_by">Sort by</string>
+    <string name="recently_added">Recently added</string>
+    <string name="recently_updated">Recently updated</string>
+    <string name="title">Title</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="entry_info">%1$s – %2$s</string>
+    <string name="view_in_browser">View in Browser</string>
+    <string name="star">Star</string>
+    <string name="unstar">Unstar</string>
+    <string name="subscriptions">Subscriptions</string>
+    <string name="mark_as_read">Mark as Read</string>
+    <string name="read">Read</string>
+    <string name="mark_as_unread">Mark as Unread</string>
+    <string name="filter">Filter</string>
+    <string name="Filter">Filter</string>
+    <string name="none_all_entries">None (All entries)</string>
+    <string name="unread">Unread</string>
+    <string name="starred">Starred</string>
+    <string name="date_published">Date published</string>
+    <string name="unread_on_top">Unread on top</string>
+    <string name="sort_or_filter">Sort/Filter</string>
+    <string name="remove_feed">Remove Feed</string>
+    <string name="mark_all_as_read">Mark All as Read</string>
+    <string name="star_all">Star All</string>
+    <string name="about_feed">About Feed</string>
+    <string name="save">Save</string>
+    <string name="category_">Category: %s</string>
+    <string name="visit_website">Visit Website</string>
+    <string name="mark_all_as_unread">Mark All as Unread</string>
+    <string name="subscriptions_n">Subscriptions (%d)</string>
+    <string name="filtered">Filtered</string>
+    <string name="filter_notice">%s filtered from view.</string>
+    <string name="unstar_all">Unstar All</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>
@@ -56,7 +106,7 @@
         <item quantity="other">%d new entries</item>
     </plurals>
     <plurals name="numberOfFeeds">
-        <item quantity="one">feed</item>
+        <item quantity="one">one feed</item>
         <item quantity="other">%d feeds</item>
     </plurals>
 

@@ -65,16 +65,9 @@ open class AddFeedFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_add_feed, container, false)
-
-        searchView = view.findViewById(
-            R.id.search_view
-        )
-        enterUrlEditText = view.findViewById(
-            R.id.enter_url
-        )
-        submitButton = view.findViewById(
-            R.id.submit_button
-        )
+        searchView = view.findViewById(R.id.search_view)
+        enterUrlEditText = view.findViewById(R.id.enter_url)
+        submitButton = view.findViewById(R.id.submit_button)
         progressBar = view.findViewById(R.id.progress_bar)
 
         return view

@@ -1,37 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <WebView
+        android:id="@+id/webView_entry"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:layout_height="match_parent" />
 
-        <!-- RUDIMENTARY ENTRY LAYOUT; CHANGE LATER -->
-
-        <TextView
-            android:id="@+id/entry_title"
-            style="@style/TextAppearance.AppCompat.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Title" />
-
-        <TextView
-            android:id="@+id/entry_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Date" />
-
-        <TextView
-            android:id="@+id/entry_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            tools:text="Content" />
-
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>

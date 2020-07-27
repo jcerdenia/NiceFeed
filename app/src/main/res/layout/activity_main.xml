@@ -10,26 +10,16 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!--
         <LinearLayout
             android:id="@+id/container_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
+            android:orientation="vertical"/>
+            -->
             <include
                 android:id="@+id/toolbar"
                 layout="@layout/toolbar" />
-
-            <!--
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                local:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                android:background="?attr/colorPrimary" />
-                -->
-
-        </LinearLayout>
 
         <com.google.android.material.navigation.NavigationView
             android:layout_width="match_parent"

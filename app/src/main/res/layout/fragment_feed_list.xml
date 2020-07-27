@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/left_drawer"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/background_light">
@@ -14,12 +12,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/feeds"
+            android:text="@string/subscriptions"
             android:padding="16dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"/>
 
         <Button
-            android:id="@+id/manage_feeds"
+            android:id="@+id/button_manage"
             style="@style/DrawerMenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,7 +25,7 @@
             android:text="@string/manage" />
 
         <Button
-            android:id="@+id/add_feed"
+            android:id="@+id/button_add"
             style="@style/DrawerMenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,16 +35,18 @@
         <View style="@style/Divider"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/feed_recycler_view"
+            android:id="@+id/recyclerView_feed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:choiceMode="singleChoice"
             android:nestedScrollingEnabled="false"/>
 
-        <View style="@style/Divider"/>
+        <View
+            android:id="@+id/divider_bottom"
+            style="@style/Divider"/>
 
         <Button
-            android:id="@+id/settings"
+            android:id="@+id/button_settings"
             style="@style/DrawerMenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
             android:text="@string/settings" />
 
         <Button
-            android:id="@+id/about"
+            android:id="@+id/button_about"
             style="@style/DrawerMenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

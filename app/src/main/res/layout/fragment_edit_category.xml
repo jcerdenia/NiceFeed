@@ -1,34 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
+<LinearLayout
+    android:id="@+id/edit_category_dialog"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minWidth="320dp"
-    android:padding="24dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:orientation="vertical">
+
     <TextView
-        android:id="@+id/dialog_title"
-        style="@style/TextAppearance.AppCompat.Title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:drawableStart="@drawable/ic_edit_light"
-        android:drawablePadding="8dp"
-        tools:text="Edit Category" />
+        android:drawablePadding="16dp"
+        android:text="@string/edit_category" />
 
-    <AutoCompleteTextView
-        android:id="@+id/category_edit_text"
+    <TextView
+        android:id="@+id/dialog_message"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:layout_marginVertical="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:inputType="textShortMessage|textCapSentences"
-        android:maxLines="1"
-        android:hint="@string/set_category" />
+        android:layout_gravity="center"
+        tools:text="Message"/>
+
+        <AutoCompleteTextView
+            android:id="@+id/category_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textShortMessage|textCapSentences"
+            android:maxLines="1"
+            android:hint="@string/category" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="8dp"
         android:gravity="end"
         android:orientation="horizontal">
 
