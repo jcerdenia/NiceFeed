@@ -19,16 +19,13 @@ import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment
-import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.sortedByCategory
 import com.joshuacerdenia.android.nicefeed.utils.sortedByTitle
-import com.joshuacerdenia.android.nicefeed.utils.sortedByUpdated
 
 private const val TAG = "ManageFeedsFragment"
 private const val ACTION_REMOVE = 0
 private const val ACTION_EDIT = 1
 const val SORT_BY_ADDED = 0
-const val SORT_BY_UPDATED = 1
 const val SORT_BY_CATEGORY = 2
 const val SORT_BY_TITLE = 3
 
@@ -54,11 +51,12 @@ class ManageFeedsFragment: Fragment(),
     private lateinit var selectAllCheckBox: CheckBox
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: FeedManagerAdapter
-    private var categories = listOf<String>()
+    private val handler = Handler()
+    private var categories = arrayOf<String>()
     private var callbacks: Callbacks? = null
 
     interface Callbacks {
-        fun onSelectedItemsChanged(count: Int)
+        fun onManagingItemsChanged(count: Int)
         fun onDoneManaging()
     }
 
@@ -98,20 +96,18 @@ class ManageFeedsFragment: Fragment(),
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_manage_feeds, container, false)
-
         nestedScrollView = view.findViewById(R.id.nested_scroll_view)
         progressBar = view.findViewById(R.id.progress_bar)
         selectAllCheckBox = view.findViewById(R.id.select_all_checkbox)
         recyclerView = view.findViewById(R.id.feed_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
         attachAdapter()
-
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        callbacks?.onSelectedItemsChanged(viewModel.selectedItems.size)
+        callbacks?.onManagingItemsChanged(viewModel.selectedItems.size)
         progressBar.visibility = View.VISIBLE
 
         selectAllCheckBox.setOnClickListener { (it as CheckBox)
@@ -122,10 +118,10 @@ class ManageFeedsFragment: Fragment(),
             }
 
             adapter.handleCheckBoxes(it.isChecked)
-            callbacks?.onSelectedItemsChanged(viewModel.selectedItems.size)
+            callbacks?.onManagingItemsChanged(viewModel.selectedItems.size)
         }
 
-        observeFeedListLiveData()
+        observeFeedListLiveData() // TODO: Only retrieve needed data
     }
 
     private fun attachAdapter() {
@@ -137,7 +133,7 @@ class ManageFeedsFragment: Fragment(),
             UserPreferences.getFeedManagerSortPref(it)
         } ?: SORT_BY_ADDED
 
-        viewModel.feedListLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.feedsLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 selectAllCheckBox.visibility = if (it.size > 1) {
                     View.VISIBLE
@@ -145,12 +141,20 @@ class ManageFeedsFragment: Fragment(),
                     View.GONE
                 }
 
-                categories = Utils.getCategories(it)
+                categories = getCategories(it)
                 val sortedFeeds = sortFeeds(it, sortBy)
                 adapter.submitList(sortedFeeds)
                 progressBar.visibility = View.GONE
             }
         })
+    }
+
+    private fun getCategories(feeds: List<Feed>): Array<String> {
+        val categories: MutableSet<String> = mutableSetOf()
+        for (feed in feeds) {
+            categories.add(feed.category)
+        }
+        return categories.toTypedArray()
     }
 
     private fun handleSortFeeds(): Boolean {
@@ -167,7 +171,7 @@ class ManageFeedsFragment: Fragment(),
 
     private fun sortFeeds(feeds: List<Feed>, sortBy: Int): List<Feed> {
         return when (sortBy) {
-            SORT_BY_UPDATED -> feeds.sortedByUpdated()
+            //SORT_BY_UPDATED -> feeds.sortedByUpdated()
             SORT_BY_CATEGORY -> feeds.sortedByCategory()
             SORT_BY_TITLE -> feeds.sortedByTitle()
             else -> feeds.reversed() // Default
@@ -185,8 +189,12 @@ class ManageFeedsFragment: Fragment(),
                 setTargetFragment(fragment, 0)
                 show(fragment.requireFragmentManager(),"unsubscribe")
             }
-        } else showNothingSelectedNotice(ACTION_REMOVE)
-        return true
+
+            return true
+        } else {
+            showNothingSelectedNotice(ACTION_REMOVE)
+            return false
+        }
     }
 
     override fun onRemoveConfirmed(count: Int) {
@@ -196,7 +204,8 @@ class ManageFeedsFragment: Fragment(),
         }
 
         resetSelection()
-        viewModel.deleteFeedsWithEntries(websites)
+        //viewModel.deleteFeedsWithEntries(websites)
+        viewModel.deleteFeedsAndEntriesByIds(websites)
         showFeedsRemovedNotice(count)
     }
 
@@ -244,8 +253,7 @@ class ManageFeedsFragment: Fragment(),
         adapter.notifyDataSetChanged()
         resetSelection()
 
-        // Crude solution to Snackbar jumping; wait until keyboard is fully hidden
-        val handler = Handler()
+        // Crude solution to Snackbar jumping: wait until keyboard is fully hidden
         handler.postDelayed({
             showFeedsCategorizedNotice(category, updatedFeeds.size)
         }, 400)
@@ -291,7 +299,7 @@ class ManageFeedsFragment: Fragment(),
 
     private fun resetSelection() {
         viewModel.selectedItems.clear()
-        callbacks?.onSelectedItemsChanged(viewModel.selectedItems.size)
+        callbacks?.onManagingItemsChanged(viewModel.selectedItems.size)
         selectAllCheckBox.isChecked = false
         adapter.handleCheckBoxes(false)
     }
@@ -305,7 +313,7 @@ class ManageFeedsFragment: Fragment(),
             selectAllCheckBox.isChecked = false
         }
 
-        callbacks?.onSelectedItemsChanged(viewModel.selectedItems.size)
+        callbacks?.onManagingItemsChanged(viewModel.selectedItems.size)
     }
 
     override fun onAllItemsChecked(isChecked: Boolean) {

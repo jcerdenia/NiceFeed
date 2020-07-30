@@ -1,30 +1,36 @@
 package com.joshuacerdenia.android.nicefeed.data.model
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.io.Serializable
 import java.util.*
 
-@Entity
+@Entity(
+    tableName = "entries",
+    foreignKeys = [ForeignKey(
+        entity = Feed::class,
+        parentColumns = ["website"],
+        childColumns = ["website"],
+        onDelete = ForeignKey.CASCADE
+    )]
+)
 data class Entry(
-    @PrimaryKey var guid: String = "",
-    var website: String? = null, // associates Entry with a particular Feed
-    var title: String? = null,
-    var description: String? = null,
-    var author: String? = null,
-    //var url: String? = null, // Probably not needed
-    var date: Date? = null,
-    var content: String? = null,
-    var image: String? = null,
-    //var audio: String? = null,
-    //var video: String? = null,
+    @PrimaryKey val guid: String, // Doubles as URL
+    val website: String, // associates Entry with a particular Feed
+    val title: String,
+    val description: String?,
+    val author: String?,
+    val date: Date?,
+    val content: String?,
+    val image: String?,
     var isStarred: Boolean = false,
     var isRead: Boolean = false
 ) : Serializable {
 
     fun isTheSameAs(entry: Entry): Boolean {
         // Compares new and existing versions of an entry, ignoring certain properties
-        val checklist = arrayOf(
+        val checklist = listOf(
             (entry.guid == guid),
             (entry.title == title),
             (entry.description == description),

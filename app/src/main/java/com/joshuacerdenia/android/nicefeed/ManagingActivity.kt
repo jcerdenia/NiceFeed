@@ -7,21 +7,19 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import com.joshuacerdenia.android.nicefeed.ui.AddFeedFragment
-import com.joshuacerdenia.android.nicefeed.ui.FeedSearchFragment
-import com.joshuacerdenia.android.nicefeed.ui.ManageFeedsFragment
+import com.joshuacerdenia.android.nicefeed.ui.*
 import java.lang.IllegalArgumentException
 
-const val EXTRA_FEED_WEBSITE = "com.joshuacerdenia.android.nicefeed.feed_website"
+const val EXTRA_FEED_ID = "com.joshuacerdenia.android.nicefeed.feed_website"
 private const val EXTRA_FEED_SETTING = "com.joshuacerdenia.android.nicefeed.feed_setting"
 
-class FeedSettingActivity : AppCompatActivity(),
-    AddFeedFragment.Callbacks,
+class ManagingActivity : AppCompatActivity(),
+    FeedAddingFragment.Callbacks,
     ManageFeedsFragment.Callbacks {
 
     companion object {
         fun newIntent(packageContext: Context, command: Int): Intent {
-            return Intent(packageContext, FeedSettingActivity::class.java).apply {
+            return Intent(packageContext, ManagingActivity::class.java).apply {
                 putExtra(EXTRA_FEED_SETTING, command)
             }
         }
@@ -31,33 +29,19 @@ class FeedSettingActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_feed_setting)
-
+        setContentView(R.layout.activity_managing)
         toolbar = findViewById(R.id.toolbar)
 
         this.setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
-
-        if (currentFragment == null) {
-            val fragment: Fragment
-            val title: String
-
-            when (intent.getIntExtra(EXTRA_FEED_SETTING, MANAGE_FEEDS)) {
-                ADD_FEEDS -> {
-                    title = getString(R.string.add_feed)
-                    fragment = AddFeedFragment.newInstance()
-                }
-                MANAGE_FEEDS -> {
-                    title = getString(R.string.manage_feeds)
-                    fragment = ManageFeedsFragment.newInstance()
-                }
-                // TODO: Add others
+        if (getCurrentFragment() == null) {
+            val fragment = when (intent.getIntExtra(EXTRA_FEED_SETTING, ADD_FEEDS)) {
+                ADD_FEEDS -> AddFeedsFragment.newInstance()
+                MANAGE_FEEDS -> ManageFeedsFragment.newInstance()
+                // Space here for more
                 else -> throw IllegalArgumentException()
             }
-
-            //supportActionBar?.title = title
 
             supportFragmentManager
                 .beginTransaction()
@@ -66,9 +50,22 @@ class FeedSettingActivity : AppCompatActivity(),
         }
     }
 
-    override fun onNewFeedAdded(website: String) {
+    override fun onStart() {
+        super.onStart()
+        when (getCurrentFragment()) {
+            is FeedAddingFragment -> supportActionBar?.title = getString(R.string.add_feeds)
+            // Space here for more
+            else -> return
+        }
+    }
+
+    private fun getCurrentFragment(): Fragment? {
+        return supportFragmentManager.findFragmentById(R.id.fragment_container)
+    }
+
+    override fun onNewFeedAdded(feedId: String) {
         val data = Intent().apply {
-            putExtra(EXTRA_FEED_WEBSITE, website)
+            putExtra(EXTRA_FEED_ID, feedId)
         }
         setResult(Activity.RESULT_OK, data)
         finish()
@@ -83,21 +80,20 @@ class FeedSettingActivity : AppCompatActivity(),
             .commit()
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
-    }
-
-    override fun onSelectedItemsChanged(count: Int) {
-        val title = if (count > 0) {
+    override fun onManagingItemsChanged(count: Int) {
+        supportActionBar?.title = if (count > 0) {
             getString(R.string.number_selected, count)
         } else {
             getString(R.string.manage_feeds)
         }
-        supportActionBar?.title = title
     }
 
     override fun onDoneManaging() {
         finish()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 }

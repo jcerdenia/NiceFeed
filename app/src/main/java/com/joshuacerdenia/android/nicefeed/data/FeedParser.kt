@@ -16,12 +16,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 private const val TAG = "FeedParser"
-private const val MAX_ENTRIES = 500 // Arbitrary
 
 class FeedParser: ViewModel() {
 
     private val parser = Parser.Builder().build()
-    private val converter = ChannelConverter()
+    private val mapper = ChannelMapper()
     private val backupUrlManager = BackupUrlManager()
 
     private val _feedRequestLiveData = MutableLiveData<FeedWithEntries>()
@@ -43,19 +42,18 @@ class FeedParser: ViewModel() {
         viewModelScope.launch {
             try {
                 val channel = parser.getChannel(mainUrl)
-                val feedWithEntries = converter.makeFeedWithEntries(mainUrl, channel)
+                val feedWithEntries = mapper.makeFeedWithEntries(mainUrl, channel)
 
                 _feedRequestLiveData.postValue(
-                    if (feedWithEntries.feed.website.isNotEmpty()) {
+                    if (feedWithEntries.entries.isNotEmpty()) {
                         feedWithEntries
                     } else {
-                        null
+                        null // No point loading it if it's empty
                     }
                 )
 
             } catch (e: Exception) {
                 e.printStackTrace()
-
                 // If the initial request fails, try backup URL in different variations
                 if (backupUrlManager.getUrl() != null) {
                     requestFeed(backupUrlManager.getUrl()!!) // Try the next URL
@@ -68,41 +66,41 @@ class FeedParser: ViewModel() {
         }
     }
 
-    private class ChannelConverter {
-        // Converts RSS Parser library data classes to my own
+    private class ChannelMapper {
+        // Maps RSS Parser library data classes to my own
+
+        val maxEntries = 500 // Arbitrary
 
         fun makeFeedWithEntries(url: String, channel: Channel): FeedWithEntries {
-            val entries = mapEntries(channel)
+            val entries = mapEntries(channel, url)
             val feed = Feed(
-                website = channel.link ?: "",
+                website = channel.link ?: url,
                 url = url, // The url that successfully completes the request is applied
-                title = channel.title,
+                title = channel.title ?: "",
                 description = channel.description,
-                updated = parseDate(channel.lastBuildDate),
+                //updated = parseDate(channel.lastBuildDate),
                 imageUrl = channel.image?.url,
                 unreadCount = entries.size
             )
 
-            Log.d(TAG, "${entries.size} entries obtained")
+            Log.d(TAG, "${entries.size} entries retrieved")
             return FeedWithEntries(feed, entries)
         }
 
-        private fun mapEntries(channel: Channel): List<Entry> {
+        private fun mapEntries(channel: Channel, url: String): List<Entry> {
             val entries = mutableListOf<Entry>()
             for (article in channel.articles) {
-                if (entries.size < MAX_ENTRIES) {
-                    val entry = Entry()
-                    entry.apply {
-                        guid = article.guid ?: article.link ?: ""
-                        //this.url = article.link // Possibly not needed?
-                        website = channel.link
-                        title = article.title
-                        description = article.description
-                        author = article.author ?: channel.title
-                        content = article.content
-                        date = parseDate(article.pubDate)
+                if (entries.size < maxEntries) {
+                    val entry = Entry(
+                        guid = article.guid ?: article.link ?: "",
+                        website = channel.link ?: url,
+                        title = article.title ?: "",
+                        description = article.description,
+                        author = article.author ?: channel.title,
+                        content = article.content,
+                        date = parseDate(article.pubDate),
                         image = article.image
-                    }
+                    )
                     entries.add(entry)
                 } else {
                     break

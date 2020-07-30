@@ -1,6 +1,7 @@
 package com.joshuacerdenia.android.nicefeed.ui
 
 import android.content.Context
+import android.graphics.Color
 import android.view.Gravity.START
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +13,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.model.FeedInfo
-import com.joshuacerdenia.android.nicefeed.data.model.FeedListItem
+import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.FeedMenuItem
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.list_item_feed.view.*
 
@@ -23,11 +24,18 @@ private const val TYPE_HEADER = 1
 class FeedListAdapter(
     private val context: Context?,
     private val listener: OnItemClickListener,
-    var currentFeedId: String?
-) : ListAdapter<FeedListItem, RecyclerView.ViewHolder>(DiffCallback()) {
+    private var activeFeedId: String? = null
+) : ListAdapter<FeedMenuItem, RecyclerView.ViewHolder>(DiffCallback()) {
+
+    private val arranger = MenuArranger(this)
+    var categories = arrayOf<String>()
 
     interface OnItemClickListener {
-        fun onItemClicked(feedId: String)
+        fun onItemClicked(feed: Feed)
+    }
+
+    fun submitFeeds(feeds: List<Feed>) {
+        arranger.arrangeFeedsAndCategories(feeds)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -55,8 +63,8 @@ class FeedListAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is FeedHolder -> {
-                val isActive = currentFeedId == (getItem(position).content as FeedInfo).website
-                holder.bind(getItem(position).content as FeedInfo, isActive)
+                val isActive = activeFeedId == (getItem(position).content as Feed).website
+                holder.bind(getItem(position).content as Feed, isActive)
             }
             is CategoryHolder -> holder.bind(getItem(position).content as String)
         }
@@ -64,7 +72,7 @@ class FeedListAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position).content) {
-            is FeedInfo -> TYPE_ITEM
+            is Feed -> TYPE_ITEM
             is String -> TYPE_HEADER
             else -> throw IllegalArgumentException()
         }
@@ -76,7 +84,7 @@ class FeedListAdapter(
         private val listener: OnItemClickListener
     ) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
-        private lateinit var feed: FeedInfo
+        private lateinit var feed: Feed
         val itemContainer: ConstraintLayout = itemView.findViewById(R.id.item_container)
         val titleTextView: TextView = itemView.findViewById(R.id.title)
         val unreadCount: TextView = itemView.findViewById(R.id.item_count)
@@ -85,22 +93,20 @@ class FeedListAdapter(
             itemView.setOnClickListener(this)
         }
 
-        fun bind(feed: FeedInfo, isActive: Boolean) {
+        fun bind(feed: Feed, isActive: Boolean) {
             this.feed = feed
-
             if (isActive) {
-                // Change color
                 context?.let {
                     itemContainer.setBackgroundColor(getColor(context, R.color.colorSelect))
                 }
-            }
+            } //else {
+                //itemContainer.setBackgroundColor(Color.TRANSPARENT)
+            //}
 
             titleTextView.text = feed.title
             unreadCount.text = if (feed.unreadCount > 0) {
                 feed.unreadCount.toString()
-            } else {
-                null
-            }
+            } else null
 
             Picasso.get()
                 .load(feed.imageUrl)
@@ -111,8 +117,8 @@ class FeedListAdapter(
         }
 
         override fun onClick(v: View) {
-            currentFeedId = feed.website
-            listener.onItemClicked(feed.website)
+            activeFeedId = feed.website
+            listener.onItemClicked(feed)
         }
     }
 
@@ -125,11 +131,11 @@ class FeedListAdapter(
         }
     }
 
-    private class DiffCallback : DiffUtil.ItemCallback<FeedListItem>() {
+    private class DiffCallback : DiffUtil.ItemCallback<FeedMenuItem>() {
 
-        override fun areItemsTheSame(oldItem: FeedListItem, newItem: FeedListItem): Boolean {
+        override fun areItemsTheSame(oldItem: FeedMenuItem, newItem: FeedMenuItem): Boolean {
             return when {
-                oldItem.content is FeedInfo && newItem.content is FeedInfo -> {
+                oldItem.content is Feed && newItem.content is Feed -> {
                     oldItem.content.website == newItem.content.website
                 }
                 oldItem.content is String && newItem.content is String -> {
@@ -139,8 +145,37 @@ class FeedListAdapter(
             }
         }
 
-        override fun areContentsTheSame(oldItem: FeedListItem, newItem: FeedListItem): Boolean {
+        override fun areContentsTheSame(oldItem: FeedMenuItem, newItem: FeedMenuItem): Boolean {
             return oldItem == newItem
+        }
+    }
+
+    private class MenuArranger(private val adapter: FeedListAdapter) {
+
+        fun arrangeFeedsAndCategories(feeds: List<Feed>) {
+            val categories = getOrderedCategories(feeds)
+            val arrangedMenu: MutableList<FeedMenuItem> = mutableListOf()
+
+            for (category in categories) {
+                arrangedMenu.add(FeedMenuItem(category))
+
+                for (feed in feeds) {
+                    if (feed.category == category) {
+                        arrangedMenu.add(FeedMenuItem(feed))
+                    }
+                }
+            }
+
+            adapter.submitList(arrangedMenu)
+            adapter.categories = categories.toTypedArray()
+        }
+
+        private fun getOrderedCategories(feeds: List<Feed>): List<String> {
+            val categories: MutableSet<String> = mutableSetOf()
+            for (feed in feeds) {
+                categories.add(feed.category)
+            }
+            return categories.toList().sorted() // Sort alphabetically
         }
     }
 }

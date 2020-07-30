@@ -35,14 +35,6 @@
                 android:text="@string/recently_added"/>
 
             <RadioButton
-                android:id="@+id/radioButton_updated"
-                android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="@string/recently_updated"/>
-
-            <RadioButton
                 android:id="@+id/radioButton_category"
                 android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                 android:layout_width="match_parent"

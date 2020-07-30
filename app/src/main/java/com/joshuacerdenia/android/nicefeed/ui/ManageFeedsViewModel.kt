@@ -8,14 +8,11 @@ class ManageFeedsViewModel: FeedListViewModel() {
 
     var selectedItems = mutableListOf<Feed>()
 
-    val entryListLiveData = repository.getEntries()
-
     fun updateFeeds(feeds: List<Feed>) {
         repository.updateFeeds(feeds)
     }
 
-    fun deleteFeedsWithEntries(websites: List<String>) {
-        repository.deleteFeedsByWebsite(websites)
-        repository.deleteEntriesByWebsite(websites)
+    fun deleteFeedsAndEntriesByIds(ids: List<String>) {
+        repository.deleteFeedsAndEntriesByIds(ids)
     }
 }

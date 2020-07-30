@@ -21,14 +21,14 @@ private const val ARG_CATEGORIES = "ARG_CATEGORIES"
 class EditCategoryFragment : BottomSheetDialogFragment() {
 
     companion object {
-        fun newInstance(categories: List<String>,
+        fun newInstance(categories: Array<String>,
                         title: String?,
                         count: Int = 1
         ): EditCategoryFragment {
             val args = Bundle().apply {
                 putInt(ARG_COUNT, count)
                 putString(ARG_TITLE, title)
-                putStringArray(ARG_CATEGORIES, categories.toTypedArray())
+                putStringArray(ARG_CATEGORIES, categories)
             }
             return EditCategoryFragment()
                 .apply {

@@ -15,8 +15,8 @@
 
         <ImageView
             android:id="@+id/imageView_feed"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/ic_rss_feed"
             app:layout_constraintBottom_toTopOf="@+id/textView_description"
             app:layout_constraintEnd_toStartOf="@+id/textView_title"

@@ -1,12 +1,12 @@
 package com.joshuacerdenia.android.nicefeed
 
 import android.app.Application
-import com.joshuacerdenia.android.nicefeed.data.Repository
+import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 
 class NiceFeedApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Repository.initialize(this)
+        NiceFeedRepository.initialize(this)
     }
 }

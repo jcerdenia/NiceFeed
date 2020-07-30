@@ -2,6 +2,7 @@ package com.joshuacerdenia.android.nicefeed.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
+import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.data.model.FeedInfo
-import com.joshuacerdenia.android.nicefeed.data.model.FeedListItem
-import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.sortedByUnreadCount
 
 private const val TAG = "FeedListFragment"
@@ -23,12 +22,18 @@ private const val TAG = "FeedListFragment"
 class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
 
     companion object {
-        fun newInstance(): FeedListFragment {
-            return FeedListFragment()
+        private const val ARG_ACTIVE_FEED_ID = "ARG_ACTIVE_FEED_ID"
+
+        fun newInstance(activeFeedId: String?): FeedListFragment {
+            return FeedListFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_ACTIVE_FEED_ID, activeFeedId)
+                }
+            }
         }
     }
 
-    val viewModel: FeedListViewModel by lazy {
+    private val viewModel: FeedListViewModel by lazy {
         ViewModelProvider(this).get(FeedListViewModel::class.java)
     }
 
@@ -36,13 +41,15 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
     private lateinit var addButton: Button
     private lateinit var bottomDivider: View
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: FeedListAdapter
+    lateinit var adapter: FeedListAdapter
+    private val handler = Handler()
     private var callbacks: Callbacks? = null
 
     interface Callbacks {
         fun onManageFeedsSelected()
         fun onAddFeedSelected()
-        fun onFeedSelected(currentFeedId: String?, newFeedId: String)
+        fun onFeedSelected(feed: Feed, activeFeedId: String?)
+        fun onNoFeedsToLoad()
     }
 
     override fun onAttach(context: Context) {
@@ -57,7 +64,11 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = FeedListAdapter(context, this, viewModel.currentFeedId)
+        if (viewModel.activeFeedId == null) {
+            viewModel.activeFeedId = arguments?.getString(ARG_ACTIVE_FEED_ID)
+        }
+
+        adapter = FeedListAdapter(context, this, viewModel.activeFeedId)
     }
 
     override fun onCreateView(
@@ -70,10 +81,8 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
         addButton = view.findViewById(R.id.button_add)
         bottomDivider = view.findViewById(R.id.divider_bottom)
         recyclerView = view.findViewById(R.id.recyclerView_feed)
-
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
-
         return view
     }
 
@@ -88,68 +97,50 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
             callbacks?.onAddFeedSelected()
         }
 
-        /*
-        viewModel.feedListLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.feedsLiveData.observe(viewLifecycleOwner, Observer {
             if (it.isNotEmpty()) {
                 manageButton.isEnabled = true
                 bottomDivider.visibility = View.VISIBLE
+
+                if (viewModel.isInitialLoading) {
+                    handleInitialLoading(it)
+                    viewModel.isInitialLoading = false
+                }
+
             } else {
                 manageButton.isEnabled = false
                 bottomDivider.visibility = View.GONE
+                callbacks?.onNoFeedsToLoad()
             }
 
-            // TODO: Sort feeds by title, date updated, etc.
-            val arrangedList = arrangeFeedsAndCategories(it.sortedByUnreadCount())
-            adapter.submitList(arrangedList)
-        }) */
-
-        viewModel.feedsInfoLiveData.observe(viewLifecycleOwner, Observer {
-            if (it.isNotEmpty()) {
-                manageButton.isEnabled = true
-                bottomDivider.visibility = View.VISIBLE
-            } else {
-                manageButton.isEnabled = false
-                bottomDivider.visibility = View.GONE
-            }
-
-            val arrangedList = arrangeFeedsAndCategories(it.sortedByUnreadCount())
-            adapter.submitList(arrangedList)
+            adapter.submitFeeds(it.sortedByUnreadCount())
         })
     }
 
-    private fun arrangeFeedsAndCategories(feeds: List<FeedInfo>): List<FeedListItem> {
-        viewModel.categories = getCategories(feeds)
-        val arrangedList: MutableList<FeedListItem> = mutableListOf()
-
-        for (category in viewModel.categories) {
-            arrangedList.add(FeedListItem(category))
-
-            for (feed in feeds) {
-                if (feed.category == category) {
-                    arrangedList.add(FeedListItem(feed))
-                }
+    private fun handleInitialLoading(feeds: List<Feed>) {
+        for (feed in feeds) {
+            if (viewModel.activeFeedId == feed.website) {
+                callbacks?.onFeedSelected(feed, null)
+                return
             }
         }
 
-        return arrangedList
+        callbacks?.onNoFeedsToLoad()
     }
 
-    // TODO Fix later
-    private fun getCategories(feeds: List<FeedInfo>): List<String> {
-        val categories: MutableSet<String> = mutableSetOf()
-        for (feed in feeds) {
-            categories.add(feed.category)
+    override fun onItemClicked(feed: Feed) {
+        callbacks?.onFeedSelected(feed, viewModel.activeFeedId)
+        viewModel.activeFeedId = feed.website
+
+        handler.postDelayed({
+            recyclerView.adapter = adapter
+        }, 500)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (context != null) {
+            viewModel.activeFeedId?.let { UserPreferences.saveFeedId(context!!, it) }
         }
-        return categories.toList().sorted()
-    }
-
-    fun setActiveSelection(feedId: String?) {
-        viewModel.currentFeedId = feedId
-        adapter.currentFeedId = feedId
-        recyclerView.adapter = adapter
-    }
-
-    override fun onItemClicked(feedId: String) {
-        callbacks?.onFeedSelected(viewModel.currentFeedId, feedId)
     }
 }

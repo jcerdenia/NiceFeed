@@ -109,12 +109,6 @@ class EntryFragment: Fragment() {
         webView.loadData(formatter.getHtml(), MIME_TYPE, ENCODING)
     }
 
-    override fun onStart() {
-        super.onStart()
-        entry.isRead = true
-        viewModel.updateEntry(entry)
-    }
-
     private fun handleStar(item: MenuItem): Boolean {
         entry.isStarred = !entry.isStarred
         setStarOptionItem(item)
@@ -142,5 +136,12 @@ class EntryFragment: Fragment() {
 
     fun scrollToTop() {
         webView.scrollTo(0, 0)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        entry.isRead = true
+        viewModel.updateEntry(entry)
+        //viewModel.updateFeedUnreadCountById()
     }
 }

@@ -25,7 +25,7 @@ class SortFilterEntriesFragment: BottomSheetDialogFragment() {
     }
 
     interface Callbacks {
-        fun onSortFilterSubmitted()
+        fun onSortFilterConfirmed()
     }
 
     private lateinit var sorterRadioGroup: RadioGroup
@@ -90,7 +90,7 @@ class SortFilterEntriesFragment: BottomSheetDialogFragment() {
                 UserPreferences.saveEntriesFilterPref(context, filter)
             }
 
-            targetFragment?.let { (it as Callbacks).onSortFilterSubmitted() }
+            targetFragment?.let { (it as Callbacks).onSortFilterConfirmed() }
             dismiss()
         }
     }

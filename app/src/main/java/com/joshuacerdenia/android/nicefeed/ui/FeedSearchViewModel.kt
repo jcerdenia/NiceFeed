@@ -1,12 +1,11 @@
 package com.joshuacerdenia.android.nicefeed.ui
 
-import android.widget.ProgressBar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 
-class FeedSearchViewModel: AddFeedViewModel() {
+class FeedSearchViewModel: AddFeedsViewModel() {
 
     var newQuery: String = ""
     var initialQueryIsMade = false

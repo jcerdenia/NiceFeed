@@ -1,5 +1,6 @@
 package com.joshuacerdenia.android.nicefeed.utils
 
+import android.util.Log
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
@@ -7,31 +8,67 @@ import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 /* Compares recently requested data from the web with current data saved locally;
 Outputs which entries to add, update, and delete; as well as updated feed data, if any */
 
-class RefreshManager(private val listener: OnRefreshedListener) {
+private const val TAG = "RefreshHelper"
 
-    var currentFeed: Feed? = null
+class RefreshHelper(
+    private val listener: OnRefreshedListener,
+    var currentFeed: Feed?
+) {
+
     var currentEntries = listOf<Entry>()
         get() = field.sortedByDatePublished()
 
     interface OnRefreshedListener {
-        fun onCurrentEntriesUpdated()
-        fun onRefreshedFeed(feed: Feed)
-        fun onRefreshedEntries(
-            toSave: List<Entry>,
+        fun onCurrentEntriesChanged()
+        fun onFeedNeedsRefresh(feed: Feed)
+        fun onEntriesNeedRefresh(
+            toAdd: List<Entry>,
             toUpdate: List<Entry>,
             toDelete: List<Entry>
         )
     }
 
-    fun submitCurrent(current: FeedWithEntries) {
-        currentFeed = current.feed
-        currentEntries = current.entries
-        listener.onCurrentEntriesUpdated()
+    fun submitInitialData(entries: List<Entry>) {
+        currentEntries = entries
+        listener.onCurrentEntriesChanged()
     }
 
-    fun submitNew(new: FeedWithEntries) {
-        handleFeed(new.feed)
-        handleNewEntries(new.entries)
+    fun submitNewData(feed: Feed, entries: List<Entry>) {
+        handleFeed(feed)
+        handleNewEntries(entries)
+    }
+
+    private fun handleNewEntries(newEntries: List<Entry>) {
+        val newEntryIds = getEntryIds(newEntries)
+        val currentEntryIds = getEntryIds(currentEntries)
+
+        val entriesToAdd = mutableListOf<Entry>()
+        val entriesToUpdate = mutableListOf<Entry>()
+        val entriesToDelete = mutableListOf<Entry>()
+
+        for (entry in newEntries) {
+            if (!isAddedAndUnchanged(entry, currentEntries)) {
+                if (currentEntryIds.contains(entry.guid)) {
+                    // i.e., if an old version of the entry exists
+                    val currentItemIndex = currentEntryIds.indexOf(entry.guid)
+                    entry.isStarred = currentEntries[currentItemIndex].isStarred
+                    entriesToUpdate.add(entry)
+                } else {
+                    entriesToAdd.add(entry)
+                }
+            }
+        }
+
+        for (entry in currentEntries) {
+            if (!newEntryIds.contains(entry.guid) && !entry.isStarred) {
+                entriesToDelete.add(entry)
+            }
+        }
+
+        if (entriesToAdd.size + entriesToUpdate.size + entriesToDelete.size > 0) {
+            // i.e., if entries are changed at all
+            listener.onEntriesNeedRefresh(entriesToAdd, entriesToUpdate, entriesToDelete)
+        }
     }
 
     private fun handleFeed(feed: Feed) {
@@ -40,42 +77,12 @@ class RefreshManager(private val listener: OnRefreshedListener) {
             feed.unreadCount = it.unreadCount
         }
 
-        if (feed != currentFeed) {
-            listener.onRefreshedFeed(feed)
+        if (feed !== currentFeed) {
+            listener.onFeedNeedsRefresh(feed)
         }
     }
 
-    private fun handleNewEntries(newEntries: List<Entry>) {
-        val newEntriesByGuid = getEntriesByGuid(newEntries)
-        val currentEntriesByGuid = getEntriesByGuid(currentEntries)
-
-        val entriesToSave = mutableListOf<Entry>()
-        val entriesToUpdate = mutableListOf<Entry>()
-        val entriesToDelete = mutableListOf<Entry>()
-
-        for (entry in newEntries) {
-            if (!isAddedAndUnchanged(entry, currentEntries)) {
-                if (currentEntriesByGuid.contains(entry.guid)) {
-                    // i.e., if an old version of the entry exists
-                    val currentItemIndex = currentEntriesByGuid.indexOf(entry.guid)
-                    entry.isStarred = currentEntries[currentItemIndex].isStarred
-                    entriesToUpdate.add(entry)
-                } else {
-                    entriesToSave.add(entry)
-                }
-            }
-        }
-
-        for (entry in currentEntries) {
-            if (!newEntriesByGuid.contains(entry.guid) && !entry.isStarred) {
-                entriesToDelete.add(entry)
-            }
-        }
-
-        listener.onRefreshedEntries(entriesToSave, entriesToUpdate, entriesToDelete)
-    }
-
-    private fun getEntriesByGuid(entries: List<Entry>): List<String> {
+    private fun getEntryIds(entries: List<Entry>): List<String> {
         val entriesByGuid = mutableListOf<String>()
         for (entry in entries) {
             entriesByGuid.add(entry.guid)
@@ -85,7 +92,7 @@ class RefreshManager(private val listener: OnRefreshedListener) {
     }
 
     private fun isAddedAndUnchanged(entry: Entry, currentEntries: List<Entry>): Boolean {
-        // Checks a new entry against all current entries to see if the content is the same
+        // Check a new entry against all current entries to see if the content is the same
         var isAddedAndUnchanged = false
         for (currentEntry in currentEntries) {
             if (entry.isTheSameAs(currentEntry)) {

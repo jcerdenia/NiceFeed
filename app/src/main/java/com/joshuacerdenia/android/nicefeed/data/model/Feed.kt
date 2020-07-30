@@ -3,16 +3,15 @@ package com.joshuacerdenia.android.nicefeed.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
-import java.util.*
 
-@Entity
+@Entity(tableName = "feeds")
 data class Feed(
-    @PrimaryKey var website: String = "", // Feed ID
-    var url: String? = null,
-    var title: String? = null,
-    var description: String? = null,
-    var updated: Date? = null,
-    var imageUrl: String? = null,
+    @PrimaryKey val website: String, // aka feed ID
+    val url: String,
+    val title: String,
+    val description: String? = null,
+    //val updated: Date? = null,
+    val imageUrl: String? = null,
     var category: String = "Uncategorized",
-    var unreadCount: Int = 0
+    var unreadCount: Int
 ): Serializable

@@ -41,16 +41,22 @@ class FeedManagerAdapter(
 
     override fun onBindViewHolder(holder: FeedHolder, position: Int) {
         val itemIsChecked = selectedItems.contains(getItem(position))
-        holder.bind(getItem(position), listener, itemIsChecked)
+        holder.bind(getItem(position), itemIsChecked)
     }
 
-    inner class FeedHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class FeedHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
+        private lateinit var feed: Feed
         private val titleCheckBox: CheckBox = itemView.findViewById(R.id.feed_title_checkbox)
         private val websiteTextView: TextView = itemView.findViewById(R.id.feed_website)
         private val categoryTextView: TextView = itemView.findViewById(R.id.feed_category)
 
-        fun bind(feed: Feed, listener: ItemCheckBoxListener, isChecked: Boolean) {
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        fun bind(feed: Feed, isChecked: Boolean) {
+            this.feed = feed
             websiteTextView.text = feed.website.simplified()
             categoryTextView.text = feed.category
 
@@ -63,6 +69,11 @@ class FeedManagerAdapter(
                     listener.onItemClicked(feed, this.isChecked)
                 }
             }
+        }
+
+        override fun onClick(v: View?) {
+            titleCheckBox.isChecked = !titleCheckBox.isChecked
+            listener.onItemClicked(feed, titleCheckBox.isChecked)
         }
     }
 

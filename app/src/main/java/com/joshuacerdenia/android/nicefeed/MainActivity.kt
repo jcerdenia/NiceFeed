@@ -11,9 +11,11 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
+import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.ui.EntryFragment
 import com.joshuacerdenia.android.nicefeed.ui.EntryListFragment
 import com.joshuacerdenia.android.nicefeed.ui.FeedListFragment
+import com.joshuacerdenia.android.nicefeed.ui.LoadingScreenFragment
 import com.joshuacerdenia.android.nicefeed.utils.simplified
 import java.text.DateFormat.*
 import java.util.*
@@ -30,11 +32,12 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toolbar: Toolbar
+    private val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        drawerLayout = findViewById(R.id.drawer_layout)
+        drawerLayout = findViewById(R.id.drawerLayout)
         toolbar = findViewById(R.id.toolbar)
 
         this.setSupportActionBar(toolbar)
@@ -42,12 +45,11 @@ class MainActivity : AppCompatActivity(),
         toolbar.setNavigationIcon(R.drawable.ic_menu)
 
         if (getMainFragment() == null) {
-            val feedId = UserPreferences.getSavedFeedId(this)
-            val mainFragment = EntryListFragment.newInstance(feedId)
-            val drawerFragment = FeedListFragment.newInstance()
+            val activeFeedId = UserPreferences.getSavedFeedId(this)
+            val mainFragment = LoadingScreenFragment.newInstance()
+            val drawerFragment = FeedListFragment.newInstance(activeFeedId)
 
-            supportFragmentManager
-                .beginTransaction()
+            supportFragmentManager.beginTransaction()
                 .add(R.id.main_fragment_container, mainFragment)
                 .add(R.id.drawer_fragment_container, drawerFragment)
                 .commit()
@@ -68,11 +70,22 @@ class MainActivity : AppCompatActivity(),
             setNavigationOnClickListener {
                 when (getMainFragment()) {
                     is EntryFragment -> onBackPressed()
-                    else -> { // Default
-                        (getMainFragment() as EntryListFragment).updateUnreadEntriesCount()
-                        drawerLayout.openDrawer(GravityCompat.START, true)
-                    }
+                    else -> drawerLayout.openDrawer(GravityCompat.START, true)
                 }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != Activity.RESULT_OK) {
+            return
+        } else if (requestCode == REQUEST_CODE_ADD_FEED) {
+            val feedId = data?.getStringExtra(EXTRA_FEED_ID)
+            if (feedId != null) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.drawer_fragment_container, FeedListFragment.newInstance(feedId))
+                    .commit()
             }
         }
     }
@@ -87,51 +100,35 @@ class MainActivity : AppCompatActivity(),
 
     private fun replaceMainFragment(newFragment: Fragment, addToBackStack: Boolean) {
         if (addToBackStack) {
-            supportFragmentManager
-                .beginTransaction()
+            supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment_container, newFragment)
                 .addToBackStack(null)
                 .commit()
         } else {
-            supportFragmentManager
-                .beginTransaction()
+            supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment_container, newFragment)
                 .commit()
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode != Activity.RESULT_OK) {
-            return
-        } else if (requestCode == REQUEST_CODE_ADD_FEED) {
-            val website = data?.getStringExtra(EXTRA_FEED_WEBSITE)
-            if (website != null) {
-                onFeedSelected(null, website)
-            }
-        }
-    }
-
     override fun onManageFeedsSelected() {
-        val intent = FeedSettingActivity.newIntent(this@MainActivity, MANAGE_FEEDS)
+        val intent = ManagingActivity.newIntent(this@MainActivity, MANAGE_FEEDS)
         startActivity(intent)
     }
 
     override fun onAddFeedSelected() {
-        val intent = FeedSettingActivity.newIntent(this@MainActivity, ADD_FEEDS)
+        val intent = ManagingActivity.newIntent(this@MainActivity, ADD_FEEDS)
         startActivityForResult(intent, REQUEST_CODE_ADD_FEED)
     }
 
-    override fun onFeedSelected(currentFeedId: String?, newFeedId: String) {
+    override fun onFeedSelected(feed: Feed, activeFeedId: String?) {
         drawerLayout.closeDrawers()
 
-        if (currentFeedId != newFeedId) {
-            val newFragment = EntryListFragment.newInstance(newFeedId)
-            val handler = Handler()
+        if (feed.website != activeFeedId) {
+            val newFragment = EntryListFragment.newInstance(feed)
             handler.postDelayed({
                 replaceMainFragment(newFragment, false)
-            }, 250)
+            }, 350)
         }
     }
 
@@ -144,26 +141,28 @@ class MainActivity : AppCompatActivity(),
 
         toolbar.setNavigationIcon(R.drawable.ic_menu)
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED)
+    }
 
-        val handler = Handler()
-        handler.postDelayed({
-            (getDrawerFragment() as FeedListFragment?)?.setActiveSelection(feedId)
-        }, 500)
+    override fun onCheckingForUpdates(letContinue: Boolean, title: String?) {
+        if (letContinue) {
+            supportActionBar?.title = getString(R.string.updating)
+        } else {
+            title?.let { supportActionBar?.title = it }
+        }
+    }
+
+    override fun onNoFeedsToLoad() {
+        onFeedRemoved()
     }
 
     override fun onFeedRemoved() {
+        replaceMainFragment(EntryListFragment.newInstance(null), false)
         supportActionBar?.title = getString(R.string.app_name)
-        (getDrawerFragment() as FeedListFragment?)?.setActiveSelection(null)
-        drawerLayout.openDrawer(GravityCompat.START, true)
     }
 
     override fun onEntrySelected(entry: Entry) {
         val newFragment = EntryFragment.newInstance(entry)
         replaceMainFragment(newFragment, true)
-    }
-
-    override fun onCategoriesNeeded(): List<String> {
-        return (getDrawerFragment() as FeedListFragment).viewModel.categories
     }
 
     override fun onEntryLoaded(date: Date?, website: String?) {
@@ -177,6 +176,10 @@ class MainActivity : AppCompatActivity(),
         }
 
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+    }
+
+    override fun onCategoriesNeeded(): Array<String> {
+        return (getDrawerFragment() as FeedListFragment).adapter.categories
     }
 
     override fun onSupportNavigateUp(): Boolean {

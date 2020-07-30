@@ -17,9 +17,9 @@
     <string name="search_feeds...">Search feeds…</string>
     <string name="key_words">Enter keywords…</string>
     <string name="search">Search</string>
-    <string name="feed_added">\'%s\' added to feeds.</string>
-    <string name="delete_feed">Delete Feed</string>
+    <string name="feed_added_message">Subscribed to %s.</string>
     <string name="feed_removed">Removed \'%s\' from feeds.</string>
+    <string name="delete_feed">Delete Feed</string>
     <string name="loading">Loading…</string>
     <string name="failed_to_get_feed">Failed to get feed. Please try again.</string>
     <string name="failed_to_connect">Failed to connect to feed. Please retry later or enter the address manually.</string>
@@ -96,6 +96,8 @@
     <string name="filtered">Filtered</string>
     <string name="filter_notice">%s filtered from view.</string>
     <string name="unstar_all">Unstar All</string>
+    <string name="add_feeds">Add Feeds</string>
+    <string name="updating">Updating…</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>
