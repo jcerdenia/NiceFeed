@@ -14,7 +14,7 @@ interface FeedsAndEntriesDao {
     fun getAllFeeds(): LiveData<List<Feed>>
 
     @Query("SELECT website, title, category FROM feeds")
-    fun getAllFeedsInfo(): LiveData<List<FeedMinimal>>
+    fun getAllFeedsMinimal(): LiveData<List<FeedMinimal>>
 
     @Query("SELECT website FROM feeds")
     fun getAllFeedIds(): LiveData<List<String>>
@@ -24,6 +24,9 @@ interface FeedsAndEntriesDao {
 
     @Query("SELECT DISTINCT category FROM feeds")
     fun getCategories(): LiveData<List<String>>
+
+    @Query("SELECT * FROM feeds WHERE website = :id")
+    fun getFeedById(id: String): LiveData<Feed>
 
     @Transaction
     @Query("SELECT * FROM feeds WHERE website = :feedId")
@@ -53,8 +56,8 @@ interface FeedsAndEntriesDao {
         deleteEntriesByFeedIds(ids)
     }
 
-    @Query("UPDATE feeds SET category = :category WHERE website = :id")
-    fun updateFeedCategoryBy(vararg id: String, category: String)
+    @Query("UPDATE feeds SET category = :category WHERE website IN (:ids)")
+    fun updateCategoryByFeedIds(ids: Array<String>, category: String)
 
     @Query("UPDATE entries SET isRead = :isRead WHERE guid = :guid")
     fun updateEntryIsRead(vararg guid: String, isRead: Boolean)
@@ -115,6 +118,9 @@ interface FeedsAndEntriesDao {
 
     @Update
     fun updateEntries(entries: List<Entry>)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun addFeeds(feeds: List<Feed>)
 
     @Insert//(onConflict = OnConflictStrategy.REPLACE)
     fun addEntry(entry: Entry)

@@ -38,6 +38,10 @@ class FeedListAdapter(
         arranger.arrangeFeedsAndCategories(feeds)
     }
 
+    fun overrideActiveFeedId(feedId: String?) {
+        activeFeedId = feedId
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_ITEM -> {
@@ -99,9 +103,9 @@ class FeedListAdapter(
                 context?.let {
                     itemContainer.setBackgroundColor(getColor(context, R.color.colorSelect))
                 }
-            } //else {
-                //itemContainer.setBackgroundColor(Color.TRANSPARENT)
-            //}
+            } else {
+                itemContainer.setBackgroundColor(Color.TRANSPARENT)
+            }
 
             titleTextView.text = feed.title
             unreadCount.text = if (feed.unreadCount > 0) {

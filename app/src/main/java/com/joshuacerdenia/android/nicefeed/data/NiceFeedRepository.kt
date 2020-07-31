@@ -40,11 +40,13 @@ class NiceFeedRepository private constructor(context: Context) {
 
     fun getCategories(): LiveData<List<String>> = dao.getCategories()
 
+    fun getFeedById(id: String): LiveData<Feed> = dao.getFeedById(id)
+
     fun getFeeds(): LiveData<List<Feed>> = dao.getAllFeeds()
 
     fun getFeedIds(): LiveData<List<String>> = dao.getAllFeedIds()
 
-    fun getFeedsInfo(): LiveData<List<FeedMinimal>> = dao.getAllFeedsInfo()
+    fun getAllFeedsMinimal(): LiveData<List<FeedMinimal>> = dao.getAllFeedsMinimal()
 
     fun getFeedUnreadCount(feedId: String): LiveData<Int> = dao.getFeedUnreadCount(feedId)
 
@@ -55,6 +57,12 @@ class NiceFeedRepository private constructor(context: Context) {
     fun getEntriesByFeedId(feedId: String): LiveData<List<Entry>> = dao.getEntriesByFeedId(feedId)
 
     fun getEntry(guid: String): LiveData<Entry?> = dao.getEntry(guid)
+
+    fun updateCategoryByFeedIds(ids: Array<String>, category: String) {
+        executor.execute {
+            dao.updateCategoryByFeedIds(ids, category = category)
+        }
+    }
 
     fun updateFeed(feed: Feed) {
         executor.execute {
@@ -89,6 +97,12 @@ class NiceFeedRepository private constructor(context: Context) {
     fun addFeed(feed: Feed) {
         executor.execute {
             dao.addFeed(feed)
+        }
+    }
+
+    fun addFeeds(feeds: List<Feed>) {
+        executor.execute {
+            dao.addFeeds(feeds)
         }
     }
 

@@ -9,13 +9,14 @@ import android.widget.RadioGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
-import com.joshuacerdenia.android.nicefeed.ui.SORT_BY_ADDED
-import com.joshuacerdenia.android.nicefeed.ui.SORT_BY_CATEGORY
-import com.joshuacerdenia.android.nicefeed.ui.SORT_BY_TITLE
 
 class SortFeedManagerFragment: BottomSheetDialogFragment() {
 
     companion object {
+        const val SORT_BY_ADDED = 0
+        const val SORT_BY_CATEGORY = 1
+        const val SORT_BY_TITLE = 2
+        
         fun newInstance(): SortFeedManagerFragment {
             return SortFeedManagerFragment()
         }
@@ -49,7 +50,6 @@ class SortFeedManagerFragment: BottomSheetDialogFragment() {
 
         radioGroupSortFeeds.apply {
             check(when (currentSelection) {
-                //SORT_BY_UPDATED -> R.id.radioButton_updated
                 SORT_BY_CATEGORY -> R.id.radioButton_category
                 SORT_BY_TITLE -> R.id.radioButton_title
                 else -> R.id.radioButton_added // Default
@@ -57,7 +57,6 @@ class SortFeedManagerFragment: BottomSheetDialogFragment() {
 
             setOnCheckedChangeListener { _, checkedId ->
                 val selection: Int = when (checkedId) {
-                    //R.id.radioButton_updated -> SORT_BY_UPDATED
                     R.id.radioButton_category -> SORT_BY_CATEGORY
                     R.id.radioButton_title -> SORT_BY_TITLE
                     else -> SORT_BY_ADDED // Default

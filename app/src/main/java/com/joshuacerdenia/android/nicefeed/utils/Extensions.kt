@@ -6,13 +6,11 @@ import com.joshuacerdenia.android.nicefeed.data.model.FeedMinimal
 
 fun Int.lastDigit() = this.rem(10)
 
-fun List<Feed>.sortedByTitle() = this.sortedBy { it.title }
+fun List<FeedMinimal>.sortedByTitle() = this.sortedBy { it.title }
 
-fun List<Feed>.sortedByCategory() = this.sortedBy { it.category }
+fun List<FeedMinimal>.sortedByCategory() = this.sortedBy { it.category }
 
 fun List<Feed>.sortedByUnreadCount() = this.sortedByDescending { it.unreadCount }
-
-//fun List<Feed>.sortedByUpdated() = this.sortedByDescending { it.updated }
 
 fun List<Entry>.sortedByDatePublished() = this.sortedByDescending { it.date}
 

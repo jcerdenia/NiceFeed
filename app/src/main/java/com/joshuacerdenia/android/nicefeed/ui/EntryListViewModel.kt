@@ -19,23 +19,27 @@ class EntryListViewModel: ViewModel() {
     private val feedIdLiveData = MutableLiveData<String>()
 
     var refreshHasBeenManaged = false
-    var hasAutoRefreshed = false
+    var shouldAutoRefresh = true
 
     val requestResultLiveData: LiveData<FeedWithEntries>? = parser.feedRequestLiveData
     val feedWithEntriesLiveData: LiveData<FeedWithEntries> = Transformations.switchMap(feedIdLiveData) {
         repository.getFeedWithEntriesById(it)
     }
 
+    val feedLiveData: LiveData<Feed> = Transformations.switchMap(feedIdLiveData) {
+        repository.getFeedById(it)
+    }
+
     val entriesLiveData: LiveData<List<Entry>> = Transformations.switchMap(feedIdLiveData) {
         repository.getEntriesByFeedId(it)
     }
 
-    fun requestFeed(url: String) {
+    fun requestFeedUpdate(url: String) {
         refreshHasBeenManaged = false
         parser.requestFeed(url)
     }
 
-    fun getFeedWithEntriesById(feedId: String) {
+    fun getFeedAndEntriesById(feedId: String) {
         feedIdLiveData.value = feedId
     }
 

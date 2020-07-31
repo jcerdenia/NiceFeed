@@ -9,6 +9,7 @@ import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.utils.BackupUrlManager
+import com.joshuacerdenia.android.nicefeed.utils.simplified
 import com.prof.rssparser.Channel
 import com.prof.rssparser.Parser
 import kotlinx.coroutines.launch
@@ -27,7 +28,7 @@ class FeedParser: ViewModel() {
     val feedRequestLiveData: LiveData<FeedWithEntries>?
         get() = _feedRequestLiveData
 
-    fun requestFeed(vararg url: String) {
+    fun requestFeed(vararg url: String, feedId: String? = null) {
         // Automatically makes several requests with different possible URLs
 
         val mainUrl = url.first()
@@ -45,10 +46,10 @@ class FeedParser: ViewModel() {
                 val feedWithEntries = mapper.makeFeedWithEntries(mainUrl, channel)
 
                 _feedRequestLiveData.postValue(
-                    if (feedWithEntries.entries.isNotEmpty()) {
-                        feedWithEntries
+                    if (feedWithEntries.feed.website.isNotEmpty()) {
+                        feedWithEntries // Just to be absolutely safe
                     } else {
-                        null // No point loading it if it's empty
+                        null
                     }
                 )
 
@@ -74,11 +75,10 @@ class FeedParser: ViewModel() {
         fun makeFeedWithEntries(url: String, channel: Channel): FeedWithEntries {
             val entries = mapEntries(channel, url)
             val feed = Feed(
-                website = channel.link ?: url,
                 url = url, // The url that successfully completes the request is applied
-                title = channel.title ?: "",
+                website = channel.link.simplified() ?: url.simplified().toString(),
+                title = channel.title ?: channel.link.simplified().toString() ?: url.simplified().toString(),
                 description = channel.description,
-                //updated = parseDate(channel.lastBuildDate),
                 imageUrl = channel.image?.url,
                 unreadCount = entries.size
             )
@@ -93,7 +93,7 @@ class FeedParser: ViewModel() {
                 if (entries.size < maxEntries) {
                     val entry = Entry(
                         guid = article.guid ?: article.link ?: "",
-                        website = channel.link ?: url,
+                        feedUrl = url, // Associates entry with a Feed
                         title = article.title ?: "",
                         description = article.description,
                         author = article.author ?: channel.title,

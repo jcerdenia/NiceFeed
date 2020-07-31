@@ -42,10 +42,12 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
     // Internet
-    implementation 'com.prof.rssparser:rssparser:3.0.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    // RSS
+    implementation 'com.prof.rssparser:rssparser:3.0.0'
+    implementation 'com.rometools:rome-opml:1.12.2'
     // Images
     implementation 'com.squareup.picasso:picasso:2.71828'
     // Database

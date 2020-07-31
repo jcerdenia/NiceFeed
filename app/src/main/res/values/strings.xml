@@ -18,7 +18,7 @@
     <string name="key_words">Enter keywords…</string>
     <string name="search">Search</string>
     <string name="feed_added_message">Subscribed to %s.</string>
-    <string name="feed_removed">Removed \'%s\' from feeds.</string>
+    <string name="feed_removed_message">Unsubscribed from %s.</string>
     <string name="delete_feed">Delete Feed</string>
     <string name="loading">Loading…</string>
     <string name="failed_to_get_feed">Failed to get feed. Please try again.</string>
@@ -98,6 +98,8 @@
     <string name="unstar_all">Unstar All</string>
     <string name="add_feeds">Add Feeds</string>
     <string name="updating">Updating…</string>
+    <string name="share">Share</string>
+    <string name="import_opml">Import OPML</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

@@ -13,8 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.utils.sortedByUnreadCount
 
 private const val TAG = "FeedListFragment"
@@ -31,6 +31,10 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
                 }
             }
         }
+
+        fun newInstance(): FeedListFragment {
+            return FeedListFragment()
+        }
     }
 
     private val viewModel: FeedListViewModel by lazy {
@@ -39,6 +43,8 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
 
     private lateinit var manageButton: Button
     private lateinit var addButton: Button
+    private lateinit var settingsButton: Button
+    private lateinit var aboutButton: Button
     private lateinit var bottomDivider: View
     private lateinit var recyclerView: RecyclerView
     lateinit var adapter: FeedListAdapter
@@ -48,7 +54,7 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
     interface Callbacks {
         fun onManageFeedsSelected()
         fun onAddFeedSelected()
-        fun onFeedSelected(feed: Feed, activeFeedId: String?)
+        fun onFeedSelected(feedIdPair: FeedIdPair, activeFeedId: String?)
         fun onNoFeedsToLoad()
     }
 
@@ -79,6 +85,8 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
         val view = inflater.inflate(R.layout.fragment_feed_list, container, false)
         manageButton = view.findViewById(R.id.button_manage)
         addButton = view.findViewById(R.id.button_add)
+        settingsButton = view.findViewById(R.id.button_settings)
+        aboutButton = view.findViewById(R.id.button_about)
         bottomDivider = view.findViewById(R.id.divider_bottom)
         recyclerView = view.findViewById(R.id.recyclerView_feed)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -95,6 +103,14 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
 
         addButton.setOnClickListener {
             callbacks?.onAddFeedSelected()
+        }
+
+        settingsButton.setOnClickListener {
+            // TODO Settings
+        }
+
+        aboutButton.setOnClickListener {
+            // TODO About Page
         }
 
         viewModel.feedsLiveData.observe(viewLifecycleOwner, Observer {
@@ -120,7 +136,7 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
     private fun handleInitialLoading(feeds: List<Feed>) {
         for (feed in feeds) {
             if (viewModel.activeFeedId == feed.website) {
-                callbacks?.onFeedSelected(feed, null)
+                callbacks?.onFeedSelected(FeedIdPair(feed.website, feed.title), null)
                 return
             }
         }
@@ -129,18 +145,17 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
     }
 
     override fun onItemClicked(feed: Feed) {
-        callbacks?.onFeedSelected(feed, viewModel.activeFeedId)
+        callbacks?.onFeedSelected(FeedIdPair(feed.website, feed.title), viewModel.activeFeedId)
         viewModel.activeFeedId = feed.website
 
         handler.postDelayed({
-            recyclerView.adapter = adapter
+                recyclerView.adapter = adapter
         }, 500)
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (context != null) {
-            viewModel.activeFeedId?.let { UserPreferences.saveFeedId(context!!, it) }
-        }
+    fun forceUpdateActiveFeedId(feedId: String?) {
+        viewModel.activeFeedId = feedId
+        adapter.overrideActiveFeedId(feedId)
+        recyclerView.adapter = adapter
     }
 }

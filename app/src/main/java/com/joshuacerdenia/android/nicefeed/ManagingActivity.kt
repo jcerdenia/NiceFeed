@@ -3,15 +3,21 @@ package com.joshuacerdenia.android.nicefeed
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.ui.*
+import com.joshuacerdenia.android.nicefeed.utils.OpmlUtil
 import java.lang.IllegalArgumentException
 
-const val EXTRA_FEED_ID = "com.joshuacerdenia.android.nicefeed.feed_website"
-private const val EXTRA_FEED_SETTING = "com.joshuacerdenia.android.nicefeed.feed_setting"
+private const val TAG = "ManagingActivity"
+const val EXTRA_FEED_ID_PAIR = "com.joshuacerdenia.android.nicefeed.feed_id_pair"
+private const val EXTRA_MANAGING = "com.joshuacerdenia.android.nicefeed.managing"
+private const val REQUEST_CODE_READ_OPML = 0
 
 class ManagingActivity : AppCompatActivity(),
     FeedAddingFragment.Callbacks,
@@ -20,7 +26,7 @@ class ManagingActivity : AppCompatActivity(),
     companion object {
         fun newIntent(packageContext: Context, command: Int): Intent {
             return Intent(packageContext, ManagingActivity::class.java).apply {
-                putExtra(EXTRA_FEED_SETTING, command)
+                putExtra(EXTRA_MANAGING, command)
             }
         }
     }
@@ -36,15 +42,14 @@ class ManagingActivity : AppCompatActivity(),
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (getCurrentFragment() == null) {
-            val fragment = when (intent.getIntExtra(EXTRA_FEED_SETTING, ADD_FEEDS)) {
+            val fragment = when (intent.getIntExtra(EXTRA_MANAGING, ADD_FEEDS)) {
                 ADD_FEEDS -> AddFeedsFragment.newInstance()
                 MANAGE_FEEDS -> ManageFeedsFragment.newInstance()
                 // Space here for more
                 else -> throw IllegalArgumentException()
             }
 
-            supportFragmentManager
-                .beginTransaction()
+            supportFragmentManager.beginTransaction()
                 .add(R.id.fragment_container, fragment)
                 .commit()
         }
@@ -59,13 +64,40 @@ class ManagingActivity : AppCompatActivity(),
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d(TAG, "onActivityResult() called")
+
+        if (resultCode != Activity.RESULT_OK) {
+            return
+        } else if (requestCode == REQUEST_CODE_READ_OPML) {
+            data?.data?.also {
+                (getCurrentFragment() as AddFeedsFragment?)?.submitUriForImport(it)
+            }
+        }
+    }
+
     private fun getCurrentFragment(): Fragment? {
         return supportFragmentManager.findFragmentById(R.id.fragment_container)
     }
 
-    override fun onNewFeedAdded(feedId: String) {
+    private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = true) {
+        if (addToBackStack) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit()
+        } else {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit()
+        }
+
+    }
+
+    override fun onNewFeedAdded(feedIdPair: FeedIdPair) {
         val data = Intent().apply {
-            putExtra(EXTRA_FEED_ID, feedId)
+            putExtra(EXTRA_FEED_ID_PAIR, feedIdPair)
         }
         setResult(Activity.RESULT_OK, data)
         finish()
@@ -73,19 +105,29 @@ class ManagingActivity : AppCompatActivity(),
 
     override fun onQuerySubmitted(query: String) {
         val fragment = FeedSearchFragment.newInstance(query)
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
-            .commit()
+        replaceFragment(fragment)
     }
 
-    override fun onManagingItemsChanged(count: Int) {
+    override fun onImportOpmlSelected() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            type = "*/*"
+            addCategory(Intent.CATEGORY_OPENABLE)
+        }
+        startActivityForResult(intent, REQUEST_CODE_READ_OPML)
+    }
+
+    override fun onFeedsBeingManagedChanged(count: Int) {
         supportActionBar?.title = if (count > 0) {
             getString(R.string.number_selected, count)
         } else {
             getString(R.string.manage_feeds)
         }
+    }
+
+    override fun onAddFeedsSelected() {
+        val fragment = AddFeedsFragment.newInstance()
+        replaceFragment(fragment)
+        supportActionBar?.title = getString(R.string.add_feeds)
     }
 
     override fun onDoneManaging() {

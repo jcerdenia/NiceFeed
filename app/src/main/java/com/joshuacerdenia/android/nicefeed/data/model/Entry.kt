@@ -6,18 +6,17 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 import java.util.*
 
-@Entity(
-    tableName = "entries",
+@Entity(tableName = "entries")
+    /*
     foreignKeys = [ForeignKey(
         entity = Feed::class,
         parentColumns = ["website"],
         childColumns = ["website"],
         onDelete = ForeignKey.CASCADE
-    )]
-)
+    )]*/
 data class Entry(
     @PrimaryKey val guid: String, // Doubles as URL
-    val website: String, // associates Entry with a particular Feed
+    val feedUrl: String, // associates Entry with a particular Feed
     val title: String,
     val description: String?,
     val author: String?,

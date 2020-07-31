@@ -2,7 +2,7 @@ package com.joshuacerdenia.android.nicefeed.data.local
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.joshuacerdenia.android.nicefeed.ui.SORT_BY_ADDED
+import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment.Companion.SORT_BY_ADDED
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFilterEntriesFragment.Companion.FILTER_ALL
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFilterEntriesFragment.Companion.SORT_BY_PUBLISHED
 

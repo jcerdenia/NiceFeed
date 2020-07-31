@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.joshuacerdenia.android.nicefeed.data.FeedParser
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
+import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 
 open class AddFeedsViewModel: ViewModel() {
@@ -27,5 +28,9 @@ open class AddFeedsViewModel: ViewModel() {
 
     fun saveFeedWithEntries (feedWithEntries: FeedWithEntries) {
         repository.addFeedWithEntries(feedWithEntries)
+    }
+
+    fun addFeeds(feeds: List<Feed>) {
+        repository.addFeeds(feeds)
     }
 }

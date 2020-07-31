@@ -8,6 +8,10 @@
         android:title="@string/star"
         app:showAsAction="ifRoom"/>
 
+    <item
+        android:id="@+id/menuItem_share"
+        android:title="@string/share"
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/menuItem_view_in_browser"

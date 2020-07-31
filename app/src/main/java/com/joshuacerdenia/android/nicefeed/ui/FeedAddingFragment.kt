@@ -2,9 +2,11 @@ package com.joshuacerdenia.android.nicefeed.ui
 
 import android.content.Context
 import android.view.View
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
+import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 
 abstract class FeedAddingFragment: Fragment() {
@@ -13,8 +15,9 @@ abstract class FeedAddingFragment: Fragment() {
     var callbacks: Callbacks? = null
 
     interface Callbacks {
-        fun onNewFeedAdded(feedId: String)
+        fun onNewFeedAdded(feedIdPair: FeedIdPair)
         fun onQuerySubmitted(query: String)
+        fun onImportOpmlSelected()
     }
 
     override fun onAttach(context: Context) {
@@ -30,14 +33,15 @@ abstract class FeedAddingFragment: Fragment() {
     inner class RequestResultManager(
         private val viewModel: AddFeedsViewModel,
         private val view: View,
-        private val negativeMessageResId: Int
+        private val negativeMessageResId: Int,
+        private val urlEditText: EditText? = null
     ) {
 
         fun submitData(feedWithEntries: FeedWithEntries?) {
             feedWithEntries?.let {
                 if (!isAlreadyAdded(it.feed.website)) {
                     viewModel.saveFeedWithEntries(it)
-                    showFeedAddedNotice(it.feed.title, it.feed.website)
+                    showFeedAddedNotice(it.feed.website, it.feed.title)
                 } else {
                     showAlreadyAddedNotice()
                 }
@@ -48,16 +52,17 @@ abstract class FeedAddingFragment: Fragment() {
             return currentFeedIds.contains(feedId)
         }
 
-        private fun showFeedAddedNotice(title: String, feedId: String) {
+        private fun showFeedAddedNotice(feedId: String, title: String) {
             Snackbar.make(
                 view,
                 getString(R.string.feed_added_message, title),
                 Snackbar.LENGTH_LONG
             ).setAction(R.string.view) {
-                callbacks?.onNewFeedAdded(feedId)
+                callbacks?.onNewFeedAdded(FeedIdPair(feedId, title))
             }.show()
 
             viewModel.alreadyAddedNoticeEnabled = false
+            urlEditText?.text = null
         }
 
         private fun showAlreadyAddedNotice() {
@@ -68,6 +73,7 @@ abstract class FeedAddingFragment: Fragment() {
                     Snackbar.LENGTH_SHORT
                 ).show()
                 viewModel.alreadyAddedNoticeEnabled = false
+                urlEditText?.text = null
             }
         }
 

@@ -9,18 +9,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.FeedMinimal
 import com.joshuacerdenia.android.nicefeed.utils.simplified
 
 class FeedManagerAdapter(
     private val listener: ItemCheckBoxListener,
-    private val selectedItems: List<Feed>
-) : ListAdapter<Feed, FeedManagerAdapter.FeedHolder>(DiffCallback()) {
+    private val selectedItems: List<FeedMinimal>
+) : ListAdapter<FeedMinimal, FeedManagerAdapter.FeedHolder>(DiffCallback()) {
 
     private val checkBoxes = mutableSetOf<CheckBox>()
 
     interface ItemCheckBoxListener {
-        fun onItemClicked(feed: Feed, isChecked: Boolean)
+        fun onItemClicked(feed: FeedMinimal, isChecked: Boolean)
         fun onAllItemsChecked(isChecked: Boolean)
     }
 
@@ -46,7 +46,7 @@ class FeedManagerAdapter(
 
     inner class FeedHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
-        private lateinit var feed: Feed
+        private lateinit var feed: FeedMinimal
         private val titleCheckBox: CheckBox = itemView.findViewById(R.id.feed_title_checkbox)
         private val websiteTextView: TextView = itemView.findViewById(R.id.feed_website)
         private val categoryTextView: TextView = itemView.findViewById(R.id.feed_category)
@@ -55,7 +55,7 @@ class FeedManagerAdapter(
             itemView.setOnClickListener(this)
         }
 
-        fun bind(feed: Feed, isChecked: Boolean) {
+        fun bind(feed: FeedMinimal, isChecked: Boolean) {
             this.feed = feed
             websiteTextView.text = feed.website.simplified()
             categoryTextView.text = feed.category
@@ -77,13 +77,13 @@ class FeedManagerAdapter(
         }
     }
 
-    private class DiffCallback : DiffUtil.ItemCallback<Feed>() {
+    private class DiffCallback : DiffUtil.ItemCallback<FeedMinimal>() {
 
-        override fun areItemsTheSame(oldItem: Feed, newItem: Feed): Boolean {
+        override fun areItemsTheSame(oldItem: FeedMinimal, newItem: FeedMinimal): Boolean {
             return oldItem.website == newItem.website
         }
 
-        override fun areContentsTheSame(oldItem: Feed, newItem: Feed): Boolean {
+        override fun areContentsTheSame(oldItem: FeedMinimal, newItem: FeedMinimal): Boolean {
             return oldItem.category == newItem.category
         }
     }

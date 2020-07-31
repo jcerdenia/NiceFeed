@@ -6,8 +6,8 @@ import androidx.room.Relation
 data class FeedWithEntries(
     @Embedded val feed: Feed,
     @Relation(
-        parentColumn = "website",
-        entityColumn = "website"
+        parentColumn = "url",
+        entityColumn = "feedUrl"
     )
     val entries: List<Entry>
 )

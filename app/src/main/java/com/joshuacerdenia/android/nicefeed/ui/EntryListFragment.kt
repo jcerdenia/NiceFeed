@@ -20,6 +20,7 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.ui.dialog.AboutFeedFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
@@ -41,12 +42,19 @@ class EntryListFragment : Fragment(),
     ConfirmRemoveFragment.Callbacks {
 
     companion object {
-        private const val ARG_FEED = "ARG_FEED"
+        private const val ARG_FEED_ID_PAIR = "ARG_FEED_ID_PAIR"
+        private const val ARG_IS_NEWLY_ADDED = "ARG_IS_NEWLY_ADDED"
 
-        fun newInstance(feed: Feed?): EntryListFragment {
+        fun newInstance(
+            feedIdPair: FeedIdPair?,
+            isNewlyAdded: Boolean = false
+        ): EntryListFragment {
             return EntryListFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable(ARG_FEED, feed)
+                if (feedIdPair != null) {
+                    arguments = Bundle().apply {
+                        putSerializable(ARG_FEED_ID_PAIR, feedIdPair)
+                        putBoolean(ARG_IS_NEWLY_ADDED, isNewlyAdded)
+                    }
                 }
             }
         }
@@ -88,9 +96,11 @@ class EntryListFragment : Fragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val feed = arguments?.getSerializable(ARG_FEED) as Feed?
         adapter = EntryListAdapter(this)
-        helper = RefreshHelper(this, feed) // Store reference to current feed
+        helper = RefreshHelper(this)
+        arguments?.getBoolean(ARG_IS_NEWLY_ADDED)?.let { isNewlyAdded ->
+            viewModel.shouldAutoRefresh = !isNewlyAdded
+        }
     }
 
     override fun onCreateView(
@@ -112,43 +122,59 @@ class EntryListFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getCurrentFeed()?.let { feed ->
-            viewModel.getEntriesByFeedId(feed.website)
-            callbacks?.onFeedLoaded(feed.website, feed.title)
-            setHasOptionsMenu(true)
-        } ?:let {
+        val feedIdPair = arguments?.getSerializable(ARG_FEED_ID_PAIR) as FeedIdPair?
+
+        feedIdPair?.let {
+            viewModel.getFeedAndEntriesById(it.website)
+            callbacks?.onFeedLoaded(it.website, it.title)
+        } ?: let {
             progressBar.visibility = View.GONE
             emptyImage.visibility = View.VISIBLE
-            setHasOptionsMenu(false)
         }
 
-        viewModel.entriesLiveData.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "Database change detected")
-            if (!it.isNullOrEmpty()) {
-                helper.submitInitialData(it)
-                adapter.submitList(sortAndFilterEntries(it))
-                updateFeedUnreadCount()
+        viewModel.feedLiveData.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                helper.currentFeed = it
+                setHasOptionsMenu(true)
 
-                if (!viewModel.hasAutoRefreshed) {
-                    getCurrentFeed()?.let { feed ->
-                        viewModel.requestFeed(feed.url)
-                        callbacks?.onCheckingForUpdates()
-                        viewModel.hasAutoRefreshed = true
-                    }
-                } else {
-                    progressBar.visibility = View.GONE
-                    emptyImage.visibility = View.GONE
+                if (it.title != feedIdPair?.title) {
+                    callbacks?.onFeedLoaded(it.website, it.title)
+                    // TODO Change to onFeedTitleChanged?
                 }
-
             } else {
-                // If there are no entries, we can safely assume the feed is not in the database.
                 callbacks?.onFeedRemoved()
             }
         })
 
+        viewModel.entriesLiveData.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "Got ${it.size} entries from database")
+            helper.submitInitialEntries(it)
+            adapter.submitList(sortAndFilterEntries(it))
+            updateFeedUnreadCount()
+            emptyImage.visibility = if (it.isEmpty()) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
+            if (viewModel.shouldAutoRefresh) {
+                getCurrentFeed()?.let { feed ->
+                    viewModel.requestFeedUpdate(feed.url)
+                    callbacks?.onCheckingForUpdates()
+                    viewModel.shouldAutoRefresh = false
+                }
+            } else {
+                progressBar.visibility = View.GONE
+            }
+
+        })
+
         viewModel.requestResultLiveData?.observe(viewLifecycleOwner, Observer {
             if (!viewModel.refreshHasBeenManaged) {
-                it?.let { helper.submitNewData(it.feed, it.entries) }
+                it?.let {
+                    Log.d(TAG, "Got ${it.entries.size} entries from internet")
+                    helper.submitNewData(it.feed, it.entries)
+                }
                 viewModel.refreshHasBeenManaged = true
             }
 
@@ -220,8 +246,9 @@ class EntryListFragment : Fragment(),
             return false
         }
 
-        viewModel.requestFeed(url)
+        viewModel.requestFeedUpdate(url)
         progressBar.visibility = View.VISIBLE
+        callbacks?.onCheckingForUpdates()
         return true
     }
 
@@ -231,6 +258,8 @@ class EntryListFragment : Fragment(),
 
     override fun onEntriesNeedRefresh(toAdd: List<Entry>, toUpdate: List<Entry>, toDelete: List<Entry>) {
         viewModel.refreshEntries(toAdd, toUpdate, toDelete)
+        Log.d(TAG, "Sending these to database: To add: ${toAdd.size}, " +
+                "to update: ${toUpdate.size}, to delete: ${toDelete.size}")
 
         if (toAdd.size + toUpdate.size > 0) {
             showRefreshedNotice(toAdd.size, toUpdate.size)
@@ -385,7 +414,7 @@ class EntryListFragment : Fragment(),
 
             Snackbar.make(
                 recyclerView,
-                getString(R.string.feed_removed, it.title),
+                getString(R.string.feed_removed_message, it.title),
                 Snackbar.LENGTH_SHORT
             ).show()
         }
@@ -441,5 +470,12 @@ class EntryListFragment : Fragment(),
 
     fun scrollToTop() {
         recyclerView.scrollToPosition(0)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (context != null) {
+            getCurrentFeed()?.let { UserPreferences.saveFeedId(context!!, it.website) }
+        }
     }
 }

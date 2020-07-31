@@ -11,7 +11,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
-import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.ui.EntryFragment
 import com.joshuacerdenia.android.nicefeed.ui.EntryListFragment
 import com.joshuacerdenia.android.nicefeed.ui.FeedListFragment
@@ -45,9 +45,9 @@ class MainActivity : AppCompatActivity(),
         toolbar.setNavigationIcon(R.drawable.ic_menu)
 
         if (getMainFragment() == null) {
-            val activeFeedId = UserPreferences.getSavedFeedId(this)
+            val feedId = UserPreferences.getSavedFeedId(this)
             val mainFragment = LoadingScreenFragment.newInstance()
-            val drawerFragment = FeedListFragment.newInstance(activeFeedId)
+            val drawerFragment = FeedListFragment.newInstance(feedId)
 
             supportFragmentManager.beginTransaction()
                 .add(R.id.main_fragment_container, mainFragment)
@@ -62,8 +62,8 @@ class MainActivity : AppCompatActivity(),
         toolbar.apply {
             setOnClickListener {
                 when (getMainFragment()) {
-                    is EntryListFragment -> (getMainFragment() as EntryListFragment).scrollToTop()
-                    is EntryFragment -> (getMainFragment() as EntryFragment).scrollToTop()
+                    is EntryListFragment -> (getMainFragment() as EntryListFragment?)?.scrollToTop()
+                    is EntryFragment -> (getMainFragment() as EntryFragment?)?.scrollToTop()
                 }
             }
 
@@ -81,11 +81,15 @@ class MainActivity : AppCompatActivity(),
         if (resultCode != Activity.RESULT_OK) {
             return
         } else if (requestCode == REQUEST_CODE_ADD_FEED) {
-            val feedId = data?.getStringExtra(EXTRA_FEED_ID)
-            if (feedId != null) {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.drawer_fragment_container, FeedListFragment.newInstance(feedId))
-                    .commit()
+            val feedIdPair = data?.getSerializableExtra(EXTRA_FEED_ID_PAIR) as FeedIdPair?
+            if (feedIdPair != null) {
+                val fragment = EntryListFragment.newInstance(feedIdPair, true)
+                handler.postDelayed({
+                    replaceMainFragment(fragment, false)
+                }, 350)
+
+                (getDrawerFragment() as FeedListFragment?)?.forceUpdateActiveFeedId(feedIdPair.website)
+                drawerLayout.closeDrawers()
             }
         }
     }
@@ -113,7 +117,8 @@ class MainActivity : AppCompatActivity(),
 
     override fun onManageFeedsSelected() {
         val intent = ManagingActivity.newIntent(this@MainActivity, MANAGE_FEEDS)
-        startActivity(intent)
+        //startActivity(intent)
+        startActivityForResult(intent, REQUEST_CODE_ADD_FEED)
     }
 
     override fun onAddFeedSelected() {
@@ -121,13 +126,13 @@ class MainActivity : AppCompatActivity(),
         startActivityForResult(intent, REQUEST_CODE_ADD_FEED)
     }
 
-    override fun onFeedSelected(feed: Feed, activeFeedId: String?) {
+    override fun onFeedSelected(feedIdPair: FeedIdPair, activeFeedId: String?) {
         drawerLayout.closeDrawers()
 
-        if (feed.website != activeFeedId) {
-            val newFragment = EntryListFragment.newInstance(feed)
+        if (feedIdPair.website != activeFeedId) {
+            val fragment = EntryListFragment.newInstance(feedIdPair)
             handler.postDelayed({
-                replaceMainFragment(newFragment, false)
+                replaceMainFragment(fragment, false)
             }, 350)
         }
     }
@@ -171,8 +176,13 @@ class MainActivity : AppCompatActivity(),
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            this.title = formattedDate ?: "No Date"
-            this.subtitle = "$time – ${website.simplified()}"
+            if (formattedDate != null) {
+                this.title = formattedDate
+                this.subtitle = "$time - ${website.simplified()}"
+            } else {
+                this.title = website.simplified()
+                this.subtitle = null
+            }
         }
 
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
