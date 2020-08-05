@@ -100,6 +100,15 @@
     <string name="updating">Updating…</string>
     <string name="share">Share</string>
     <string name="import_opml">Import OPML</string>
+    <string name="feeds_imported">Imported %s.</string>
+    <string name="error_message">An error has occurred.</string>
+    <string name="confirm_import_title">Import %s?</string>
+    <string name="confirm_import_message">This will not overwrite existing subscriptions.</string>
+    <string name="import_feeds">Import feeds</string>
+    <string name="select_file">Select file</string>
+    <string name="import_subscriptions">Import subscriptions</string>
+    <string name="select_opml">Select OPML</string>
+    <string name="import_feeds_via_opml">Import feeds via OPML</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

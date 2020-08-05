@@ -65,10 +65,11 @@ class FeedListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
         when (holder) {
             is FeedHolder -> {
-                val isActive = activeFeedId == (getItem(position).content as Feed).website
-                holder.bind(getItem(position).content as Feed, isActive)
+                val isHighlighted = activeFeedId == (getItem(position).content as Feed).url
+                holder.bind(getItem(position).content as Feed, isHighlighted)
             }
             is CategoryHolder -> holder.bind(getItem(position).content as String)
         }
@@ -97,9 +98,9 @@ class FeedListAdapter(
             itemView.setOnClickListener(this)
         }
 
-        fun bind(feed: Feed, isActive: Boolean) {
+        fun bind(feed: Feed, isHighlighted: Boolean) {
             this.feed = feed
-            if (isActive) {
+            if (isHighlighted) {
                 context?.let {
                     itemContainer.setBackgroundColor(getColor(context, R.color.colorSelect))
                 }
@@ -121,7 +122,7 @@ class FeedListAdapter(
         }
 
         override fun onClick(v: View) {
-            activeFeedId = feed.website
+            activeFeedId = feed.url
             listener.onItemClicked(feed)
         }
     }
@@ -140,7 +141,7 @@ class FeedListAdapter(
         override fun areItemsTheSame(oldItem: FeedMenuItem, newItem: FeedMenuItem): Boolean {
             return when {
                 oldItem.content is Feed && newItem.content is Feed -> {
-                    oldItem.content.website == newItem.content.website
+                    oldItem.content.url == newItem.content.url
                 }
                 oldItem.content is String && newItem.content is String -> {
                     oldItem.content == newItem.content

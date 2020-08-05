@@ -22,16 +22,13 @@ class EntryListViewModel: ViewModel() {
     var shouldAutoRefresh = true
 
     val requestResultLiveData: LiveData<FeedWithEntries>? = parser.feedRequestLiveData
-    val feedWithEntriesLiveData: LiveData<FeedWithEntries> = Transformations.switchMap(feedIdLiveData) {
-        repository.getFeedWithEntriesById(it)
+
+    val feedLiveData: LiveData<Feed> = Transformations.switchMap(feedIdLiveData) { feedId ->
+        repository.getFeedById(feedId)
     }
 
-    val feedLiveData: LiveData<Feed> = Transformations.switchMap(feedIdLiveData) {
-        repository.getFeedById(it)
-    }
-
-    val entriesLiveData: LiveData<List<Entry>> = Transformations.switchMap(feedIdLiveData) {
-        repository.getEntriesByFeedId(it)
+    val entriesLiveData: LiveData<List<Entry>> = Transformations.switchMap(feedIdLiveData) { feedId ->
+        repository.getEntriesByFeedId(feedId)
     }
 
     fun requestFeedUpdate(url: String) {
@@ -43,32 +40,12 @@ class EntryListViewModel: ViewModel() {
         feedIdLiveData.value = feedId
     }
 
-    fun getEntriesByFeedId(feedId: String) {
-        feedIdLiveData.value = feedId
-    }
-
-    fun addEntries(entries: List<Entry>) {
-        repository.addEntries(entries)
-    }
-
-    fun refreshEntries(
-        toAdd: List<Entry>,
-        toSave: List<Entry>,
-        toDelete: List<Entry>
-    ) {
-        repository.refreshEntries(toAdd, toSave, toDelete)
-    }
-
     fun updateFeed(feed: Feed) {
         repository.updateFeed(feed)
     }
 
     fun updateFeedUnreadCountById(id: String, count: Int) {
         repository.updateFeedUnreadCountById(id, count)
-    }
-
-    fun updateEntryIsReadAndFeedUnreadCount(id: String, isRead: Boolean, operator: Int) {
-        repository.updateEntryIsReadAndFeedUnreadCount(id, isRead, operator)
     }
 
     fun updateEntry(entry: Entry) {
@@ -83,7 +60,11 @@ class EntryListViewModel: ViewModel() {
         repository.deleteFeedAndEntries(feed, entries)
     }
 
-    fun deleteEntries(entries: List<Entry>) {
-        repository.deleteEntries(entries)
+    fun deleteFeedAndEntriesByFeedId(feedId: String) {
+        repository.deleteFeedsAndEntriesByIds(listOf(feedId))
+    }
+
+    fun refreshEntries(toAdd: List<Entry>, toSave: List<Entry>, toDelete: List<Entry>, feedId: String) {
+        repository.refreshEntries(toAdd, toSave, toDelete, feedId)
     }
 }

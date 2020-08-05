@@ -43,7 +43,7 @@ class FeedSearchFragment : FeedAddingFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = FeedSearchAdapter(this, viewModel.itemBeingLoaded)
+        adapter = FeedSearchAdapter(this, viewModel.itemBeingLoaded, viewModel.itemSelectionEnabled)
         setHasOptionsMenu(true)
     }
 
@@ -55,7 +55,6 @@ class FeedSearchFragment : FeedAddingFragment(),
         val view = inflater.inflate(R.layout.fragment_feed_search, container, false)
         progressBar = view.findViewById(R.id.progressBar_search)
         recyclerView = view.findViewById(R.id.recyclerView_feed)
-
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
         return view
@@ -124,8 +123,8 @@ class FeedSearchFragment : FeedAddingFragment(),
 
     override fun onAddConfirmed(searchResultItem: SearchResultItem) {
         viewModel.itemBeingLoaded = searchResultItem
-        adapter.onLoadingItem(searchResultItem.id)
         viewModel.itemSelectionEnabled = false
+        adapter.onLoadingItem(searchResultItem.id)
 
         val url = searchResultItem.id?.let { RssUrlTransformer.getUrl(it) } ?: ""
         val backupUrl = searchResultItem.website?.let { RssUrlTransformer.getUrl(it) } ?: ""
@@ -137,11 +136,9 @@ class FeedSearchFragment : FeedAddingFragment(),
         searchView.clearFocus()
         activity?.let { Utils.hideSoftKeyBoard(it, recyclerView) }
 
-        if (viewModel.itemSelectionEnabled) {
-            SubscribeFragment.newInstance(searchResultItem).apply {
-                setTargetFragment(fragment, 0)
-                show(fragment.requireFragmentManager(), "subscribe")
-            }
+        SubscribeFragment.newInstance(searchResultItem).apply {
+            setTargetFragment(fragment, 0)
+            show(fragment.requireFragmentManager(), "subscribe")
         }
     }
 }

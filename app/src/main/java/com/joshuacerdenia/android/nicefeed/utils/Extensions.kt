@@ -16,9 +16,9 @@ fun List<Entry>.sortedByDatePublished() = this.sortedByDescending { it.date}
 
 fun List<Entry>.unreadOnTop() = this.sortedByDatePublished().sortedBy { it.isRead }
 
-fun String?.pathified() = this?.substringAfter(
+fun String.pathified() = this.substringAfter(
     "www.",
     this.substringAfter("://")
-)?.removeSuffix("/")
+).removeSuffix("/")
 
-fun String?.simplified() = this?.substringBefore("?").pathified()
+fun String.simplified() = this.substringBefore("?").pathified()

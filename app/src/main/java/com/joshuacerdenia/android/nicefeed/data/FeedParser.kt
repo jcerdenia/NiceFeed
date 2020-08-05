@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 private const val TAG = "FeedParser"
+private const val NO_TITLE = "No Title"
 
 class FeedParser: ViewModel() {
 
@@ -44,14 +45,7 @@ class FeedParser: ViewModel() {
             try {
                 val channel = parser.getChannel(mainUrl)
                 val feedWithEntries = mapper.makeFeedWithEntries(mainUrl, channel)
-
-                _feedRequestLiveData.postValue(
-                    if (feedWithEntries.feed.website.isNotEmpty()) {
-                        feedWithEntries // Just to be absolutely safe
-                    } else {
-                        null
-                    }
-                )
+                _feedRequestLiveData.postValue(feedWithEntries)
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -70,14 +64,14 @@ class FeedParser: ViewModel() {
     private class ChannelMapper {
         // Maps RSS Parser library data classes to my own
 
-        val maxEntries = 500 // Arbitrary
+        val maxEntries = 200 // Arbitrary
 
         fun makeFeedWithEntries(url: String, channel: Channel): FeedWithEntries {
             val entries = mapEntries(channel, url)
             val feed = Feed(
                 url = url, // The url that successfully completes the request is applied
-                website = channel.link.simplified() ?: url.simplified().toString(),
-                title = channel.title ?: channel.link.simplified().toString() ?: url.simplified().toString(),
+                website = channel.link ?: url,
+                title = channel.title ?: channel.link?.simplified() ?: url.simplified(),
                 description = channel.description,
                 imageUrl = channel.image?.url,
                 unreadCount = entries.size
@@ -93,15 +87,19 @@ class FeedParser: ViewModel() {
                 if (entries.size < maxEntries) {
                     val entry = Entry(
                         guid = article.guid ?: article.link ?: "",
-                        feedUrl = url, // Associates entry with a Feed
-                        title = article.title ?: "",
-                        description = article.description,
+                        //feedUrl = url, // Associates entry with a Feed
+                        website = channel.link ?: url,
+                        title = article.title ?: NO_TITLE,
+                        //description = article.description,
                         author = article.author ?: channel.title,
-                        content = article.content,
+                        content = article.content ?: article.description,
                         date = parseDate(article.pubDate),
                         image = article.image
                     )
-                    entries.add(entry)
+
+                    if (entry.guid.isNotEmpty()) {
+                        entries.add(entry)
+                    }
                 } else {
                     break
                 }

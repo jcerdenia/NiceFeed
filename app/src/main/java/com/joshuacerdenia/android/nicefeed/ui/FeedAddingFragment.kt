@@ -18,6 +18,7 @@ abstract class FeedAddingFragment: Fragment() {
         fun onNewFeedAdded(feedIdPair: FeedIdPair)
         fun onQuerySubmitted(query: String)
         fun onImportOpmlSelected()
+        fun onDoneImporting()
     }
 
     override fun onAttach(context: Context) {
@@ -39,9 +40,9 @@ abstract class FeedAddingFragment: Fragment() {
 
         fun submitData(feedWithEntries: FeedWithEntries?) {
             feedWithEntries?.let {
-                if (!isAlreadyAdded(it.feed.website)) {
-                    viewModel.saveFeedWithEntries(it)
-                    showFeedAddedNotice(it.feed.website, it.feed.title)
+                if (!isAlreadyAdded(it.feed.url)) {
+                    viewModel.addFeedWithEntries(it)
+                    showFeedAddedNotice(it.feed.url, it.feed.title)
                 } else {
                     showAlreadyAddedNotice()
                 }

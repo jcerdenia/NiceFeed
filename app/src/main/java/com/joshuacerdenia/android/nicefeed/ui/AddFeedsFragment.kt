@@ -2,7 +2,6 @@ package com.joshuacerdenia.android.nicefeed.ui
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,16 +12,20 @@ import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.utils.OpmlUtil
+import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmImportFragment
+import com.joshuacerdenia.android.nicefeed.utils.OpmlImporter
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import java.util.*
 
 private const val TAG = "AddFeedFragment"
 private const val HTTPS = "https://"
 
-class AddFeedsFragment: FeedAddingFragment(), OpmlUtil.OnOpmlParsedListener {
+class AddFeedsFragment: FeedAddingFragment(),
+    OpmlImporter.OnOpmlParsedListener,
+    ConfirmImportFragment.Callbacks {
 
     companion object {
         fun newInstance(): AddFeedsFragment {
@@ -30,6 +33,7 @@ class AddFeedsFragment: FeedAddingFragment(), OpmlUtil.OnOpmlParsedListener {
         }
     }
 
+    private val fragment = this@AddFeedsFragment
     private val viewModel: AddFeedsViewModel by lazy {
         ViewModelProvider(this).get(AddFeedsViewModel::class.java)
     }
@@ -40,11 +44,13 @@ class AddFeedsFragment: FeedAddingFragment(), OpmlUtil.OnOpmlParsedListener {
     private lateinit var importOpmlButton: Button
     private lateinit var searchView: SearchView
     private lateinit var progressBar: ProgressBar
-    private lateinit var opmlUtil: OpmlUtil
+    private var opmlImporter: OpmlImporter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        opmlUtil = OpmlUtil(context, this)
+        opmlImporter = context?.let { context ->
+            OpmlImporter(context, this)
+        }
     }
     
     override fun onCreateView(
@@ -64,7 +70,12 @@ class AddFeedsFragment: FeedAddingFragment(), OpmlUtil.OnOpmlParsedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val manager = RequestResultManager(viewModel, linearLayout, R.string.failed_to_get_feed, urlEditText)
+        val manager = RequestResultManager(
+            viewModel,
+            linearLayout,
+            R.string.failed_to_get_feed,
+            urlEditText
+        )
 
         viewModel.feedIdsLiveData.observe(viewLifecycleOwner, Observer {
             currentFeedIds = it
@@ -115,12 +126,42 @@ class AddFeedsFragment: FeedAddingFragment(), OpmlUtil.OnOpmlParsedListener {
     }
 
     fun submitUriForImport(uri: Uri) {
-        opmlUtil.importOpml(uri)
-
-        Log.d(TAG, "Uri submitted for import...")
+        opmlImporter?.submitUri(uri)
     }
 
     override fun onOpmlParsed(feeds: List<Feed>) {
-        viewModel.addFeeds(feeds)
+        viewModel.feedsToImport = feeds
+
+        ConfirmImportFragment.newInstance(feeds.size).apply {
+            setTargetFragment(fragment, 0)
+            show(fragment.requireFragmentManager(), "confirm import")
+        }
+    }
+
+    override fun onParseOpmlFailed() {
+        Snackbar.make(
+            linearLayout,
+            getString(R.string.error_message),
+            Snackbar.LENGTH_SHORT
+        ).show()
+    }
+
+    override fun onImportConfirmed(count: Int) {
+        val feedsImported = if (count == 1) {
+            viewModel.feedsToImport[0].title
+        } else {
+            resources.getQuantityString(R.plurals.numberOfFeeds, count, count)
+        }
+
+        Snackbar.make(
+            linearLayout,
+            getString(R.string.feeds_imported, feedsImported),
+            Snackbar.LENGTH_SHORT
+        ).setAction(R.string.done) {
+            callbacks?.onDoneImporting()
+        }.show()
+
+        viewModel.addFeeds(viewModel.feedsToImport)
+        viewModel.feedsToImport = emptyList()
     }
 }

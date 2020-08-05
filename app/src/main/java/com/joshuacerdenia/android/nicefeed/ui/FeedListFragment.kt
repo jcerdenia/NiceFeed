@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
+import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.utils.sortedByUnreadCount
@@ -56,6 +57,7 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
         fun onAddFeedSelected()
         fun onFeedSelected(feedIdPair: FeedIdPair, activeFeedId: String?)
         fun onNoFeedsToLoad()
+        fun onSettingsSelected()
     }
 
     override fun onAttach(context: Context) {
@@ -106,7 +108,7 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
         }
 
         settingsButton.setOnClickListener {
-            // TODO Settings
+            callbacks?.onSettingsSelected()
         }
 
         aboutButton.setOnClickListener {
@@ -135,8 +137,8 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
 
     private fun handleInitialLoading(feeds: List<Feed>) {
         for (feed in feeds) {
-            if (viewModel.activeFeedId == feed.website) {
-                callbacks?.onFeedSelected(FeedIdPair(feed.website, feed.title), null)
+            if (viewModel.activeFeedId == feed.url) {
+                callbacks?.onFeedSelected(FeedIdPair(feed.url, feed.title), null)
                 return
             }
         }
@@ -145,8 +147,8 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
     }
 
     override fun onItemClicked(feed: Feed) {
-        callbacks?.onFeedSelected(FeedIdPair(feed.website, feed.title), viewModel.activeFeedId)
-        viewModel.activeFeedId = feed.website
+        callbacks?.onFeedSelected(FeedIdPair(feed.url, feed.title), viewModel.activeFeedId)
+        viewModel.activeFeedId = feed.url
 
         handler.postDelayed({
                 recyclerView.adapter = adapter
@@ -157,5 +159,12 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
         viewModel.activeFeedId = feedId
         adapter.overrideActiveFeedId(feedId)
         recyclerView.adapter = adapter
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (context != null) {
+            viewModel.activeFeedId?.let { UserPreferences.saveFeedId(context!!, it) }
+        }
     }
 }

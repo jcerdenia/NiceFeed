@@ -104,14 +104,25 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/import_feeds_via_opml"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/primary_text_light" />
+
             <Button
                 android:id="@+id/button_import_opml"
                 style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableTop="@drawable/ic_import"
+                android:layout_gravity="end"
+                android:drawableStart="@drawable/ic_import"
                 android:drawablePadding="8dp"
-                android:text="@string/import_opml" />
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/select_file" />
 
         </LinearLayout>
 

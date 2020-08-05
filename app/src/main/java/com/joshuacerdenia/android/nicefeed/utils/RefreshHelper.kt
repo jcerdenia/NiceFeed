@@ -3,6 +3,7 @@ package com.joshuacerdenia.android.nicefeed.utils
 import android.util.Log
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.FeedSansUnreadCount
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 
 /* Compares recently requested data from the web with current data saved locally;
@@ -24,8 +25,25 @@ class RefreshHelper(
         fun onEntriesNeedRefresh(
             toAdd: List<Entry>,
             toUpdate: List<Entry>,
-            toDelete: List<Entry>
+            toDelete: List<Entry>,
+            feedId: String
         )
+    }
+
+    // NEW
+    fun submitInitialData(feed: FeedSansUnreadCount, entries: List<Entry>) {
+        // First, map FeedSansUnreadCount to Feed
+        currentFeed = Feed(
+            url = feed.url,
+            title = feed.title,
+            website = feed.website,
+            description = feed.description,
+            imageUrl = feed.imageUrl,
+            category = feed.category,
+            unreadCount = 0 // Arbitrary
+        )
+        currentEntries = entries
+        listener.onCurrentEntriesChanged()
     }
 
     fun submitInitialEntries(entries: List<Entry>) {
@@ -67,11 +85,15 @@ class RefreshHelper(
             }
         }
 
-        Log.d(TAG, "Entries to add: $currentFeed, $entriesToAdd")
-
         if (entriesToAdd.size + entriesToUpdate.size + entriesToDelete.size > 0) {
             // i.e., if entries are changed at all
-            //listener.onEntriesNeedRefresh(entriesToAdd, entriesToUpdate, entriesToDelete)
+            currentFeed?.let { feed->
+                listener.onEntriesNeedRefresh(
+                    entriesToAdd,
+                    entriesToUpdate,
+                    entriesToDelete,
+                    feed.url)
+            }
         }
     }
 

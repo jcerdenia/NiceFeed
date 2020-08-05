@@ -1,8 +1,10 @@
 package com.joshuacerdenia.android.nicefeed.ui.menu
 
 import android.content.Context
+import android.graphics.Color
 import android.view.View
 import android.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 
@@ -24,6 +26,7 @@ class EntryPopupMenu(
     }
 
     init {
+        view?.setBackgroundColor(ContextCompat.getColor(context!!, R.color.colorSelect))
         menuInflater.inflate(R.menu.popup_menu_entry, menu)
 
         if (entry.isStarred) {
@@ -42,6 +45,10 @@ class EntryPopupMenu(
             }
 
             true
+        }
+
+        setOnDismissListener() {
+            view?.setBackgroundColor(Color.TRANSPARENT)
         }
     }
 }

@@ -4,9 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
-@Entity(tableName = "feeds")
+@Entity
 data class Feed(
-    @PrimaryKey val url: String,
+    @PrimaryKey val url: String, // FeedId
     val website: String,
     var title: String,
     val description: String? = null,

@@ -31,7 +31,7 @@ class ConfirmRemoveFragment : BottomSheetDialogFragment() {
     private lateinit var confirmButton: Button
 
     interface Callbacks {
-        fun onRemoveConfirmed(count: Int)
+        fun onRemoveConfirmed()
     }
 
     override fun onCreateView(
@@ -66,7 +66,7 @@ class ConfirmRemoveFragment : BottomSheetDialogFragment() {
 
         confirmButton.setOnClickListener {
             targetFragment?.let { fragment ->
-                (fragment as Callbacks).onRemoveConfirmed(count)
+                (fragment as Callbacks).onRemoveConfirmed()
             }
             dismiss()
         }

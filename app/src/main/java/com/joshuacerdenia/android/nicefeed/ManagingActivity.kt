@@ -3,16 +3,12 @@ package com.joshuacerdenia.android.nicefeed
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.ui.*
-import com.joshuacerdenia.android.nicefeed.utils.OpmlUtil
-import java.lang.IllegalArgumentException
 
 private const val TAG = "ManagingActivity"
 const val EXTRA_FEED_ID_PAIR = "com.joshuacerdenia.android.nicefeed.feed_id_pair"
@@ -45,7 +41,7 @@ class ManagingActivity : AppCompatActivity(),
             val fragment = when (intent.getIntExtra(EXTRA_MANAGING, ADD_FEEDS)) {
                 ADD_FEEDS -> AddFeedsFragment.newInstance()
                 MANAGE_FEEDS -> ManageFeedsFragment.newInstance()
-                // Space here for more
+                SETTINGS -> SettingsFragment.newInstance()
                 else -> throw IllegalArgumentException()
             }
 
@@ -59,15 +55,13 @@ class ManagingActivity : AppCompatActivity(),
         super.onStart()
         when (getCurrentFragment()) {
             is FeedAddingFragment -> supportActionBar?.title = getString(R.string.add_feeds)
-            // Space here for more
+            is SettingsFragment -> supportActionBar?.title = getString(R.string.settings)
             else -> return
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.d(TAG, "onActivityResult() called")
-
         if (resultCode != Activity.RESULT_OK) {
             return
         } else if (requestCode == REQUEST_CODE_READ_OPML) {
@@ -114,6 +108,10 @@ class ManagingActivity : AppCompatActivity(),
             addCategory(Intent.CATEGORY_OPENABLE)
         }
         startActivityForResult(intent, REQUEST_CODE_READ_OPML)
+    }
+
+    override fun onDoneImporting() {
+        finish()
     }
 
     override fun onFeedsBeingManagedChanged(count: Int) {

@@ -2,116 +2,71 @@ package com.joshuacerdenia.android.nicefeed.data.local.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.joshuacerdenia.android.nicefeed.data.model.Entry
-import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.data.model.FeedMinimal
-import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
+import com.joshuacerdenia.android.nicefeed.data.model.*
 
 @Dao
 interface FeedsAndEntriesDao {
 
-    @Query("SELECT * FROM feeds")
+    // Methods for Feeds
+
+    @Query("SELECT * FROM Feed")
     fun getAllFeeds(): LiveData<List<Feed>>
 
-    @Query("SELECT website, title, category FROM feeds")
-    fun getAllFeedsMinimal(): LiveData<List<FeedMinimal>>
-
-    @Query("SELECT website FROM feeds")
+    @Query("SELECT url FROM Feed")
     fun getAllFeedIds(): LiveData<List<String>>
 
-    @Query("SELECT unreadCount FROM feeds WHERE website = :feedId")
-    fun getFeedUnreadCount(feedId: String): LiveData<Int>
+    @Query("SELECT url, website, title, category FROM Feed")
+    fun getAllFeedsMinimal(): LiveData<List<FeedMinimal>>
 
-    @Query("SELECT DISTINCT category FROM feeds")
-    fun getCategories(): LiveData<List<String>>
+    @Query("SELECT * FROM Feed WHERE url = :feedId")
+    fun getFeedById(feedId: String): LiveData<Feed>
 
-    @Query("SELECT * FROM feeds WHERE website = :id")
-    fun getFeedById(id: String): LiveData<Feed>
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun addFeed(feed: Feed)
 
-    @Transaction
-    @Query("SELECT * FROM feeds WHERE website = :feedId")
-    fun getFeedWithEntriesById(feedId: String): LiveData<FeedWithEntries>
-
-    @Query("DELETE FROM feeds WHERE website IN (:ids)")
-    fun deleteFeedsBy(ids: List<String>)
-
-    @Query("DELETE FROM feeds WHERE website = :id")
-    fun deleteFeedById(id: String)
-
-    @Query("DELETE FROM entries WHERE website = :feedId")
-    fun deleteEntriesByFeedId(feedId: String)
-
-    @Query("DELETE FROM entries WHERE website IN (:feedIds)")
-    fun deleteEntriesByFeedIds(feedIds: List<String>)
-
-    @Transaction
-    fun deleteFeedAndEntriesById(id: String) {
-        deleteFeedById(id)
-        deleteEntriesByFeedId(id)
-    }
-
-    @Transaction
-    fun deleteFeedsAndEntriesByIds(ids: List<String>) {
-        deleteFeedsBy(ids)
-        deleteEntriesByFeedIds(ids)
-    }
-
-    @Query("UPDATE feeds SET category = :category WHERE website IN (:ids)")
-    fun updateCategoryByFeedIds(ids: Array<String>, category: String)
-
-    @Query("UPDATE entries SET isRead = :isRead WHERE guid = :guid")
-    fun updateEntryIsRead(vararg guid: String, isRead: Boolean)
-
-    @Query("UPDATE entries SET isStarred = :isStarred WHERE guid = :guid")
-    fun updateEntryIsStarred(vararg guid: String, isStarred: Boolean)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun addFeeds(feeds: List<Feed>)
 
     @Update
     fun updateFeed(feed: Feed)
 
-    @Query("UPDATE feeds SET unreadCount = :count WHERE website = :id")
+    @Query("UPDATE Feed SET category = :category WHERE url IN (:ids)")
+    fun updateCategoryByFeedIds(ids: Array<String>, category: String)
+
+    @Query("UPDATE Feed SET unreadCount = :count WHERE url = :id")
     fun updateFeedUnreadCountById(id: String, count: Int)
-
-    @Query("UPDATE feeds SET unreadCount =+ :operator WHERE website = :id")
-    fun updateFeedUnreadCountByOperator(id: String, operator: Int)
-
-    @Transaction
-    fun updateEntryIsReadAndFeedUnreadCount(id: String, isRead: Boolean, operator: Int) {
-        updateEntryIsRead(id, isRead = isRead)
-        updateFeedUnreadCountByOperator(id, operator)
-    }
-
-    @Update
-    fun updateFeeds(feeds: List<Feed>)
-
-    @Insert
-    fun addFeed(feed: Feed)
 
     @Delete
     fun deleteFeed(feed: Feed)
 
+    @Query("DELETE FROM Feed WHERE url = :id")
+    fun deleteFeedById(id: String)
+
     @Delete
     fun deleteFeeds(feeds: List<Feed>)
 
-    @Delete
-    fun deleteFeedsAndEntries(feeds: List<Feed>, entries: List<Entry>)
+    @Query("DELETE FROM Feed WHERE url IN (:ids)")
+    fun deleteFeedsByIds(ids: List<String>)
 
-    @Delete
-    fun deleteFeedAndEntries(feed: Feed, entries: List<Entry>)
+    // Methods for Entries
 
-    @Query("SELECT * FROM entries")
-    fun getEntries(): LiveData<List<Entry>>
+    @Query("SELECT * FROM Entry")
+    fun getAllEntries(): LiveData<List<Entry>>
 
-    @Query("SELECT * FROM entries WHERE website = :feedId")
+    @Query("SELECT * FROM Entry WHERE guid = :guid")
+    fun getEntry(guid: String?): LiveData<Entry>
+
+    @Query("SELECT Entry.guid, title, website, author, date, content, image, isStarred, isRead " +
+            "FROM FeedEntryCrossRef AS _junction " +
+            "INNER JOIN Entry ON (_junction.guid = Entry.guid) " +
+            "WHERE _junction.url = (:feedId)")
     fun getEntriesByFeedId(feedId: String): LiveData<List<Entry>>
 
-    @Query("SELECT * FROM entries WHERE guid = :guid")
-    fun getEntry(guid: String?): LiveData<Entry?>
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun addEntry(entry: Entry)
 
-    @Query("SELECT * FROM entries WHERE website IN (:websites)")
-    fun getEntriesByFeeds(websites: Array<String>): List<Entry>
-
-    @Query("SELECT website FROM entries WHERE isRead")
-    fun getUnreadEntryIds(): List<String>
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun addEntries(entries: List<Entry>)
 
     @Update
     fun updateEntry(entry: Entry)
@@ -119,36 +74,95 @@ interface FeedsAndEntriesDao {
     @Update
     fun updateEntries(entries: List<Entry>)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun addFeeds(feeds: List<Feed>)
-
-    @Insert//(onConflict = OnConflictStrategy.REPLACE)
-    fun addEntry(entry: Entry)
-
-    @Insert//(onConflict = OnConflictStrategy.REPLACE)
-    fun addEntries(entries: List<Entry>)
-
     @Delete
     fun deleteEntry(entry: Entry)
 
     @Delete
     fun deleteEntries(entries: List<Entry>)
 
-    @Query("DELETE FROM entries WHERE website IN (:websites)")
-    fun deleteEntriesByWebsite(websites: List<String>)
+    @Query("DELETE FROM Entry WHERE (" +
+            "SELECT _junction.url " +
+            "FROM FeedEntryCrossRef AS _junction INNER JOIN Entry ON (_junction.guid = Entry.guid)" +
+            ") = (:feedId)")
+    fun deleteEntriesByFeedId(feedId: String)
+
+    @Query("DELETE FROM Entry WHERE (" +
+            "SELECT _junction.url " +
+            "FROM FeedEntryCrossRef AS _junction INNER JOIN Entry ON (_junction.guid = Entry.guid)" +
+            ") IN (:feedIds)")
+    fun deleteEntriesByFeedIds(feedIds: List<String>)
+
+    // Combined Methods
 
     @Transaction
-    fun refreshEntries(toAdd: List<Entry>, toUpdate: List<Entry>, toDelete: List<Entry>) {
-        if (toAdd.isNotEmpty()) {
-            addEntries(toAdd)
-        }
+    @Query("SELECT * FROM Feed")
+    fun getAllFeedsWithEntries(): LiveData<List<FeedWithEntries>>
 
-        if (toUpdate.isNotEmpty()) {
-            updateEntries(toUpdate)
-        }
+    @Transaction
+    @Query("SELECT * FROM Feed WHERE url = :feedId")
+    fun getFeedWithEntriesByFeedId(feedId: String): LiveData<FeedWithEntries>
 
-        if (toDelete.isNotEmpty()) {
-            deleteEntries(toDelete)
-        }
+    @Transaction
+    @Query("SELECT url, website, title, description, imageUrl, category FROM Feed WHERE url = :feedId")
+    fun getFeedSansUnreadCountWithEntriesByFeedId(feedId: String): LiveData<FeedSansUnreadCountWithEntries>
+
+    @Transaction
+    fun addFeedAndEntries(feed: Feed, entries: List<Entry>, crossRefs: List<FeedEntryCrossRef>) {
+        addFeed(feed)
+        addEntries(entries)
+        addFeedEntryCrossRefs(crossRefs)
     }
+
+    @Transaction
+    fun deleteFeedAndEntries(feed: Feed, entries: List<Entry>, crossRefs: List<FeedEntryCrossRef>) {
+        deleteEntries(entries)
+        deleteFeedEntryCrossRefs(crossRefs)
+        deleteFeed(feed)
+    }
+
+    @Transaction
+    fun deleteFeedAndEntriesById(feedId: String) {
+        deleteEntriesByFeedId(feedId)
+        deleteCrossRefsByFeedId(feedId)
+        deleteFeedById(feedId)
+    }
+
+    @Transaction
+    fun deleteFeedsAndEntriesByIds(feedIds: List<String>) {
+        deleteEntriesByFeedIds(feedIds)
+        deleteCrossRefsByFeedIds(feedIds)
+        deleteFeedsByIds(feedIds)
+    }
+
+    @Transaction
+    fun refreshEntries(
+        toAdd: List<Entry>,
+        toUpdate: List<Entry>,
+        toDelete: List<Entry>,
+        crossRefsToAdd: List<FeedEntryCrossRef>,
+        crossRefsToDelete: List<FeedEntryCrossRef>
+    ) {
+        addEntries(toAdd)
+        addFeedEntryCrossRefs(crossRefsToAdd)
+        updateEntries(toUpdate)
+        deleteFeedEntryCrossRefs(crossRefsToDelete)
+        deleteEntries(toDelete)
+    }
+
+    // Relational Table Methods
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun addFeedEntryCrossRef(crossRef: FeedEntryCrossRef)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun addFeedEntryCrossRefs(crossRefs: List<FeedEntryCrossRef>)
+
+    @Delete
+    fun deleteFeedEntryCrossRefs(crossRefs: List<FeedEntryCrossRef>)
+
+    @Query("DELETE FROM FeedEntryCrossRef WHERE url = :feedId")
+    fun deleteCrossRefsByFeedId(feedId: String)
+
+    @Query("DELETE FROM FeedEntryCrossRef WHERE url IN (:feedIds)")
+    fun deleteCrossRefsByFeedIds(feedIds: List<String>)
 }

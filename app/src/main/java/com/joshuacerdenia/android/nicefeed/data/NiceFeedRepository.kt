@@ -38,7 +38,11 @@ class NiceFeedRepository private constructor(context: Context) {
 
     fun performSearch(query: String): LiveData<List<SearchResultItem>> = searcher.performSearch(query)
 
-    fun getCategories(): LiveData<List<String>> = dao.getCategories()
+    fun addFeedEntryCrossRef(crossRef: FeedEntryCrossRef) {
+        executor.execute {
+            dao.addFeedEntryCrossRef(crossRef)
+        }
+    }
 
     fun getFeedById(id: String): LiveData<Feed> = dao.getFeedById(id)
 
@@ -48,15 +52,15 @@ class NiceFeedRepository private constructor(context: Context) {
 
     fun getAllFeedsMinimal(): LiveData<List<FeedMinimal>> = dao.getAllFeedsMinimal()
 
-    fun getFeedUnreadCount(feedId: String): LiveData<Int> = dao.getFeedUnreadCount(feedId)
+    fun getFeedSansUnreadCountWithEntriesByFeedId(
+        feedId: String
+    ): LiveData<FeedSansUnreadCountWithEntries> {
+        return dao.getFeedSansUnreadCountWithEntriesByFeedId(feedId)
+    }
 
-    fun getFeedWithEntriesById(feedId: String): LiveData<FeedWithEntries> = dao.getFeedWithEntriesById(feedId)
-
-    fun getEntries(): LiveData<List<Entry>> = dao.getEntries()
+    fun getAllEntries(): LiveData<List<Entry>> = dao.getAllEntries()
 
     fun getEntriesByFeedId(feedId: String): LiveData<List<Entry>> = dao.getEntriesByFeedId(feedId)
-
-    fun getEntry(guid: String): LiveData<Entry?> = dao.getEntry(guid)
 
     fun updateCategoryByFeedIds(ids: Array<String>, category: String) {
         executor.execute {
@@ -67,12 +71,6 @@ class NiceFeedRepository private constructor(context: Context) {
     fun updateFeed(feed: Feed) {
         executor.execute {
             dao.updateFeed(feed)
-        }
-    }
-
-    fun updateFeeds(feeds: List<Feed>) {
-        executor.execute {
-            dao.updateFeeds(feeds)
         }
     }
 
@@ -94,78 +92,23 @@ class NiceFeedRepository private constructor(context: Context) {
         }
     }
 
-    fun addFeed(feed: Feed) {
-        executor.execute {
-            dao.addFeed(feed)
-        }
-    }
-
     fun addFeeds(feeds: List<Feed>) {
         executor.execute {
             dao.addFeeds(feeds)
         }
     }
 
-    fun addFeedWithEntries(feedWithEntries: FeedWithEntries) {
+    fun addFeedWithEntries(fwe: FeedWithEntries) {
+        val crossRefs = getCrossRefs(fwe.feed.url, fwe.entries)
         executor.execute {
-            dao.addFeed(feedWithEntries.feed)
-            dao.addEntries(feedWithEntries.entries)
-        }
-    }
-
-    fun addEntry(entry: Entry) {
-        executor.execute {
-            dao.addEntry(entry)
-        }
-    }
-
-    fun addEntries(entries: List<Entry>) {
-        executor.execute {
-            dao.addEntries(entries)
-        }
-    }
-
-    fun refreshEntries(
-        toAdd: List<Entry>,
-        toUpdate: List<Entry>,
-        toDelete: List<Entry>
-    ) {
-        executor.execute {
-            dao.refreshEntries(toAdd, toUpdate, toDelete)
-        }
-    }
-
-    fun updateEntryIsReadAndFeedUnreadCount(
-        id: String,
-        isRead: Boolean,
-        operator: Int
-    ) {
-        executor.execute {
-            dao.updateEntryIsReadAndFeedUnreadCount(id, isRead, operator)
-        }
-    }
-
-    fun deleteFeed(feed: Feed) {
-        executor.execute {
-            dao.deleteFeed(feed)
-        }
-    }
-
-    fun deleteFeeds(feeds: List<Feed>) {
-        executor.execute {
-            dao.deleteFeeds(feeds)
+            dao.addFeedAndEntries(fwe.feed, fwe.entries, crossRefs)
         }
     }
 
     fun deleteFeedAndEntries(feed: Feed, entries: List<Entry>) {
+        val crossRefs = getCrossRefs(feed.url, entries)
         executor.execute {
-            dao.deleteFeedAndEntries(feed, entries)
-        }
-    }
-
-    fun deleteFeedsAndEntries(feeds: List<Feed>, entries: List<Entry>) {
-        executor.execute {
-            dao.deleteFeedsAndEntries(feeds, entries)
+            dao.deleteFeedAndEntries(feed, entries, crossRefs)
         }
     }
 
@@ -175,27 +118,24 @@ class NiceFeedRepository private constructor(context: Context) {
         }
     }
 
-    fun deleteEntry(entry: Entry) {
+    fun refreshEntries(
+        toAdd: List<Entry>,
+        toUpdate: List<Entry>,
+        toDelete: List<Entry>,
+        feedId: String
+    ) {
+        val crossRefsToAdd = getCrossRefs(feedId, toAdd)
+        val crossRefsToDelete = getCrossRefs(feedId, toDelete)
         executor.execute {
-            dao.deleteEntry(entry)
+            dao.refreshEntries(toAdd, toUpdate, toDelete, crossRefsToAdd, crossRefsToDelete)
         }
     }
 
-    fun deleteEntries(entries: List<Entry>) {
-        executor.execute {
-            dao.deleteEntries(entries)
+    private fun getCrossRefs(feedId: String, entries: List<Entry>): List<FeedEntryCrossRef> {
+        val crossRefs = mutableListOf<FeedEntryCrossRef>()
+        for (entry in entries) {
+            crossRefs.add(FeedEntryCrossRef(feedId, entry.guid))
         }
-    }
-
-    fun deleteEntriesByWebsite(websites: List<String>) {
-        executor.execute {
-            dao.deleteEntriesByWebsite(websites)
-        }
-    }
-
-    fun deleteFeedsByWebsite(websites: List<String>) {
-        executor.execute {
-            dao.deleteFeedsBy(websites)
-        }
+        return crossRefs
     }
 }

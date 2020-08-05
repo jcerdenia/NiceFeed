@@ -13,10 +13,12 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.utils.simplified
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_entry_list.view.*
 
 class FeedSearchAdapter(
     private val listener: OnItemClickListener,
-    loadingItem: SearchResultItem?
+    loadingItem: SearchResultItem?,
+    private var clickingIsEnabled: Boolean
 ) : ListAdapter<SearchResultItem, FeedSearchAdapter.FeedHolder>(DiffCallback()) {
 
     private var activeItemProgressBar: ProgressBar? = null
@@ -27,11 +29,13 @@ class FeedSearchAdapter(
     }
 
     fun onLoadingItem(itemId: String?) {
+        clickingIsEnabled = false
         loadingItemId = itemId
         activeItemProgressBar?.visibility = View.VISIBLE
     }
 
     fun onFinishedLoading() {
+        clickingIsEnabled = true
         loadingItemId = null
         activeItemProgressBar?.visibility = View.INVISIBLE
     }
@@ -55,8 +59,7 @@ class FeedSearchAdapter(
         private val listener: OnItemClickListener
     ) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
-        var searchResultItem = SearchResultItem()
-
+        private lateinit var searchResultItem: SearchResultItem
         private val titleTextView: TextView = itemView.findViewById(R.id.textView_title)
         private val infoTextView: TextView = itemView.findViewById(R.id.textView_info)
         private val imageView: ImageView = itemView.findViewById(R.id.imageView_image)
@@ -70,7 +73,7 @@ class FeedSearchAdapter(
             this.searchResultItem = searchResultItem
 
             titleTextView.text = searchResultItem.title
-            infoTextView.text = searchResultItem.website.simplified()
+            infoTextView.text = searchResultItem.website?.simplified()
             itemProgressBar.visibility = if (isLoading) {
                 View.VISIBLE
             } else {
@@ -84,8 +87,10 @@ class FeedSearchAdapter(
         }
 
         override fun onClick(v: View) {
-            listener.onItemClicked(searchResultItem)
-            activeItemProgressBar = itemProgressBar
+            if (clickingIsEnabled) {
+                listener.onItemClicked(searchResultItem)
+                activeItemProgressBar = itemProgressBar
+            }
         }
     }
 

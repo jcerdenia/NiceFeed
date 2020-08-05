@@ -1,24 +1,15 @@
 package com.joshuacerdenia.android.nicefeed.data.model
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.io.Serializable
 import java.util.*
 
-@Entity(tableName = "entries")
-    /*
-    foreignKeys = [ForeignKey(
-        entity = Feed::class,
-        parentColumns = ["website"],
-        childColumns = ["website"],
-        onDelete = ForeignKey.CASCADE
-    )]*/
+@Entity
 data class Entry(
     @PrimaryKey val guid: String, // Doubles as URL
-    val feedUrl: String, // associates Entry with a particular Feed
     val title: String,
-    val description: String?,
+    val website: String,
     val author: String?,
     val date: Date?,
     val content: String?,
@@ -32,7 +23,7 @@ data class Entry(
         val checklist = listOf(
             (entry.guid == guid),
             (entry.title == title),
-            (entry.description == description),
+            (entry.website == website),
             (entry.author == author),
             (entry.date == date),
             (entry.content == content),

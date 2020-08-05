@@ -43,7 +43,7 @@ class EntryFragment: Fragment() {
     private var callbacks: Callbacks? = null
 
     interface Callbacks {
-        fun onEntryLoaded(date: Date?, website: String?)
+        fun onEntryLoaded(date: Date?, website: String)
     }
 
     override fun onAttach(context: Context) {

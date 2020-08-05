@@ -21,6 +21,7 @@
 
     <style name="Buttonized" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">false</item>
     </style>
 
     <style name="DrawerMenuButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">

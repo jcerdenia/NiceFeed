@@ -10,6 +10,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -27,8 +28,10 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.menu.EntryPopupMenu
 import com.joshuacerdenia.android.nicefeed.utils.RefreshHelper
+import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.sortedByDatePublished
 import com.joshuacerdenia.android.nicefeed.utils.unreadOnTop
+import java.util.*
 
 private const val TAG = "EntryListFragment"
 
@@ -68,6 +71,7 @@ class EntryListFragment : Fragment(),
     private lateinit var emptyImage: ImageView
     private lateinit var filterNotice: TextView
     private lateinit var progressBar: ProgressBar
+    private lateinit var searchView: SearchView
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: EntryListAdapter
     private lateinit var helper: RefreshHelper
@@ -77,7 +81,7 @@ class EntryListFragment : Fragment(),
     private var callbacks: Callbacks? = null
 
     interface Callbacks {
-        fun onFeedLoaded(feedId: String, title: String)
+        fun onFeedLoaded(title: String)
         fun onFeedRemoved()
         fun onEntrySelected(entry: Entry)
         fun onCheckingForUpdates(letContinue: Boolean = true, title: String? = null)
@@ -113,8 +117,6 @@ class EntryListFragment : Fragment(),
         emptyImage = view.findViewById(R.id.imageView_empty)
         progressBar = view.findViewById(R.id.progressBar)
         recyclerView = view.findViewById(R.id.recyclerView_entry)
-
-        // TODO? recyclerView.layoutManager = StaggeredGridLayoutManager(2, VERTICAL)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
         return view
@@ -125,8 +127,8 @@ class EntryListFragment : Fragment(),
         val feedIdPair = arguments?.getSerializable(ARG_FEED_ID_PAIR) as FeedIdPair?
 
         feedIdPair?.let {
-            viewModel.getFeedAndEntriesById(it.website)
-            callbacks?.onFeedLoaded(it.website, it.title)
+            viewModel.getFeedAndEntriesById(it.url)
+            callbacks?.onFeedLoaded(it.title)
         } ?: let {
             progressBar.visibility = View.GONE
             emptyImage.visibility = View.VISIBLE
@@ -136,37 +138,12 @@ class EntryListFragment : Fragment(),
             if (it != null) {
                 helper.currentFeed = it
                 setHasOptionsMenu(true)
-
                 if (it.title != feedIdPair?.title) {
-                    callbacks?.onFeedLoaded(it.website, it.title)
-                    // TODO Change to onFeedTitleChanged?
+                    callbacks?.onFeedLoaded(it.title)
                 }
             } else {
                 callbacks?.onFeedRemoved()
             }
-        })
-
-        viewModel.entriesLiveData.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "Got ${it.size} entries from database")
-            helper.submitInitialEntries(it)
-            adapter.submitList(sortAndFilterEntries(it))
-            updateFeedUnreadCount()
-            emptyImage.visibility = if (it.isEmpty()) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
-
-            if (viewModel.shouldAutoRefresh) {
-                getCurrentFeed()?.let { feed ->
-                    viewModel.requestFeedUpdate(feed.url)
-                    callbacks?.onCheckingForUpdates()
-                    viewModel.shouldAutoRefresh = false
-                }
-            } else {
-                progressBar.visibility = View.GONE
-            }
-
         })
 
         viewModel.requestResultLiveData?.observe(viewLifecycleOwner, Observer {
@@ -181,15 +158,77 @@ class EntryListFragment : Fragment(),
             callbacks?.onCheckingForUpdates(false, getCurrentFeed()?.title)
             progressBar.visibility = View.GONE
         })
+
+        observeEntriesLiveData()
+    }
+
+    private fun observeEntriesLiveData(queryText: String? = null) {
+        viewModel.entriesLiveData.observe(viewLifecycleOwner, Observer { entries ->
+            helper.submitInitialEntries(entries)
+
+            val searchedEntries = queryText?.let { queryText ->
+                searchEntries(queryText, entries)
+            } ?: entries
+            adapter.submitList(sortAndFilterEntries(searchedEntries))
+
+            updateFeedUnreadCount()
+            emptyImage.visibility = if (entries.isEmpty()) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
+            if (viewModel.shouldAutoRefresh) {
+                handler.postDelayed({
+                    getCurrentFeed()?.let { feed ->
+                        viewModel.requestFeedUpdate(feed.url)
+                        callbacks?.onCheckingForUpdates()
+                        viewModel.shouldAutoRefresh = false
+                    }
+                }, 250)
+            } else {
+                progressBar.visibility = View.GONE
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_entry_list, menu)
+        val searchItem: MenuItem = menu.findItem(R.id.menuItem_search)
         markAllOptionsItem = menu.findItem(R.id.menuItem_mark_all)
         starAllOptionsItem = menu.findItem(R.id.menuItem_star_all)
+        searchView = searchItem.actionView as SearchView
+
         setMarkAllOptionsItem()
         setStarAllOptionsItem()
+
+        searchView.apply {
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(queryText: String): Boolean {
+                    if (queryText.isNotEmpty()) {
+                        val list = searchEntries(
+                            queryText.toLowerCase(Locale.ROOT),
+                            getCurrentEntries()
+                        )
+                        observeEntriesLiveData(queryText)
+                    }
+
+                    clearFocus()
+                    activity?.let { Utils.hideSoftKeyBoard(it, this@apply) }
+                    return true
+                }
+
+                override fun onQueryTextChange(queryText: String): Boolean {
+                    return if (queryText.isEmpty()) {
+                        observeEntriesLiveData()
+                        true
+                    } else {
+                        false
+                    }
+                }
+            })
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -203,6 +242,16 @@ class EntryListFragment : Fragment(),
             R.id.menuItem_delete_feed -> handleRemoveFeed(getCurrentFeed()?.title)
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun searchEntries(queryText: String, entries: List<Entry>): List<Entry> {
+        val resultList = mutableListOf<Entry>()
+        for (entry in entries) {
+            if (entry.title.toLowerCase(Locale.ROOT).contains(queryText)) {
+                resultList.add(entry)
+            }
+        }
+        return resultList
     }
 
     private fun allIsRead(entries: List<Entry>): Boolean {
@@ -256,11 +305,13 @@ class EntryListFragment : Fragment(),
         viewModel.updateFeed(feed)
     }
 
-    override fun onEntriesNeedRefresh(toAdd: List<Entry>, toUpdate: List<Entry>, toDelete: List<Entry>) {
-        viewModel.refreshEntries(toAdd, toUpdate, toDelete)
-        Log.d(TAG, "Sending these to database: To add: ${toAdd.size}, " +
-                "to update: ${toUpdate.size}, to delete: ${toDelete.size}")
-
+    override fun onEntriesNeedRefresh(
+        toAdd: List<Entry>,
+        toUpdate: List<Entry>,
+        toDelete: List<Entry>,
+        feedId: String
+    ) {
+        viewModel.refreshEntries(toAdd, toUpdate, toDelete, feedId)
         if (toAdd.size + toUpdate.size > 0) {
             showRefreshedNotice(toAdd.size, toUpdate.size)
         }
@@ -324,8 +375,9 @@ class EntryListFragment : Fragment(),
     }
 
     override fun onSortFilterConfirmed() {
-        val list = sortAndFilterEntries(getCurrentEntries())
-        adapter.submitList(list)
+        //val list = sortAndFilterEntries(getCurrentEntries())
+        //adapter.submitList(list)
+        observeEntriesLiveData()
     }
 
     private fun sortAndFilterEntries(entries: List<Entry>): List<Entry> {
@@ -344,7 +396,9 @@ class EntryListFragment : Fragment(),
         return if (sorter == SortFilterEntriesFragment.SORT_UNREAD_ON_TOP) {
             if (adapter.latestClickedPosition == 0) {
                 // Crude, but good enough for now:
-                handler.postDelayed({ recyclerView.scrollToPosition(0) }, 200)
+                handler.postDelayed({
+                    recyclerView.scrollToPosition(0)
+                }, 200)
             }
             filteredEntries.unreadOnTop()
         } else {
@@ -407,9 +461,9 @@ class EntryListFragment : Fragment(),
         return true
     }
 
-    override fun onRemoveConfirmed(count: Int) {
+    override fun onRemoveConfirmed() {
         getCurrentFeed()?.let {
-            viewModel.deleteFeedAndEntries(it, getCurrentEntries())
+            viewModel.deleteFeedAndEntriesByFeedId(it.url)
             callbacks?.onFeedRemoved()
 
             Snackbar.make(
@@ -421,9 +475,9 @@ class EntryListFragment : Fragment(),
     }
 
     private fun updateFeedUnreadCount() {
-        getCurrentFeed()?.let {
+        getCurrentFeed()?.let { feed ->
             val count = getUnreadCount(getCurrentEntries())
-            viewModel.updateFeedUnreadCountById(it.website, count)
+            viewModel.updateFeedUnreadCountById(feed.url, count)
         }
     }
 
@@ -470,12 +524,5 @@ class EntryListFragment : Fragment(),
 
     fun scrollToTop() {
         recyclerView.scrollToPosition(0)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if (context != null) {
-            getCurrentFeed()?.let { UserPreferences.saveFeedId(context!!, it.website) }
-        }
     }
 }

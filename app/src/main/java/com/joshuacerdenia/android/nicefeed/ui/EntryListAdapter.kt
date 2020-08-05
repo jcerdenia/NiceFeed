@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -50,14 +50,15 @@ class EntryListAdapter(
 
         private lateinit var entry: Entry
 
+        private val container: ConstraintLayout = itemView.findViewById(R.id.constraintLayout_container)
         private val titleTextView: TextView = itemView.findViewById(R.id.textView_title)
         private val infoTextView: TextView = itemView.findViewById(R.id.textView_info)
         private val imageView: ImageView = itemView.findViewById(R.id.imageView_image)
         private val starView: ImageView = itemView.findViewById(R.id.imageView_star)
 
         init {
-            itemView.setOnClickListener(this)
-            itemView.setOnLongClickListener(this)
+            container.setOnClickListener(this)
+            container.setOnLongClickListener(this)
         }
 
         @SuppressLint("SetTextI18n")
@@ -73,7 +74,7 @@ class EntryListAdapter(
             } ?: ""
 
             titleTextView.apply {
-                text = HtmlCompat.fromHtml(entry.title ?: "No title", 0)
+                text = HtmlCompat.fromHtml(entry.title, 0)
                 setTextColor(if (entry.isRead) {
                     Color.GRAY
                 } else {

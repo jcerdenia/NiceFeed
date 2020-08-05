@@ -24,6 +24,7 @@ private const val TAG = "MainActivityLogs"
 private const val REQUEST_CODE_ADD_FEED = 0
 const val MANAGE_FEEDS = 0
 const val ADD_FEEDS = 1
+const val SETTINGS = 2
 
 class MainActivity : AppCompatActivity(),
     FeedListFragment.Callbacks,
@@ -88,7 +89,7 @@ class MainActivity : AppCompatActivity(),
                     replaceMainFragment(fragment, false)
                 }, 350)
 
-                (getDrawerFragment() as FeedListFragment?)?.forceUpdateActiveFeedId(feedIdPair.website)
+                (getDrawerFragment() as FeedListFragment?)?.forceUpdateActiveFeedId(feedIdPair.url)
                 drawerLayout.closeDrawers()
             }
         }
@@ -117,7 +118,6 @@ class MainActivity : AppCompatActivity(),
 
     override fun onManageFeedsSelected() {
         val intent = ManagingActivity.newIntent(this@MainActivity, MANAGE_FEEDS)
-        //startActivity(intent)
         startActivityForResult(intent, REQUEST_CODE_ADD_FEED)
     }
 
@@ -129,7 +129,7 @@ class MainActivity : AppCompatActivity(),
     override fun onFeedSelected(feedIdPair: FeedIdPair, activeFeedId: String?) {
         drawerLayout.closeDrawers()
 
-        if (feedIdPair.website != activeFeedId) {
+        if (feedIdPair.url != activeFeedId) {
             val fragment = EntryListFragment.newInstance(feedIdPair)
             handler.postDelayed({
                 replaceMainFragment(fragment, false)
@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onFeedLoaded(feedId: String, title: String) {
+    override fun onFeedLoaded(title: String) {
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(false)
             this.title = title
@@ -160,6 +160,11 @@ class MainActivity : AppCompatActivity(),
         onFeedRemoved()
     }
 
+    override fun onSettingsSelected() {
+        val intent = ManagingActivity.newIntent(this@MainActivity, SETTINGS)
+        startActivity(intent)
+    }
+
     override fun onFeedRemoved() {
         replaceMainFragment(EntryListFragment.newInstance(null), false)
         supportActionBar?.title = getString(R.string.app_name)
@@ -170,7 +175,7 @@ class MainActivity : AppCompatActivity(),
         replaceMainFragment(newFragment, true)
     }
 
-    override fun onEntryLoaded(date: Date?, website: String?) {
+    override fun onEntryLoaded(date: Date?, website: String) {
         val formattedDate = date?.let { getDateInstance(MEDIUM).format(it) }
         val time = date?.let { getTimeInstance(SHORT).format(it) }
 

@@ -107,7 +107,7 @@ class ManageFeedsFragment: Fragment(),
         selectAllCheckBox = view.findViewById(R.id.checkBox_select_all)
         recyclerView = view.findViewById(R.id.recyclerView_feed)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        attachAdapter()
+        recyclerView.adapter = adapter
         return view
     }
 
@@ -128,10 +128,6 @@ class ManageFeedsFragment: Fragment(),
         }
 
         observeFeedsLiveData()
-    }
-
-    private fun attachAdapter() {
-        recyclerView.adapter = adapter
     }
 
     private fun observeFeedsLiveData() {
@@ -203,19 +199,26 @@ class ManageFeedsFragment: Fragment(),
         }
     }
 
-    override fun onRemoveConfirmed(count: Int) {
-        val websites = mutableListOf<String>()
+    override fun onRemoveConfirmed() {
+        val feedIds = mutableListOf<String>()
         for (feed in viewModel.selectedItems) {
-            websites.add(feed.website)
+            feedIds.add(feed.url)
         }
 
+        viewModel.deleteFeedsAndEntriesByIds(feedIds)
+        if (feedIds.size == 1) {
+            showFeedsRemovedNotice(title = viewModel.selectedItems[0].title)
+        } else {
+            showFeedsRemovedNotice(feedIds.size)
+        }
         resetSelection()
-        viewModel.deleteFeedsAndEntriesByIds(websites)
-        showFeedsRemovedNotice(count)
     }
 
-    private fun showFeedsRemovedNotice(count: Int) {
-        val feedsRemoved = resources.getQuantityString(
+    private fun showFeedsRemovedNotice(
+        count: Int = 1,
+        title: String? = null
+    ) {
+        val feedsRemoved = title ?: resources.getQuantityString(
             R.plurals.numberOfFeeds,
             count,
             count
@@ -223,7 +226,7 @@ class ManageFeedsFragment: Fragment(),
 
         Snackbar.make(
             nestedScrollView,
-            getString(R.string.removed_feeds, feedsRemoved),
+            getString(R.string.feed_removed_message, feedsRemoved),
             Snackbar.LENGTH_LONG
         ).setAction(R.string.done) {
             callbacks?.onDoneManaging()
@@ -250,7 +253,7 @@ class ManageFeedsFragment: Fragment(),
     override fun onEditCategoryConfirmed(category: String) {
         val ids = mutableListOf<String>()
         for (feed in viewModel.selectedItems) {
-            ids.add(feed.website)
+            ids.add(feed.url)
         }
 
         viewModel.updateCategoryByFeedIds(ids, category)
