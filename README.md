@@ -3,4 +3,4 @@ RSS Reader for Android written in Kotlin.
 
 Work in progress. Aiming for a clean and light app without too many frills.
 
-![alt text](https://www.dropbox.com/s/79olnnpdt7p0evp/Screenshot_20200810-023326_NiceFeed.jpg?dl=0)
+!(https://www.dropbox.com/s/79olnnpdt7p0evp/Screenshot_20200810-023326_NiceFeed.jpg)
