@@ -37,13 +37,11 @@ class SortFeedManagerFragment: BottomSheetDialogFragment() {
         val view = inflater.inflate(R.layout.fragment_sort_feeds, container, false)
         radioGroupSortFeeds = view.findViewById(R.id.radioGroup_sort)
         cancelButton = view.findViewById(R.id.cancel_button)
-
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val currentSelection = context?.let {
             UserPreferences.getFeedManagerSortPref(it)
         } ?: SORT_BY_ADDED

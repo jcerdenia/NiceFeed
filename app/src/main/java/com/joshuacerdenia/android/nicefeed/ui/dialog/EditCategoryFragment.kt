@@ -61,13 +61,11 @@ class EditCategoryFragment : BottomSheetDialogFragment() {
         categoryTextView = view.findViewById(R.id.category_edit_text)
         cancelButton = view.findViewById(R.id.cancel_button)
         confirmButton = view.findViewById(R.id.confirm_button)
-
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val count = arguments?.getInt(ARG_COUNT) ?: 1
         val title = arguments?.getString(ARG_TITLE)
         val categories = arguments?.getStringArray(ARG_CATEGORIES)?.toList() ?: emptyList()

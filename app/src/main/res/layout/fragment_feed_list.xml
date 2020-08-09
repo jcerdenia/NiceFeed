@@ -53,14 +53,6 @@
             android:drawableStart="@drawable/ic_settings"
             android:text="@string/settings" />
 
-        <Button
-            android:id="@+id/button_about"
-            style="@style/DrawerMenuButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_info"
-            android:text="@string/about" />
-
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

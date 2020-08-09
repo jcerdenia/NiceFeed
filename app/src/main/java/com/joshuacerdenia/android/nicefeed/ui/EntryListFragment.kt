@@ -102,8 +102,12 @@ class EntryListFragment : Fragment(),
         super.onCreate(savedInstanceState)
         adapter = EntryListAdapter(this)
         helper = RefreshHelper(this)
+        val autoUpdateIsEnabled = context?.let { UserPreferences.getAutoUpdatePref(it) } ?: true
+
         arguments?.getBoolean(ARG_IS_NEWLY_ADDED)?.let { isNewlyAdded ->
-            viewModel.shouldAutoRefresh = !isNewlyAdded
+            if (isNewlyAdded || !autoUpdateIsEnabled) {
+                viewModel.shouldAutoRefresh = false
+            }
         }
     }
 
@@ -146,32 +150,11 @@ class EntryListFragment : Fragment(),
             }
         })
 
-        viewModel.requestResultLiveData?.observe(viewLifecycleOwner, Observer {
-            if (!viewModel.refreshHasBeenManaged) {
-                it?.let {
-                    Log.d(TAG, "Got ${it.entries.size} entries from internet")
-                    helper.submitNewData(it.feed, it.entries)
-                }
-                viewModel.refreshHasBeenManaged = true
-            }
-
-            callbacks?.onCheckingForUpdates(false, getCurrentFeed()?.title)
-            progressBar.visibility = View.GONE
-        })
-
-        observeEntriesLiveData()
-    }
-
-    private fun observeEntriesLiveData(queryText: String? = null) {
         viewModel.entriesLiveData.observe(viewLifecycleOwner, Observer { entries ->
             helper.submitInitialEntries(entries)
-
-            val searchedEntries = queryText?.let { queryText ->
-                searchEntries(queryText, entries)
-            } ?: entries
-            adapter.submitList(sortAndFilterEntries(searchedEntries))
-
+            updateUI(entries, viewModel.currentQuery)
             updateFeedUnreadCount()
+
             emptyImage.visibility = if (entries.isEmpty()) {
                 View.VISIBLE
             } else {
@@ -183,12 +166,25 @@ class EntryListFragment : Fragment(),
                     getCurrentFeed()?.let { feed ->
                         viewModel.requestFeedUpdate(feed.url)
                         callbacks?.onCheckingForUpdates()
-                        viewModel.shouldAutoRefresh = false
                     }
                 }, 250)
+                viewModel.shouldAutoRefresh = false
             } else {
                 progressBar.visibility = View.GONE
             }
+        })
+
+        viewModel.requestResultLiveData?.observe(viewLifecycleOwner, Observer {
+            if (!viewModel.refreshHasBeenManaged) {
+                it?.let {
+                    Log.d(TAG, "Got ${it.entries.size} entries from internet")
+                    helper.submitNewData(it.feed, it.entries)
+                }
+                viewModel.refreshHasBeenManaged = true
+            }
+
+            callbacks?.onCheckingForUpdates(false, getCurrentFeed()?.title)
+            progressBar.visibility = View.GONE
         })
     }
 
@@ -204,14 +200,17 @@ class EntryListFragment : Fragment(),
         setStarAllOptionsItem()
 
         searchView.apply {
+            if (viewModel.currentQuery != null) {
+                isIconified = false
+                setQuery(viewModel.currentQuery, false)
+                clearFocus()
+            }
+
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(queryText: String): Boolean {
                     if (queryText.isNotEmpty()) {
-                        val list = searchEntries(
-                            queryText.toLowerCase(Locale.ROOT),
-                            getCurrentEntries()
-                        )
-                        observeEntriesLiveData(queryText)
+                        viewModel.currentQuery = queryText
+                        updateUI(getCurrentEntries(), queryText)
                     }
 
                     clearFocus()
@@ -221,7 +220,8 @@ class EntryListFragment : Fragment(),
 
                 override fun onQueryTextChange(queryText: String): Boolean {
                     return if (queryText.isEmpty()) {
-                        observeEntriesLiveData()
+                        viewModel.currentQuery = null
+                        updateUI(getCurrentEntries(), null)
                         true
                     } else {
                         false
@@ -236,22 +236,35 @@ class EntryListFragment : Fragment(),
             R.id.menuItem_refresh -> handleRefresh(getCurrentFeed()?.url)
             R.id.menuItem_about_feed -> handleShowFeedInfo(getCurrentFeed())
             R.id.menuItem_sort_filter -> handleSortAndFilter()
-            R.id.menuItem_mark_all -> handleMarkAll(getCurrentEntries())
-            R.id.menuItem_star_all -> handleStarAll(getCurrentEntries())
+            R.id.menuItem_mark_all -> handleMarkAll(adapter.currentList)
+            R.id.menuItem_star_all -> handleStarAll(adapter.currentList)
             R.id.menuItem_visit_website -> handleVisitWebsite(getCurrentFeed()?.website)
             R.id.menuItem_delete_feed -> handleRemoveFeed(getCurrentFeed()?.title)
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun searchEntries(queryText: String, entries: List<Entry>): List<Entry> {
-        val resultList = mutableListOf<Entry>()
-        for (entry in entries) {
-            if (entry.title.toLowerCase(Locale.ROOT).contains(queryText)) {
-                resultList.add(entry)
+    private fun updateUI(entries: List<Entry>, query: String?) {
+        val queriedEntries = getQueriedEntries(query, entries)
+        val sortedAndFilteredEntries = sortAndFilterEntries(queriedEntries)
+        adapter.submitList(sortedAndFilteredEntries)
+        adapter.notifyDataSetChanged()
+        setMarkAllOptionsItem()
+        setStarAllOptionsItem()
+    }
+
+    private fun getQueriedEntries(queryText: String?, entries: List<Entry>): List<Entry> {
+        return if (queryText != null) {
+            val resultList = mutableListOf<Entry>()
+            for (entry in entries) {
+                if (entry.title.toLowerCase(Locale.ROOT).contains(queryText)) {
+                    resultList.add(entry)
+                }
             }
+            resultList
+        } else {
+            entries
         }
-        return resultList
     }
 
     private fun allIsRead(entries: List<Entry>): Boolean {
@@ -275,7 +288,7 @@ class EntryListFragment : Fragment(),
     }
 
     private fun setMarkAllOptionsItem() {
-        markAllOptionsItem?.title = if (allIsRead(getCurrentEntries())) {
+        markAllOptionsItem?.title = if (allIsRead(adapter.currentList)) {
             getString(R.string.mark_all_as_unread)
         } else {
             getString(R.string.mark_all_as_read)
@@ -283,7 +296,7 @@ class EntryListFragment : Fragment(),
     }
 
     private fun setStarAllOptionsItem() {
-        starAllOptionsItem?.title = if (allIsStarred(getCurrentEntries())) {
+        starAllOptionsItem?.title = if (allIsStarred(adapter.currentList)) {
             getString(R.string.unstar_all)
         } else {
             getString(R.string.star_all)
@@ -375,9 +388,7 @@ class EntryListFragment : Fragment(),
     }
 
     override fun onSortFilterConfirmed() {
-        //val list = sortAndFilterEntries(getCurrentEntries())
-        //adapter.submitList(list)
-        observeEntriesLiveData()
+        updateUI(getCurrentEntries(), viewModel.currentQuery)
     }
 
     private fun sortAndFilterEntries(entries: List<Entry>): List<Entry> {

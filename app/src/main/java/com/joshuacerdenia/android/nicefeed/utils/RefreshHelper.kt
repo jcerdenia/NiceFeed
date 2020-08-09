@@ -3,8 +3,6 @@ package com.joshuacerdenia.android.nicefeed.utils
 import android.util.Log
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.data.model.FeedSansUnreadCount
-import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 
 /* Compares recently requested data from the web with current data saved locally;
 Outputs which entries to add, update, and delete; as well as updated feed data, if any */
@@ -30,22 +28,6 @@ class RefreshHelper(
         )
     }
 
-    // NEW
-    fun submitInitialData(feed: FeedSansUnreadCount, entries: List<Entry>) {
-        // First, map FeedSansUnreadCount to Feed
-        currentFeed = Feed(
-            url = feed.url,
-            title = feed.title,
-            website = feed.website,
-            description = feed.description,
-            imageUrl = feed.imageUrl,
-            category = feed.category,
-            unreadCount = 0 // Arbitrary
-        )
-        currentEntries = entries
-        listener.onCurrentEntriesChanged()
-    }
-
     fun submitInitialEntries(entries: List<Entry>) {
         currentEntries = entries
         listener.onCurrentEntriesChanged()
@@ -67,9 +49,9 @@ class RefreshHelper(
 
         for (entry in newEntries) {
             if (!isAddedAndUnchanged(entry, currentEntries)) {
-                if (currentEntryIds.contains(entry.guid)) {
+                if (currentEntryIds.contains(entry.url)) {
                     // i.e., if an old version of the entry exists
-                    val currentItemIndex = currentEntryIds.indexOf(entry.guid)
+                    val currentItemIndex = currentEntryIds.indexOf(entry.url)
                     entry.isStarred = currentEntries[currentItemIndex].isStarred
                     entriesToUpdate.add(entry)
                 } else {
@@ -80,7 +62,7 @@ class RefreshHelper(
         }
 
         for (entry in currentEntries) {
-            if (!newEntryIds.contains(entry.guid) && !entry.isStarred) {
+            if (!newEntryIds.contains(entry.url) && !entry.isStarred) {
                 entriesToDelete.add(entry)
             }
         }
@@ -111,7 +93,7 @@ class RefreshHelper(
     private fun getEntryIds(entries: List<Entry>): List<String> {
         val entriesByGuid = mutableListOf<String>()
         for (entry in entries) {
-            entriesByGuid.add(entry.guid)
+            entriesByGuid.add(entry.url)
         }
 
         return entriesByGuid

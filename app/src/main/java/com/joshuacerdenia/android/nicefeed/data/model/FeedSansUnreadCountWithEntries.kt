@@ -8,8 +8,12 @@ data class FeedSansUnreadCountWithEntries(
     @Embedded val feed: FeedSansUnreadCount,
     @Relation(
         parentColumn = "url",
-        entityColumn = "guid",
-        associateBy = Junction(FeedEntryCrossRef::class)
+        entityColumn = "url",
+        associateBy = Junction(
+            value = FeedEntryCrossRef::class,
+            parentColumn = "feedUrl",
+            entityColumn = "entryUrl"
+        )
     )
     val entries: List<Entry>
 )

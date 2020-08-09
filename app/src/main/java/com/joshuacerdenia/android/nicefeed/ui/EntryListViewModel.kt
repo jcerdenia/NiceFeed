@@ -18,6 +18,7 @@ class EntryListViewModel: ViewModel() {
     private val parser = FeedParser()
     private val feedIdLiveData = MutableLiveData<String>()
 
+    var currentQuery: String? = null
     var refreshHasBeenManaged = false
     var shouldAutoRefresh = true
 

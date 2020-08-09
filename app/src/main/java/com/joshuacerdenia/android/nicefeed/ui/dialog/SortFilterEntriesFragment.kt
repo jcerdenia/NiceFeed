@@ -41,7 +41,6 @@ class SortFilterEntriesFragment: BottomSheetDialogFragment() {
         sorterRadioGroup = view.findViewById(R.id.radioGroup_sorter)
         filterRadioGroup = view.findViewById(R.id.radioGroup_filter)
         doneButton = view.findViewById(R.id.button_confirm)
-
         return view
     }
 

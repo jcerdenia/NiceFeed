@@ -7,7 +7,7 @@ import java.util.*
 
 @Entity
 data class Entry(
-    @PrimaryKey val guid: String, // Doubles as URL
+    @PrimaryKey val url: String, // Doubles as URL
     val title: String,
     val website: String,
     val author: String?,
@@ -21,7 +21,7 @@ data class Entry(
     fun isTheSameAs(entry: Entry): Boolean {
         // Compares new and existing versions of an entry, ignoring certain properties
         val checklist = listOf(
-            (entry.guid == guid),
+            (entry.url == url),
             (entry.title == title),
             (entry.website == website),
             (entry.author == author),

@@ -45,7 +45,6 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
     private lateinit var manageButton: Button
     private lateinit var addButton: Button
     private lateinit var settingsButton: Button
-    private lateinit var aboutButton: Button
     private lateinit var bottomDivider: View
     private lateinit var recyclerView: RecyclerView
     lateinit var adapter: FeedListAdapter
@@ -88,7 +87,6 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
         manageButton = view.findViewById(R.id.button_manage)
         addButton = view.findViewById(R.id.button_add)
         settingsButton = view.findViewById(R.id.button_settings)
-        aboutButton = view.findViewById(R.id.button_about)
         bottomDivider = view.findViewById(R.id.divider_bottom)
         recyclerView = view.findViewById(R.id.recyclerView_feed)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -109,10 +107,6 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
 
         settingsButton.setOnClickListener {
             callbacks?.onSettingsSelected()
-        }
-
-        aboutButton.setOnClickListener {
-            // TODO About Page
         }
 
         viewModel.feedsLiveData.observe(viewLifecycleOwner, Observer {

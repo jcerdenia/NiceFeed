@@ -13,6 +13,7 @@ object UserPreferences {
     private const val KEY_MANAGER_SORT = "KEY_MANAGER_SORT"
     private const val KEY_FILTER_ENTRIES = "KEY_FILTER_ENTRIES"
     private const val KEY_SORT_ENTRIES = "KEY_SORT_ENTRIES"
+    private const val KEY_AUTO_UPDATE = "KEY_AUTO_UPDATE"
 
     fun getSavedFeedId(context: Context): String? {
         return getDefaultSharedPrefs(context).getString(KEY_FEED_ID, null)
@@ -44,6 +45,14 @@ object UserPreferences {
 
     fun saveEntriesSortPref(context: Context, sorter: Int) {
         getDefaultSharedPrefs(context).edit().putInt(KEY_SORT_ENTRIES, sorter).apply()
+    }
+
+    fun getAutoUpdatePref(context: Context): Boolean {
+        return getDefaultSharedPrefs(context).getBoolean(KEY_AUTO_UPDATE, true)
+    }
+
+    fun saveAutoUpdatePref(context: Context, isOn: Boolean) {
+        getDefaultSharedPrefs(context).edit().putBoolean(KEY_AUTO_UPDATE, isOn).apply()
     }
 
     private fun getDefaultSharedPrefs(context: Context): SharedPreferences {

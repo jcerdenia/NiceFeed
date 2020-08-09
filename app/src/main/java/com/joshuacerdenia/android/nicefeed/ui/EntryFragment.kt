@@ -1,6 +1,8 @@
 package com.joshuacerdenia.android.nicefeed.ui
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -11,6 +13,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.utils.EntryToHtmlFormatter
@@ -72,6 +75,8 @@ class EntryFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menuItem_star -> handleStar(item)
+            R.id.menuItem_share -> handleShare()
+            R.id.menuItem_copy_link -> handleCopyLink()
             R.id.menuItem_view_in_browser -> handleViewInBrowser()
             else -> super.onOptionsItemSelected(item)
         }
@@ -128,8 +133,35 @@ class EntryFragment: Fragment() {
         }
     }
 
+    private fun handleShare(): Boolean {
+        Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_SUBJECT, entry.title)
+            putExtra(Intent.EXTRA_TEXT, entry.url)
+        }.also { intent ->
+            val chooserIntent = Intent.createChooser(intent, getString(R.string.share_entry))
+            startActivity(chooserIntent)
+        }
+
+        return true
+    }
+
+    private fun handleCopyLink(): Boolean {
+        val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        ClipData.newPlainText("link", entry.url).run {
+            clipboard.setPrimaryClip(this)
+        }
+
+        Snackbar.make(
+            webView,
+            getString(R.string.copied_link_to_clipboard),
+            Snackbar.LENGTH_SHORT
+        ).show()
+        return true
+    }
+
     private fun handleViewInBrowser(): Boolean {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(entry.guid))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(entry.url))
         startActivity(intent)
         return true
     }
@@ -142,6 +174,5 @@ class EntryFragment: Fragment() {
         super.onPause()
         entry.isRead = true
         viewModel.updateEntry(entry)
-        //viewModel.updateFeedUnreadCountById()
     }
 }

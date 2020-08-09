@@ -9,6 +9,11 @@
         app:showAsAction="ifRoom"/>
 
     <item
+        android:id="@+id/menuItem_copy_link"
+        android:title="@string/copy_link"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/menuItem_share"
         android:title="@string/share"
         app:showAsAction="never"/>

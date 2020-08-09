@@ -134,7 +134,7 @@ class NiceFeedRepository private constructor(context: Context) {
     private fun getCrossRefs(feedId: String, entries: List<Entry>): List<FeedEntryCrossRef> {
         val crossRefs = mutableListOf<FeedEntryCrossRef>()
         for (entry in entries) {
-            crossRefs.add(FeedEntryCrossRef(feedId, entry.guid))
+            crossRefs.add(FeedEntryCrossRef(feedId, entry.url))
         }
         return crossRefs
     }

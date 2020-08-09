@@ -29,7 +29,7 @@ class FeedParser: ViewModel() {
     val feedRequestLiveData: LiveData<FeedWithEntries>?
         get() = _feedRequestLiveData
 
-    fun requestFeed(vararg url: String, feedId: String? = null) {
+    fun requestFeed(vararg url: String) {
         // Automatically makes several requests with different possible URLs
 
         val mainUrl = url.first()
@@ -64,7 +64,7 @@ class FeedParser: ViewModel() {
     private class ChannelMapper {
         // Maps RSS Parser library data classes to my own
 
-        val maxEntries = 200 // Arbitrary
+        val maxEntries = 300 // Arbitrary
 
         fun makeFeedWithEntries(url: String, channel: Channel): FeedWithEntries {
             val entries = mapEntries(channel, url)
@@ -86,18 +86,16 @@ class FeedParser: ViewModel() {
             for (article in channel.articles) {
                 if (entries.size < maxEntries) {
                     val entry = Entry(
-                        guid = article.guid ?: article.link ?: "",
-                        //feedUrl = url, // Associates entry with a Feed
+                        url = article.link ?: article.guid ?: "",
                         website = channel.link ?: url,
                         title = article.title ?: NO_TITLE,
-                        //description = article.description,
                         author = article.author ?: channel.title,
                         content = article.content ?: article.description,
                         date = parseDate(article.pubDate),
                         image = article.image
                     )
 
-                    if (entry.guid.isNotEmpty()) {
+                    if (entry.url.isNotEmpty()) {
                         entries.add(entry)
                     }
                 } else {

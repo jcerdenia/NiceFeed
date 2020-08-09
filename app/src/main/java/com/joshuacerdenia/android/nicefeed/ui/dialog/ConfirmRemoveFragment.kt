@@ -43,7 +43,6 @@ class ConfirmRemoveFragment : BottomSheetDialogFragment() {
         dialogTitle = view.findViewById(R.id.dialog_title)
         cancelButton = view.findViewById(R.id.cancel_button)
         confirmButton = view.findViewById(R.id.confirm_button)
-
         return view
     }
 

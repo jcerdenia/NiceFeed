@@ -8,7 +8,7 @@ private const val CSS = "<style>" +
         "* {max-width:100%}" +
         "body {font-family:serif; word-wrap:break-word}" +
         "a {color: #444e64}" +
-        "#title, #author, #supertitle {font-family:Roboto, sans-serif}" +
+        "#title {font-family:Roboto, sans-serif}" +
         "img, figure {display:block; margin-left:auto; margin-right:auto; height:auto; max-width:100%}" +
         "iframe {width:100%}" +
         "</style>"

@@ -1,18 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
-    <TextView
+    <Switch
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/switch_auto_update"
         android:textAppearance="@style/MainItemText"
-        android:drawableStart="@drawable/ic_settings"
+        android:drawableStart="@drawable/ic_refresh_light"
         android:drawablePadding="16dp"
-        android:text="Sort/Filter Entries"
-        />
+        android:padding="16dp"
+        android:text="@string/automatically_check_for_updates"/>
+
+    <TextView
+        style="@style/Buttonized"
+        android:id="@+id/textView_sort_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:drawableStart="@drawable/ic_sort_light"
+        android:drawablePadding="16dp"
+        android:gravity="start|center_vertical"
+        android:text="@string/sort_filter_entries"
+        android:textAppearance="@style/MainItemText" />
+
+    <TextView
+        android:id="@+id/textView_about"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:drawableStart="@drawable/ic_info"
+        android:drawablePadding="16dp"
+        android:gravity="start|center_vertical"
+        android:text="@string/about"
+        android:textAppearance="@style/MainItemText" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:text="@string/about_nicefeed" />
 
 </LinearLayout>

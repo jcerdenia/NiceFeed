@@ -47,7 +47,7 @@ class EntryPopupMenu(
             true
         }
 
-        setOnDismissListener() {
+        setOnDismissListener {
             view?.setBackgroundColor(Color.TRANSPARENT)
         }
     }

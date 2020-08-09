@@ -1,7 +1,6 @@
 package com.joshuacerdenia.android.nicefeed.ui
 
 import android.content.Context
-import android.graphics.Color
 import android.view.Gravity.START
 import android.view.LayoutInflater
 import android.view.View
@@ -102,10 +101,8 @@ class FeedListAdapter(
             this.feed = feed
             if (isHighlighted) {
                 context?.let {
-                    itemContainer.setBackgroundColor(getColor(context, R.color.colorSelect))
+                    itemView.setBackgroundColor(getColor(context, R.color.colorSelect))
                 }
-            } else {
-                itemContainer.setBackgroundColor(Color.TRANSPARENT)
             }
 
             titleTextView.text = feed.title

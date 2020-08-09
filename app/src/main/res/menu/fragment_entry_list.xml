@@ -5,21 +5,18 @@
     <item
         android:id="@+id/menuItem_search"
         android:title="@string/search"
-        android:hint="@string/key_words"
-        android:icon="@drawable/ic_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:iconifiedByDefault="true"
-        app:showAsAction="collapseActionView|ifRoom" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menuItem_refresh"
         android:icon="@drawable/ic_refresh"
-        android:title="@string/refresh"
-        app:showAsAction="ifRoom"/>
+        android:title="@string/check_for_updates"
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/menuItem_about_feed"
-        android:title="View/Edit Feed Info"
+        android:title="@string/view_edit_feed_info"
         app:showAsAction="never"/>
 
     <item

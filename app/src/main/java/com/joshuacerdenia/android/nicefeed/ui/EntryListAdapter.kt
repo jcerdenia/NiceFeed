@@ -112,7 +112,7 @@ class EntryListAdapter(
     private class DiffCallback : DiffUtil.ItemCallback<Entry>() {
 
         override fun areItemsTheSame(oldItem: Entry, newItem: Entry): Boolean {
-            return oldItem.guid == newItem.guid
+            return oldItem.url == newItem.url
         }
 
         override fun areContentsTheSame(oldItem: Entry, newItem: Entry): Boolean {

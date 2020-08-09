@@ -51,13 +51,11 @@ class SubscribeFragment: BottomSheetDialogFragment() {
         updatedTextView = view.findViewById(R.id.textView_additional_info)
         imageView = view.findViewById(R.id.imageView_feed)
         subscribeButton = view.findViewById(R.id.button_positive)
-
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val searchResultItem = arguments?.getSerializable(ARG_SEARCH_RESULT_ITEM) as SearchResultItem
         val lastUpdated = formatDate(searchResultItem.updated?.toLong())
 

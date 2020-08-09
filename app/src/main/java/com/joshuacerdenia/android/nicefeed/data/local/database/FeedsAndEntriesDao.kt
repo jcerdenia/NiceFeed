@@ -53,13 +53,13 @@ interface FeedsAndEntriesDao {
     @Query("SELECT * FROM Entry")
     fun getAllEntries(): LiveData<List<Entry>>
 
-    @Query("SELECT * FROM Entry WHERE guid = :guid")
-    fun getEntry(guid: String?): LiveData<Entry>
+    @Query("SELECT * FROM Entry WHERE url = :url")
+    fun getEntry(url: String?): LiveData<Entry>
 
-    @Query("SELECT Entry.guid, title, website, author, date, content, image, isStarred, isRead " +
+    @Query("SELECT Entry.url, title, website, author, date, content, image, isStarred, isRead " +
             "FROM FeedEntryCrossRef AS _junction " +
-            "INNER JOIN Entry ON (_junction.guid = Entry.guid) " +
-            "WHERE _junction.url = (:feedId)")
+            "INNER JOIN Entry ON (_junction.entryUrl = Entry.url) " +
+            "WHERE _junction.feedUrl = (:feedId)")
     fun getEntriesByFeedId(feedId: String): LiveData<List<Entry>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -81,14 +81,14 @@ interface FeedsAndEntriesDao {
     fun deleteEntries(entries: List<Entry>)
 
     @Query("DELETE FROM Entry WHERE (" +
-            "SELECT _junction.url " +
-            "FROM FeedEntryCrossRef AS _junction INNER JOIN Entry ON (_junction.guid = Entry.guid)" +
+            "SELECT _junction.feedUrl " +
+            "FROM FeedEntryCrossRef AS _junction INNER JOIN Entry ON (_junction.entryUrl = Entry.url)" +
             ") = (:feedId)")
     fun deleteEntriesByFeedId(feedId: String)
 
     @Query("DELETE FROM Entry WHERE (" +
-            "SELECT _junction.url " +
-            "FROM FeedEntryCrossRef AS _junction INNER JOIN Entry ON (_junction.guid = Entry.guid)" +
+            "SELECT _junction.feedUrl " +
+            "FROM FeedEntryCrossRef AS _junction INNER JOIN Entry ON (_junction.entryUrl = Entry.url)" +
             ") IN (:feedIds)")
     fun deleteEntriesByFeedIds(feedIds: List<String>)
 
@@ -160,9 +160,9 @@ interface FeedsAndEntriesDao {
     @Delete
     fun deleteFeedEntryCrossRefs(crossRefs: List<FeedEntryCrossRef>)
 
-    @Query("DELETE FROM FeedEntryCrossRef WHERE url = :feedId")
+    @Query("DELETE FROM FeedEntryCrossRef WHERE feedUrl = :feedId")
     fun deleteCrossRefsByFeedId(feedId: String)
 
-    @Query("DELETE FROM FeedEntryCrossRef WHERE url IN (:feedIds)")
+    @Query("DELETE FROM FeedEntryCrossRef WHERE feedUrl IN (:feedIds)")
     fun deleteCrossRefsByFeedIds(feedIds: List<String>)
 }

@@ -8,8 +8,12 @@ data class FeedWithEntries(
     @Embedded val feed: Feed,
     @Relation(
         parentColumn = "url",
-        entityColumn = "guid",
-        associateBy = Junction(FeedEntryCrossRef::class)
+        entityColumn = "url",
+        associateBy = Junction(
+            value = FeedEntryCrossRef::class,
+            parentColumn = "feedUrl",
+            entityColumn = "entryUrl"
+        )
     )
     val entries: List<Entry>
 )
