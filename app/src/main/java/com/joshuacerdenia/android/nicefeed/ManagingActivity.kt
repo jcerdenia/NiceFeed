@@ -14,6 +14,7 @@ private const val TAG = "ManagingActivity"
 const val EXTRA_FEED_ID_PAIR = "com.joshuacerdenia.android.nicefeed.feed_id_pair"
 private const val EXTRA_MANAGING = "com.joshuacerdenia.android.nicefeed.managing"
 private const val REQUEST_CODE_READ_OPML = 0
+private const val REQUEST_CODE_WRITE_OPML = 1
 
 class ManagingActivity : AppCompatActivity(),
     FeedAddingFragment.Callbacks,
@@ -64,9 +65,16 @@ class ManagingActivity : AppCompatActivity(),
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != Activity.RESULT_OK) {
             return
-        } else if (requestCode == REQUEST_CODE_READ_OPML) {
-            data?.data?.also {
-                (getCurrentFragment() as AddFeedsFragment?)?.submitUriForImport(it)
+        } else when (requestCode) {
+            REQUEST_CODE_READ_OPML -> {
+                data?.data?.also { uri ->
+                    (getCurrentFragment() as AddFeedsFragment?)?.submitUriForImport(uri)
+                }
+            }
+            REQUEST_CODE_WRITE_OPML -> {
+                data?.data?.also { uri ->
+                    (getCurrentFragment() as ManageFeedsFragment?)?.writeOpml(uri)
+                }
             }
         }
     }
@@ -103,11 +111,12 @@ class ManagingActivity : AppCompatActivity(),
     }
 
     override fun onImportOpmlSelected() {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+        Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             type = "*/*"
             addCategory(Intent.CATEGORY_OPENABLE)
+        }.also { intent ->
+            startActivityForResult(intent, REQUEST_CODE_READ_OPML)
         }
-        startActivityForResult(intent, REQUEST_CODE_READ_OPML)
     }
 
     override fun onDoneImporting() {
@@ -126,6 +135,16 @@ class ManagingActivity : AppCompatActivity(),
         val fragment = AddFeedsFragment.newInstance()
         replaceFragment(fragment)
         supportActionBar?.title = getString(R.string.add_feeds)
+    }
+
+    override fun onExportOpmlSelected() {
+        Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            type = "text/*"
+            addCategory(Intent.CATEGORY_OPENABLE)
+            putExtra(Intent.EXTRA_TITLE, "NiceFeed_${System.currentTimeMillis()}.opml")
+        }.also {intent ->
+            startActivityForResult(intent, REQUEST_CODE_WRITE_OPML)
+        }
     }
 
     override fun onDoneManaging() {

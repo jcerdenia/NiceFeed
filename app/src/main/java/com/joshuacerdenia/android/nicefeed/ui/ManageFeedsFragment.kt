@@ -1,6 +1,8 @@
 package com.joshuacerdenia.android.nicefeed.ui
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -20,6 +22,7 @@ import com.joshuacerdenia.android.nicefeed.data.model.FeedMinimal
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment
+import com.joshuacerdenia.android.nicefeed.utils.OpmlExporter
 import com.joshuacerdenia.android.nicefeed.utils.sortedByCategory
 import com.joshuacerdenia.android.nicefeed.utils.sortedByTitle
 
@@ -51,6 +54,7 @@ class ManageFeedsFragment: Fragment(),
     private lateinit var selectAllCheckBox: CheckBox
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: FeedManagerAdapter
+    private var opmlExporter: OpmlExporter? = null
     private val handler = Handler()
     private var categories = arrayOf<String>()
     private var callbacks: Callbacks? = null
@@ -58,6 +62,7 @@ class ManageFeedsFragment: Fragment(),
     interface Callbacks {
         fun onFeedsBeingManagedChanged(count: Int)
         fun onAddFeedsSelected()
+        fun onExportOpmlSelected()
         fun onDoneManaging()
     }
 
@@ -91,6 +96,10 @@ class ManageFeedsFragment: Fragment(),
                 callbacks?.onAddFeedsSelected()
                 true
             }
+            R.id.menuItem_export_opml -> {
+                callbacks?.onExportOpmlSelected()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -114,6 +123,7 @@ class ManageFeedsFragment: Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         callbacks?.onFeedsBeingManagedChanged(viewModel.selectedItems.size)
+        opmlExporter = context?.let { context -> OpmlExporter(context, recyclerView) }
         progressBar.visibility = View.VISIBLE
 
         selectAllCheckBox.setOnClickListener { (it as CheckBox)
@@ -131,18 +141,19 @@ class ManageFeedsFragment: Fragment(),
     }
 
     private fun observeFeedsLiveData() {
-        viewModel.feedsMinimalLiveData.observe(viewLifecycleOwner, Observer {
-            selectAllCheckBox.visibility = if (it.size > 1) {
+        viewModel.feedsMinimalLiveData.observe(viewLifecycleOwner, Observer { feeds ->
+            selectAllCheckBox.visibility = if (feeds.size > 1) {
                 View.VISIBLE
             } else {
                 View.GONE
             }
 
-            categories = getCategories(it)
-            adapter.submitList(getSortedList(it))
+            categories = getCategories(feeds)
+            opmlExporter?.submitFeeds(feeds, categories)
+            adapter.submitList(getSortedList(feeds))
             progressBar.visibility = View.GONE
 
-            if (it.isEmpty()) {
+            if (feeds.isEmpty()) {
                 emptyListImage.visibility = View.VISIBLE
             }
         })
@@ -205,12 +216,18 @@ class ManageFeedsFragment: Fragment(),
             feedIds.add(feed.url)
         }
 
-        viewModel.deleteFeedsAndEntriesByIds(feedIds)
         if (feedIds.size == 1) {
             showFeedsRemovedNotice(title = viewModel.selectedItems[0].title)
         } else {
+            if (feedIds.size == adapter.currentList.size) {
+                context?.let { context ->
+                    UserPreferences.saveFeedId(context, "")
+                }
+            }
             showFeedsRemovedNotice(feedIds.size)
         }
+
+        viewModel.deleteFeedsAndEntriesByIds(feedIds)
         resetSelection()
     }
 
@@ -294,6 +311,10 @@ class ManageFeedsFragment: Fragment(),
             getString(R.string.select_feeds_to, actionString),
             Snackbar.LENGTH_SHORT
         ).show()
+    }
+
+    fun writeOpml(uri: Uri) {
+        opmlExporter?.submitUri(uri)
     }
 
     private fun allItemsAreSelected(): Boolean {

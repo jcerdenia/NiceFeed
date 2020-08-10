@@ -1,5 +1,7 @@
 package com.joshuacerdenia.android.nicefeed.data.model
 
+// Unused for now
+
 data class FeedSansUnreadCount(
     val url: String,
     val website: String,

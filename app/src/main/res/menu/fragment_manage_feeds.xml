@@ -23,4 +23,9 @@
         android:id="@+id/menuItem_add_feeds"
         android:title="@string/add_feeds"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menuItem_export_opml"
+        android:title="@string/export_opml"
+        app:showAsAction="never"/>
 </menu>

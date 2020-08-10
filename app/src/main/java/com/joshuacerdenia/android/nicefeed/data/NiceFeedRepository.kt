@@ -38,12 +38,6 @@ class NiceFeedRepository private constructor(context: Context) {
 
     fun performSearch(query: String): LiveData<List<SearchResultItem>> = searcher.performSearch(query)
 
-    fun addFeedEntryCrossRef(crossRef: FeedEntryCrossRef) {
-        executor.execute {
-            dao.addFeedEntryCrossRef(crossRef)
-        }
-    }
-
     fun getFeedById(id: String): LiveData<Feed> = dao.getFeedById(id)
 
     fun getFeeds(): LiveData<List<Feed>> = dao.getAllFeeds()
@@ -137,5 +131,11 @@ class NiceFeedRepository private constructor(context: Context) {
             crossRefs.add(FeedEntryCrossRef(feedId, entry.url))
         }
         return crossRefs
+    }
+
+    fun addFeedEntryCrossRef(crossRef: FeedEntryCrossRef) {
+        executor.execute {
+            dao.addFeedEntryCrossRef(crossRef)
+        }
     }
 }

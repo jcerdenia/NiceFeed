@@ -123,6 +123,7 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
                 manageButton.isEnabled = false
                 bottomDivider.visibility = View.GONE
                 callbacks?.onNoFeedsToLoad()
+                forceUpdateActiveFeedId(null)
             }
 
             adapter.submitFeeds(it.sortedByUnreadCount())

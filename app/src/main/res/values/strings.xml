@@ -118,6 +118,8 @@
     <string name="copy_link">Copy Link</string>
     <string name="copied_link_to_clipboard">Copied link to clipboard.</string>
     <string name="automatically_check_for_updates">Automatically check for updates</string>
+    <string name="export_opml">Export OPML</string>
+    <string name="exported_opml_message">Exported subscriptions to %s.</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

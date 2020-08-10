@@ -4,6 +4,8 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 
+// Unused for now
+
 data class FeedSansUnreadCountWithEntries(
     @Embedded val feed: FeedSansUnreadCount,
     @Relation(
