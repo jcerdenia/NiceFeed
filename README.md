@@ -1,5 +1,5 @@
 # NiceFeed
-RSS Reader for Android written in Kotlin. Work in progress, no release yet -- aiming for a clean, fully functional app without too many frills.
+RSS Reader written in Kotlin. A personal project while learning Android development. Aiming for a clean, fully functional app without too many frills. No release yet (hopefully soon).
 
 <img width="250" src="Screenshot_20200810-023234_NiceFeed.jpg"> <img width="250" src="Screenshot_20200810-023326_NiceFeed.jpg"> <img width="250" src="Screenshot_20200810-023921_NiceFeed.jpg">
 
