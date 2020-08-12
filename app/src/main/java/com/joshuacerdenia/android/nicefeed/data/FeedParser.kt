@@ -3,8 +3,6 @@ package com.joshuacerdenia.android.nicefeed.data
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
@@ -12,14 +10,13 @@ import com.joshuacerdenia.android.nicefeed.utils.BackupUrlManager
 import com.joshuacerdenia.android.nicefeed.utils.simplified
 import com.prof.rssparser.Channel
 import com.prof.rssparser.Parser
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 private const val TAG = "FeedParser"
 private const val NO_TITLE = "No Title"
 
-class FeedParser: ViewModel() {
+class FeedParser() {
 
     private val parser = Parser.Builder().build()
     private val mapper = ChannelMapper()
@@ -29,34 +26,35 @@ class FeedParser: ViewModel() {
     val feedRequestLiveData: LiveData<FeedWithEntries>?
         get() = _feedRequestLiveData
 
-    fun requestFeed(vararg url: String) {
-        // Automatically makes several requests with different possible URLs
-
-        val mainUrl = url.first()
-        backupUrlManager.setBase(if (url.size > 1) {
-            url.last() // Only up to two initial urls are expected
-        } else {
+    suspend fun getFeedSynchronously(url: String): FeedWithEntries? {
+        return try {
+            val channel = parser.getChannel(url)
+            mapper.makeFeedWithEntries(url, channel)
+        } catch(e: Exception) {
+            e.printStackTrace()
             null
-        })
+        }
+    }
 
-        Log.d(TAG, "Requesting $mainUrl...")
+    suspend fun requestFeed(url: String, backup: String? = null) {
+        // Automatically makes several requests with different possible URLs
+        Log.d(TAG, "Requesting $url...")
+        backupUrlManager.setBase(backup)
 
-        viewModelScope.launch {
-            try {
-                val channel = parser.getChannel(mainUrl)
-                val feedWithEntries = mapper.makeFeedWithEntries(mainUrl, channel)
-                _feedRequestLiveData.postValue(feedWithEntries)
+        try {
+            val channel = parser.getChannel(url)
+            val feedWithEntries = mapper.makeFeedWithEntries(url, channel)
+            _feedRequestLiveData.postValue(feedWithEntries)
 
-            } catch (e: Exception) {
-                e.printStackTrace()
-                // If the initial request fails, try backup URL in different variations
-                if (backupUrlManager.getUrl() != null) {
-                    requestFeed(backupUrlManager.getUrl()!!) // Try the next URL
-                    backupUrlManager.countUp() // Ticked when a request fails
-                } else {
-                    _feedRequestLiveData.postValue(null)
-                    Log.d(TAG, "Request failed")
-                }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // If the initial request fails, try backup URL in different variations
+            if (backupUrlManager.getUrl() != null) {
+                requestFeed(backupUrlManager.getUrl()!!) // Try the next URL
+                backupUrlManager.countUp() // Ticked when a request fails
+            } else {
+                _feedRequestLiveData.postValue(null)
+                Log.d(TAG, "Request failed")
             }
         }
     }
@@ -73,7 +71,7 @@ class FeedParser: ViewModel() {
                 website = channel.link ?: url,
                 title = channel.title ?: channel.link?.simplified() ?: url.simplified(),
                 description = channel.description,
-                imageUrl = channel.image?.url,
+                imageUrl = channel.image?.url ?: channel.image?.link,
                 unreadCount = entries.size
             )
 
@@ -94,10 +92,7 @@ class FeedParser: ViewModel() {
                         date = parseDate(article.pubDate),
                         image = article.image
                     )
-
-                    if (entry.url.isNotEmpty()) {
-                        entries.add(entry)
-                    }
+                    entries.add(entry)
                 } else {
                     break
                 }

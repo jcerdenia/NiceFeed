@@ -44,6 +44,8 @@ class NiceFeedRepository private constructor(context: Context) {
 
     fun getFeedIds(): LiveData<List<String>> = dao.getAllFeedIds()
 
+    fun getAllFeedUrlsSync(): List<String> = dao.getAllFeedUrlsSync()
+
     fun getAllFeedsMinimal(): LiveData<List<FeedMinimal>> = dao.getAllFeedsMinimal()
 
     fun getFeedSansUnreadCountWithEntriesByFeedId(
@@ -55,6 +57,8 @@ class NiceFeedRepository private constructor(context: Context) {
     fun getAllEntries(): LiveData<List<Entry>> = dao.getAllEntries()
 
     fun getEntriesByFeedId(feedId: String): LiveData<List<Entry>> = dao.getEntriesByFeedId(feedId)
+
+    fun getEntryIdsByFeedIdSync(feedId: String): List<String> = dao.getEntryIdsByFeedIdSync(feedId)
 
     fun updateCategoryByFeedIds(ids: Array<String>, category: String) {
         executor.execute {
@@ -97,6 +101,11 @@ class NiceFeedRepository private constructor(context: Context) {
         executor.execute {
             dao.addFeedAndEntries(fwe.feed, fwe.entries, crossRefs)
         }
+    }
+
+    fun addEntriesAndCrossRefs(entries: List<Entry>, feedId: String): List<Long> {
+        val crossRefs = getCrossRefs(feedId, entries)
+        return dao.addEntriesAndCrossRefs(entries, crossRefs)
     }
 
     fun deleteFeedAndEntries(feed: Feed, entries: List<Entry>) {

@@ -89,7 +89,6 @@ class FeedListAdapter(
     ) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private lateinit var feed: Feed
-        val itemContainer: ConstraintLayout = itemView.findViewById(R.id.item_container)
         val titleTextView: TextView = itemView.findViewById(R.id.title)
         val unreadCount: TextView = itemView.findViewById(R.id.item_count)
 
@@ -100,8 +99,9 @@ class FeedListAdapter(
         fun bind(feed: Feed, isHighlighted: Boolean) {
             this.feed = feed
             if (isHighlighted) {
-                context?.let {
+                context?.let { context ->
                     itemView.setBackgroundColor(getColor(context, R.color.colorSelect))
+                    titleTextView.setTextColor(getColor(context, R.color.colorPrimary))
                 }
             }
 

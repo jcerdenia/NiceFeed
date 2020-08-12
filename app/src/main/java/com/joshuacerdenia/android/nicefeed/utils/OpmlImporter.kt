@@ -20,7 +20,7 @@ class OpmlImporter(
     private val listener: OnOpmlParsedListener
 ) {
 
-    private val contentResolver: ContentResolver = context.contentResolver
+    private val contentResolver = context.contentResolver
     private val executor = Executors.newSingleThreadExecutor()
 
     interface OnOpmlParsedListener {
@@ -64,19 +64,28 @@ class OpmlImporter(
         val opml = WireFeedInput().build(opmlReader) as Opml
 
         for (outline in opml.outlines) {
-            val category = outline.title
+            if (outline.xmlUrl != null) {
+                val feed = Feed(
+                    url = outline.xmlUrl,
+                    website = outline.htmlUrl ?: outline.url ?: "",
+                    title = outline.title,
+                    unreadCount = 0
+                )
+                feeds.add(feed)
 
-            if (outline.children.isNotEmpty()) {
-                for (child in outline.children.filterNot { it.xmlUrl.isNullOrEmpty() }) {
-                    val feed = Feed(
-                        url = child.xmlUrl,
-                        website = child.htmlUrl ?: child.xmlUrl,
-                        title = child.title ?: child.xmlUrl.substringAfter("://"),
-                        category = category,
-                        unreadCount = 0
-                    )
-
-                    feeds.add(feed)
+            } else {
+                val category = outline.title
+                if (outline.children.isNotEmpty()) {
+                    for (child in outline.children.filterNot { it.xmlUrl.isNullOrEmpty() }) {
+                        val feed = Feed(
+                            url = child.xmlUrl,
+                            website = child.htmlUrl ?: child.xmlUrl,
+                            title = child.title ?: child.xmlUrl.substringAfter("://"),
+                            category = category,
+                            unreadCount = 0
+                        )
+                        feeds.add(feed)
+                    }
                 }
             }
         }

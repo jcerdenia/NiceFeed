@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -27,7 +26,7 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.menu.EntryPopupMenu
-import com.joshuacerdenia.android.nicefeed.utils.RefreshHelper
+import com.joshuacerdenia.android.nicefeed.utils.UpdateManager
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.sortedByDatePublished
 import com.joshuacerdenia.android.nicefeed.utils.unreadOnTop
@@ -38,7 +37,7 @@ private const val TAG = "EntryListFragment"
 class EntryListFragment : Fragment(),
     EntryListAdapter.OnItemClickListener,
     EntryPopupMenu.OnItemClickListener,
-    RefreshHelper.OnRefreshedListener,
+    UpdateManager.OnRefreshedListener,
     SortFilterEntriesFragment.Callbacks,
     AboutFeedFragment.Callbacks,
     EditCategoryFragment.Callbacks,
@@ -74,7 +73,7 @@ class EntryListFragment : Fragment(),
     private lateinit var searchView: SearchView
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: EntryListAdapter
-    private lateinit var helper: RefreshHelper
+    private lateinit var updateManager: UpdateManager
     private var markAllOptionsItem: MenuItem? = null
     private var starAllOptionsItem: MenuItem? = null
     private val handler = Handler()
@@ -101,7 +100,7 @@ class EntryListFragment : Fragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = EntryListAdapter(this)
-        helper = RefreshHelper(this)
+        updateManager = UpdateManager(this)
         val autoUpdateIsEnabled = context?.let { UserPreferences.getAutoUpdatePref(it) } ?: true
 
         arguments?.getBoolean(ARG_IS_NEWLY_ADDED)?.let { isNewlyAdded ->
@@ -140,7 +139,7 @@ class EntryListFragment : Fragment(),
 
         viewModel.feedLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                helper.currentFeed = it
+                updateManager.currentFeed = it
                 setHasOptionsMenu(true)
                 if (it.title != feedIdPair?.title) {
                     callbacks?.onFeedLoaded(it.title)
@@ -151,7 +150,7 @@ class EntryListFragment : Fragment(),
         })
 
         viewModel.entriesLiveData.observe(viewLifecycleOwner, Observer { entries ->
-            helper.submitInitialEntries(entries)
+            updateManager.submitInitialEntries(entries)
             updateUI(entries, viewModel.currentQuery)
             updateFeedUnreadCount()
 
@@ -177,8 +176,7 @@ class EntryListFragment : Fragment(),
         viewModel.requestResultLiveData?.observe(viewLifecycleOwner, Observer {
             if (!viewModel.refreshHasBeenManaged) {
                 it?.let {
-                    Log.d(TAG, "Got ${it.entries.size} entries from internet")
-                    helper.submitNewData(it.feed, it.entries)
+                    updateManager.submitNewData(it.feed, it.entries)
                 }
                 viewModel.refreshHasBeenManaged = true
             }
@@ -201,7 +199,7 @@ class EntryListFragment : Fragment(),
 
         searchView.apply {
             if (viewModel.currentQuery != null) {
-                isIconified = false
+                searchItem.expandActionView()
                 setQuery(viewModel.currentQuery, false)
                 clearFocus()
             }
@@ -523,9 +521,9 @@ class EntryListFragment : Fragment(),
         viewModel.updateEntry(entry)
     }
 
-    private fun getCurrentFeed(): Feed? = helper.currentFeed
+    private fun getCurrentFeed(): Feed? = updateManager.currentFeed
 
-    private fun getCurrentEntries(): List<Entry> = helper.currentEntries
+    private fun getCurrentEntries(): List<Entry> = updateManager.currentEntries
 
     override fun onCurrentEntriesChanged() {
         adapter.notifyDataSetChanged()

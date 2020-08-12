@@ -1,14 +1,12 @@
 package com.joshuacerdenia.android.nicefeed.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.joshuacerdenia.android.nicefeed.data.FeedParser
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
+import kotlinx.coroutines.launch
 
 private const val TAG = "MainViewModel"
 
@@ -34,7 +32,9 @@ class EntryListViewModel: ViewModel() {
 
     fun requestFeedUpdate(url: String) {
         refreshHasBeenManaged = false
-        parser.requestFeed(url)
+        viewModelScope.launch {
+            parser.requestFeed(url)
+        }
     }
 
     fun getFeedAndEntriesById(feedId: String) {

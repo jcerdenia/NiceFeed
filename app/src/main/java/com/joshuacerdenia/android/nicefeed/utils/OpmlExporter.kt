@@ -25,7 +25,7 @@ class OpmlExporter(
     private val view: View
 ) {
 
-    private val contentResolver: ContentResolver = context.contentResolver
+    private val contentResolver = context.contentResolver
     private val executor = Executors.newSingleThreadExecutor()
     private var feeds = listOf<FeedMinimal>()
         get() = field.sortedBy { it.category }

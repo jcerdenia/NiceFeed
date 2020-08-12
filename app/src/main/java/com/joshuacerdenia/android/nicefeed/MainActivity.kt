@@ -1,6 +1,7 @@
 package com.joshuacerdenia.android.nicefeed
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -34,6 +35,12 @@ class MainActivity : AppCompatActivity(),
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toolbar: Toolbar
     private val handler = Handler()
+
+    companion object {
+        fun newIntent(context: Context): Intent {
+            return Intent(context, MainActivity::class.java)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

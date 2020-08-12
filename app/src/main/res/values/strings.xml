@@ -120,6 +120,8 @@
     <string name="automatically_check_for_updates">Automatically check for updates</string>
     <string name="export_opml">Export OPML</string>
     <string name="exported_opml_message">Exported subscriptions to %s.</string>
+    <string name="notification_channel_name">Latest Entries</string>
+    <string name="new_entries_notification_title">Latest from %s</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

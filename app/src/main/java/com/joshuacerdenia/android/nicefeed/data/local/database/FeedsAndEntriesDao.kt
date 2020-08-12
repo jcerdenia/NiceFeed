@@ -15,6 +15,9 @@ interface FeedsAndEntriesDao {
     @Query("SELECT url FROM Feed")
     fun getAllFeedIds(): LiveData<List<String>>
 
+    @Query("SELECT url FROM Feed")
+    fun getAllFeedUrlsSync(): List<String>
+
     @Query("SELECT url, website, title, category FROM Feed")
     fun getAllFeedsMinimal(): LiveData<List<FeedMinimal>>
 
@@ -62,6 +65,15 @@ interface FeedsAndEntriesDao {
             "WHERE _junction.feedUrl = (:feedId)")
     fun getEntriesByFeedId(feedId: String): LiveData<List<Entry>>
 
+    @Query("SELECT Entry.url " +
+            "FROM FeedEntryCrossRef AS _junction " +
+            "INNER JOIN Entry ON (_junction.entryUrl = Entry.url) " +
+            "WHERE _junction.feedUrl = (:feedId)")
+    fun getEntryIdsByFeedIdSync(feedId: String): List<String>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun getAddedEntriesRowIds(entries: List<Entry>): List<Long>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun addEntry(entry: Entry)
 
@@ -105,6 +117,13 @@ interface FeedsAndEntriesDao {
     @Transaction
     @Query("SELECT url, website, title, description, imageUrl, category FROM Feed WHERE url = :feedId")
     fun getFeedSansUnreadCountWithEntriesByFeedId(feedId: String): LiveData<FeedSansUnreadCountWithEntries>
+
+    @Transaction
+    fun addEntriesAndCrossRefs(entries: List<Entry>, crossRefs: List<FeedEntryCrossRef>): List<Long> {
+        //addEntries(entries)
+        addFeedEntryCrossRefs(crossRefs)
+        return getAddedEntriesRowIds(entries)
+    }
 
     @Transaction
     fun addFeedAndEntries(feed: Feed, entries: List<Entry>, crossRefs: List<FeedEntryCrossRef>) {

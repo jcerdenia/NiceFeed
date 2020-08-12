@@ -7,9 +7,9 @@ import com.joshuacerdenia.android.nicefeed.data.model.Feed
 /* Compares recently requested data from the web with current data saved locally;
 Outputs which entries to add, update, and delete; as well as updated feed data, if any */
 
-private const val TAG = "RefreshHelper"
+private const val TAG = "UpdateManager"
 
-class RefreshHelper(
+class UpdateManager(
     private val listener: OnRefreshedListener
 ) {
 
@@ -39,7 +39,6 @@ class RefreshHelper(
     }
 
     private fun handleNewEntries(newEntries: List<Entry>) {
-        Log.d(TAG, "Handling the new entries motherfucker")
         val newEntryIds = getEntryIds(newEntries)
         val currentEntryIds = getEntryIds(currentEntries)
 
@@ -56,14 +55,15 @@ class RefreshHelper(
                     entriesToUpdate.add(entry)
                 } else {
                     entriesToAdd.add(entry)
-                    Log.d(TAG, "Found new entry to add")
                 }
             }
         }
 
         for (entry in currentEntries) {
-            if (!newEntryIds.contains(entry.url) && !entry.isStarred) {
-                entriesToDelete.add(entry)
+            if (!newEntryIds.contains(entry.url)) {
+                if (!entry.isStarred) { // && entry.isRead ?
+                    entriesToDelete.add(entry)
+                }
             }
         }
 

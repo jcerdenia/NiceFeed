@@ -2,11 +2,13 @@ package com.joshuacerdenia.android.nicefeed.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.joshuacerdenia.android.nicefeed.data.FeedParser
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedEntryCrossRef
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
+import kotlinx.coroutines.launch
 
 open class AddFeedsViewModel: ViewModel() {
 
@@ -24,19 +26,18 @@ open class AddFeedsViewModel: ViewModel() {
         repository.addFeedEntryCrossRef(FeedEntryCrossRef(feedId, entryId))
     }
 
-    fun requestFeed(vararg url: String) {
+    fun requestFeed(url: String, backup: String? = null) {
         requestFailedNoticeEnabled = true
         alreadyAddedNoticeEnabled = true
-        feedParser.requestFeed(*url)
+
+        viewModelScope.launch {
+            feedParser.requestFeed(url, backup)
+        }
     }
 
     fun addFeedWithEntries(feedWithEntries: FeedWithEntries) {
         repository.addFeedWithEntries(feedWithEntries)
     }
-
-    //fun getEntriesAssociatedWithFeedId(feedId: String) {
-        //repository.getEntriesAssociatedWithFeedId(feedId)
-    //}
 
     fun addFeeds(feeds: List<Feed>) {
         repository.addFeeds(feeds)

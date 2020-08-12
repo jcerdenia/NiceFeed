@@ -90,7 +90,11 @@ class EntryListAdapter(
             }
 
             Picasso.get()
-                .load(entry.image)
+                .load(entry.image?.let { image ->
+                    if (image.isNotEmpty()) {
+                        image
+                    } else null
+                })
                 .fit()
                 .centerCrop()
                 .placeholder(R.drawable.vintage_newspaper)
