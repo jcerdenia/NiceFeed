@@ -3,7 +3,7 @@ package com.joshuacerdenia.android.nicefeed.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.joshuacerdenia.android.nicefeed.data.FeedParser
+import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedEntryCrossRef
@@ -18,7 +18,7 @@ open class AddFeedsViewModel: ViewModel() {
     var requestFailedNoticeEnabled = false
     var alreadyAddedNoticeEnabled = false
 
-    val feedRequestLiveData: LiveData<FeedWithEntries>? = feedParser.feedRequestLiveData
+    val feedRequestLiveData: LiveData<FeedWithEntries?> = feedParser.feedRequestLiveData
     val feedIdsLiveData = repository.getFeedIds()
     var feedsToImport = listOf<Feed>()
 

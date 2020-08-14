@@ -45,6 +45,7 @@ class NiceFeedApplication : Application() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.UNMETERED)
             .setRequiresBatteryNotLow(true)
+            //.setRequiresStorageNotLow(true)
             .build()
         val periodicRequest = PeriodicWorkRequest.Builder(
             LatestEntriesWorker::class.java,

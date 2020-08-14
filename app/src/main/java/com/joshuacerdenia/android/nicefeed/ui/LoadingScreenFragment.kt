@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.R
 
-class LoadingScreenFragment: Fragment() {
+class LoadingScreenFragment: VisibleFragment() {
 
     companion object {
         fun newInstance(): LoadingScreenFragment {

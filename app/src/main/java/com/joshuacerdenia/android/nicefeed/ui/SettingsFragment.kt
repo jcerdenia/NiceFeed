@@ -4,9 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
 import android.widget.TextView
-import androidx.fragment.app.Fragment
+import androidx.appcompat.widget.SwitchCompat
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
@@ -15,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_settings.*
 
 private const val TAG = "SettingsFragment"
 
-class SettingsFragment: Fragment(), SortFilterEntriesFragment.Callbacks {
+class SettingsFragment: VisibleFragment(), SortFilterEntriesFragment.Callbacks {
 
     companion object {
         fun newInstance(): SettingsFragment {
@@ -25,7 +24,7 @@ class SettingsFragment: Fragment(), SortFilterEntriesFragment.Callbacks {
 
     private val fragment = this@SettingsFragment
     private lateinit var sortFilterButton: TextView
-    private lateinit var autoUpdateSwitch: Switch
+    private lateinit var autoUpdateSwitch: SwitchCompat
 
     override fun onCreateView(
         inflater: LayoutInflater,

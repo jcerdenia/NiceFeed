@@ -11,7 +11,6 @@ import android.view.*
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
@@ -24,7 +23,7 @@ private const val ARG_ENTRY = "ARG_ENTRY"
 private const val MIME_TYPE = "text/html; charset=UTF-8"
 private const val ENCODING = "base64"
 
-class EntryFragment: Fragment() {
+class EntryFragment: VisibleFragment() {
 
     companion object {
         fun newInstance(entry: Entry): EntryFragment {

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.joshuacerdenia.android.nicefeed.data.local.database.NiceFeedDatabase
 import com.joshuacerdenia.android.nicefeed.data.model.*
+import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedSearcher
 import java.util.concurrent.Executors
 
@@ -34,9 +35,9 @@ class NiceFeedRepository private constructor(context: Context) {
     
     private val dao = database.feedsAndEntriesDao()
     private val executor = Executors.newSingleThreadExecutor()
-    private val searcher = FeedSearcher()
+    private val feedSearcher = FeedSearcher()
 
-    fun performSearch(query: String): LiveData<List<SearchResultItem>> = searcher.performSearch(query)
+    fun performSearch(query: String): LiveData<List<SearchResultItem>> = feedSearcher.performSearch(query)
 
     fun getFeedById(id: String): LiveData<Feed> = dao.getFeedById(id)
 
@@ -103,9 +104,16 @@ class NiceFeedRepository private constructor(context: Context) {
         }
     }
 
-    fun addEntriesAndCrossRefs(entries: List<Entry>, feedId: String): List<Long> {
+    fun addEntriesAndCrossRefs(entries: List<Entry>, feedId: String) {
         val crossRefs = getCrossRefs(feedId, entries)
-        return dao.addEntriesAndCrossRefs(entries, crossRefs)
+        dao.addEntriesAndCrossRefs(entries, crossRefs)
+    }
+
+    fun handleLatestEntriesFound(entries: List<Entry>, feedId: String) {
+        val crossRefs = getCrossRefs(feedId, entries)
+        executor.execute {
+            dao.handleLatestEntriesFound(entries, feedId, crossRefs)
+        }
     }
 
     fun deleteFeedAndEntries(feed: Feed, entries: List<Entry>) {

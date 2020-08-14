@@ -1,7 +1,7 @@
 package com.joshuacerdenia.android.nicefeed.ui
 
 import androidx.lifecycle.*
-import com.joshuacerdenia.android.nicefeed.data.FeedParser
+import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
@@ -20,7 +20,7 @@ class EntryListViewModel: ViewModel() {
     var refreshHasBeenManaged = false
     var shouldAutoRefresh = true
 
-    val requestResultLiveData: LiveData<FeedWithEntries>? = parser.feedRequestLiveData
+    val requestResultLiveData: LiveData<FeedWithEntries?> = parser.feedRequestLiveData
 
     val feedLiveData: LiveData<Feed> = Transformations.switchMap(feedIdLiveData) { feedId ->
         repository.getFeedById(feedId)

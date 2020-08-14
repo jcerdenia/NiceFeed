@@ -1,7 +1,6 @@
 package com.joshuacerdenia.android.nicefeed.ui
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -10,7 +9,6 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.core.widget.NestedScrollView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +26,7 @@ import com.joshuacerdenia.android.nicefeed.utils.sortedByTitle
 
 private const val TAG = "ManageFeedsFragment"
 
-class ManageFeedsFragment: Fragment(),
+class ManageFeedsFragment: VisibleFragment(),
     EditCategoryFragment.Callbacks,
     ConfirmRemoveFragment.Callbacks,
     SortFeedManagerFragment.Callbacks,

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +19,7 @@ import com.joshuacerdenia.android.nicefeed.utils.sortedByUnreadCount
 
 private const val TAG = "FeedListFragment"
 
-class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
+class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
     companion object {
         private const val ARG_ACTIVE_FEED_ID = "ARG_ACTIVE_FEED_ID"
@@ -73,6 +72,7 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
         super.onCreate(savedInstanceState)
         if (viewModel.activeFeedId == null) {
             viewModel.activeFeedId = arguments?.getString(ARG_ACTIVE_FEED_ID)
+            arguments = null
         }
 
         adapter = FeedListAdapter(context, this, viewModel.activeFeedId)
@@ -109,13 +109,13 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
             callbacks?.onSettingsSelected()
         }
 
-        viewModel.feedsLiveData.observe(viewLifecycleOwner, Observer {
-            if (it.isNotEmpty()) {
+        viewModel.feedsLiveData.observe(viewLifecycleOwner, Observer { feeds ->
+            if (feeds.isNotEmpty()) {
                 manageButton.isEnabled = true
                 bottomDivider.visibility = View.VISIBLE
 
                 if (viewModel.isInitialLoading) {
-                    handleInitialLoading(it)
+                    handleInitialLoading(feeds)
                     viewModel.isInitialLoading = false
                 }
 
@@ -126,7 +126,7 @@ class FeedListFragment: Fragment(), FeedListAdapter.OnItemClickListener {
                 forceUpdateActiveFeedId(null)
             }
 
-            adapter.submitFeeds(it.sortedByUnreadCount())
+            adapter.submitFeeds(feeds.sortedByUnreadCount())
         })
     }
 

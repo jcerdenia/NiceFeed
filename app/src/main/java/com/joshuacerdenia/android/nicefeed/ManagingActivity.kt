@@ -11,7 +11,6 @@ import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.ui.*
 
 private const val TAG = "ManagingActivity"
-const val EXTRA_FEED_ID_PAIR = "com.joshuacerdenia.android.nicefeed.feed_id_pair"
 private const val EXTRA_MANAGING = "com.joshuacerdenia.android.nicefeed.managing"
 private const val REQUEST_CODE_READ_OPML = 0
 private const val REQUEST_CODE_WRITE_OPML = 1

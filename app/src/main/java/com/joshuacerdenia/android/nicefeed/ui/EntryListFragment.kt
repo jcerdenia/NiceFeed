@@ -10,7 +10,6 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +33,7 @@ import java.util.*
 
 private const val TAG = "EntryListFragment"
 
-class EntryListFragment : Fragment(),
+class EntryListFragment : VisibleFragment(),
     EntryListAdapter.OnItemClickListener,
     EntryPopupMenu.OnItemClickListener,
     UpdateManager.OnRefreshedListener,
@@ -129,20 +128,20 @@ class EntryListFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         val feedIdPair = arguments?.getSerializable(ARG_FEED_ID_PAIR) as FeedIdPair?
 
-        feedIdPair?.let {
-            viewModel.getFeedAndEntriesById(it.url)
-            callbacks?.onFeedLoaded(it.title)
+        feedIdPair?.let { feed ->
+            viewModel.getFeedAndEntriesById(feed.url)
+            callbacks?.onFeedLoaded(feed.title)
         } ?: let {
             progressBar.visibility = View.GONE
             emptyImage.visibility = View.VISIBLE
         }
 
-        viewModel.feedLiveData.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                updateManager.currentFeed = it
+        viewModel.feedLiveData.observe(viewLifecycleOwner, Observer { feed ->
+            if (feed != null) {
+                updateManager.currentFeed = feed
                 setHasOptionsMenu(true)
-                if (it.title != feedIdPair?.title) {
-                    callbacks?.onFeedLoaded(it.title)
+                if (feed.title != feedIdPair?.title) {
+                    callbacks?.onFeedLoaded(feed.title)
                 }
             } else {
                 callbacks?.onFeedRemoved()
@@ -173,12 +172,12 @@ class EntryListFragment : Fragment(),
             }
         })
 
-        viewModel.requestResultLiveData?.observe(viewLifecycleOwner, Observer {
-            if (!viewModel.refreshHasBeenManaged) {
-                it?.let {
+        viewModel.requestResultLiveData.observe(viewLifecycleOwner, Observer { feedWithEntries ->
+            feedWithEntries?.let {
+                if (!viewModel.refreshHasBeenManaged) {
                     updateManager.submitNewData(it.feed, it.entries)
+                    viewModel.refreshHasBeenManaged = true
                 }
-                viewModel.refreshHasBeenManaged = true
             }
 
             callbacks?.onCheckingForUpdates(false, getCurrentFeed()?.title)

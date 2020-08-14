@@ -3,13 +3,12 @@ package com.joshuacerdenia.android.nicefeed.ui
 import android.content.Context
 import android.view.View
 import android.widget.EditText
-import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 
-abstract class FeedAddingFragment: Fragment() {
+abstract class FeedAddingFragment: VisibleFragment() {
 
     var currentFeedIds: List<String> = emptyList()
     var callbacks: Callbacks? = null

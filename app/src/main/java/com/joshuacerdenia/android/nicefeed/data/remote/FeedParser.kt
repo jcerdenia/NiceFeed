@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.data
+package com.joshuacerdenia.android.nicefeed.data.remote
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -23,7 +23,7 @@ class FeedParser() {
     private val backupUrlManager = BackupUrlManager()
 
     private val _feedRequestLiveData = MutableLiveData<FeedWithEntries>()
-    val feedRequestLiveData: LiveData<FeedWithEntries>?
+    val feedRequestLiveData: LiveData<FeedWithEntries?>
         get() = _feedRequestLiveData
 
     suspend fun getFeedSynchronously(url: String): FeedWithEntries? {

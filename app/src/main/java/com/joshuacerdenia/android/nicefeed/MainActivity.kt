@@ -23,6 +23,7 @@ import java.util.*
 
 private const val TAG = "MainActivityLogs"
 private const val REQUEST_CODE_ADD_FEED = 0
+const val EXTRA_FEED_ID_PAIR = "com.joshuacerdenia.android.nicefeed.feed_id_pair"
 const val MANAGE_FEEDS = 0
 const val ADD_FEEDS = 1
 const val SETTINGS = 2
@@ -32,13 +33,18 @@ class MainActivity : AppCompatActivity(),
     EntryListFragment.Callbacks,
     EntryFragment.Callbacks {
 
+    private var feedIdPair: FeedIdPair? = null
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toolbar: Toolbar
     private val handler = Handler()
 
     companion object {
-        fun newIntent(context: Context): Intent {
-            return Intent(context, MainActivity::class.java)
+        fun newIntent(context: Context, feedIdPair: FeedIdPair): Intent {
+            return Intent(context, MainActivity::class.java).apply {
+                putExtra(EXTRA_FEED_ID_PAIR, feedIdPair)
+                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
         }
     }
 
@@ -52,8 +58,9 @@ class MainActivity : AppCompatActivity(),
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         toolbar.setNavigationIcon(R.drawable.ic_menu)
 
+        feedIdPair = intent?.getSerializableExtra(EXTRA_FEED_ID_PAIR) as FeedIdPair?
         if (getMainFragment() == null) {
-            val feedId = UserPreferences.getSavedFeedId(this)
+            val feedId = feedIdPair?.url ?: UserPreferences.getSavedFeedId(this)
             val mainFragment = LoadingScreenFragment.newInstance()
             val drawerFragment = FeedListFragment.newInstance(feedId)
 
@@ -81,6 +88,15 @@ class MainActivity : AppCompatActivity(),
                     else -> drawerLayout.openDrawer(GravityCompat.START, true)
                 }
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        feedIdPair = intent?.getSerializableExtra(EXTRA_FEED_ID_PAIR) as FeedIdPair?
+        feedIdPair?.let { feedIdPair ->
+            replaceMainFragment(EntryListFragment.newInstance(feedIdPair), true)
+            (getDrawerFragment() as FeedListFragment?)?.forceUpdateActiveFeedId(feedIdPair.url)
         }
     }
 

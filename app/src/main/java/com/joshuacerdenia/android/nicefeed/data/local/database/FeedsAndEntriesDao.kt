@@ -39,6 +39,9 @@ interface FeedsAndEntriesDao {
     @Query("UPDATE Feed SET unreadCount = :count WHERE url = :id")
     fun updateFeedUnreadCountById(id: String, count: Int)
 
+    @Query("UPDATE Feed SET unreadCount = (unreadCount + :addend) WHERE url = :feedId")
+    fun addToFeedUnreadCount(feedId: String, addend: Int)
+
     @Delete
     fun deleteFeed(feed: Feed)
 
@@ -119,10 +122,9 @@ interface FeedsAndEntriesDao {
     fun getFeedSansUnreadCountWithEntriesByFeedId(feedId: String): LiveData<FeedSansUnreadCountWithEntries>
 
     @Transaction
-    fun addEntriesAndCrossRefs(entries: List<Entry>, crossRefs: List<FeedEntryCrossRef>): List<Long> {
-        //addEntries(entries)
+    fun addEntriesAndCrossRefs(entries: List<Entry>, crossRefs: List<FeedEntryCrossRef>) {
+        addEntries(entries)
         addFeedEntryCrossRefs(crossRefs)
-        return getAddedEntriesRowIds(entries)
     }
 
     @Transaction
@@ -151,6 +153,17 @@ interface FeedsAndEntriesDao {
         deleteEntriesByFeedIds(feedIds)
         deleteCrossRefsByFeedIds(feedIds)
         deleteFeedsByIds(feedIds)
+    }
+
+    @Transaction
+    fun handleLatestEntriesFound(
+        entries: List<Entry>,
+        feedId: String,
+        crossRefs: List<FeedEntryCrossRef>
+    ) {
+        addEntries(entries)
+        addFeedEntryCrossRefs(crossRefs)
+        addToFeedUnreadCount(feedId, entries.size)
     }
 
     @Transaction

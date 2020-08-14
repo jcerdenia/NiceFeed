@@ -2,8 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.joshuacerdenia.android.nicefeed">
 
+    <permission
+        android:name="com.joshuacerdenia.android.nicefeed.PRIVATE"
+        android:protectionLevel="signature"/>
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.joshuacerdenia.android.nicefeed.PRIVATE"/>
 
     <application
         android:name=".NiceFeedApplication"
@@ -21,6 +26,15 @@
         </activity>
 
         <activity android:name=".ManagingActivity" />
+
+        <receiver
+            android:name=".work.NotificationReceiver"
+            android:permission="com.joshuacerdenia.android.nicefeed.PRIVATE"
+            android:exported="false">
+            <intent-filter android:priority="-999">
+                <action android:name="com.joshuacerdenia.android.nicefeed.work.SHOW_NOTIFICATION"/>
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="preloaded_fonts"
