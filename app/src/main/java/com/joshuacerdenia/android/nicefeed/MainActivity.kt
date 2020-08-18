@@ -11,15 +11,12 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
-import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.ui.EntryFragment
 import com.joshuacerdenia.android.nicefeed.ui.EntryListFragment
 import com.joshuacerdenia.android.nicefeed.ui.FeedListFragment
 import com.joshuacerdenia.android.nicefeed.ui.LoadingScreenFragment
 import com.joshuacerdenia.android.nicefeed.utils.simplified
-import java.text.DateFormat.*
-import java.util.*
 
 private const val TAG = "MainActivityLogs"
 private const val REQUEST_CODE_ADD_FEED = 0
@@ -33,7 +30,6 @@ class MainActivity : AppCompatActivity(),
     EntryListFragment.Callbacks,
     EntryFragment.Callbacks {
 
-    private var feedIdPair: FeedIdPair? = null
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toolbar: Toolbar
     private val handler = Handler()
@@ -58,16 +54,13 @@ class MainActivity : AppCompatActivity(),
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         toolbar.setNavigationIcon(R.drawable.ic_menu)
 
-        feedIdPair = intent?.getSerializableExtra(EXTRA_FEED_ID_PAIR) as FeedIdPair?
         if (getMainFragment() == null) {
+            val feedIdPair = intent?.getSerializableExtra(EXTRA_FEED_ID_PAIR) as FeedIdPair?
             val feedId = feedIdPair?.url ?: UserPreferences.getSavedFeedId(this)
-            val mainFragment = LoadingScreenFragment.newInstance()
-            val drawerFragment = FeedListFragment.newInstance(feedId)
-
-            supportFragmentManager.beginTransaction()
-                .add(R.id.main_fragment_container, mainFragment)
-                .add(R.id.drawer_fragment_container, drawerFragment)
-                .commit()
+            loadFragments(
+                LoadingScreenFragment.newInstance(),
+                FeedListFragment.newInstance(feedId)
+            )
         }
     }
 
@@ -93,11 +86,10 @@ class MainActivity : AppCompatActivity(),
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        feedIdPair = intent?.getSerializableExtra(EXTRA_FEED_ID_PAIR) as FeedIdPair?
-        feedIdPair?.let { feedIdPair ->
-            replaceMainFragment(EntryListFragment.newInstance(feedIdPair), true)
-            (getDrawerFragment() as FeedListFragment?)?.forceUpdateActiveFeedId(feedIdPair.url)
-        }
+        val feedIdPair = intent?.getSerializableExtra(EXTRA_FEED_ID_PAIR) as FeedIdPair?
+        replaceMainFragment(EntryListFragment.newInstance(feedIdPair), true)
+        (getDrawerFragment() as FeedListFragment?)?.forceUpdateActiveFeedId(feedIdPair?.url)
+        drawerLayout.closeDrawers()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -116,6 +108,13 @@ class MainActivity : AppCompatActivity(),
                 drawerLayout.closeDrawers()
             }
         }
+    }
+
+    private fun loadFragments(main: Fragment, drawer: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .add(R.id.main_fragment_container, main)
+            .add(R.id.drawer_fragment_container, drawer)
+            .commit()
     }
 
     private fun getMainFragment(): Fragment? {
@@ -193,26 +192,16 @@ class MainActivity : AppCompatActivity(),
         supportActionBar?.title = getString(R.string.app_name)
     }
 
-    override fun onEntrySelected(entry: Entry) {
-        val newFragment = EntryFragment.newInstance(entry)
+    override fun onEntrySelected(entryId: String) {
+        val newFragment = EntryFragment.newInstance(entryId)
         replaceMainFragment(newFragment, true)
     }
 
-    override fun onEntryLoaded(date: Date?, website: String) {
-        val formattedDate = date?.let { getDateInstance(MEDIUM).format(it) }
-        val time = date?.let { getTimeInstance(SHORT).format(it) }
-
+    override fun onEntryLoaded(website: String) {
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            if (formattedDate != null) {
-                this.title = formattedDate
-                this.subtitle = "$time - ${website.simplified()}"
-            } else {
-                this.title = website.simplified()
-                this.subtitle = null
-            }
+            this.title = website.simplified()
         }
-
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 

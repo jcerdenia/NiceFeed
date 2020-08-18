@@ -14,6 +14,17 @@ object UserPreferences {
     private const val KEY_FILTER_ENTRIES = "KEY_FILTER_ENTRIES"
     private const val KEY_SORT_ENTRIES = "KEY_SORT_ENTRIES"
     private const val KEY_AUTO_UPDATE = "KEY_AUTO_UPDATE"
+    private const val KEY_LAST_POLLED_INDEX = "KEY_LAST_POLLED_INDEX"
+    private const val KEY_POLLING = "KEY_POLLING"
+    private const val KEY_TEXT_SIZE = "KEY_TEXT_SIZE"
+
+    const val TEXT_SIZE_NORMAL = 0
+    const val TEXT_SIZE_LARGE = 1
+    const val TEXT_SIZE_LARGER = 2
+
+    private fun getDefaultSharedPrefs(context: Context): SharedPreferences {
+        return context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
+    }
 
     fun getSavedFeedId(context: Context): String? {
         return getDefaultSharedPrefs(context).getString(KEY_FEED_ID, null)
@@ -55,7 +66,27 @@ object UserPreferences {
         getDefaultSharedPrefs(context).edit().putBoolean(KEY_AUTO_UPDATE, isOn).apply()
     }
 
-    private fun getDefaultSharedPrefs(context: Context): SharedPreferences {
-        return context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
+    fun getLastPolledIndex(context: Context): Int {
+        return getDefaultSharedPrefs(context).getInt(KEY_LAST_POLLED_INDEX, 0)
+    }
+
+    fun saveLastPolledIndex(context: Context, index: Int) {
+        getDefaultSharedPrefs(context).edit().putInt(KEY_LAST_POLLED_INDEX, index).apply()
+    }
+
+    fun getPollingPref(context: Context): Boolean {
+        return getDefaultSharedPrefs(context).getBoolean(KEY_POLLING, true)
+    }
+
+    fun savePollingPref(context: Context, isPolling: Boolean) {
+        getDefaultSharedPrefs(context).edit().putBoolean(KEY_POLLING, isPolling).apply()
+    }
+
+    fun getTextSize(context: Context): Int {
+        return getDefaultSharedPrefs(context).getInt(KEY_TEXT_SIZE, TEXT_SIZE_NORMAL)
+    }
+
+    fun saveTextSize(context: Context, textSize: Int) {
+        getDefaultSharedPrefs(context).edit().putInt(KEY_TEXT_SIZE, textSize).apply()
     }
 }

@@ -59,8 +59,8 @@ interface FeedsAndEntriesDao {
     @Query("SELECT * FROM Entry")
     fun getAllEntries(): LiveData<List<Entry>>
 
-    @Query("SELECT * FROM Entry WHERE url = :url")
-    fun getEntry(url: String?): LiveData<Entry>
+    @Query("SELECT * FROM Entry WHERE url = :entryId")
+    fun getEntryById(entryId: String): LiveData<Entry>
 
     @Query("SELECT Entry.url, title, website, author, date, content, image, isStarred, isRead " +
             "FROM FeedEntryCrossRef AS _junction " +
@@ -94,6 +94,9 @@ interface FeedsAndEntriesDao {
 
     @Delete
     fun deleteEntries(entries: List<Entry>)
+
+    @Query("DELETE FROM Entry WHERE url NOT IN (SELECT entryUrl FROM FeedEntryCrossRef)")
+    fun deleteFeedlessEntries()
 
     @Query("DELETE FROM Entry WHERE (" +
             "SELECT _junction.feedUrl " +

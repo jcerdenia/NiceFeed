@@ -1,7 +1,6 @@
 package com.joshuacerdenia.android.nicefeed.ui.menu
 
 import android.content.Context
-import android.graphics.Color
 import android.view.View
 import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
@@ -48,7 +47,7 @@ class EntryPopupMenu(
         }
 
         setOnDismissListener {
-            view?.setBackgroundColor(Color.TRANSPARENT)
+            view?.background = null
         }
     }
 }

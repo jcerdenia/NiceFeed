@@ -41,6 +41,14 @@ class EntryListViewModel: ViewModel() {
         feedIdLiveData.value = feedId
     }
 
+    fun getEntries() {
+        // TODO: Get recent entries
+    }
+
+    fun getStarredEntries() {
+        // TODO: Get starred entries
+    }
+
     fun updateFeed(feed: Feed) {
         repository.updateFeed(feed)
     }

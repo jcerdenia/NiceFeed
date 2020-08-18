@@ -4,14 +4,17 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.text.HtmlCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.joshuacerdenia.android.nicefeed.MainActivity
 import com.joshuacerdenia.android.nicefeed.NOTIFICATION_CHANNEL_ID
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
+import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
@@ -39,11 +42,19 @@ class LatestEntriesWorker(
     }
 
     override suspend fun doWork(): Result {
-        Log.d(TAG, "Background work triggered")
+        Log.d(TAG, "Background work started")
         val feedUrls = repository.getAllFeedUrlsSync()
-        val url = feedUrls.shuffled().first()
+        val lastIndex = UserPreferences.getLastPolledIndex(context)
+        val newIndex = if (lastIndex + 1 >= feedUrls.size) {
+            0
+        } else {
+            lastIndex + 1
+        }
+
+        val url = feedUrls[newIndex]
         val currentEntryIds = repository.getEntryIdsByFeedIdSync(url)
         val feedWithEntries: FeedWithEntries? = feedParser.getFeedSynchronously(url)
+        UserPreferences.saveLastPolledIndex(context, newIndex)
 
         return if (feedWithEntries != null) {
             val newEntries = mutableListOf<Entry>()
@@ -81,6 +92,7 @@ class LatestEntriesWorker(
         feedTitle: String,
         entries: List<Entry>
     ): Notification {
+        val latestEntry = entries.sortedByDatePublished().first()
         val intent = MainActivity.newIntent(context, FeedIdPair(feedId, feedTitle))
         val pendingIntent = PendingIntent.getActivity(
             context,
@@ -89,14 +101,16 @@ class LatestEntriesWorker(
             PendingIntent.FLAG_CANCEL_CURRENT
         )
         val text = if (entries.size > 1) {
-            resources.getString(R.string.and_more, entries.sortedByDatePublished().first().title)
+            resources.getString(R.string.and_more, latestEntry.title)
         } else {
-            entries.first().title
+            latestEntry.title
+        }.also { text ->
+            HtmlCompat.fromHtml(text, 0)
         }
 
         return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setTicker(resources.getString(R.string.new_entries_notification_title, feedTitle))
-            .setSmallIcon(R.drawable.ic_rss_feed)
+            .setSmallIcon(R.drawable.ic_nicefeed_notif)
             .setContentTitle(resources.getString(R.string.new_entries_notification_title, feedTitle))
             .setStyle(NotificationCompat.BigTextStyle().bigText(text))
             .setContentText(text)

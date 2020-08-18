@@ -43,8 +43,19 @@ class EntryListFragment : VisibleFragment(),
     ConfirmRemoveFragment.Callbacks {
 
     companion object {
+        const val FLAG_RECENT_ENTRIES = 0
+        const val FLAG_STARRED = 1
         private const val ARG_FEED_ID_PAIR = "ARG_FEED_ID_PAIR"
         private const val ARG_IS_NEWLY_ADDED = "ARG_IS_NEWLY_ADDED"
+        private const val ARG_FLAG = "ARG_FLAG"
+
+        fun newInstance(flag: Int): EntryListFragment {
+            return EntryListFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_FLAG, flag)
+                }
+            }
+        }
 
         fun newInstance(
             feedIdPair: FeedIdPair?,
@@ -81,7 +92,7 @@ class EntryListFragment : VisibleFragment(),
     interface Callbacks {
         fun onFeedLoaded(title: String)
         fun onFeedRemoved()
-        fun onEntrySelected(entry: Entry)
+        fun onEntrySelected(entryId: String)
         fun onCheckingForUpdates(letContinue: Boolean = true, title: String? = null)
         fun onCategoriesNeeded(): Array<String>
     }
@@ -127,13 +138,25 @@ class EntryListFragment : VisibleFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val feedIdPair = arguments?.getSerializable(ARG_FEED_ID_PAIR) as FeedIdPair?
+        val flag = arguments?.getInt(ARG_FLAG)
 
-        feedIdPair?.let { feed ->
-            viewModel.getFeedAndEntriesById(feed.url)
-            callbacks?.onFeedLoaded(feed.title)
-        } ?: let {
-            progressBar.visibility = View.GONE
-            emptyImage.visibility = View.VISIBLE
+        when {
+            feedIdPair != null -> {
+                viewModel.getFeedAndEntriesById(feedIdPair.url)
+                callbacks?.onFeedLoaded(feedIdPair.title)
+            }
+            flag == FLAG_RECENT_ENTRIES -> {
+                viewModel.getEntries()
+                callbacks?.onFeedLoaded("Recent")
+            }
+            flag == FLAG_STARRED -> {
+                viewModel.getStarredEntries()
+                callbacks?.onFeedLoaded("Starred")
+            }
+            else -> {
+                progressBar.visibility = View.GONE
+                emptyImage.visibility = View.VISIBLE
+            }
         }
 
         viewModel.feedLiveData.observe(viewLifecycleOwner, Observer { feed ->
@@ -243,11 +266,11 @@ class EntryListFragment : VisibleFragment(),
 
     private fun updateUI(entries: List<Entry>, query: String?) {
         val queriedEntries = getQueriedEntries(query, entries)
-        val sortedAndFilteredEntries = sortAndFilterEntries(queriedEntries)
-        adapter.submitList(sortedAndFilteredEntries)
-        adapter.notifyDataSetChanged()
-        setMarkAllOptionsItem()
-        setStarAllOptionsItem()
+        sortAndFilterEntries(queriedEntries).run {
+            adapter.submitList(this)
+            setMarkAllOptionsItem(this)
+            setStarAllOptionsItem(this)
+        }
     }
 
     private fun getQueriedEntries(queryText: String?, entries: List<Entry>): List<Entry> {
@@ -284,16 +307,16 @@ class EntryListFragment : VisibleFragment(),
         return count == entries.size
     }
 
-    private fun setMarkAllOptionsItem() {
-        markAllOptionsItem?.title = if (allIsRead(adapter.currentList)) {
+    private fun setMarkAllOptionsItem(list: List<Entry> = adapter.currentList) {
+        markAllOptionsItem?.title = if (allIsRead(list)) {
             getString(R.string.mark_all_as_unread)
         } else {
             getString(R.string.mark_all_as_read)
         }
     }
 
-    private fun setStarAllOptionsItem() {
-        starAllOptionsItem?.title = if (allIsStarred(adapter.currentList)) {
+    private fun setStarAllOptionsItem(list: List<Entry> = adapter.currentList) {
+        starAllOptionsItem?.title = if (allIsStarred(list)) {
             getString(R.string.unstar_all)
         } else {
             getString(R.string.star_all)
@@ -325,6 +348,9 @@ class EntryListFragment : VisibleFragment(),
         if (toAdd.size + toUpdate.size > 0) {
             showRefreshedNotice(toAdd.size, toUpdate.size)
         }
+        handler.postDelayed({
+            adapter.notifyDataSetChanged()
+        }, 500)
     }
 
     private fun showRefreshedNotice(newCount: Int, updatedCount: Int) {
@@ -403,7 +429,7 @@ class EntryListFragment : VisibleFragment(),
         setFilterNotice(filter, (entries.size - filteredEntries.size))
         return if (sorter == SortFilterEntriesFragment.SORT_UNREAD_ON_TOP) {
             if (adapter.latestClickedPosition == 0) {
-                // Crude, but good enough for now:
+                // Crude, but good enough:
                 handler.postDelayed({
                     recyclerView.scrollToPosition(0)
                 }, 200)
@@ -438,7 +464,6 @@ class EntryListFragment : VisibleFragment(),
         }
 
         viewModel.updateEntries(entries)
-        setMarkAllOptionsItem()
         return true
     }
 
@@ -450,7 +475,6 @@ class EntryListFragment : VisibleFragment(),
         }
 
         viewModel.updateEntries(entries)
-        setStarAllOptionsItem()
         return true
     }
 
@@ -500,7 +524,7 @@ class EntryListFragment : VisibleFragment(),
     }
 
     override fun onItemClicked(entry: Entry) {
-        callbacks?.onEntrySelected(entry)
+        callbacks?.onEntrySelected(entry.url)
     }
 
     override fun onItemLongClicked(entry: Entry, view: View?) {
@@ -513,7 +537,7 @@ class EntryListFragment : VisibleFragment(),
             EntryPopupMenu.ACTION_STAR -> entry.isStarred = !entry.isStarred
             EntryPopupMenu.ACTION_MARK_AS -> entry.isRead = !entry.isRead
             else -> {
-                callbacks?.onEntrySelected(entry)
+                callbacks?.onEntrySelected(entry.url)
                 return
             }
         }
@@ -526,8 +550,6 @@ class EntryListFragment : VisibleFragment(),
 
     override fun onCurrentEntriesChanged() {
         adapter.notifyDataSetChanged()
-        setMarkAllOptionsItem()
-        setStarAllOptionsItem()
     }
 
     fun scrollToTop() {

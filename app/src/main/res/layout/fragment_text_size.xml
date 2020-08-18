@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/text_size" />
+
+    <RadioGroup
+        android:id="@+id/radio_group_text_size"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radio_button_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/normal"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+
+        <RadioButton
+            android:id="@+id/radio_button_large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/large"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+
+        <RadioButton
+            android:id="@+id/radio_button_larger"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/larger"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+
+    </RadioGroup>
+
+</LinearLayout>

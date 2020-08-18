@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.work.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.work.LatestEntriesWorker
+import com.joshuacerdenia.android.nicefeed.work.SweepEntriesWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,15 +38,15 @@ class NiceFeedApplication : Application() {
 
     private fun delayedInit() {
         applicationScope.launch {
-            setupRecurringWork()
+            setupLatestEntriesWork()
+            setupSweepEntriesWork()
         }
     }
 
-    private fun setupRecurringWork() {
+    private fun setupLatestEntriesWork() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.UNMETERED)
             .setRequiresBatteryNotLow(true)
-            //.setRequiresStorageNotLow(true)
             .build()
         val periodicRequest = PeriodicWorkRequest.Builder(
             LatestEntriesWorker::class.java,
@@ -57,6 +58,17 @@ class NiceFeedApplication : Application() {
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             LatestEntriesWorker.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
-            periodicRequest)
+            periodicRequest
+        )
+    }
+
+    private fun setupSweepEntriesWork() {
+        val periodicRequest = PeriodicWorkRequest.Builder(
+            SweepEntriesWorker::class.java,
+            1,
+            TimeUnit.DAYS
+        ).build()
+
+        WorkManager.getInstance(this).enqueue(periodicRequest)
     }
 }

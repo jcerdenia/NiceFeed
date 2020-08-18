@@ -111,7 +111,7 @@
     <string name="import_feeds_via_opml">Import feeds via OPML</string>
     <string name="sort_filter_entries">Sort/Filter Entries</string>
     <string name="changes_saved">Changes saved.</string>
-    <string name="about_nicefeed">NiceFeed is an ongoing project of Joshua Cerdenia. More information at github.com/joshuatopia.</string>
+    <string name="about_nicefeed">NiceFeed is a project of Joshua Cerdenia. Please visit github.com/joshuacerdenia/nicefeed.</string>
     <string name="view_edit_feed_info">View/Edit Feed Info</string>
     <string name="check_for_updates">Check for Updates</string>
     <string name="share_entry">Share Entry</string>
@@ -121,8 +121,14 @@
     <string name="export_opml">Export OPML</string>
     <string name="exported_opml_message">Exported subscriptions to %s.</string>
     <string name="notification_channel_name">Latest Entries</string>
-    <string name="new_entries_notification_title">Latest from %s</string>
+    <string name="new_entries_notification_title">New in %s</string>
     <string name="and_more">%s… and more</string>
+    <string name="change_text_size">Change Text Size</string>
+    <string name="text_size">Text Size</string>
+    <string name="normal">Normal</string>
+    <string name="large">Large</string>
+    <string name="larger">Larger</string>
+    <string name="recent">Recent</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

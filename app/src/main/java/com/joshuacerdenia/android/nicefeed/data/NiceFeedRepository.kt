@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.joshuacerdenia.android.nicefeed.data.local.database.NiceFeedDatabase
 import com.joshuacerdenia.android.nicefeed.data.model.*
-import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedSearcher
 import java.util.concurrent.Executors
 
@@ -56,6 +55,8 @@ class NiceFeedRepository private constructor(context: Context) {
     }
 
     fun getAllEntries(): LiveData<List<Entry>> = dao.getAllEntries()
+
+    fun getEntryById(entryId: String): LiveData<Entry> = dao.getEntryById(entryId)
 
     fun getEntriesByFeedId(feedId: String): LiveData<List<Entry>> = dao.getEntriesByFeedId(feedId)
 
@@ -126,6 +127,12 @@ class NiceFeedRepository private constructor(context: Context) {
     fun deleteFeedsAndEntriesByIds(ids: List<String>) {
         executor.execute {
             dao.deleteFeedsAndEntriesByIds(ids)
+        }
+    }
+
+    fun deleteFeedLessEntries() {
+        executor.execute {
+            dao.deleteFeedlessEntries()
         }
     }
 

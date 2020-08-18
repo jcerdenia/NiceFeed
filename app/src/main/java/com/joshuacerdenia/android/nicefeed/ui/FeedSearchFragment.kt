@@ -73,7 +73,7 @@ class FeedSearchFragment : FeedAddingFragment(),
             progressBar.visibility = View.GONE
         })
 
-        viewModel.feedRequestLiveData?.observe(viewLifecycleOwner, Observer {
+        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, Observer {
             manager.submitData(it)
             adapter.onFinishedLoading()
             viewModel.itemBeingLoaded = null

@@ -1,29 +1,44 @@
 package com.joshuacerdenia.android.nicefeed.utils
 
+import android.content.Context
 import android.util.Base64
 import android.util.Base64.encodeToString
+import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences.TEXT_SIZE_LARGE
+import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences.TEXT_SIZE_LARGER
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
+import java.text.DateFormat
 
-private const val CSS = "<style>" +
-        "* {max-width:100%}" +
-        "body {font-family:serif; word-wrap:break-word}" +
-        "a {color: #444e64}" +
-        "#title {font-family:Roboto, sans-serif}" +
-        "img, figure {display:block; margin-left:auto; margin-right:auto; height:auto; max-width:100%}" +
-        "iframe {width:100%}" +
-        "</style>"
+class EntryToHtmlFormatter(context: Context) {
 
-class EntryToHtmlFormatter(entry: Entry) {
+    private val linkColor = "#444E64"
+    private val fontSize = when (UserPreferences.getTextSize(context)) {
+        TEXT_SIZE_LARGE -> "large"
+        TEXT_SIZE_LARGER -> "x-large"
+        else -> "medium"
+    }
+    private val style = "<style>" +
+            "* {max-width:100%}" +
+            "body {font-size:$fontSize; font-family:Roboto, sans-serif; word-wrap:break-word}" +
+            "#subtitle {color:gray}" +
+            "a {color:$linkColor}" +
+            "img, figure {display:block; margin-left:auto; margin-right:auto; height:auto; max-width:100%}" +
+            "iframe {width:100%}" +
+            "</style>"
 
-    private val title = "<h2 id=\"title\">${entry.title}</h2>"
-    private val author = "<p id=\"author\">${entry.author}</p>"
-    private val content = entry.content ?: "No content"
+    fun format(entry: Entry): String {
+        val title = "<h2 id=\"title\">${entry.title}</h2>"
+        val formattedDate = entry.date?.let { date ->
+            DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(date)
+        } ?: ""
+        val subtitle = "<p id=\"subtitle\">$formattedDate – ${entry.author}</p>"
+        val content = entry.content ?: ""
 
-    fun getHtml(): String {
-        val html = StringBuilder(CSS)
+        val html = StringBuilder(style)
             .append("<body>")
             .append(title)
-            .append(author)
+            .append(subtitle)
+            //.append("<hr>")
             .append(content)
             .append("</body")
             .toString()
