@@ -1,5 +1,5 @@
 # NiceFeed
-RSS Reader for Android: a personal project while learning Kotlin, mainly something for me to use. RSS is an old technology and there are already many readers out there, but I find many of them clunky, hard to navigate, and jam-packed with features I don't need. The aim is a nimble but fully functional app with decent architecture and not too many frills. Stay tuned for releases.
+RSS Reader for Android: a personal project while learning Kotlin, mainly something for me to use. RSS is an old technology and there are already many readers out there, but I find many of them clunky, hard to navigate, and jam-packed with features I don't need. The aim is a nimble but fully functional app with not too many frills. Stay tuned for releases.
 
 <img width="250" src="Screenshot_20200810-023234_NiceFeed.jpg"> <img width="250" src="Screenshot_20200810-023326_NiceFeed.jpg"> <img width="250" src="Screenshot_20200810-023921_NiceFeed.jpg">
 
