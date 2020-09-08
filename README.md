@@ -4,7 +4,7 @@ NiceFeed is an RSS Reader for Android; a personal project while learning Kotlin,
 <b>Update — Sept 8, 2020</b><br>
 In the last couple of weeks I've found it useful to rewrite much of the existing code and to get it closer to the MVVM pattern, i.e., moving all "business logic" to View Models, resulting in much more manageable, reactive, and less finicky UI code. This has been helpful in implementing some new features, such as a drop-down items in the drawer menu, as well as easier sorting and filtering of entries in the main screeen. A first release should not be too far in the future!<br>
 
-Some old screenshots (need to replace these at some point!):<br>
+Some old screenshots (need to replace these at some point!):<br><br>
 <img width="250" src="Screenshot_20200810-023234_NiceFeed.jpg"> <img width="250" src="Screenshot_20200810-023326_NiceFeed.jpg"> <img width="250" src="Screenshot_20200810-023921_NiceFeed.jpg">
 
 <h3>Features</h3>
