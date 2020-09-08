@@ -1,49 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
+
+    <TextView
+        android:layout_width='match_parent'
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="8dp"
+        android:textAppearance="@style/MainItemText"
+        app:drawableStartCompat="@drawable/ic_rss_feed"
+        android:drawablePadding="16dp"
+        android:text="@string/feeds" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width='wrap_content'
+            android:layout_height="wrap_content"
+            android:paddingStart="56dp"
+            android:paddingVertical="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+            android:text="@string/sort_feeds_by"
+            tools:ignore="RtlSymmetry" />
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/sort_feeds_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="8dp"
+            android:paddingVertical="8dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width='wrap_content'
+            android:layout_height="wrap_content"
+            android:paddingStart="56dp"
+            android:paddingVertical="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+            android:text="@string/sort_entries_by"
+            tools:ignore="RtlSymmetry" />
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/sort_entries_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="8dp"
+            android:paddingVertical="8dp" />
+
+    </LinearLayout>
+
     <androidx.appcompat.widget.SwitchCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/switch_auto_update"
-        android:textAppearance="@style/MainItemText"
-        android:drawableStart="@drawable/ic_refresh_light"
-        android:drawablePadding="16dp"
-        android:padding="16dp"
-        android:text="@string/automatically_check_for_updates"/>
+        android:id="@+id/auto_update_switch"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:paddingEnd="16dp"
+        android:paddingStart="56dp"
+        android:paddingVertical="8dp"
+        android:text="@string/auto_update_on_launch"/>
 
     <TextView
-        style="@style/Buttonized"
-        android:id="@+id/textView_sort_filter"
-        android:layout_width="match_parent"
+        android:layout_width='match_parent'
         android:layout_height="wrap_content"
+        android:paddingTop="16dp"
         android:paddingHorizontal="16dp"
-        android:drawableStart="@drawable/ic_sort_light"
+        android:paddingBottom="8dp"
+        android:textAppearance="@style/MainItemText"
+        app:drawableStartCompat="@drawable/ic_notification"
         android:drawablePadding="16dp"
-        android:gravity="start|center_vertical"
-        android:text="@string/sort_filter_entries"
-        android:textAppearance="@style/MainItemText" />
+        android:text="@string/notifications" />
 
-    <TextView
-        android:id="@+id/textView_about"
+    <androidx.appcompat.widget.SwitchCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:drawableStart="@drawable/ic_info"
+        android:id="@+id/notification_switch"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:paddingEnd="16dp"
+        android:paddingStart="56dp"
+        android:paddingVertical="8dp"
+        android:text="@string/notification_switch_description"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="8dp"
         android:drawablePadding="16dp"
         android:gravity="start|center_vertical"
         android:text="@string/about"
-        android:textAppearance="@style/MainItemText" />
+        android:textAppearance="@style/MainItemText"
+        app:drawableStartCompat="@drawable/ic_info" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/about_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="16dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="56dp"
         android:text="@string/about_nicefeed" />
 
 </LinearLayout>

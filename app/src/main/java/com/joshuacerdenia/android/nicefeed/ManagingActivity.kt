@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.ui.*
@@ -17,31 +16,28 @@ private const val REQUEST_CODE_WRITE_OPML = 1
 
 class ManagingActivity : AppCompatActivity(),
     FeedAddingFragment.Callbacks,
-    ManageFeedsFragment.Callbacks {
+    ManageFeedsFragment.Callbacks,
+    SettingsFragment.Callbacks {
 
-    companion object {
-        fun newIntent(packageContext: Context, command: Int): Intent {
-            return Intent(packageContext, ManagingActivity::class.java).apply {
-                putExtra(EXTRA_MANAGING, command)
-            }
-        }
+    private lateinit var app: OnBackgroundWorkSettingListener
+
+    interface OnBackgroundWorkSettingListener {
+        fun onBackgroundWorkSettingChanged(isOn: Boolean)
     }
-
-    private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_managing)
-        toolbar = findViewById(R.id.toolbar)
-
-        this.setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        //toolbar = findViewById(R.id.toolbar)
+        //this.setSupportActionBar(toolbar)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        app = applicationContext as OnBackgroundWorkSettingListener
 
         if (getCurrentFragment() == null) {
-            val fragment = when (intent.getIntExtra(EXTRA_MANAGING, ADD_FEEDS)) {
-                ADD_FEEDS -> AddFeedsFragment.newInstance()
-                MANAGE_FEEDS -> ManageFeedsFragment.newInstance()
-                SETTINGS -> SettingsFragment.newInstance()
+            val fragment = when (intent.getIntExtra(EXTRA_MANAGING, MainActivity.ADD_FEEDS)) {
+                MainActivity.ADD_FEEDS -> AddFeedsFragment.newInstance()
+                MainActivity.MANAGE_FEEDS -> ManageFeedsFragment.newInstance()
+                MainActivity.SETTINGS -> SettingsFragment.newInstance()
                 else -> throw IllegalArgumentException()
             }
 
@@ -98,7 +94,7 @@ class ManagingActivity : AppCompatActivity(),
 
     override fun onNewFeedAdded(feedIdPair: FeedIdPair) {
         val data = Intent().apply {
-            putExtra(EXTRA_FEED_ID_PAIR, feedIdPair)
+            putExtra(MainActivity.EXTRA_FEED_ID_PAIR, feedIdPair)
         }
         setResult(Activity.RESULT_OK, data)
         finish()
@@ -153,5 +149,21 @@ class ManagingActivity : AppCompatActivity(),
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    override fun onBackgroundWorkSettingChanged(isOn: Boolean) {
+        app.onBackgroundWorkSettingChanged(isOn)
+    }
+
+    override fun onDoneChangingSettings() {
+        finish()
+    }
+
+    companion object {
+        fun newIntent(packageContext: Context, command: Int): Intent {
+            return Intent(packageContext, ManagingActivity::class.java).apply {
+                putExtra(EXTRA_MANAGING, command)
+            }
+        }
     }
 }

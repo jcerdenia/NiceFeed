@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
+import com.joshuacerdenia.android.nicefeed.data.model.CategoryHeader
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMenuItem
 import com.squareup.picasso.Picasso
@@ -21,22 +23,17 @@ private const val TYPE_HEADER = 1
 
 class FeedListAdapter(
     private val context: Context?,
-    private val listener: OnItemClickListener,
-    private var activeFeedId: String? = null
+    private val listener: OnItemClickListener
 ) : ListAdapter<FeedMenuItem, RecyclerView.ViewHolder>(DiffCallback()) {
 
-    private val arranger = MenuArranger(this)
-    var categories = arrayOf<String>()
+    private var activeFeedId: String? = null
 
     interface OnItemClickListener {
-        fun onItemClicked(feed: Feed)
+        fun onFeedSelected(feed: Feed)
+        fun onCategoryClicked(category: String)
     }
 
-    fun submitFeeds(feeds: List<Feed>) {
-        arranger.arrangeFeedsAndCategories(feeds)
-    }
-
-    fun overrideActiveFeedId(feedId: String?) {
+    fun setActiveFeedId(feedId: String?) {
         activeFeedId = feedId
     }
 
@@ -69,14 +66,14 @@ class FeedListAdapter(
                 val isHighlighted = activeFeedId == (getItem(position).content as Feed).url
                 holder.bind(getItem(position).content as Feed, isHighlighted)
             }
-            is CategoryHolder -> holder.bind(getItem(position).content as String)
+            is CategoryHolder -> holder.bind(getItem(position).content as CategoryHeader)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position).content) {
             is Feed -> TYPE_ITEM
-            is String -> TYPE_HEADER
+            is CategoryHeader -> TYPE_HEADER
             else -> throw IllegalArgumentException()
         }
     }
@@ -88,8 +85,8 @@ class FeedListAdapter(
     ) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private lateinit var feed: Feed
-        val titleTextView: TextView = itemView.findViewById(R.id.title)
-        val unreadCount: TextView = itemView.findViewById(R.id.item_count)
+        private val titleTextView: TextView = itemView.findViewById(R.id.title_text_view)
+        private val countTextView: TextView = itemView.findViewById(R.id.item_count_text_view)
 
         init {
             itemView.setOnClickListener(this)
@@ -101,10 +98,12 @@ class FeedListAdapter(
                 context?.let { context ->
                     itemView.setBackgroundColor(getColor(context, R.color.colorSelect))
                 }
+            } else {
+                itemView.setBackgroundColor(0)
             }
 
             titleTextView.text = feed.title
-            unreadCount.text = if (feed.unreadCount > 0) {
+            countTextView.text = if (feed.unreadCount > 0) {
                 feed.unreadCount.toString()
             } else null
 
@@ -113,21 +112,56 @@ class FeedListAdapter(
                 .fit()
                 .centerCrop(START)
                 .placeholder(R.drawable.feed_icon_small)
-                .into(itemView.image)
+                .into(itemView.image_view)
         }
 
         override fun onClick(v: View) {
-            activeFeedId = feed.url
-            listener.onItemClicked(feed)
+            listener.onFeedSelected(feed)
         }
     }
 
-    private class CategoryHolder(view: View) : RecyclerView.ViewHolder(view) {
+    private inner class CategoryHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
-        val headerTextView: TextView = itemView.findViewById(R.id.category)
+        private lateinit var category: String
+        private val categoryTextView: TextView = itemView.findViewById(R.id.category_text_view)
+        private val countTextView: TextView = itemView.findViewById(R.id.item_count_text_view)
 
-        fun bind(category: String) {
-            headerTextView.text = category
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        fun bind(categoryHeader: CategoryHeader) {
+            this.category = categoryHeader.category
+            categoryTextView.text = categoryHeader.category
+
+            val drawableResId: Int
+            if (categoryHeader.isMinimized) {
+                drawableResId = R.drawable.ic_drop_down
+                if (categoryHeader.unreadCount > 0) {
+                    countTextView.visibility = View.VISIBLE
+                    countTextView.text = categoryHeader.unreadCount.toString()
+                } else {
+                    countTextView.visibility = View.GONE
+                }
+            } else {
+                drawableResId = R.drawable.ic_drop_up
+                countTextView.visibility = View.GONE
+            }
+
+            context?.let {
+                ContextCompat.getDrawable(context, drawableResId).also { drawable ->
+                    categoryTextView.setCompoundDrawablesWithIntrinsicBounds(
+                        drawable,
+                        null,
+                        null,
+                        null
+                    )
+                }
+            }
+        }
+
+        override fun onClick(v: View?) {
+            listener.onCategoryClicked(category)
         }
     }
 
@@ -138,8 +172,8 @@ class FeedListAdapter(
                 oldItem.content is Feed && newItem.content is Feed -> {
                     oldItem.content.url == newItem.content.url
                 }
-                oldItem.content is String && newItem.content is String -> {
-                    oldItem.content == newItem.content
+                oldItem.content is CategoryHeader && newItem.content is CategoryHeader -> {
+                    oldItem.content.category == newItem.content.category
                 }
                 else -> false
             }
@@ -147,35 +181,6 @@ class FeedListAdapter(
 
         override fun areContentsTheSame(oldItem: FeedMenuItem, newItem: FeedMenuItem): Boolean {
             return oldItem == newItem
-        }
-    }
-
-    private class MenuArranger(private val adapter: FeedListAdapter) {
-
-        fun arrangeFeedsAndCategories(feeds: List<Feed>) {
-            val categories = getOrderedCategories(feeds)
-            val arrangedMenu: MutableList<FeedMenuItem> = mutableListOf()
-
-            for (category in categories) {
-                arrangedMenu.add(FeedMenuItem(category))
-
-                for (feed in feeds) {
-                    if (feed.category == category) {
-                        arrangedMenu.add(FeedMenuItem(feed))
-                    }
-                }
-            }
-
-            adapter.submitList(arrangedMenu)
-            adapter.categories = categories.toTypedArray()
-        }
-
-        private fun getOrderedCategories(feeds: List<Feed>): List<String> {
-            val categories: MutableSet<String> = mutableSetOf()
-            for (feed in feeds) {
-                categories.add(feed.category)
-            }
-            return categories.toList().sorted() // Sort alphabetically
         }
     }
 }

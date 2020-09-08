@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nestedScrollView"
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/background_light"
-    android:fillViewport="true"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="gone"
-            tools:visibility="visible" />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
-        <CheckBox
-            android:id="@+id/checkBox_select_all"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:paddingHorizontal="24dp"
-            android:paddingVertical="16dp"
-            android:text="@string/select_all"
-            android:textAppearance="@style/DrawerMenuHeaderText"
-            android:visibility="gone"
-            tools:visibility="visible" />
+    <CheckBox
+        android:id="@+id/checkBox_select_all"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="16dp"
+        android:text="@string/select_all"
+        android:textAppearance="@style/DrawerMenuHeaderText"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
-        <View style="@style/Divider" />
+    <View style="@style/Divider" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_feed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView_feed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false"/>
 
-        <ImageView
-            android:id="@+id/imageView_empty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="144dp"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_rss_feed"
-            tools:visibility="visible" />
+    <ImageView
+        android:id="@+id/imageView_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="144dp"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_rss_feed"
+        tools:visibility="visible" />
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</LinearLayout>

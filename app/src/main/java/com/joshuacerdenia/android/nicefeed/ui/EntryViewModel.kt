@@ -9,6 +9,8 @@ import com.joshuacerdenia.android.nicefeed.data.model.Entry
 class EntryViewModel: ViewModel() {
 
     private val repository = NiceFeedRepository.get()
+    var lastPosition: Pair<Int, Int> = Pair(0, 0)
+
     private val entryIdLiveData = MutableLiveData<String>()
     val entryLiveData = Transformations.switchMap(entryIdLiveData) { entryId ->
         repository.getEntryById(entryId)

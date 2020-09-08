@@ -12,35 +12,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
-import com.joshuacerdenia.android.nicefeed.utils.sortedByUnreadCount
 
 private const val TAG = "FeedListFragment"
 
 class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
-    companion object {
-        private const val ARG_ACTIVE_FEED_ID = "ARG_ACTIVE_FEED_ID"
-
-        fun newInstance(activeFeedId: String?): FeedListFragment {
-            return FeedListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_ACTIVE_FEED_ID, activeFeedId)
-                }
-            }
-        }
-
-        fun newInstance(): FeedListFragment {
-            return FeedListFragment()
-        }
-    }
-
-    private val viewModel: FeedListViewModel by lazy {
-        ViewModelProvider(this).get(FeedListViewModel::class.java)
-    }
-
+    private lateinit var viewModel: FeedListViewModel
     private lateinit var manageButton: Button
     private lateinit var addButton: Button
     private lateinit var settingsButton: Button
@@ -54,7 +34,6 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         fun onManageFeedsSelected()
         fun onAddFeedSelected()
         fun onFeedSelected(feedIdPair: FeedIdPair, activeFeedId: String?)
-        fun onNoFeedsToLoad()
         fun onSettingsSelected()
     }
 
@@ -70,12 +49,11 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (viewModel.activeFeedId == null) {
-            viewModel.activeFeedId = arguments?.getString(ARG_ACTIVE_FEED_ID)
-            arguments = null
+        viewModel = ViewModelProvider(this).get(FeedListViewModel::class.java)
+        adapter = FeedListAdapter(context, this)
+        context?.let { context ->
+            viewModel.setMinimizedCategories(NiceFeedPreferences.getMinimizedCategories(context))
         }
-
-        adapter = FeedListAdapter(context, this, viewModel.activeFeedId)
     }
 
     override fun onCreateView(
@@ -109,39 +87,21 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
             callbacks?.onSettingsSelected()
         }
 
-        viewModel.feedsLiveData.observe(viewLifecycleOwner, Observer { feeds ->
-            if (feeds.isNotEmpty()) {
+        viewModel.feedListLiveData.observe(viewLifecycleOwner, Observer { list ->
+            adapter.submitList(list)
+
+            if (list.isNotEmpty()) {
                 manageButton.isEnabled = true
                 bottomDivider.visibility = View.VISIBLE
-
-                if (viewModel.isInitialLoading) {
-                    handleInitialLoading(feeds)
-                    viewModel.isInitialLoading = false
-                }
-
             } else {
                 manageButton.isEnabled = false
                 bottomDivider.visibility = View.GONE
-                callbacks?.onNoFeedsToLoad()
-                forceUpdateActiveFeedId(null)
+                updateActiveFeedId(null)
             }
-
-            adapter.submitFeeds(feeds.sortedByUnreadCount())
         })
     }
 
-    private fun handleInitialLoading(feeds: List<Feed>) {
-        for (feed in feeds) {
-            if (viewModel.activeFeedId == feed.url) {
-                callbacks?.onFeedSelected(FeedIdPair(feed.url, feed.title), null)
-                return
-            }
-        }
-
-        callbacks?.onNoFeedsToLoad()
-    }
-
-    override fun onItemClicked(feed: Feed) {
+    override fun onFeedSelected(feed: Feed) {
         callbacks?.onFeedSelected(FeedIdPair(feed.url, feed.title), viewModel.activeFeedId)
         viewModel.activeFeedId = feed.url
 
@@ -150,16 +110,31 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         }, 500)
     }
 
-    fun forceUpdateActiveFeedId(feedId: String?) {
+    override fun onCategoryClicked(category: String) {
+        viewModel.toggleCategoryDropDown(category)
+    }
+
+    fun updateActiveFeedId(feedId: String?) {
         viewModel.activeFeedId = feedId
-        adapter.overrideActiveFeedId(feedId)
+        adapter.setActiveFeedId(feedId)
         recyclerView.adapter = adapter
+    }
+
+    fun getCategories(): Array<String> {
+        return viewModel.categories
     }
 
     override fun onStop() {
         super.onStop()
-        if (context != null) {
-            viewModel.activeFeedId?.let { UserPreferences.saveFeedId(context!!, it) }
+        context?.let { context ->
+            NiceFeedPreferences.saveLastViewedFeedId(context, viewModel.activeFeedId)
+            NiceFeedPreferences.saveMinimizedCategories(context, viewModel.minimizedCategories)
+        }
+    }
+
+    companion object {
+        fun newInstance(): FeedListFragment {
+            return FeedListFragment()
         }
     }
 }

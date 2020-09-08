@@ -3,20 +3,19 @@ package com.joshuacerdenia.android.nicefeed.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment.Companion.SORT_BY_ADDED
-import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFilterEntriesFragment.Companion.FILTER_ALL
-import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFilterEntriesFragment.Companion.SORT_BY_PUBLISHED
 
-object UserPreferences {
+object NiceFeedPreferences {
 
     private const val SHARED_PREFS = "SHARED_PREFS"
     private const val KEY_FEED_ID = "KEY_WEBSITE"
-    private const val KEY_MANAGER_SORT = "KEY_MANAGER_SORT"
-    private const val KEY_FILTER_ENTRIES = "KEY_FILTER_ENTRIES"
+    private const val KEY_FEED_MANAGER_ORDER = "KEY_FEED_MANAGER_ORDER"
+    private const val KEY_SORT_FEEDS = "KEY_SORT_FEEDS"
     private const val KEY_SORT_ENTRIES = "KEY_SORT_ENTRIES"
     private const val KEY_AUTO_UPDATE = "KEY_AUTO_UPDATE"
     private const val KEY_LAST_POLLED_INDEX = "KEY_LAST_POLLED_INDEX"
     private const val KEY_POLLING = "KEY_POLLING"
     private const val KEY_TEXT_SIZE = "KEY_TEXT_SIZE"
+    private const val KEY_MIN_CATEGORIES = "KEY_MIN_CATEGORIES"
 
     const val TEXT_SIZE_NORMAL = 0
     const val TEXT_SIZE_LARGE = 1
@@ -26,43 +25,43 @@ object UserPreferences {
         return context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
     }
 
-    fun getSavedFeedId(context: Context): String? {
+    fun getLastViewedFeedId(context: Context): String? {
         return getDefaultSharedPrefs(context).getString(KEY_FEED_ID, null)
     }
 
-    fun saveFeedId(context: Context, feedId: String) {
+    fun saveLastViewedFeedId(context: Context, feedId: String?) {
         getDefaultSharedPrefs(context).edit().putString(KEY_FEED_ID, feedId).apply()
     }
 
-    fun getFeedManagerSortPref(context: Context): Int {
-        return getDefaultSharedPrefs(context).getInt(KEY_MANAGER_SORT, SORT_BY_ADDED)
+    fun getFeedManagerOrder(context: Context): Int {
+        return getDefaultSharedPrefs(context).getInt(KEY_FEED_MANAGER_ORDER, SORT_BY_ADDED)
     }
 
-    fun saveFeedManagerSortPref(context: Context, sorter: Int) {
-        getDefaultSharedPrefs(context).edit().putInt(KEY_MANAGER_SORT, sorter).apply()
+    fun saveFeedManagerOrder(context: Context, sorter: Int) {
+        getDefaultSharedPrefs(context).edit().putInt(KEY_FEED_MANAGER_ORDER, sorter).apply()
     }
 
-    fun getEntriesFilterPref(context: Context): Int {
-        return getDefaultSharedPrefs(context).getInt(KEY_FILTER_ENTRIES, FILTER_ALL)
+    fun getFeedsOrder(context: Context): Int {
+        return getDefaultSharedPrefs(context).getInt(KEY_SORT_FEEDS, 0)
+    }
+    
+    fun saveFeedsOrder(context: Context, order: Int) {
+        getDefaultSharedPrefs(context).edit().putInt(KEY_SORT_FEEDS, order).apply()
     }
 
-    fun saveEntriesFilterPref(context: Context, filter: Int) {
-        getDefaultSharedPrefs(context).edit().putInt(KEY_FILTER_ENTRIES, filter).apply()
+    fun getEntriesOrder(context: Context): Int {
+        return getDefaultSharedPrefs(context).getInt(KEY_SORT_ENTRIES, 0)
     }
 
-    fun getEntriesSortPref(context: Context): Int {
-        return getDefaultSharedPrefs(context).getInt(KEY_SORT_ENTRIES, SORT_BY_PUBLISHED)
+    fun saveEntriesOrder(context: Context, order: Int) {
+        getDefaultSharedPrefs(context).edit().putInt(KEY_SORT_ENTRIES, order).apply()
     }
 
-    fun saveEntriesSortPref(context: Context, sorter: Int) {
-        getDefaultSharedPrefs(context).edit().putInt(KEY_SORT_ENTRIES, sorter).apply()
-    }
-
-    fun getAutoUpdatePref(context: Context): Boolean {
+    fun getAutoUpdateSetting(context: Context): Boolean {
         return getDefaultSharedPrefs(context).getBoolean(KEY_AUTO_UPDATE, true)
     }
 
-    fun saveAutoUpdatePref(context: Context, isOn: Boolean) {
+    fun saveAutoUpdateSetting(context: Context, isOn: Boolean) {
         getDefaultSharedPrefs(context).edit().putBoolean(KEY_AUTO_UPDATE, isOn).apply()
     }
 
@@ -74,11 +73,11 @@ object UserPreferences {
         getDefaultSharedPrefs(context).edit().putInt(KEY_LAST_POLLED_INDEX, index).apply()
     }
 
-    fun getPollingPref(context: Context): Boolean {
+    fun getPollingSetting(context: Context): Boolean {
         return getDefaultSharedPrefs(context).getBoolean(KEY_POLLING, true)
     }
 
-    fun savePollingPref(context: Context, isPolling: Boolean) {
+    fun savePollingSetting(context: Context, isPolling: Boolean) {
         getDefaultSharedPrefs(context).edit().putBoolean(KEY_POLLING, isPolling).apply()
     }
 
@@ -88,5 +87,13 @@ object UserPreferences {
 
     fun saveTextSize(context: Context, textSize: Int) {
         getDefaultSharedPrefs(context).edit().putInt(KEY_TEXT_SIZE, textSize).apply()
+    }
+
+    fun getMinimizedCategories(context: Context): Set<String>? {
+        return getDefaultSharedPrefs(context).getStringSet(KEY_MIN_CATEGORIES, emptySet())
+    }
+
+    fun saveMinimizedCategories(context: Context, categories: Set<String>) {
+        getDefaultSharedPrefs(context).edit().putStringSet(KEY_MIN_CATEGORIES, categories).apply()
     }
 }

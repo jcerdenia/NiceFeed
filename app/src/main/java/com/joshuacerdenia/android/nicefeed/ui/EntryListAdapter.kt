@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.model.Entry
+import com.joshuacerdenia.android.nicefeed.data.model.EntryMinimal
 import com.joshuacerdenia.android.nicefeed.utils.simplified
 import com.squareup.picasso.Picasso
 import java.text.DateFormat.*
@@ -21,13 +21,13 @@ import java.util.*
 
 class EntryListAdapter(
     private val listener: OnItemClickListener
-) : ListAdapter<Entry, EntryListAdapter.EntryHolder>(DiffCallback()) {
+) : ListAdapter<EntryMinimal, EntryListAdapter.EntryHolder>(DiffCallback()) {
 
     var latestClickedPosition = 0
 
     interface OnItemClickListener {
-        fun onItemClicked(entry: Entry)
-        fun onItemLongClicked(entry: Entry, view: View?)
+        fun onItemClicked(entry: EntryMinimal)
+        fun onItemLongClicked(entry: EntryMinimal, view: View?)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EntryHolder {
@@ -48,7 +48,7 @@ class EntryListAdapter(
         private val listener: OnItemClickListener
     ) : RecyclerView.ViewHolder(view), View.OnClickListener, View.OnLongClickListener {
 
-        private lateinit var entry: Entry
+        private lateinit var entry: EntryMinimal
 
         private val container: ConstraintLayout = itemView.findViewById(R.id.constraintLayout_container)
         private val titleTextView: TextView = itemView.findViewById(R.id.textView_title)
@@ -62,7 +62,7 @@ class EntryListAdapter(
         }
 
         @SuppressLint("SetTextI18n")
-        fun bind(entry: Entry) {
+        fun bind(entry: EntryMinimal) {
             this.entry = entry
 
             val date = entry.date?.let {
@@ -113,13 +113,13 @@ class EntryListAdapter(
         }
     }
 
-    private class DiffCallback : DiffUtil.ItemCallback<Entry>() {
+    private class DiffCallback : DiffUtil.ItemCallback<EntryMinimal>() {
 
-        override fun areItemsTheSame(oldItem: Entry, newItem: Entry): Boolean {
+        override fun areItemsTheSame(oldItem: EntryMinimal, newItem: EntryMinimal): Boolean {
             return oldItem.url == newItem.url
         }
 
-        override fun areContentsTheSame(oldItem: Entry, newItem: Entry): Boolean {
+        override fun areContentsTheSame(oldItem: EntryMinimal, newItem: EntryMinimal): Boolean {
             return oldItem == newItem
         }
     }

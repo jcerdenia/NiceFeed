@@ -69,8 +69,8 @@ class EditCategoryFragment : BottomSheetDialogFragment() {
         val count = arguments?.getInt(ARG_COUNT) ?: 1
         val title = arguments?.getString(ARG_TITLE)
         val categories = arguments?.getStringArray(ARG_CATEGORIES)?.toList() ?: emptyList()
-        val adapter = context?.let {
-            ArrayAdapter(it, android.R.layout.simple_list_item_1, categories)
+        val adapter = context?.let { context ->
+            ArrayAdapter(context, android.R.layout.simple_list_item_1, categories)
         }
 
         val whatToEdit = title ?: resources.getQuantityString(R.plurals.numberOfFeeds, count, count)

@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import android.widget.RadioGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
-import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences.TEXT_SIZE_LARGE
-import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences.TEXT_SIZE_LARGER
-import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences.TEXT_SIZE_NORMAL
+import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_SIZE_LARGE
+import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_SIZE_LARGER
+import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_SIZE_NORMAL
 
 class TextSizeFragment: BottomSheetDialogFragment() {
 
@@ -39,7 +39,7 @@ class TextSizeFragment: BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val currentSelection = context?.let {
-            UserPreferences.getTextSize(it)
+            NiceFeedPreferences.getTextSize(it)
         } ?: TEXT_SIZE_NORMAL
 
         radioGroup.apply {
@@ -57,7 +57,7 @@ class TextSizeFragment: BottomSheetDialogFragment() {
                     R.id.radio_button_larger -> TEXT_SIZE_LARGER
                     else -> TEXT_SIZE_NORMAL
                 }.let { selection ->
-                    UserPreferences.saveTextSize(context, selection)
+                    NiceFeedPreferences.saveTextSize(context, selection)
                 }
 
                 targetFragment?.let { fragment ->

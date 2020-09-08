@@ -129,6 +129,14 @@
     <string name="large">Large</string>
     <string name="larger">Larger</string>
     <string name="recent">Recent</string>
+    <string name="no_items">No items found.</string>
+    <string name="feed_settings">Feed Settings</string>
+    <string name="auto_update_on_launch">Update automatically on launch</string>
+    <string name="sort_entries_by">Sort entries by</string>
+    <string name="notifications">Notifications</string>
+    <string name="notification_switch_description">Check for new entries when app is closed</string>
+    <string name="sort_feeds_by">Sort feeds by</string>
+    <string name="unread_items">Unread items</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

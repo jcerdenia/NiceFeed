@@ -5,13 +5,14 @@ import android.view.View
 import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.model.Entry
+import com.joshuacerdenia.android.nicefeed.data.model.EntryMinimal
+import com.joshuacerdenia.android.nicefeed.ui.EntryListViewModel
 
 class EntryPopupMenu(
     context: Context?,
     view: View?,
     private val listener: OnItemClickListener,
-    private val entry: Entry
+    private val entry: EntryMinimal
 ) : PopupMenu(context, view) {
 
     companion object {
@@ -21,7 +22,7 @@ class EntryPopupMenu(
     }
 
     interface OnItemClickListener {
-        fun onPopupMenuItemClicked(entry: Entry, action: Int)
+        fun onPopupMenuItemClicked(entry: EntryMinimal, action: Int)
     }
 
     init {
@@ -36,8 +37,8 @@ class EntryPopupMenu(
             menu.findItem(R.id.menuItem_mark_as_read).title = context?.getString(R.string.mark_as_unread)
         }
 
-        setOnMenuItemClickListener {
-            when (it.itemId) {
+        setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
                 R.id.menuItem_star -> listener.onPopupMenuItemClicked(entry, ACTION_STAR)
                 R.id.menuItem_mark_as_read -> listener.onPopupMenuItemClicked(entry, ACTION_MARK_AS)
                 R.id.menuItem_read -> listener.onPopupMenuItemClicked(entry, ACTION_OPEN)

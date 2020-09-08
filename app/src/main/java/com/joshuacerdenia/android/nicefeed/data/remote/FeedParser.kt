@@ -16,10 +16,9 @@ import java.util.*
 private const val TAG = "FeedParser"
 private const val NO_TITLE = "No Title"
 
-class FeedParser() {
+class FeedParser {
 
     private val parser = Parser.Builder().build()
-    private val mapper = ChannelMapper()
     private val backupUrlManager = BackupUrlManager()
 
     private val _feedRequestLiveData = MutableLiveData<FeedWithEntries>()
@@ -29,7 +28,7 @@ class FeedParser() {
     suspend fun getFeedSynchronously(url: String): FeedWithEntries? {
         return try {
             val channel = parser.getChannel(url)
-            mapper.makeFeedWithEntries(url, channel)
+            ChannelMapper.makeFeedWithEntries(url, channel)
         } catch(e: Exception) {
             e.printStackTrace()
             null
@@ -43,7 +42,7 @@ class FeedParser() {
 
         try {
             val channel = parser.getChannel(url)
-            val feedWithEntries = mapper.makeFeedWithEntries(url, channel)
+            val feedWithEntries = ChannelMapper.makeFeedWithEntries(url, channel)
             _feedRequestLiveData.postValue(feedWithEntries)
 
         } catch (e: Exception) {
@@ -59,10 +58,10 @@ class FeedParser() {
         }
     }
 
-    private class ChannelMapper {
-        // Maps RSS Parser library data classes to my own
-
-        val maxEntries = 300 // Arbitrary
+    // Maps "Channel" data to my own model objects
+    object ChannelMapper {
+        private const val MAX_ENTRIES = 300 // Arbitrary
+        private const val DATE_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z"
 
         fun makeFeedWithEntries(url: String, channel: Channel): FeedWithEntries {
             val entries = mapEntries(channel, url)
@@ -82,12 +81,12 @@ class FeedParser() {
         private fun mapEntries(channel: Channel, url: String): List<Entry> {
             val entries = mutableListOf<Entry>()
             for (article in channel.articles) {
-                if (entries.size < maxEntries) {
+                if (entries.size < MAX_ENTRIES) {
                     val entry = Entry(
                         url = article.link ?: article.guid ?: "",
                         website = channel.link ?: url,
                         title = article.title ?: NO_TITLE,
-                        author = article.author ?: channel.title,
+                        author = article.author,
                         content = article.content ?: article.description,
                         date = parseDate(article.pubDate),
                         image = article.image
@@ -101,11 +100,8 @@ class FeedParser() {
         }
 
         private fun parseDate(stringDate: String?): Date? {
-            val pattern = "EEE, d MMM yyyy HH:mm:ss Z"
-            val simpleDateFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
-
             return if (stringDate != null) {
-                simpleDateFormat.parse(stringDate)
+                SimpleDateFormat(DATE_PATTERN, Locale.ENGLISH).parse(stringDate)
             } else {
                 null
             }

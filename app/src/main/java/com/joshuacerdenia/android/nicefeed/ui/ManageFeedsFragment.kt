@@ -8,14 +8,15 @@ import android.view.*
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.ProgressBar
-import androidx.core.widget.NestedScrollView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMinimal
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
@@ -46,7 +47,7 @@ class ManageFeedsFragment: VisibleFragment(),
         ViewModelProvider(this).get(ManageFeedsViewModel::class.java)
     }
 
-    private lateinit var nestedScrollView: NestedScrollView
+    private lateinit var toolbar: Toolbar
     private lateinit var progressBar: ProgressBar
     private lateinit var emptyListImage: ImageView
     private lateinit var selectAllCheckBox: CheckBox
@@ -108,13 +109,16 @@ class ManageFeedsFragment: VisibleFragment(),
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_manage_feeds, container, false)
-        nestedScrollView = view.findViewById(R.id.nestedScrollView)
+        toolbar = view.findViewById(R.id.toolbar)
         progressBar = view.findViewById(R.id.progressBar)
         emptyListImage = view.findViewById(R.id.imageView_empty)
         selectAllCheckBox = view.findViewById(R.id.checkBox_select_all)
         recyclerView = view.findViewById(R.id.recyclerView_feed)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
+
+        toolbar.title = "Fuck this shit"
+        (activity as AppCompatActivity?)?.setSupportActionBar(toolbar)
         return view
     }
 
@@ -131,7 +135,7 @@ class ManageFeedsFragment: VisibleFragment(),
                 viewModel.selectedItems.clear()
             }
 
-            adapter.handleCheckBoxes(it.isChecked)
+            adapter.toggleCheckBoxes(it.isChecked)
             callbacks?.onFeedsBeingManagedChanged(viewModel.selectedItems.size)
         }
 
@@ -179,7 +183,7 @@ class ManageFeedsFragment: VisibleFragment(),
 
     private fun getSortedList(feeds: List<FeedMinimal>): List<FeedMinimal> {
         val sortBy = context?.let {
-            UserPreferences.getFeedManagerSortPref(it)
+            NiceFeedPreferences.getFeedManagerOrder(it)
         } ?: SortFeedManagerFragment.SORT_BY_ADDED
 
         return when (sortBy) {
@@ -219,7 +223,7 @@ class ManageFeedsFragment: VisibleFragment(),
         } else {
             if (feedIds.size == adapter.currentList.size) {
                 context?.let { context ->
-                    UserPreferences.saveFeedId(context, "")
+                    NiceFeedPreferences.saveLastViewedFeedId(context, null)
                 }
             }
             showFeedsRemovedNotice(feedIds.size)
@@ -240,7 +244,7 @@ class ManageFeedsFragment: VisibleFragment(),
         )
 
         Snackbar.make(
-            nestedScrollView,
+            recyclerView,
             getString(R.string.feed_removed_message, feedsRemoved),
             Snackbar.LENGTH_LONG
         ).setAction(R.string.done) {
@@ -327,7 +331,7 @@ class ManageFeedsFragment: VisibleFragment(),
         viewModel.selectedItems.clear()
         callbacks?.onFeedsBeingManagedChanged(viewModel.selectedItems.size)
         selectAllCheckBox.isChecked = false
-        adapter.handleCheckBoxes(false)
+        adapter.toggleCheckBoxes(false)
     }
 
     override fun onItemClicked(feed: FeedMinimal, isChecked: Boolean) {

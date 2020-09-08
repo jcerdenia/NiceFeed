@@ -18,23 +18,20 @@ data class Entry(
     var isRead: Boolean = false
 ) : Serializable {
 
-    fun isTheSameAs(entry: Entry): Boolean {
-        // Compares new and existing versions of an entry, ignoring certain properties
+    // Compare new and existing versions of an entry, ignoring certain properties
+    fun isSameAs(entry: Entry): Boolean {
         val checklist = listOf(
-            (entry.url == url),
-            (entry.title == title),
-            (entry.website == website),
-            (entry.author == author),
-            (entry.date == date),
-            (entry.content == content),
-            (entry.image == image)
+            entry.url == url,
+            entry.title == title,
+            entry.author == author,
+            entry.date == date,
+            entry.content == content,
+            entry.image == image
         )
-
         var count = 0
-        for (check in checklist) {
-            if (check) count += 1 else break
+        for (itemChecked in checklist) {
+            if (itemChecked) count += 1 else break
         }
-
         return count == checklist.size
     }
 }

@@ -11,20 +11,6 @@ import java.util.concurrent.Executors
 private const val DATABASE_NAME = "database"
 
 class NiceFeedRepository private constructor(context: Context) {
-
-    companion object {
-        private var INSTANCE: NiceFeedRepository? = null
-
-        fun initialize(context: Context) {
-            if (INSTANCE == null) {
-                INSTANCE = NiceFeedRepository(context)
-            }
-        }
-
-        fun get(): NiceFeedRepository {
-            return INSTANCE ?: throw IllegalStateException("Repository must be initialized!")
-        }
-    }
     
     private val database: NiceFeedDatabase = Room.databaseBuilder(
         context.applicationContext,
@@ -48,12 +34,6 @@ class NiceFeedRepository private constructor(context: Context) {
 
     fun getAllFeedsMinimal(): LiveData<List<FeedMinimal>> = dao.getAllFeedsMinimal()
 
-    fun getFeedSansUnreadCountWithEntriesByFeedId(
-        feedId: String
-    ): LiveData<FeedSansUnreadCountWithEntries> {
-        return dao.getFeedSansUnreadCountWithEntriesByFeedId(feedId)
-    }
-
     fun getAllEntries(): LiveData<List<Entry>> = dao.getAllEntries()
 
     fun getEntryById(entryId: String): LiveData<Entry> = dao.getEntryById(entryId)
@@ -62,9 +42,9 @@ class NiceFeedRepository private constructor(context: Context) {
 
     fun getEntryIdsByFeedIdSync(feedId: String): List<String> = dao.getEntryIdsByFeedIdSync(feedId)
 
-    fun updateCategoryByFeedIds(ids: Array<String>, category: String) {
+    fun updateFeedCategory(vararg feedId: String, category: String) {
         executor.execute {
-            dao.updateCategoryByFeedIds(ids, category = category)
+            dao.updateFeedCategory(*feedId, category = category)
         }
     }
 
@@ -86,9 +66,15 @@ class NiceFeedRepository private constructor(context: Context) {
         }
     }
 
-    fun updateEntries(entries: List<Entry>) {
+    fun updateEntryIsStarred(vararg entryId: String, isStarred: Boolean) {
         executor.execute {
-            dao.updateEntries(entries)
+            dao.updateEntryIsStarred(*entryId, isStarred = isStarred)
+        }
+    }
+
+    fun updateEntryIsRead(vararg entryId: String, isRead: Boolean) {
+        executor.execute {
+            dao.updateEntryIsRead(*entryId, isRead = isRead)
         }
     }
 
@@ -98,16 +84,11 @@ class NiceFeedRepository private constructor(context: Context) {
         }
     }
 
-    fun addFeedWithEntries(fwe: FeedWithEntries) {
-        val crossRefs = getCrossRefs(fwe.feed.url, fwe.entries)
+    fun addFeedWithEntries(data: FeedWithEntries) {
+        val crossRefs = getCrossRefs(data.feed.url, data.entries)
         executor.execute {
-            dao.addFeedAndEntries(fwe.feed, fwe.entries, crossRefs)
+            dao.addFeedAndEntries(data.feed, data.entries, crossRefs)
         }
-    }
-
-    fun addEntriesAndCrossRefs(entries: List<Entry>, feedId: String) {
-        val crossRefs = getCrossRefs(feedId, entries)
-        dao.addEntriesAndCrossRefs(entries, crossRefs)
     }
 
     fun handleLatestEntriesFound(entries: List<Entry>, feedId: String) {
@@ -127,6 +108,12 @@ class NiceFeedRepository private constructor(context: Context) {
     fun deleteFeedsAndEntriesByIds(ids: List<String>) {
         executor.execute {
             dao.deleteFeedsAndEntriesByIds(ids)
+        }
+    }
+
+    fun deleteFeedAndEntriesById(id: String) {
+        executor.execute {
+            dao.deleteFeedsAndEntriesByIds(listOf(id))
         }
     }
 
@@ -160,6 +147,20 @@ class NiceFeedRepository private constructor(context: Context) {
     fun addFeedEntryCrossRef(crossRef: FeedEntryCrossRef) {
         executor.execute {
             dao.addFeedEntryCrossRef(crossRef)
+        }
+    }
+
+    companion object {
+        private var INSTANCE: NiceFeedRepository? = null
+
+        fun initialize(context: Context) {
+            if (INSTANCE == null) {
+                INSTANCE = NiceFeedRepository(context)
+            }
+        }
+
+        fun get(): NiceFeedRepository {
+            return INSTANCE ?: throw IllegalStateException("Repository must be initialized!")
         }
     }
 }

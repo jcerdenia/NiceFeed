@@ -33,8 +33,8 @@ interface FeedsAndEntriesDao {
     @Update
     fun updateFeed(feed: Feed)
 
-    @Query("UPDATE Feed SET category = :category WHERE url IN (:ids)")
-    fun updateCategoryByFeedIds(ids: Array<String>, category: String)
+    @Query("UPDATE Feed SET category = :category WHERE url IN (:feedId)")
+    fun updateFeedCategory(vararg feedId: String, category: String)
 
     @Query("UPDATE Feed SET unreadCount = :count WHERE url = :id")
     fun updateFeedUnreadCountById(id: String, count: Int)
@@ -89,6 +89,12 @@ interface FeedsAndEntriesDao {
     @Update
     fun updateEntries(entries: List<Entry>)
 
+    @Query("UPDATE Entry SET isStarred = (:isStarred) WHERE url IN (:entryId)")
+    fun updateEntryIsStarred(vararg entryId: String, isStarred: Boolean)
+
+    @Query("UPDATE Entry SET isRead = (:isRead) WHERE url IN (:entryId)")
+    fun updateEntryIsRead(vararg entryId: String, isRead: Boolean)
+
     @Delete
     fun deleteEntry(entry: Entry)
 
@@ -119,10 +125,6 @@ interface FeedsAndEntriesDao {
     @Transaction
     @Query("SELECT * FROM Feed WHERE url = :feedId")
     fun getFeedWithEntriesByFeedId(feedId: String): LiveData<FeedWithEntries>
-
-    @Transaction
-    @Query("SELECT url, website, title, description, imageUrl, category FROM Feed WHERE url = :feedId")
-    fun getFeedSansUnreadCountWithEntriesByFeedId(feedId: String): LiveData<FeedSansUnreadCountWithEntries>
 
     @Transaction
     fun addEntriesAndCrossRefs(entries: List<Entry>, crossRefs: List<FeedEntryCrossRef>) {

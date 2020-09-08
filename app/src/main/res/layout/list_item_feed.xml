@@ -9,16 +9,16 @@
     style="@style/DrawerMenuButton">
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/image_view"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/title"
+        app:layout_constraintBottom_toBottomOf="@+id/title_text_view"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/title"
+        app:layout_constraintTop_toTopOf="@+id/title_text_view"
         tools:srcCompat="@drawable/ic_rss_feed" />
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/title_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/iconPadding"
@@ -27,18 +27,18 @@
         android:maxLines="1"
         android:textAppearance="@style/DrawerMenuItemText"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/item_count"
-        app:layout_constraintStart_toEndOf="@+id/image"
+        app:layout_constraintEnd_toStartOf="@+id/item_count_text_view"
+        app:layout_constraintStart_toEndOf="@+id/image_view"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Title" />
 
     <TextView
-        android:id="@+id/item_count"
+        android:id="@+id/item_count_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/title"
+        app:layout_constraintBottom_toBottomOf="@+id/title_text_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/title"
+        app:layout_constraintTop_toTopOf="@+id/title_text_view"
         tools:text="0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

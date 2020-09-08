@@ -4,21 +4,18 @@ import android.util.Log
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 
-/* Compares recently requested data from the web with current data saved locally;
-Outputs which entries to add, update, and delete; as well as updated feed data, if any */
+/* This class compares recently requested data from the web with current data saved locally.
+It outputs which entries to add, update, and delete, as well as updated feed data, if any. */
 
-private const val TAG = "UpdateManager"
-
-class UpdateManager(
-    private val listener: OnRefreshedListener
-) {
+class UpdateManager(private val listener: OnRefreshedListener) {
 
     var currentFeed: Feed? = null
-    var currentEntries = listOf<Entry>()
-        get() = field.sortedByDatePublished()
+        private set
+    private var currentEntries = listOf<Entry>()
+        get() = field.sortedByDescending { it.date }
 
     interface OnRefreshedListener {
-        fun onCurrentEntriesChanged()
+        fun onUnreadEntriesCounted(feedId: String, unreadCount: Int)
         fun onFeedNeedsRefresh(feed: Feed)
         fun onEntriesNeedRefresh(
             toAdd: List<Entry>,
@@ -28,13 +25,27 @@ class UpdateManager(
         )
     }
 
+    fun submitInitialFeed(feed: Feed) {
+        currentFeed = feed
+    }
+
     fun submitInitialEntries(entries: List<Entry>) {
         currentEntries = entries
-        listener.onCurrentEntriesChanged()
+        var unreadCount = 0
+        for (entry in entries) {
+            if (!entry.isRead) {
+                unreadCount += 1
+            }
+        }
+
+        currentFeed?.let { feed ->
+            listener.onUnreadEntriesCounted(feed.url, unreadCount)
+        }
     }
 
     fun submitNewData(feed: Feed, entries: List<Entry>) {
-        handleFeed(feed)
+        Log.d("UpdateManager", "Submitting new data to UpdateManager...")
+        handleFeedUpdate(feed)
         handleNewEntries(entries)
     }
 
@@ -48,8 +59,8 @@ class UpdateManager(
 
         for (entry in newEntries) {
             if (!isAddedAndUnchanged(entry, currentEntries)) {
+                // Check for old version of the new entry:
                 if (currentEntryIds.contains(entry.url)) {
-                    // i.e., if an old version of the entry exists
                     val currentItemIndex = currentEntryIds.indexOf(entry.url)
                     entry.isStarred = currentEntries[currentItemIndex].isStarred
                     entriesToUpdate.add(entry)
@@ -61,14 +72,14 @@ class UpdateManager(
 
         for (entry in currentEntries) {
             if (!newEntryIds.contains(entry.url)) {
-                if (!entry.isStarred) { // && entry.isRead ?
+                if (!entry.isStarred  && entry.isRead) {
                     entriesToDelete.add(entry)
                 }
             }
         }
 
+        // Check if entries are changed at all
         if (entriesToAdd.size + entriesToUpdate.size + entriesToDelete.size > 0) {
-            // i.e., if entries are changed at all
             currentFeed?.let { feed->
                 listener.onEntriesNeedRefresh(
                     entriesToAdd,
@@ -79,7 +90,7 @@ class UpdateManager(
         }
     }
 
-    private fun handleFeed(feed: Feed) {
+    private fun handleFeedUpdate(feed: Feed) {
         currentFeed?.let {
             feed.category = it.category
             feed.unreadCount = it.unreadCount
@@ -91,19 +102,16 @@ class UpdateManager(
     }
 
     private fun getEntryIds(entries: List<Entry>): List<String> {
-        val entriesByGuid = mutableListOf<String>()
-        for (entry in entries) {
-            entriesByGuid.add(entry.url)
+        return entries.map { entry ->
+            entry.url
         }
-
-        return entriesByGuid
     }
 
-    private fun isAddedAndUnchanged(entry: Entry, currentEntries: List<Entry>): Boolean {
-        // Check a new entry against all current entries to see if the content is the same
+    // Check a new entry against all current entries to see if the content is the same
+    private fun isAddedAndUnchanged(newEntry: Entry, currentEntries: List<Entry>): Boolean {
         var isAddedAndUnchanged = false
         for (currentEntry in currentEntries) {
-            if (entry.isTheSameAs(currentEntry)) {
+            if (newEntry.isSameAs(currentEntry)) {
                 isAddedAndUnchanged = true
                 break
             }

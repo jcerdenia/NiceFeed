@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.RadioGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 
 class SortFeedManagerFragment: BottomSheetDialogFragment() {
 
@@ -43,7 +43,7 @@ class SortFeedManagerFragment: BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val currentSelection = context?.let {
-            UserPreferences.getFeedManagerSortPref(it)
+            NiceFeedPreferences.getFeedManagerOrder(it)
         } ?: SORT_BY_ADDED
 
         radioGroupSortFeeds.apply {
@@ -60,7 +60,7 @@ class SortFeedManagerFragment: BottomSheetDialogFragment() {
                     else -> SORT_BY_ADDED // Default
                 }
 
-                UserPreferences.saveFeedManagerSortPref(context, selection)
+                NiceFeedPreferences.saveFeedManagerOrder(context, selection)
                 targetFragment?.let { (it as Callbacks).onSortPreferenceSelected() }
                 dismiss()
             }

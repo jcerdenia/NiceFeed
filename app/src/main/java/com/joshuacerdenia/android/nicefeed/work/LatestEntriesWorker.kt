@@ -4,7 +4,6 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.text.HtmlCompat
@@ -14,12 +13,13 @@ import com.joshuacerdenia.android.nicefeed.MainActivity
 import com.joshuacerdenia.android.nicefeed.NOTIFICATION_CHANNEL_ID
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
-import com.joshuacerdenia.android.nicefeed.data.local.UserPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
-import com.joshuacerdenia.android.nicefeed.utils.sortedByDatePublished
+
+private fun List<Entry>.sortedByDate() = this.sortedByDescending { it.date }
 
 private const val TAG = "LatestEntriesWorker"
 
@@ -44,7 +44,7 @@ class LatestEntriesWorker(
     override suspend fun doWork(): Result {
         Log.d(TAG, "Background work started")
         val feedUrls = repository.getAllFeedUrlsSync()
-        val lastIndex = UserPreferences.getLastPolledIndex(context)
+        val lastIndex = NiceFeedPreferences.getLastPolledIndex(context)
         val newIndex = if (lastIndex + 1 >= feedUrls.size) {
             0
         } else {
@@ -54,7 +54,7 @@ class LatestEntriesWorker(
         val url = feedUrls[newIndex]
         val currentEntryIds = repository.getEntryIdsByFeedIdSync(url)
         val feedWithEntries: FeedWithEntries? = feedParser.getFeedSynchronously(url)
-        UserPreferences.saveLastPolledIndex(context, newIndex)
+        NiceFeedPreferences.saveLastPolledIndex(context, newIndex)
 
         return if (feedWithEntries != null) {
             val newEntries = mutableListOf<Entry>()
@@ -92,7 +92,7 @@ class LatestEntriesWorker(
         feedTitle: String,
         entries: List<Entry>
     ): Notification {
-        val latestEntry = entries.sortedByDatePublished().first()
+        val latestEntry = entries.sortedByDate().first()
         val intent = MainActivity.newIntent(context, FeedIdPair(feedId, feedTitle))
         val pendingIntent = PendingIntent.getActivity(
             context,

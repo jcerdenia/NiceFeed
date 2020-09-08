@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 
 const val NOTIFICATION_CHANNEL_ID = "nicefeed_latest_entries"
 
-class NiceFeedApplication : Application() {
+class NiceFeedApplication : Application(), ManagingActivity.OnBackgroundWorkSettingListener {
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
@@ -35,6 +35,8 @@ class NiceFeedApplication : Application() {
 
         delayedInit()
     }
+
+    // TODO create a method to toggle background work based on current user setting.
 
     private fun delayedInit() {
         applicationScope.launch {
@@ -70,5 +72,9 @@ class NiceFeedApplication : Application() {
         ).build()
 
         WorkManager.getInstance(this).enqueue(periodicRequest)
+    }
+
+    override fun onBackgroundWorkSettingChanged(isOn: Boolean) {
+        // TODO: Cancel background worker
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:local="http://schemas.android.com/apk/res-auto"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,23 +10,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--
-        <LinearLayout
-            android:id="@+id/container_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-            -->
-            <include
-                android:id="@+id/toolbar"
-                layout="@layout/toolbar" />
-
         <com.google.android.material.navigation.NavigationView
+            android:id="@+id/main_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/main_fragment_container"
-            android:animateLayoutChanges="true"/>
-
+            android:animateLayoutChanges="true" />
     </LinearLayout>
 
     <FrameLayout
@@ -34,5 +22,4 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:id="@+id/drawer_fragment_container"/>
-
 </androidx.drawerlayout.widget.DrawerLayout>

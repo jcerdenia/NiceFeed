@@ -24,7 +24,7 @@ class FeedManagerAdapter(
         fun onAllItemsChecked(isChecked: Boolean)
     }
 
-    fun handleCheckBoxes(checkAll: Boolean) {
+    fun toggleCheckBoxes(checkAll: Boolean) {
         for (checkBox in checkBoxes) {
             checkBox.isChecked = checkAll
         }
