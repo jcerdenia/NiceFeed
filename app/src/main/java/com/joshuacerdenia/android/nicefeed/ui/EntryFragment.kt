@@ -100,9 +100,12 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         }
 
         viewModel.entryLiveData.observe(viewLifecycleOwner, Observer { entry ->
-            this.entry = entry
-            drawEntry(entry, viewModel.lastPosition)
-            callbacks?.onEntryLoaded(entry.website)
+            if (entry != null) {
+                this.entry = entry
+                drawEntry(entry, viewModel.lastPosition)
+                callbacks?.onEntryLoaded(entry.website)
+            }
+
             progressBar.visibility = View.GONE
             setHasOptionsMenu(true)
         })
@@ -111,7 +114,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_entry, menu)
-        setStarOptionItem(menu.findItem(R.id.menuItem_star))
+        toggleStarOptionItem(menu.findItem(R.id.menuItem_star))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -141,11 +144,11 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     private fun handleStar(item: MenuItem): Boolean {
         entry.isStarred = !entry.isStarred
-        setStarOptionItem(item)
+        toggleStarOptionItem(item)
         return true
     }
 
-    private fun setStarOptionItem(item: MenuItem) {
+    private fun toggleStarOptionItem(item: MenuItem) {
         item.apply {
             title = if (entry.isStarred) {
                 setIcon(R.drawable.ic_star)

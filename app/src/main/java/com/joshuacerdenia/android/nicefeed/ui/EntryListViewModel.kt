@@ -3,7 +3,7 @@ package com.joshuacerdenia.android.nicefeed.ui
 import androidx.lifecycle.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
-import com.joshuacerdenia.android.nicefeed.data.model.EntryMinimal
+import com.joshuacerdenia.android.nicefeed.data.model.EntryLight
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
@@ -16,7 +16,7 @@ import java.util.*
 
 private const val TAG = "EntryListViewModel"
 
-class EntryListViewModel: ViewModel(), UpdateManager.OnRefreshedListener {
+class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
 
     private val repo = NiceFeedRepository.get()
     private val parser = FeedParser()
@@ -24,13 +24,18 @@ class EntryListViewModel: ViewModel(), UpdateManager.OnRefreshedListener {
 
     private val feedIdLiveData = MutableLiveData<String>()
     val feedLiveData = Transformations.switchMap(feedIdLiveData) { feedId ->
-        repo.getFeedById(feedId)
+        repo.getFeed(feedId)
     }
     private val sourceEntriesLiveData = Transformations.switchMap(feedIdLiveData) { feedId ->
-        repo.getEntriesByFeedId(feedId)
+        when (feedId) {
+            EntryListFragment.KEY_RECENT -> repo.getRecentEntries()
+            EntryListFragment.KEY_STARRED -> repo.getStarredEntries()
+            else -> repo.getEntriesByFeed(feedId)
+        }
     }
+
     private val entriesLiveData = MediatorLiveData<List<Entry>>()
-    val entriesMinimalLiveData = MediatorLiveData<List<EntryMinimal>>()
+    val entriesMinimalLiveData = MediatorLiveData<List<EntryLight>>()
     val updateResultLiveData = parser.feedRequestLiveData
 
     var currentQuery = ""
@@ -51,7 +56,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.OnRefreshedListener {
 
         entriesMinimalLiveData.addSource(entriesLiveData) { entries ->
             val list = entries.map { entry ->
-                EntryMinimal(
+                EntryLight(
                     url = entry.url,
                     title = entry.title,
                     website = entry.website,
@@ -143,7 +148,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.OnRefreshedListener {
         repo.updateEntryIsRead(*entryIds, isRead = isRead)
     }
 
-    fun allIsStarred(entries: List<EntryMinimal>): Boolean {
+    fun allIsStarred(entries: List<EntryLight>): Boolean {
         var count = 0
         for (entry in entries) {
             if (entry.isStarred) {
@@ -153,7 +158,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.OnRefreshedListener {
         return count == entries.size
     }
 
-    fun allIsRead(entries: List<EntryMinimal>): Boolean {
+    fun allIsRead(entries: List<EntryLight>): Boolean {
         var count = 0
         for (entry in entries) {
             if (entry.isRead) {
@@ -181,7 +186,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.OnRefreshedListener {
         }
     }
 
-    private fun sortEntries(entries: List<EntryMinimal>, order: Int): List<EntryMinimal> {
+    private fun sortEntries(entries: List<EntryLight>, order: Int): List<EntryLight> {
         return if (order == 1) {
             entries.sortedUnreadOnTop()
         } else {
@@ -190,25 +195,25 @@ class EntryListViewModel: ViewModel(), UpdateManager.OnRefreshedListener {
     }
 
     override fun onUnreadEntriesCounted(feedId: String, unreadCount: Int) {
-        repo.updateFeedUnreadCountById(feedId, unreadCount)
+        repo.updateFeedUnreadCount(feedId, unreadCount)
     }
 
-    override fun onFeedNeedsRefresh(feed: Feed) {
+    override fun onFeedNeedsUpdate(feed: Feed) {
         repo.updateFeed(feed)
     }
 
-    override fun onEntriesNeedRefresh(
-        toAdd: List<Entry>,
-        toUpdate: List<Entry>,
-        toDelete: List<Entry>,
+    override fun onOldAndNewEntriesCompared(
+        entriesToAdd: List<Entry>,
+        entriesToUpdate: List<Entry>,
+        entriesToDelete: List<Entry>,
         feedId: String
     ) {
-        updateValues = if (toAdd.size + toUpdate.size > 0) {
-            Pair(toAdd.size, toUpdate.size)
+        repo.handleEntryUpdates(entriesToAdd, entriesToUpdate, entriesToDelete, feedId)
+        updateValues = if (entriesToAdd.size + entriesToUpdate.size > 0) {
+            Pair(entriesToAdd.size, entriesToUpdate.size)
         } else {
             null
         }
-        repo.refreshEntries(toAdd, toUpdate, toDelete, feedId)
     }
 
     fun updateCategory(category: String) {
@@ -220,14 +225,6 @@ class EntryListViewModel: ViewModel(), UpdateManager.OnRefreshedListener {
     }
 
     fun getCurrentFeed() = updateManager.currentFeed
-
-    fun getEntries() {
-        // TODO: Get recent entries
-    }
-
-    fun getStarredEntries() {
-        // TODO: Get starred entries
-    }
 
     fun updateEntryIsStarred(entryId: String, isStarred: Boolean) {
         repo.updateEntryIsStarred(entryId, isStarred = isStarred)

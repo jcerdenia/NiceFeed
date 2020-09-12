@@ -5,14 +5,14 @@ import android.view.View
 import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.model.EntryMinimal
-import com.joshuacerdenia.android.nicefeed.ui.EntryListViewModel
+import com.joshuacerdenia.android.nicefeed.data.model.EntryLight
+import com.joshuacerdenia.android.nicefeed.utils.addRipple
 
 class EntryPopupMenu(
     context: Context?,
     view: View?,
     private val listener: OnItemClickListener,
-    private val entry: EntryMinimal
+    private val entry: EntryLight
 ) : PopupMenu(context, view) {
 
     companion object {
@@ -22,7 +22,7 @@ class EntryPopupMenu(
     }
 
     interface OnItemClickListener {
-        fun onPopupMenuItemClicked(entry: EntryMinimal, action: Int)
+        fun onPopupMenuItemClicked(entry: EntryLight, action: Int)
     }
 
     init {
@@ -48,7 +48,8 @@ class EntryPopupMenu(
         }
 
         setOnDismissListener {
-            view?.background = null
+            //view?.background = null
+            view?.addRipple()
         }
     }
 }

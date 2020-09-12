@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
-import com.joshuacerdenia.android.nicefeed.data.model.EntryMinimal
+import com.joshuacerdenia.android.nicefeed.data.model.EntryLight
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.ui.dialog.AboutFeedFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
@@ -66,27 +66,26 @@ class EntryListFragment : VisibleFragment(),
         callbacks = context as Callbacks?
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.getString(ARG_ENTRY_ID)?.let { entryId ->
+           arguments?.remove(ARG_ENTRY_ID)
+           callbacks?.onEntrySelected(entryId)
+        }
+
         viewModel = ViewModelProvider(this).get(EntryListViewModel::class.java)
         adapter = EntryListAdapter(this)
-
         context?.let { context ->
             viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(context))
             autoUpdateIsEnabled = NiceFeedPreferences.getAutoUpdateSetting(context)
         }
 
         feedId = arguments?.getString(ARG_FEED_ID)
-        val flag = arguments?.getInt(ARG_FLAG)
-        when {
-            feedId != null -> viewModel.getFeedWithEntries(feedId!!)
-            flag == FLAG_RECENT_ENTRIES -> viewModel.getEntries()
-            flag == FLAG_STARRED -> viewModel.getStarredEntries()
+        feedId?.let { feedId ->
+            viewModel.getFeedWithEntries(feedId)
+            if (feedId.startsWith(KEY)) {
+                autoUpdateIsEnabled = false
+            }
         }
 
         arguments?.getBoolean(ARG_IS_NEWLY_ADDED)?.let { isNewlyAdded ->
@@ -94,8 +93,6 @@ class EntryListFragment : VisibleFragment(),
                 viewModel.shouldAutoRefresh = false
             }
         }
-
-        setHasOptionsMenu(feedId != null)
     }
 
     override fun onCreateView(
@@ -113,13 +110,25 @@ class EntryListFragment : VisibleFragment(),
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
-        toolbar.title = getString(R.string.loading)
+        toolbar.title = when (feedId) {
+            KEY_RECENT -> getString(R.string.recent_entries)
+            KEY_STARRED -> getString(R.string.starred_entries)
+            else -> getString(R.string.loading)
+        }
+
         (activity as AppCompatActivity?)?.setSupportActionBar(toolbar)
+        setHasOptionsMenu(feedId != null)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (feedId == null) {
+            masterProgressBar.visibility = View.GONE
+            emptyMessageTextView.visibility = View.VISIBLE
+            toolbar.title = getString(R.string.app_name)
+        }
+
         toolbar.apply {
             setNavigationIcon(R.drawable.ic_menu)
 
@@ -133,11 +142,16 @@ class EntryListFragment : VisibleFragment(),
 
         viewModel.feedLiveData.observe(viewLifecycleOwner, Observer { feed ->
             Log.d(TAG, "Feed observer triggered!")
-            viewModel.submitInitialFeed()
-            feed?.let { callbacks?.onFeedLoaded(it.url) }
+            if (feed != null) {
+                viewModel.submitInitialFeed()
+                callbacks?.onFeedLoaded(feed.url)
+            } else {
+                feedId?.let { callbacks?.onFeedLoaded(it) }
+            }
+
             // Check if not currently updating:
             if (toolbar.title != getString(R.string.updating)) {
-                toolbar.title = feed?.title
+                feed?.title?.let { toolbar.title = it }
             }
         })
 
@@ -250,7 +264,7 @@ class EntryListFragment : VisibleFragment(),
         }
     }
 
-    private fun toggleMarkAllOptionsItem(list: List<EntryMinimal>) {
+    private fun toggleMarkAllOptionsItem(list: List<EntryLight>) {
         markAllOptionsItem?.title = if (viewModel.allIsRead(list)) {
             getString(R.string.mark_all_as_unread)
         } else {
@@ -258,7 +272,7 @@ class EntryListFragment : VisibleFragment(),
         }
     }
 
-    private fun toggleStarAllOptionsItem(list: List<EntryMinimal>) {
+    private fun toggleStarAllOptionsItem(list: List<EntryLight>) {
         starAllOptionsItem?.title = if (viewModel.allIsStarred(list)) {
             getString(R.string.unstar_all)
         } else {
@@ -374,16 +388,16 @@ class EntryListFragment : VisibleFragment(),
         callbacks?.onFeedRemoved()
     }
 
-    override fun onItemClicked(entry: EntryMinimal) {
+    override fun onItemClicked(entry: EntryLight) {
         callbacks?.onEntrySelected(entry.url)
     }
 
-    override fun onItemLongClicked(entry: EntryMinimal, view: View?) {
+    override fun onItemLongClicked(entry: EntryLight, view: View?) {
         val popupMenu = EntryPopupMenu(context, view, this, entry)
         popupMenu.show()
     }
 
-    override fun onPopupMenuItemClicked(entry: EntryMinimal, action: Int) {
+    override fun onPopupMenuItemClicked(entry: EntryLight, action: Int) {
         val url = entry.url
         when (action) {
             EntryPopupMenu.ACTION_STAR -> viewModel.updateEntryIsStarred(url, !entry.isStarred)
@@ -400,28 +414,29 @@ class EntryListFragment : VisibleFragment(),
         viewModel.setFilter(filter)
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
+    }
+
     companion object {
-        const val FLAG_RECENT_ENTRIES = 0
-        const val FLAG_STARRED = 1
+        const val KEY = "KEY"
+        const val KEY_RECENT = "KEY_RECENT"
+        const val KEY_STARRED = "KEY_STARRED"
+
         private const val ARG_FEED_ID = "ARG_FEED_ID"
         private const val ARG_IS_NEWLY_ADDED = "ARG_IS_NEWLY_ADDED"
-        private const val ARG_FLAG = "ARG_FLAG"
-
-        fun newInstance(flag: Int): EntryListFragment {
-            return EntryListFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_FLAG, flag)
-                }
-            }
-        }
+        private const val ARG_ENTRY_ID = "ARG_ENTRY_ID"
 
         fun newInstance(
             feedId: String?,
+            entryId: String? = null,
             isNewlyAdded: Boolean = false
         ): EntryListFragment {
             return EntryListFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_FEED_ID, feedId)
+                    putString(ARG_ENTRY_ID, entryId)
                     putBoolean(ARG_IS_NEWLY_ADDED, isNewlyAdded)
                 }
             }

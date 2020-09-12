@@ -4,20 +4,20 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.CategoryHeader
-import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMenuItem
-import com.joshuacerdenia.android.nicefeed.utils.sortedByUnreadCount
 
-open class FeedListViewModel: ViewModel() {
+private fun List<FeedLight>.sortedByUnreadCount() = this.sortedByDescending { it.unreadCount }
 
-    val repository = NiceFeedRepository.get()
-    private val sourceFeedsLiveData = repository.getFeeds()
+class FeedListViewModel: ViewModel() {
+
+    private val repo = NiceFeedRepository.get()
+    private val sourceFeedsLiveData = repo.getFeedsLight()
 
     var activeFeedId: String? = null
     var categories = arrayOf<String>()
         private set
     val minimizedCategories = mutableSetOf<String>()
-
     val feedListLiveData = MediatorLiveData<List<FeedMenuItem>>()
 
     init {
@@ -45,7 +45,7 @@ open class FeedListViewModel: ViewModel() {
     }
 
     private fun arrangeFeedsAndCategories(
-        feeds: List<Feed>,
+        feeds: List<FeedLight>,
         minimizedCategories: Set<String>
     ): List<FeedMenuItem> {
         val categories = getOrderedCategories(feeds)
@@ -56,7 +56,7 @@ open class FeedListViewModel: ViewModel() {
             val categoryHeader = CategoryHeader(category, isMinimized)
             arrangedMenu.add(FeedMenuItem(categoryHeader))
 
-            for (feed in feeds.sortedByUnreadCount()) {
+            feeds.sortedByUnreadCount().forEach { feed ->
                 if (feed.category == category) {
                     categoryHeader.unreadCount += feed.unreadCount
                     if (!isMinimized) {
@@ -70,7 +70,7 @@ open class FeedListViewModel: ViewModel() {
         return arrangedMenu
     }
 
-    private fun getOrderedCategories(feeds: List<Feed>): List<String> {
+    private fun getOrderedCategories(feeds: List<FeedLight>): List<String> {
         val categories = mutableSetOf<String>()
         for (feed in feeds) {
             categories.add(feed.category)

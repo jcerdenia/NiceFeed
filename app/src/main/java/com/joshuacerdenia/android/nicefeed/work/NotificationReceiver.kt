@@ -15,8 +15,8 @@ class NotificationReceiver : BroadcastReceiver() {
         if (resultCode != Activity.RESULT_OK) {
             return
         } else {
-            val requestCode = intent.getIntExtra(LatestEntriesWorker.EXTRA_REQUEST_CODE, 0)
-            val notification: Notification? = intent.getParcelableExtra(LatestEntriesWorker.EXTRA_NOTIFICATION)
+            val requestCode = intent.getIntExtra(NewEntriesWorker.EXTRA_REQUEST_CODE, 0)
+            val notification: Notification? = intent.getParcelableExtra(NewEntriesWorker.EXTRA_NOTIFICATION)
             if (notification != null) {
                 NotificationManagerCompat.from(context).notify(requestCode, notification)
             }

@@ -137,6 +137,9 @@
     <string name="notification_switch_description">Check for new entries when app is closed</string>
     <string name="sort_feeds_by">Sort feeds by</string>
     <string name="unread_items">Unread items</string>
+    <string name="export">export</string>
+    <string name="starred_entries">Starred Entries</string>
+    <string name="recent_entries">Recent Entries</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

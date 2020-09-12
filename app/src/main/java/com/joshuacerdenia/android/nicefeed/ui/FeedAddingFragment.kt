@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.EditText
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 
 abstract class FeedAddingFragment: VisibleFragment() {
@@ -14,7 +13,7 @@ abstract class FeedAddingFragment: VisibleFragment() {
     var callbacks: Callbacks? = null
 
     interface Callbacks {
-        fun onNewFeedAdded(feedIdPair: FeedIdPair)
+        fun onNewFeedAdded(feedId: String)
         fun onQuerySubmitted(query: String)
         fun onImportOpmlSelected()
         fun onDoneImporting()
@@ -58,7 +57,7 @@ abstract class FeedAddingFragment: VisibleFragment() {
                 getString(R.string.feed_added_message, title),
                 Snackbar.LENGTH_LONG
             ).setAction(R.string.view) {
-                callbacks?.onNewFeedAdded(FeedIdPair(feedId, title))
+                callbacks?.onNewFeedAdded(feedId)
             }.show()
 
             viewModel.alreadyAddedNoticeEnabled = false

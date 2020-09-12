@@ -9,7 +9,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -37,7 +39,7 @@ class AddFeedsFragment: FeedAddingFragment(),
     private val viewModel: AddFeedsViewModel by lazy {
         ViewModelProvider(this).get(AddFeedsViewModel::class.java)
     }
-
+    private lateinit var toolbar: Toolbar
     private lateinit var linearLayout: LinearLayout
     private lateinit var urlEditText: EditText
     private lateinit var subscribeButton: Button
@@ -59,12 +61,19 @@ class AddFeedsFragment: FeedAddingFragment(),
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_add_feeds, container, false)
+        toolbar = view.findViewById(R.id.toolbar)
         linearLayout = view.findViewById(R.id.linearLayout)
         urlEditText = view.findViewById(R.id.editText_url)
         subscribeButton = view.findViewById(R.id.button_subscribe)
         importOpmlButton = view.findViewById(R.id.button_import_opml)
         searchView = view.findViewById(R.id.searchView)
         progressBar = view.findViewById(R.id.progressBar_add_feed)
+
+        toolbar.title = "Add Feeds" // TODO change to string resource
+        (activity as AppCompatActivity?)?.let { activity ->
+            activity.setSupportActionBar(toolbar)
+            activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
         return view
     }
 
@@ -81,7 +90,7 @@ class AddFeedsFragment: FeedAddingFragment(),
             currentFeedIds = it
         })
 
-        viewModel.feedRequestLiveData?.observe(viewLifecycleOwner, Observer {
+        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, Observer {
             manager.submitData(it)
             progressBar.visibility = View.INVISIBLE
             subscribeButton.apply {
@@ -131,7 +140,6 @@ class AddFeedsFragment: FeedAddingFragment(),
 
     override fun onOpmlParsed(feeds: List<Feed>) {
         viewModel.feedsToImport = feeds
-
         ConfirmImportFragment.newInstance(feeds.size).apply {
             setTargetFragment(fragment, 0)
             show(fragment.requireFragmentManager(), "confirm import")
@@ -148,7 +156,7 @@ class AddFeedsFragment: FeedAddingFragment(),
 
     override fun onImportConfirmed(count: Int) {
         val feedsImported = if (count == 1) {
-            viewModel.feedsToImport[0].title
+            viewModel.feedsToImport.first().title
         } else {
             resources.getQuantityString(R.plurals.numberOfFeeds, count, count)
         }
@@ -161,7 +169,9 @@ class AddFeedsFragment: FeedAddingFragment(),
             callbacks?.onDoneImporting()
         }.show()
 
-        viewModel.addFeeds(viewModel.feedsToImport)
+        viewModel.feedsToImport.toTypedArray().run {
+            viewModel.addFeeds(*this)
+        }
         viewModel.feedsToImport = emptyList()
     }
 }

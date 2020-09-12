@@ -15,35 +15,25 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
-import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 
 private fun List<Entry>.sortedByDate() = this.sortedByDescending { it.date }
 
-private const val TAG = "LatestEntriesWorker"
+private const val TAG = "NewEntriesWorker"
 
-class LatestEntriesWorker(
+class NewEntriesWorker(
     val context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
-    private val repository = NiceFeedRepository.get()
+    private val repo = NiceFeedRepository.get()
     private val feedParser = FeedParser()
     private val resources = context.resources
 
-    companion object {
-        const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.work.LatestEntriesWorker"
-        const val ACTION_SHOW_NOTIFICATION = "com.joshuacerdenia.android.nicefeed.work.SHOW_NOTIFICATION"
-        const val NOTIFICATION_ID = 0
-        const val PERM_PRIVATE = "com.joshuacerdenia.android.nicefeed.PRIVATE"
-        const val EXTRA_REQUEST_CODE = "REQUEST_CODE"
-        const val EXTRA_NOTIFICATION = "NOTIFICATION"
-    }
-
     override suspend fun doWork(): Result {
         Log.d(TAG, "Background work started")
-        val feedUrls = repository.getAllFeedUrlsSync()
+        val feedUrls = repo.getFeedUrlsSynchronously()
         val lastIndex = NiceFeedPreferences.getLastPolledIndex(context)
         val newIndex = if (lastIndex + 1 >= feedUrls.size) {
             0
@@ -52,7 +42,7 @@ class LatestEntriesWorker(
         }
 
         val url = feedUrls[newIndex]
-        val currentEntryIds = repository.getEntryIdsByFeedIdSync(url)
+        val currentEntryIds: List<String> = repo.getEntryIdsByFeedSynchronously(url)
         val feedWithEntries: FeedWithEntries? = feedParser.getFeedSynchronously(url)
         NiceFeedPreferences.saveLastPolledIndex(context, newIndex)
 
@@ -66,13 +56,13 @@ class LatestEntriesWorker(
 
             Log.d(TAG, "Got ${newEntries.size} new items in ${feedWithEntries.feed.title}")
             if (newEntries.isNotEmpty()) {
+                repo.handleNewEntriesFound(newEntries, feedWithEntries.feed.url)
+
                 val notification = createNotification(
                     feedWithEntries.feed.url,
                     feedWithEntries.feed.title,
                     newEntries
                 )
-
-                repository.handleLatestEntriesFound(newEntries, feedWithEntries.feed.url)
                 Intent(ACTION_SHOW_NOTIFICATION).apply {
                     putExtra(EXTRA_REQUEST_CODE, NOTIFICATION_ID)
                     putExtra(EXTRA_NOTIFICATION, notification)
@@ -93,7 +83,7 @@ class LatestEntriesWorker(
         entries: List<Entry>
     ): Notification {
         val latestEntry = entries.sortedByDate().first()
-        val intent = MainActivity.newIntent(context, FeedIdPair(feedId, feedTitle))
+        val intent = MainActivity.newIntent(context, feedId, latestEntry.url)
         val pendingIntent = PendingIntent.getActivity(
             context,
             0,
@@ -117,5 +107,14 @@ class LatestEntriesWorker(
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()
+    }
+
+    companion object {
+        const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.work.NewEntriesWorker"
+        const val ACTION_SHOW_NOTIFICATION = "com.joshuacerdenia.android.nicefeed.work.SHOW_NOTIFICATION"
+        const val NOTIFICATION_ID = 0
+        const val PERM_PRIVATE = "com.joshuacerdenia.android.nicefeed.PRIVATE"
+        const val EXTRA_REQUEST_CODE = "REQUEST_CODE"
+        const val EXTRA_NOTIFICATION = "NOTIFICATION"
     }
 }

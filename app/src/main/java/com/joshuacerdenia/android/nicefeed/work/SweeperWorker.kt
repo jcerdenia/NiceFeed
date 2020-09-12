@@ -5,7 +5,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 
-class SweepEntriesWorker(
+class SweeperWorker(
     context: Context,
     workerParams: WorkerParameters
 ): Worker(context, workerParams) {
@@ -13,7 +13,11 @@ class SweepEntriesWorker(
     private val repository = NiceFeedRepository.get()
 
     override fun doWork(): Result {
-        repository.deleteFeedLessEntries()
+        repository.deleteLeftoverItems()
         return Result.success()
+    }
+
+    companion object {
+        const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.work.SweeperWorker"
     }
 }

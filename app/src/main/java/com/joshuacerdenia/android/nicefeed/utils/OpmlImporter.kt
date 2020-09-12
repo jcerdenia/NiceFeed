@@ -1,9 +1,7 @@
 package com.joshuacerdenia.android.nicefeed.utils
 
-import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.rometools.opml.feed.opml.Opml
 import com.rometools.rome.io.WireFeedInput
@@ -12,8 +10,6 @@ import java.io.InputStreamReader
 import java.io.Reader
 import java.io.StringReader
 import java.util.concurrent.Executors
-
-private const val TAG = "OpmlImporter"
 
 class OpmlImporter(
     context: Context,

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.ui.*
 
 private const val TAG = "ManagingActivity"
@@ -19,7 +18,7 @@ class ManagingActivity : AppCompatActivity(),
     ManageFeedsFragment.Callbacks,
     SettingsFragment.Callbacks {
 
-    private lateinit var app: OnBackgroundWorkSettingListener
+    private lateinit var listener: OnBackgroundWorkSettingListener
 
     interface OnBackgroundWorkSettingListener {
         fun onBackgroundWorkSettingChanged(isOn: Boolean)
@@ -28,10 +27,7 @@ class ManagingActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_managing)
-        //toolbar = findViewById(R.id.toolbar)
-        //this.setSupportActionBar(toolbar)
-        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        app = applicationContext as OnBackgroundWorkSettingListener
+        listener = applicationContext as OnBackgroundWorkSettingListener
 
         if (getCurrentFragment() == null) {
             val fragment = when (intent.getIntExtra(EXTRA_MANAGING, MainActivity.ADD_FEEDS)) {
@@ -44,15 +40,6 @@ class ManagingActivity : AppCompatActivity(),
             supportFragmentManager.beginTransaction()
                 .add(R.id.fragment_container, fragment)
                 .commit()
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        when (getCurrentFragment()) {
-            is FeedAddingFragment -> supportActionBar?.title = getString(R.string.add_feeds)
-            is SettingsFragment -> supportActionBar?.title = getString(R.string.settings)
-            else -> return
         }
     }
 
@@ -92,16 +79,16 @@ class ManagingActivity : AppCompatActivity(),
 
     }
 
-    override fun onNewFeedAdded(feedIdPair: FeedIdPair) {
+    override fun onNewFeedAdded(feedId: String) {
         val data = Intent().apply {
-            putExtra(MainActivity.EXTRA_FEED_ID_PAIR, feedIdPair)
+            putExtra(MainActivity.EXTRA_FEED_ID, feedId)
         }
         setResult(Activity.RESULT_OK, data)
         finish()
     }
 
     override fun onQuerySubmitted(query: String) {
-        val fragment = FeedSearchFragment.newInstance(query)
+        val fragment = SearchFeedsFragment.newInstance(query)
         replaceFragment(fragment)
     }
 
@@ -116,14 +103,6 @@ class ManagingActivity : AppCompatActivity(),
 
     override fun onDoneImporting() {
         finish()
-    }
-
-    override fun onFeedsBeingManagedChanged(count: Int) {
-        supportActionBar?.title = if (count > 0) {
-            getString(R.string.number_selected, count)
-        } else {
-            getString(R.string.manage_feeds)
-        }
     }
 
     override fun onAddFeedsSelected() {
@@ -152,7 +131,7 @@ class ManagingActivity : AppCompatActivity(),
     }
 
     override fun onBackgroundWorkSettingChanged(isOn: Boolean) {
-        app.onBackgroundWorkSettingChanged(isOn)
+        listener.onBackgroundWorkSettingChanged(isOn)
     }
 
     override fun onDoneChangingSettings() {

@@ -9,12 +9,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.OneTimeWorkRequest
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
-import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
 import com.joshuacerdenia.android.nicefeed.ui.EntryFragment
 import com.joshuacerdenia.android.nicefeed.ui.EntryListFragment
 import com.joshuacerdenia.android.nicefeed.ui.FeedListFragment
-import com.joshuacerdenia.android.nicefeed.utils.simplified
+import com.joshuacerdenia.android.nicefeed.utils.shortened
+import com.joshuacerdenia.android.nicefeed.work.SweeperWorker
+import com.joshuacerdenia.android.nicefeed.work.UnreadCounterWorker
+import java.util.concurrent.TimeUnit
 
 private const val TAG = "MainActivityLogs"
 
@@ -32,10 +38,12 @@ class MainActivity : AppCompatActivity(),
         drawerLayout = findViewById(R.id.drawerLayout)
 
         if (getMainFragment() == null) {
-            val feedIdPair = intent?.getSerializableExtra(EXTRA_FEED_ID_PAIR) as FeedIdPair?
-            val feedId = NiceFeedPreferences.getLastViewedFeedId(this)
+            val feedId = intent?.getStringExtra(EXTRA_FEED_ID)
+                ?: NiceFeedPreferences.getLastViewedFeedId(this)
+            val entryId = intent?.getStringExtra(EXTRA_ENTRY_ID)
+
             loadFragments(
-                EntryListFragment.newInstance(feedId),
+                EntryListFragment.newInstance(feedId, entryId),
                 FeedListFragment.newInstance()
             )
         }
@@ -43,9 +51,10 @@ class MainActivity : AppCompatActivity(),
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        val feedIdPair = intent?.getSerializableExtra(EXTRA_FEED_ID_PAIR) as FeedIdPair?
-        replaceMainFragment(EntryListFragment.newInstance(feedIdPair?.url), false)
-        (getNavigationFragment() as FeedListFragment?)?.updateActiveFeedId(feedIdPair?.url)
+        val feedId = intent?.getStringExtra(EXTRA_FEED_ID)
+        val entryId = intent?.getStringExtra(EXTRA_ENTRY_ID)
+
+        replaceMainFragment(EntryListFragment.newInstance(feedId, entryId), false)
         drawerLayout.closeDrawers()
     }
 
@@ -54,14 +63,13 @@ class MainActivity : AppCompatActivity(),
         if (resultCode != Activity.RESULT_OK) {
             return
         } else if (requestCode == REQUEST_CODE_ADD_FEED) {
-            val feedIdPair = data?.getSerializableExtra(EXTRA_FEED_ID_PAIR) as FeedIdPair?
-            if (feedIdPair != null) {
-                val fragment = EntryListFragment.newInstance(feedIdPair.url, true)
+            data?.getStringExtra(EXTRA_FEED_ID)?.let { feedId ->
+                val fragment = EntryListFragment.newInstance(feedId, isNewlyAdded = true)
                 handler.postDelayed({
                     replaceMainFragment(fragment, false)
                 }, 350)
 
-                (getNavigationFragment() as FeedListFragment?)?.updateActiveFeedId(feedIdPair.url)
+                (getNavigationFragment() as FeedListFragment?)?.updateActiveFeedId(feedId)
                 drawerLayout.closeDrawers()
             }
         }
@@ -105,14 +113,14 @@ class MainActivity : AppCompatActivity(),
         startActivityForResult(intent, REQUEST_CODE_ADD_FEED)
     }
 
-    override fun onFeedSelected(feedIdPair: FeedIdPair, activeFeedId: String?) {
-        drawerLayout.closeDrawers()
-        if (feedIdPair.url != activeFeedId) {
-            val fragment = EntryListFragment.newInstance(feedIdPair.url)
+    override fun onFeedSelected(feedId: String, activeFeedId: String?) {
+        if (feedId != activeFeedId) {
+            val fragment = EntryListFragment.newInstance(feedId)
             handler.postDelayed({
                 replaceMainFragment(fragment, false)
             }, 350)
         }
+        drawerLayout.closeDrawers()
     }
 
     override fun onSettingsSelected() {
@@ -132,14 +140,16 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onEntrySelected(entryId: String) {
-        val newFragment = EntryFragment.newInstance(entryId)
-        replaceMainFragment(newFragment, true)
+        OneTimeWorkRequest.Builder(UnreadCounterWorker::class.java).build().also { request ->
+            WorkManager.getInstance(this).enqueue(request)
+        }
+        replaceMainFragment(EntryFragment.newInstance(entryId), true)
     }
 
     override fun onEntryLoaded(website: String) {
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            this.title = website.simplified()
+            this.title = website.shortened()
         }
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
@@ -160,13 +170,16 @@ class MainActivity : AppCompatActivity(),
     companion object {
         private const val REQUEST_CODE_ADD_FEED = 0
         const val EXTRA_FEED_ID_PAIR = "com.joshuacerdenia.android.nicefeed.feed_id_pair"
+        const val EXTRA_FEED_ID = "com.joshuacerdenia.android.nicefeed.feed_id"
+        const val EXTRA_ENTRY_ID = "com.joshuacerdenia.android.nicefeed.entry_id"
         const val MANAGE_FEEDS = 0
         const val ADD_FEEDS = 1
         const val SETTINGS = 2
 
-        fun newIntent(context: Context, feedIdPair: FeedIdPair): Intent {
+        fun newIntent(context: Context, feedId: String, latestEntryId: String): Intent {
             return Intent(context, MainActivity::class.java).apply {
-                putExtra(EXTRA_FEED_ID_PAIR, feedIdPair)
+                putExtra(EXTRA_FEED_ID, feedId)
+                putExtra(EXTRA_ENTRY_ID, latestEntryId)
                 addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }

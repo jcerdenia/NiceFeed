@@ -14,7 +14,7 @@ import com.joshuacerdenia.android.nicefeed.utils.simplified
 
 class FeedManagerAdapter(
     private val listener: ItemCheckBoxListener,
-    private val selectedItems: List<FeedMinimal>
+    var selectedItems: List<FeedMinimal>
 ) : ListAdapter<FeedMinimal, FeedManagerAdapter.FeedHolder>(DiffCallback()) {
 
     private val checkBoxes = mutableSetOf<CheckBox>()
@@ -25,7 +25,12 @@ class FeedManagerAdapter(
     }
 
     fun toggleCheckBoxes(checkAll: Boolean) {
-        for (checkBox in checkBoxes) {
+        selectedItems = if (checkAll) {
+            currentList
+        } else {
+            emptyList()
+        }
+        checkBoxes.forEach { checkBox ->
             checkBox.isChecked = checkAll
         }
     }
@@ -57,7 +62,7 @@ class FeedManagerAdapter(
 
         fun bind(feed: FeedMinimal, isChecked: Boolean) {
             this.feed = feed
-            websiteTextView.text = feed.website.simplified()
+            websiteTextView.text = feed.url.simplified()
             categoryTextView.text = feed.category
 
             titleCheckBox.apply {
@@ -80,7 +85,7 @@ class FeedManagerAdapter(
     private class DiffCallback : DiffUtil.ItemCallback<FeedMinimal>() {
 
         override fun areItemsTheSame(oldItem: FeedMinimal, newItem: FeedMinimal): Boolean {
-            return oldItem.website == newItem.website
+            return oldItem.url == newItem.url
         }
 
         override fun areContentsTheSame(oldItem: FeedMinimal, newItem: FeedMinimal): Boolean {

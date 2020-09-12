@@ -13,21 +13,21 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.model.EntryMinimal
-import com.joshuacerdenia.android.nicefeed.utils.simplified
+import com.joshuacerdenia.android.nicefeed.data.model.EntryLight
+import com.joshuacerdenia.android.nicefeed.utils.shortened
 import com.squareup.picasso.Picasso
 import java.text.DateFormat.*
 import java.util.*
 
 class EntryListAdapter(
     private val listener: OnItemClickListener
-) : ListAdapter<EntryMinimal, EntryListAdapter.EntryHolder>(DiffCallback()) {
+) : ListAdapter<EntryLight, EntryListAdapter.EntryHolder>(DiffCallback()) {
 
     var latestClickedPosition = 0
 
     interface OnItemClickListener {
-        fun onItemClicked(entry: EntryMinimal)
-        fun onItemLongClicked(entry: EntryMinimal, view: View?)
+        fun onItemClicked(entry: EntryLight)
+        fun onItemLongClicked(entry: EntryLight, view: View?)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EntryHolder {
@@ -48,7 +48,7 @@ class EntryListAdapter(
         private val listener: OnItemClickListener
     ) : RecyclerView.ViewHolder(view), View.OnClickListener, View.OnLongClickListener {
 
-        private lateinit var entry: EntryMinimal
+        private lateinit var entry: EntryLight
 
         private val container: ConstraintLayout = itemView.findViewById(R.id.constraintLayout_container)
         private val titleTextView: TextView = itemView.findViewById(R.id.textView_title)
@@ -62,7 +62,7 @@ class EntryListAdapter(
         }
 
         @SuppressLint("SetTextI18n")
-        fun bind(entry: EntryMinimal) {
+        fun bind(entry: EntryLight) {
             this.entry = entry
 
             val date = entry.date?.let {
@@ -82,7 +82,7 @@ class EntryListAdapter(
                 })
             }
 
-            infoTextView.text = "$date – ${entry.website.simplified()}"
+            infoTextView.text = "$date – ${entry.website.shortened()}"
             starView.visibility = if (entry.isStarred) {
                 View.VISIBLE
             } else {
@@ -113,13 +113,13 @@ class EntryListAdapter(
         }
     }
 
-    private class DiffCallback : DiffUtil.ItemCallback<EntryMinimal>() {
+    private class DiffCallback : DiffUtil.ItemCallback<EntryLight>() {
 
-        override fun areItemsTheSame(oldItem: EntryMinimal, newItem: EntryMinimal): Boolean {
+        override fun areItemsTheSame(oldItem: EntryLight, newItem: EntryLight): Boolean {
             return oldItem.url == newItem.url
         }
 
-        override fun areContentsTheSame(oldItem: EntryMinimal, newItem: EntryMinimal): Boolean {
+        override fun areContentsTheSame(oldItem: EntryLight, newItem: EntryLight): Boolean {
             return oldItem == newItem
         }
     }

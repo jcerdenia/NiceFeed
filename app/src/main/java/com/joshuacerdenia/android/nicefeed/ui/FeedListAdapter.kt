@@ -1,6 +1,7 @@
 package com.joshuacerdenia.android.nicefeed.ui
 
 import android.content.Context
+import android.util.Log
 import android.view.Gravity.START
 import android.view.LayoutInflater
 import android.view.View
@@ -13,8 +14,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.CategoryHeader
-import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMenuItem
+import com.joshuacerdenia.android.nicefeed.utils.addRipple
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.list_item_feed.view.*
 
@@ -29,7 +31,7 @@ class FeedListAdapter(
     private var activeFeedId: String? = null
 
     interface OnItemClickListener {
-        fun onFeedSelected(feed: Feed)
+        fun onFeedSelected(feedId: String)
         fun onCategoryClicked(category: String)
     }
 
@@ -45,7 +47,7 @@ class FeedListAdapter(
                     parent,
                     false
                 )
-                FeedHolder(context, view, listener)
+                FeedHolder(view)
             }
             TYPE_HEADER -> {
                 val view = LayoutInflater.from(parent.context).inflate(
@@ -63,8 +65,8 @@ class FeedListAdapter(
 
         when (holder) {
             is FeedHolder -> {
-                val isHighlighted = activeFeedId == (getItem(position).content as Feed).url
-                holder.bind(getItem(position).content as Feed, isHighlighted)
+                val isHighlighted = activeFeedId == (getItem(position).content as FeedLight).url
+                holder.bind(getItem(position).content as FeedLight, isHighlighted)
             }
             is CategoryHolder -> holder.bind(getItem(position).content as CategoryHeader)
         }
@@ -72,19 +74,15 @@ class FeedListAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position).content) {
-            is Feed -> TYPE_ITEM
+            is FeedLight -> TYPE_ITEM
             is CategoryHeader -> TYPE_HEADER
             else -> throw IllegalArgumentException()
         }
     }
 
-    private inner class FeedHolder(
-        private val context: Context?,
-        view: View,
-        private val listener: OnItemClickListener
-    ) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    private inner class FeedHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
-        private lateinit var feed: Feed
+        private lateinit var feed: FeedLight
         private val titleTextView: TextView = itemView.findViewById(R.id.title_text_view)
         private val countTextView: TextView = itemView.findViewById(R.id.item_count_text_view)
 
@@ -92,20 +90,23 @@ class FeedListAdapter(
             itemView.setOnClickListener(this)
         }
 
-        fun bind(feed: Feed, isHighlighted: Boolean) {
+        fun bind(feed: FeedLight, isHighlighted: Boolean) {
             this.feed = feed
+
             if (isHighlighted) {
                 context?.let { context ->
                     itemView.setBackgroundColor(getColor(context, R.color.colorSelect))
                 }
             } else {
-                itemView.setBackgroundColor(0)
+                itemView.addRipple()
             }
 
             titleTextView.text = feed.title
             countTextView.text = if (feed.unreadCount > 0) {
                 feed.unreadCount.toString()
-            } else null
+            } else {
+                null
+            }
 
             Picasso.get()
                 .load(feed.imageUrl)
@@ -116,7 +117,7 @@ class FeedListAdapter(
         }
 
         override fun onClick(v: View) {
-            listener.onFeedSelected(feed)
+            listener.onFeedSelected(feed.url)
         }
     }
 
@@ -169,7 +170,7 @@ class FeedListAdapter(
 
         override fun areItemsTheSame(oldItem: FeedMenuItem, newItem: FeedMenuItem): Boolean {
             return when {
-                oldItem.content is Feed && newItem.content is Feed -> {
+                oldItem.content is FeedLight && newItem.content is FeedLight -> {
                     oldItem.content.url == newItem.content.url
                 }
                 oldItem.content is CategoryHeader && newItem.content is CategoryHeader -> {

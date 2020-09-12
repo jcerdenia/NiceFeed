@@ -18,7 +18,7 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"/>
 
         <Button
-            android:id="@+id/button_manage"
+            android:id="@+id/manage_button"
             style="@style/DrawerMenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
             android:text="@string/manage" />
 
         <Button
-            android:id="@+id/button_add"
+            android:id="@+id/add_button"
             style="@style/DrawerMenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,20 +35,36 @@
 
         <View style="@style/Divider"/>
 
+        <Button
+            android:id="@+id/recent_entries_button"
+            style="@style/DrawerMenuButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_folder"
+            android:text="@string/recent" />
+
+        <Button
+            android:id="@+id/starred_entries_button"
+            style="@style/DrawerMenuButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_folder_starred"
+            android:text="@string/starred" />
+
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_feed"
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:choiceMode="singleChoice"
             android:nestedScrollingEnabled="false"/>
 
         <View
-            android:id="@+id/divider_bottom"
+            android:id="@+id/bottom_divider"
             android:layout_marginTop="8dp"
             style="@style/Divider"/>
 
         <Button
-            android:id="@+id/button_settings"
+            android:id="@+id/settings_button"
             style="@style/DrawerMenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

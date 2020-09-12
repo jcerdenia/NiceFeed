@@ -8,26 +8,15 @@ import android.widget.Button
 import android.widget.RadioGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 
 class SortFeedManagerFragment: BottomSheetDialogFragment() {
 
-    companion object {
-        const val SORT_BY_ADDED = 0
-        const val SORT_BY_CATEGORY = 1
-        const val SORT_BY_TITLE = 2
-        
-        fun newInstance(): SortFeedManagerFragment {
-            return SortFeedManagerFragment()
-        }
-    }
-
-    interface Callbacks {
-        fun onSortPreferenceSelected()
-    }
-
     private lateinit var radioGroupSortFeeds: RadioGroup
     private lateinit var cancelButton: Button
+
+    interface Callbacks {
+        fun onOrderSelected(order: Int)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,9 +31,7 @@ class SortFeedManagerFragment: BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val currentSelection = context?.let {
-            NiceFeedPreferences.getFeedManagerOrder(it)
-        } ?: SORT_BY_ADDED
+        val currentSelection = arguments?.getInt(ARG_CURRENT_ORDER) ?: 0
 
         radioGroupSortFeeds.apply {
             check(when (currentSelection) {
@@ -54,20 +41,38 @@ class SortFeedManagerFragment: BottomSheetDialogFragment() {
             })
 
             setOnCheckedChangeListener { _, checkedId ->
-                val selection: Int = when (checkedId) {
+                val order = when (checkedId) {
                     R.id.radioButton_category -> SORT_BY_CATEGORY
                     R.id.radioButton_title -> SORT_BY_TITLE
                     else -> SORT_BY_ADDED // Default
                 }
 
-                NiceFeedPreferences.saveFeedManagerOrder(context, selection)
-                targetFragment?.let { (it as Callbacks).onSortPreferenceSelected() }
+                targetFragment?.let { fragment ->
+                    (fragment as Callbacks).onOrderSelected(order)
+                }
                 dismiss()
             }
         }
 
         cancelButton.setOnClickListener {
                 dismiss()
+        }
+    }
+
+    companion object {
+        private const val ARG_CURRENT_ORDER = "ARG_CURRENT_ORDER"
+
+        const val SORT_BY_ADDED = 0
+        const val SORT_BY_CATEGORY = 1
+        const val SORT_BY_TITLE = 2
+
+        fun newInstance(currentOrder: Int): SortFeedManagerFragment {
+            val args = Bundle().apply {
+                putInt(ARG_CURRENT_ORDER, currentOrder)
+            }
+            return SortFeedManagerFragment().apply {
+                arguments = args
+            }
         }
     }
 }

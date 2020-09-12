@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.*
 import android.widget.CheckBox
-import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -22,8 +22,6 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment
 import com.joshuacerdenia.android.nicefeed.utils.OpmlExporter
-import com.joshuacerdenia.android.nicefeed.utils.sortedByCategory
-import com.joshuacerdenia.android.nicefeed.utils.sortedByTitle
 
 private const val TAG = "ManageFeedsFragment"
 
@@ -31,35 +29,22 @@ class ManageFeedsFragment: VisibleFragment(),
     EditCategoryFragment.Callbacks,
     ConfirmRemoveFragment.Callbacks,
     SortFeedManagerFragment.Callbacks,
-    FeedManagerAdapter.ItemCheckBoxListener {
-
-    companion object {
-        private const val ACTION_REMOVE = 0
-        private const val ACTION_EDIT = 1
-
-        fun newInstance(): ManageFeedsFragment {
-            return ManageFeedsFragment()
-        }
-    }
+    FeedManagerAdapter.ItemCheckBoxListener,
+    OpmlExporter.ExportResultListener {
 
     private val fragment = this@ManageFeedsFragment
-    private val viewModel: ManageFeedsViewModel by lazy {
-        ViewModelProvider(this).get(ManageFeedsViewModel::class.java)
-    }
-
+    private lateinit var viewModel: ManageFeedsViewModel
     private lateinit var toolbar: Toolbar
     private lateinit var progressBar: ProgressBar
-    private lateinit var emptyListImage: ImageView
     private lateinit var selectAllCheckBox: CheckBox
+    private lateinit var emptyMessageTextView: TextView
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: FeedManagerAdapter
     private var opmlExporter: OpmlExporter? = null
     private val handler = Handler()
-    private var categories = arrayOf<String>()
     private var callbacks: Callbacks? = null
 
     interface Callbacks {
-        fun onFeedsBeingManagedChanged(count: Int)
         fun onAddFeedsSelected()
         fun onExportOpmlSelected()
         fun onDoneManaging()
@@ -77,8 +62,14 @@ class ManageFeedsFragment: VisibleFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(ManageFeedsViewModel::class.java)
         adapter = FeedManagerAdapter(this, viewModel.selectedItems)
         setHasOptionsMenu(true)
+
+        context?.let { context ->
+            opmlExporter = OpmlExporter(context, this)
+            viewModel.setOrder(NiceFeedPreferences.getFeedManagerOrder(context))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -95,12 +86,19 @@ class ManageFeedsFragment: VisibleFragment(),
                 callbacks?.onAddFeedsSelected()
                 true
             }
-            R.id.menuItem_export_opml -> {
-                callbacks?.onExportOpmlSelected()
-                true
-            }
+            R.id.menuItem_export_opml -> handleExportOPML(viewModel.selectedItems)
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun handleExportOPML(feeds: List<FeedMinimal>): Boolean {
+        if (feeds.isNotEmpty()) {
+            opmlExporter?.submitFeeds(feeds)
+            callbacks?.onExportOpmlSelected()
+        } else {
+            showNothingSelectedNotice(ACTION_EXPORT)
+        }
+        return true
     }
 
     override fun onCreateView(
@@ -110,22 +108,25 @@ class ManageFeedsFragment: VisibleFragment(),
     ): View? {
         val view = inflater.inflate(R.layout.fragment_manage_feeds, container, false)
         toolbar = view.findViewById(R.id.toolbar)
-        progressBar = view.findViewById(R.id.progressBar)
-        emptyListImage = view.findViewById(R.id.imageView_empty)
-        selectAllCheckBox = view.findViewById(R.id.checkBox_select_all)
-        recyclerView = view.findViewById(R.id.recyclerView_feed)
+        progressBar = view.findViewById(R.id.progress_bar)
+        selectAllCheckBox = view.findViewById(R.id.select_all_checkbox)
+        emptyMessageTextView = view.findViewById(R.id.empty_message_text_view)
+        recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
-        toolbar.title = "Fuck this shit"
-        (activity as AppCompatActivity?)?.setSupportActionBar(toolbar)
+        toolbar.title = getString(R.string.loading)
+        (activity as AppCompatActivity?)?.let { activity ->
+            activity.setSupportActionBar(toolbar)
+            activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        callbacks?.onFeedsBeingManagedChanged(viewModel.selectedItems.size)
-        opmlExporter = context?.let { context -> OpmlExporter(context, recyclerView) }
+        updateToolbar(toolbar, viewModel.selectedItems.size)
         progressBar.visibility = View.VISIBLE
 
         selectAllCheckBox.setOnClickListener { (it as CheckBox)
@@ -136,61 +137,42 @@ class ManageFeedsFragment: VisibleFragment(),
             }
 
             adapter.toggleCheckBoxes(it.isChecked)
-            callbacks?.onFeedsBeingManagedChanged(viewModel.selectedItems.size)
+            updateToolbar(toolbar, viewModel.selectedItems.size)
         }
 
-        observeFeedsLiveData()
-    }
-
-    private fun observeFeedsLiveData() {
         viewModel.feedsMinimalLiveData.observe(viewLifecycleOwner, Observer { feeds ->
+            adapter.submitList(feeds)
+            progressBar.visibility = View.GONE
             selectAllCheckBox.visibility = if (feeds.size > 1) {
                 View.VISIBLE
             } else {
                 View.GONE
             }
 
-            categories = getCategories(feeds)
-            opmlExporter?.submitFeeds(feeds, categories)
-            adapter.submitList(getSortedList(feeds))
-            progressBar.visibility = View.GONE
-
             if (feeds.isEmpty()) {
-                emptyListImage.visibility = View.VISIBLE
+                emptyMessageTextView.visibility = View.VISIBLE
             }
         })
     }
 
-    private fun getCategories(feeds: List<FeedMinimal>): Array<String> {
-        val categories: MutableSet<String> = mutableSetOf()
-        for (feed in feeds) {
-            categories.add(feed.category)
+    private fun updateToolbar(toolbar: Toolbar, selectedItemCount: Int) {
+        toolbar.title = if (selectedItemCount > 0) {
+            getString(R.string.number_selected, selectedItemCount)
+        } else {
+            getString(R.string.manage_feeds)
         }
-        return categories.toTypedArray()
     }
 
     private fun handleSortFeeds(): Boolean {
-        SortFeedManagerFragment.newInstance().apply {
+        SortFeedManagerFragment.newInstance(viewModel.currentOrder).apply {
             setTargetFragment(fragment, 0)
             show(fragment.requireFragmentManager(), "sort")
         }
         return true
     }
 
-    override fun onSortPreferenceSelected() {
-        observeFeedsLiveData()
-    }
-
-    private fun getSortedList(feeds: List<FeedMinimal>): List<FeedMinimal> {
-        val sortBy = context?.let {
-            NiceFeedPreferences.getFeedManagerOrder(it)
-        } ?: SortFeedManagerFragment.SORT_BY_ADDED
-
-        return when (sortBy) {
-            SortFeedManagerFragment.SORT_BY_CATEGORY -> feeds.sortedByCategory()
-            SortFeedManagerFragment.SORT_BY_TITLE -> feeds.sortedByTitle()
-            else -> feeds.reversed() // Default
-        }
+    override fun onOrderSelected(order: Int) {
+        viewModel.setOrder(order)
     }
 
     private fun handleRemoveSelected(): Boolean {
@@ -213,10 +195,9 @@ class ManageFeedsFragment: VisibleFragment(),
     }
 
     override fun onRemoveConfirmed() {
-        val feedIds = mutableListOf<String>()
-        for (feed in viewModel.selectedItems) {
-            feedIds.add(feed.url)
-        }
+        val feedIds = viewModel.selectedItems.map { feed ->
+            feed.url
+        }.toTypedArray()
 
         if (feedIds.size == 1) {
             showFeedsRemovedNotice(title = viewModel.selectedItems[0].title)
@@ -229,7 +210,7 @@ class ManageFeedsFragment: VisibleFragment(),
             showFeedsRemovedNotice(feedIds.size)
         }
 
-        viewModel.deleteFeedsAndEntriesByIds(feedIds)
+        viewModel.deleteItems(*feedIds)
         resetSelection()
     }
 
@@ -259,7 +240,7 @@ class ManageFeedsFragment: VisibleFragment(),
                 viewModel.selectedItems[0].title
             } else null
 
-            EditCategoryFragment.newInstance(categories, title, count).apply {
+            EditCategoryFragment.newInstance(viewModel.getCategories(), title, count).apply {
                 setTargetFragment(fragment, 0)
                 show(fragment.requireFragmentManager(), "edit category")
             }
@@ -302,10 +283,13 @@ class ManageFeedsFragment: VisibleFragment(),
     }
 
     private fun showNothingSelectedNotice(action: Int) {
-        val actionString = if (action == ACTION_REMOVE) {
-            getString(R.string.remove)
-        } else {
-            getString(R.string.edit)
+        val actionString = when (action) {
+            ACTION_EDIT -> R.string.edit
+            ACTION_REMOVE -> R.string.remove
+            ACTION_EXPORT -> R.string.export
+            else -> throw IllegalArgumentException()
+        }.run {
+            getString(this)
         }
 
         Snackbar.make(
@@ -329,7 +313,7 @@ class ManageFeedsFragment: VisibleFragment(),
 
     private fun resetSelection() {
         viewModel.selectedItems.clear()
-        callbacks?.onFeedsBeingManagedChanged(viewModel.selectedItems.size)
+        updateToolbar(toolbar, viewModel.selectedItems.size)
         selectAllCheckBox.isChecked = false
         adapter.toggleCheckBoxes(false)
     }
@@ -343,10 +327,42 @@ class ManageFeedsFragment: VisibleFragment(),
             selectAllCheckBox.isChecked = false
         }
 
-        callbacks?.onFeedsBeingManagedChanged(viewModel.selectedItems.size)
+        adapter.selectedItems = viewModel.selectedItems
+        updateToolbar(toolbar, viewModel.selectedItems.size)
     }
 
     override fun onAllItemsChecked(isChecked: Boolean) {
         selectAllCheckBox.isChecked = isChecked
+    }
+
+    override fun onExportAttempted(isSuccessful: Boolean, fileName: String?) {
+        val message = if (isSuccessful) {
+            getString(R.string.exported_opml_message, fileName)
+        } else {
+            getString(R.string.error_message)
+        }
+
+        Snackbar.make(
+            recyclerView,
+            message,
+            Snackbar.LENGTH_SHORT
+        ).show()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        context?.let { context ->
+            NiceFeedPreferences.saveFeedManagerOrder(context, viewModel.currentOrder)
+        }
+    }
+
+    companion object {
+        private const val ACTION_REMOVE = 0
+        private const val ACTION_EDIT = 1
+        private const val ACTION_EXPORT = 2
+
+        fun newInstance(): ManageFeedsFragment {
+            return ManageFeedsFragment()
+        }
     }
 }

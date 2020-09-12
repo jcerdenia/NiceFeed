@@ -7,14 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
-import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.data.model.FeedIdPair
+import com.joshuacerdenia.android.nicefeed.utils.addRipple
 
 private const val TAG = "FeedListFragment"
 
@@ -23,6 +23,8 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     private lateinit var viewModel: FeedListViewModel
     private lateinit var manageButton: Button
     private lateinit var addButton: Button
+    private lateinit var recentEntriesButton: Button
+    private lateinit var starredEntriesButton: Button
     private lateinit var settingsButton: Button
     private lateinit var bottomDivider: View
     private lateinit var recyclerView: RecyclerView
@@ -33,7 +35,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     interface Callbacks {
         fun onManageFeedsSelected()
         fun onAddFeedSelected()
-        fun onFeedSelected(feedIdPair: FeedIdPair, activeFeedId: String?)
+        fun onFeedSelected(feedId: String, activeFeedId: String?)
         fun onSettingsSelected()
     }
 
@@ -51,6 +53,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(FeedListViewModel::class.java)
         adapter = FeedListAdapter(context, this)
+
         context?.let { context ->
             viewModel.setMinimizedCategories(NiceFeedPreferences.getMinimizedCategories(context))
         }
@@ -62,11 +65,13 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_feed_list, container, false)
-        manageButton = view.findViewById(R.id.button_manage)
-        addButton = view.findViewById(R.id.button_add)
-        settingsButton = view.findViewById(R.id.button_settings)
-        bottomDivider = view.findViewById(R.id.divider_bottom)
-        recyclerView = view.findViewById(R.id.recyclerView_feed)
+        manageButton = view.findViewById(R.id.manage_button)
+        addButton = view.findViewById(R.id.add_button)
+        recentEntriesButton = view.findViewById(R.id.recent_entries_button)
+        starredEntriesButton = view.findViewById(R.id.starred_entries_button)
+        settingsButton = view.findViewById(R.id.settings_button)
+        bottomDivider = view.findViewById(R.id.bottom_divider)
+        recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
         return view
@@ -74,7 +79,6 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         manageButton.setOnClickListener {
             callbacks?.onManageFeedsSelected()
         }
@@ -83,30 +87,44 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
             callbacks?.onAddFeedSelected()
         }
 
+        recentEntriesButton.setOnClickListener {
+            callbacks?.onFeedSelected(EntryListFragment.KEY_RECENT, viewModel.activeFeedId)
+        }
+
+        starredEntriesButton.setOnClickListener {
+            callbacks?.onFeedSelected(EntryListFragment.KEY_STARRED, viewModel.activeFeedId)
+        }
+
         settingsButton.setOnClickListener {
             callbacks?.onSettingsSelected()
         }
 
         viewModel.feedListLiveData.observe(viewLifecycleOwner, Observer { list ->
             adapter.submitList(list)
-
             if (list.isNotEmpty()) {
-                manageButton.isEnabled = true
+                manageButton.visibility = View.VISIBLE
+                recentEntriesButton.visibility = View.VISIBLE
+                starredEntriesButton.visibility = View.VISIBLE
                 bottomDivider.visibility = View.VISIBLE
             } else {
-                manageButton.isEnabled = false
+                manageButton.visibility = View.GONE
+                recentEntriesButton.visibility = View.GONE
+                starredEntriesButton.visibility = View.GONE
                 bottomDivider.visibility = View.GONE
                 updateActiveFeedId(null)
             }
         })
     }
 
-    override fun onFeedSelected(feed: Feed) {
-        callbacks?.onFeedSelected(FeedIdPair(feed.url, feed.title), viewModel.activeFeedId)
-        viewModel.activeFeedId = feed.url
+    override fun onFeedSelected(feedId: String) {
+        recentEntriesButton.background = null
+        starredEntriesButton.background = null
+
+        callbacks?.onFeedSelected(feedId, viewModel.activeFeedId)
+        viewModel.activeFeedId = feedId
 
         handler.postDelayed({
-                recyclerView.adapter = adapter
+            recyclerView.adapter = adapter
         }, 500)
     }
 
@@ -118,6 +136,18 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         viewModel.activeFeedId = feedId
         adapter.setActiveFeedId(feedId)
         recyclerView.adapter = adapter
+
+        starredEntriesButton.addRipple()
+        recentEntriesButton.addRipple()
+
+        context?.let { context ->
+            val color = ContextCompat.getColor(context, R.color.colorSelect)
+            if (feedId == EntryListFragment.KEY_RECENT) {
+                recentEntriesButton.setBackgroundColor(color)
+            } else if (feedId == EntryListFragment.KEY_STARRED) {
+                starredEntriesButton.setBackgroundColor(color)
+            }
+        }
     }
 
     fun getCategories(): Array<String> {

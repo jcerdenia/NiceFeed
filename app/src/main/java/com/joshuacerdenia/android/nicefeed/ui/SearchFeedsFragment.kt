@@ -3,7 +3,9 @@ package com.joshuacerdenia.android.nicefeed.ui
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,28 +16,16 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.SubscribeFragment
 import com.joshuacerdenia.android.nicefeed.utils.RssUrlTransformer
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 
-private const val TAG = "FeedSearchFragment"
+private const val TAG = "SearchFeedsFragment"
 private const val ARG_INITIAL_QUERY = "ARG_INITIAL_QUERY"
 
-class FeedSearchFragment : FeedAddingFragment(),
+class SearchFeedsFragment : FeedAddingFragment(),
     SubscribeFragment.Callbacks,
     FeedSearchAdapter.OnItemClickListener {
 
-    companion object {
-        fun newInstance(initialQuery: String?): FeedSearchFragment {
-            return FeedSearchFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_INITIAL_QUERY, initialQuery)
-                }
-            }
-        }
-    }
-
-    private val fragment = this@FeedSearchFragment
-    private val viewModel: FeedSearchViewModel by lazy {
-        ViewModelProvider(this).get(FeedSearchViewModel::class.java)
-    }
-
+    private val fragment = this@SearchFeedsFragment
+    private lateinit var viewModel: FeedSearchViewModel
+    private lateinit var toolbar: Toolbar
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchView: SearchView
@@ -43,6 +33,7 @@ class FeedSearchFragment : FeedAddingFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(FeedSearchViewModel::class.java)
         adapter = FeedSearchAdapter(this, viewModel.itemBeingLoaded, viewModel.itemSelectionEnabled)
         setHasOptionsMenu(true)
     }
@@ -52,11 +43,18 @@ class FeedSearchFragment : FeedAddingFragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_feed_search, container, false)
+        val view = inflater.inflate(R.layout.fragment_search_feeds, container, false)
         progressBar = view.findViewById(R.id.progressBar_search)
         recyclerView = view.findViewById(R.id.recyclerView_feed)
+        toolbar = view.findViewById(R.id.toolbar)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
+
+        toolbar.title = "Search Feeds" // TODO change to string resource
+        (activity as AppCompatActivity?)?.let { activity ->
+            activity.setSupportActionBar(toolbar)
+            activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
         return view
     }
 
@@ -139,6 +137,16 @@ class FeedSearchFragment : FeedAddingFragment(),
         SubscribeFragment.newInstance(searchResultItem).apply {
             setTargetFragment(fragment, 0)
             show(fragment.requireFragmentManager(), "subscribe")
+        }
+    }
+
+    companion object {
+        fun newInstance(initialQuery: String?): SearchFeedsFragment {
+            return SearchFeedsFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_INITIAL_QUERY, initialQuery)
+                }
+            }
         }
     }
 }

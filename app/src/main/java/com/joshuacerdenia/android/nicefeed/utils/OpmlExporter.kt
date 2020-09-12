@@ -1,13 +1,8 @@
 package com.joshuacerdenia.android.nicefeed.utils
 
-import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
-import android.util.Log
-import android.view.View
-import com.google.android.material.snackbar.Snackbar
-import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMinimal
 import com.rometools.opml.feed.opml.Opml
 import com.rometools.opml.feed.opml.Outline
@@ -18,11 +13,9 @@ import java.net.URL
 import java.util.*
 import java.util.concurrent.Executors
 
-private const val TAG = "OpmlExporter"
-
 class OpmlExporter(
-    private val context: Context,
-    private val view: View
+    context: Context,
+    private val listener: ExportResultListener
 ) {
 
     private val contentResolver = context.contentResolver
@@ -31,9 +24,15 @@ class OpmlExporter(
         get() = field.sortedBy { it.category }
     private var categories = arrayOf<String>()
 
-    fun submitFeeds(feeds: List<FeedMinimal>, categories: Array<String>) {
+    interface ExportResultListener {
+        fun onExportAttempted(isSuccessful: Boolean, fileName: String?)
+    }
+
+    fun submitFeeds(feeds: List<FeedMinimal>) {
         this.feeds = feeds
-        this.categories = categories
+        categories = feeds.map { feed ->
+            feed.category
+        }.toSet().toTypedArray()
     }
 
     fun submitUri(uri: Uri) {
@@ -56,21 +55,16 @@ class OpmlExporter(
                     )?.use { cursor ->
                         if (cursor.moveToFirst()) {
                             val fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-
-                            Snackbar.make(
-                                view,
-                                context.getString(R.string.exported_opml_message, fileName),
-                                Snackbar.LENGTH_SHORT
-                            ).show()
+                            listener.onExportAttempted(true, fileName)
                         }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    showErrorMessage()
+                    listener.onExportAttempted(false, null)
                 }
             }
         } else {
-            showErrorMessage()
+            listener.onExportAttempted(false, null)
         }
     }
 
@@ -99,13 +93,5 @@ class OpmlExporter(
         }
 
         WireFeedOutput().output(opml, writer)
-    }
-
-    private fun showErrorMessage() {
-        Snackbar.make(
-            view,
-            context.getString(R.string.error_message),
-            Snackbar.LENGTH_SHORT
-        ).show()
     }
 }

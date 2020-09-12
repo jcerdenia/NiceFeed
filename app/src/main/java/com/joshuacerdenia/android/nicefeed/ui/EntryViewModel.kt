@@ -8,12 +8,12 @@ import com.joshuacerdenia.android.nicefeed.data.model.Entry
 
 class EntryViewModel: ViewModel() {
 
-    private val repository = NiceFeedRepository.get()
+    private val repo = NiceFeedRepository.get()
     var lastPosition: Pair<Int, Int> = Pair(0, 0)
 
     private val entryIdLiveData = MutableLiveData<String>()
     val entryLiveData = Transformations.switchMap(entryIdLiveData) { entryId ->
-        repository.getEntryById(entryId)
+        repo.getEntry(entryId)
     }
 
     fun getEntryById(entryId: String) {
@@ -21,10 +21,10 @@ class EntryViewModel: ViewModel() {
     }
 
     fun updateEntry(entry: Entry) {
-        repository.updateEntry(entry)
+        repo.updateEntryAndFeedUnreadCount(entry.url, entry.isRead, entry.isStarred)
     }
 
     fun updateFeedUnreadCountById(id: String, count: Int) {
-        repository.updateFeedUnreadCountById(id, count)
+        repo.updateFeedUnreadCount(id, count)
     }
 }

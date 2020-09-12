@@ -7,20 +7,20 @@ import com.joshuacerdenia.android.nicefeed.data.model.Feed
 /* This class compares recently requested data from the web with current data saved locally.
 It outputs which entries to add, update, and delete, as well as updated feed data, if any. */
 
-class UpdateManager(private val listener: OnRefreshedListener) {
+class UpdateManager(private val listener: UpdateListener) {
 
     var currentFeed: Feed? = null
         private set
     private var currentEntries = listOf<Entry>()
         get() = field.sortedByDescending { it.date }
 
-    interface OnRefreshedListener {
+    interface UpdateListener {
         fun onUnreadEntriesCounted(feedId: String, unreadCount: Int)
-        fun onFeedNeedsRefresh(feed: Feed)
-        fun onEntriesNeedRefresh(
-            toAdd: List<Entry>,
-            toUpdate: List<Entry>,
-            toDelete: List<Entry>,
+        fun onFeedNeedsUpdate(feed: Feed)
+        fun onOldAndNewEntriesCompared(
+            entriesToAdd: List<Entry>,
+            entriesToUpdate: List<Entry>,
+            entriesToDelete: List<Entry>,
             feedId: String
         )
     }
@@ -72,7 +72,7 @@ class UpdateManager(private val listener: OnRefreshedListener) {
 
         for (entry in currentEntries) {
             if (!newEntryIds.contains(entry.url)) {
-                if (!entry.isStarred  && entry.isRead) {
+                if (!entry.isStarred && entry.isRead) {
                     entriesToDelete.add(entry)
                 }
             }
@@ -81,11 +81,12 @@ class UpdateManager(private val listener: OnRefreshedListener) {
         // Check if entries are changed at all
         if (entriesToAdd.size + entriesToUpdate.size + entriesToDelete.size > 0) {
             currentFeed?.let { feed->
-                listener.onEntriesNeedRefresh(
+                listener.onOldAndNewEntriesCompared(
                     entriesToAdd,
                     entriesToUpdate,
                     entriesToDelete,
-                    feed.url)
+                    feed.url
+                )
             }
         }
     }
@@ -97,7 +98,7 @@ class UpdateManager(private val listener: OnRefreshedListener) {
         }
 
         if (feed !== currentFeed) {
-            listener.onFeedNeedsRefresh(feed)
+            listener.onFeedNeedsUpdate(feed)
         }
     }
 

@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.fragment.app.Fragment
-import com.joshuacerdenia.android.nicefeed.work.LatestEntriesWorker
+import com.joshuacerdenia.android.nicefeed.work.NewEntriesWorker
 
 abstract class VisibleFragment : Fragment() {
 
@@ -19,11 +19,11 @@ abstract class VisibleFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        val filter = IntentFilter(LatestEntriesWorker.ACTION_SHOW_NOTIFICATION)
+        val filter = IntentFilter(NewEntriesWorker.ACTION_SHOW_NOTIFICATION)
         requireActivity().registerReceiver(
             onShowNotification,
             filter,
-            LatestEntriesWorker.PERM_PRIVATE,
+            NewEntriesWorker.PERM_PRIVATE,
             null
         )
     }

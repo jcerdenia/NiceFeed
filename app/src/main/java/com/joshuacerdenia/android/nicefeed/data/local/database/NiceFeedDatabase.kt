@@ -18,5 +18,5 @@ import com.joshuacerdenia.android.nicefeed.data.model.FeedEntryCrossRef
 @TypeConverters(com.joshuacerdenia.android.nicefeed.data.local.database.TypeConverters::class)
 abstract class NiceFeedDatabase : RoomDatabase() {
 
-    abstract fun feedsAndEntriesDao(): FeedsAndEntriesDao
+    abstract fun combinedDao(): CombinedDao
 }
