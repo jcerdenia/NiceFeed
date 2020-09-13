@@ -6,18 +6,21 @@ import android.widget.EditText
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
+import com.joshuacerdenia.android.nicefeed.utils.ToolbarCallbacks
+
+// An abstract class with the ability to add new feeds. Must be extended.
 
 abstract class FeedAddingFragment: VisibleFragment() {
 
-    var currentFeedIds: List<String> = emptyList()
-    var callbacks: Callbacks? = null
-
-    interface Callbacks {
+    interface Callbacks: ToolbarCallbacks {
         fun onNewFeedAdded(feedId: String)
         fun onQuerySubmitted(query: String)
         fun onImportOpmlSelected()
         fun onDoneImporting()
     }
+
+    var currentFeedIds: List<String> = emptyList()
+    var callbacks: Callbacks? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

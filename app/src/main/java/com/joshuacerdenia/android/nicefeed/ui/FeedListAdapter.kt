@@ -1,7 +1,6 @@
 package com.joshuacerdenia.android.nicefeed.ui
 
 import android.content.Context
-import android.util.Log
 import android.view.Gravity.START
 import android.view.LayoutInflater
 import android.view.View

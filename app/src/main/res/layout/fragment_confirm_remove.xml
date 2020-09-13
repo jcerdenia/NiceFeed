@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -17,9 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawableStart="@drawable/ic_delete_light"
             android:drawablePadding="16dp"
-            tools:text="@string/confirm_remove" />
+            tools:text="@string/confirm_remove"
+            app:drawableStartCompat="@drawable/ic_delete_light" />
 
         <TextView
             android:id="@+id/dialog_message"
@@ -38,13 +39,6 @@
         android:paddingHorizontal="8dp"
         android:gravity="end"
         android:orientation="horizontal">
-
-        <Button
-            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-            android:id="@+id/cancel_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cancel" />
 
         <Button
             style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"

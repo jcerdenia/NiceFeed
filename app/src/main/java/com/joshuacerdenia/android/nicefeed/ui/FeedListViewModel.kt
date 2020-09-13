@@ -6,8 +6,8 @@ import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.CategoryHeader
 import com.joshuacerdenia.android.nicefeed.data.model.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMenuItem
-
-private fun List<FeedLight>.sortedByUnreadCount() = this.sortedByDescending { it.unreadCount }
+import com.joshuacerdenia.android.nicefeed.utils.sortedByTitle
+import com.joshuacerdenia.android.nicefeed.utils.sortedByUnreadCount
 
 class FeedListViewModel: ViewModel() {
 
@@ -18,11 +18,13 @@ class FeedListViewModel: ViewModel() {
     var categories = arrayOf<String>()
         private set
     val minimizedCategories = mutableSetOf<String>()
+    var feedOrder = 0
+        private set
     val feedListLiveData = MediatorLiveData<List<FeedMenuItem>>()
 
     init {
         feedListLiveData.addSource(sourceFeedsLiveData) { feeds ->
-            feedListLiveData.value = arrangeFeedsAndCategories(feeds, minimizedCategories)
+            feedListLiveData.value = organizeFeedsAndCategories(feeds, minimizedCategories)
         }
     }
 
@@ -38,13 +40,31 @@ class FeedListViewModel: ViewModel() {
         } else {
             minimizedCategories.add(category)
         }
+        arrangeMenu()
+    }
 
-        sourceFeedsLiveData.value?.let { feeds ->
-            feedListLiveData.value = arrangeFeedsAndCategories(feeds, minimizedCategories)
+    fun setFeedOrder(order: Int) {
+        if (order != feedOrder) {
+            feedOrder = order
+            arrangeMenu()
         }
     }
 
-    private fun arrangeFeedsAndCategories(
+    private fun arrangeMenu() {
+        sourceFeedsLiveData.value?.let { feeds ->
+            feedListLiveData.value = organizeFeedsAndCategories(feeds, minimizedCategories)
+        }
+    }
+
+    private fun sortFeeds(feeds: List<FeedLight>, order: Int): List<FeedLight> {
+        return if (order == FeedListFragment.ORDER_TITLE) {
+            feeds.sortedByTitle()
+        } else {
+            feeds.sortedByUnreadCount()
+        }
+    }
+
+    private fun organizeFeedsAndCategories(
         feeds: List<FeedLight>,
         minimizedCategories: Set<String>
     ): List<FeedMenuItem> {
@@ -56,7 +76,7 @@ class FeedListViewModel: ViewModel() {
             val categoryHeader = CategoryHeader(category, isMinimized)
             arrangedMenu.add(FeedMenuItem(categoryHeader))
 
-            feeds.sortedByUnreadCount().forEach { feed ->
+            sortFeeds(feeds, feedOrder).forEach { feed ->
                 if (feed.category == category) {
                     categoryHeader.unreadCount += feed.unreadCount
                     if (!isMinimized) {
@@ -75,6 +95,7 @@ class FeedListViewModel: ViewModel() {
         for (feed in feeds) {
             categories.add(feed.category)
         }
-        return categories.toList().sorted() // Sort alphabetically
+        // Sort alphabetically
+        return categories.toList().sorted()
     }
 }

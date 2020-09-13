@@ -41,9 +41,9 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
 
     // UI
-    implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha05'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.material:material:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
 
     // Lifecycle
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
@@ -58,7 +58,7 @@ dependencies {
     implementation 'com.prof.rssparser:rssparser:3.0.0'
     implementation 'com.rometools:rome-opml:1.12.2'
 
-    // Images
+    // Image Loading
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     // Database

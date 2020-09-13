@@ -8,13 +8,11 @@ import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
-import com.joshuacerdenia.android.nicefeed.utils.UpdateManager
-import com.joshuacerdenia.android.nicefeed.utils.sortedByDatePublished
-import com.joshuacerdenia.android.nicefeed.utils.sortedUnreadOnTop
+import com.joshuacerdenia.android.nicefeed.utils.*
 import kotlinx.coroutines.launch
 import java.util.*
 
-private const val TAG = "EntryListViewModel"
+private const val MAX_RECENT_ENTRIES = 50 // Maybe this can be changed dynamically
 
 class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
 
@@ -28,14 +26,14 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
     }
     private val sourceEntriesLiveData = Transformations.switchMap(feedIdLiveData) { feedId ->
         when (feedId) {
-            EntryListFragment.KEY_RECENT -> repo.getRecentEntries()
+            EntryListFragment.KEY_RECENT -> repo.getRecentEntries(MAX_RECENT_ENTRIES)
             EntryListFragment.KEY_STARRED -> repo.getStarredEntries()
             else -> repo.getEntriesByFeed(feedId)
         }
     }
 
     private val entriesLiveData = MediatorLiveData<List<Entry>>()
-    val entriesMinimalLiveData = MediatorLiveData<List<EntryLight>>()
+    val entriesLightLiveData = MediatorLiveData<List<EntryLight>>()
     val updateResultLiveData = parser.feedRequestLiveData
 
     var currentQuery = ""
@@ -54,7 +52,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
             entriesLiveData.value = queryEntries(filteredEntries, currentQuery)
         }
 
-        entriesMinimalLiveData.addSource(entriesLiveData) { entries ->
+        entriesLightLiveData.addSource(entriesLiveData) { entries ->
             val list = entries.map { entry ->
                 EntryLight(
                     url = entry.url,
@@ -66,7 +64,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
                     isStarred = entry.isStarred
                 )
             }
-            entriesMinimalLiveData.value = sortEntries(list, currentOrder)
+            entriesLightLiveData.value = sortEntries(list, currentOrder)
         }
     }
 
@@ -110,9 +108,11 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
     }
 
     fun setOrder(order: Int) {
-        currentOrder = order
-        entriesMinimalLiveData.value?.let { entries ->
-            entriesMinimalLiveData.value = sortEntries(entries, order)
+        if (currentOrder != order) {
+            currentOrder = order
+            entriesLightLiveData.value?.let { entries ->
+                entriesLightLiveData.value = sortEntries(entries, order)
+            }
         }
     }
 
@@ -129,7 +129,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
     }
 
     fun starAllCurrentEntries() {
-        val entries = entriesMinimalLiveData.value ?: emptyList()
+        val entries = entriesLightLiveData.value ?: emptyList()
         val isStarred = !allIsStarred(entries)
         val entryIds = entries.map { entry ->
             entry.url
@@ -139,7 +139,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
     }
 
     fun markAllCurrentEntriesAsRead() {
-        val entries = entriesMinimalLiveData.value ?: emptyList()
+        val entries = entriesLightLiveData.value ?: emptyList()
         val isRead = !allIsRead(entries)
         val entryIds = entries.map { entry ->
             entry.url
@@ -171,7 +171,8 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
     private fun queryEntries(entries: List<Entry>, query: String): List<Entry> {
         val results = mutableListOf<Entry>()
         for (entry in entries) {
-            if (entry.title.toLowerCase(Locale.ROOT).contains(query)) {
+            if (entry.title.toLowerCase(Locale.ROOT).contains(query) ||
+                    entry.website.shortened().toLowerCase(Locale.ROOT).contains(query)) {
                 results.add(entry)
             }
         }
@@ -235,7 +236,8 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
     }
 
     fun deleteFeedAndEntries() {
-        val feedId = feedLiveData.value?.url
-        feedId?.let { repo.deleteFeedAndEntriesById(it) }
+        getCurrentFeed()?.url?.let { feedId ->
+            repo.deleteFeedAndEntriesById(feedId)
+        }
     }
 }

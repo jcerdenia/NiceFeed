@@ -59,7 +59,7 @@ class FeedParser {
     }
 
     // Maps "Channel" data to my own model objects
-    object ChannelMapper {
+    private object ChannelMapper {
         private const val MAX_ENTRIES = 300 // Arbitrary
         private const val DATE_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z"
 
@@ -106,5 +106,9 @@ class FeedParser {
                 null
             }
         }
+    }
+
+    companion object {
+        const val SYNCHRONOUS = 1
     }
 }

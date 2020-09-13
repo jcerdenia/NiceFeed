@@ -1,7 +1,5 @@
 package com.joshuacerdenia.android.nicefeed.data.model
 
-import androidx.room.PrimaryKey
-
 // Light version of Feed – no website and description
 
 data class FeedLight(

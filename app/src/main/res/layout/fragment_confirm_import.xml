@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -17,12 +18,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawableStart="@drawable/ic_import"
             android:drawablePadding="16dp"
-            tools:text="@string/confirm_import_title" />
+            tools:text="@string/confirm_import_title"
+            app:drawableStartCompat="@drawable/ic_import" />
 
         <TextView
-            android:id="@+id/textView_message"
             android:textAppearance="@style/TextAppearance.AppCompat.Menu"
             android:layout_marginTop="16dp"
             android:layout_width="match_parent"

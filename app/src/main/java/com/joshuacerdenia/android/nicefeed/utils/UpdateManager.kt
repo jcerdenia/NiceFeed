@@ -4,15 +4,10 @@ import android.util.Log
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 
-/* This class compares recently requested data from the web with current data saved locally.
-It outputs which entries to add, update, and delete, as well as updated feed data, if any. */
-
+/*  This class compares recently requested data from the web with current data saved locally.
+    It outputs which entries to add, update, and delete, as well as updated feed data, if any.
+*/
 class UpdateManager(private val listener: UpdateListener) {
-
-    var currentFeed: Feed? = null
-        private set
-    private var currentEntries = listOf<Entry>()
-        get() = field.sortedByDescending { it.date }
 
     interface UpdateListener {
         fun onUnreadEntriesCounted(feedId: String, unreadCount: Int)
@@ -24,6 +19,11 @@ class UpdateManager(private val listener: UpdateListener) {
             feedId: String
         )
     }
+
+    var currentFeed: Feed? = null
+        private set
+    private var currentEntries = listOf<Entry>()
+        get() = field.sortedByDescending { it.date }
 
     fun submitInitialFeed(feed: Feed) {
         currentFeed = feed

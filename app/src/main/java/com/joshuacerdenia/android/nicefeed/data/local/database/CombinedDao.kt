@@ -10,26 +10,14 @@ import com.joshuacerdenia.android.nicefeed.data.model.FeedEntryCrossRef
 interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
 
     @Transaction
-    fun addFeedAndEntries(feed: Feed, entries: List<Entry>, crossRefs: List<FeedEntryCrossRef>) {
+    fun addFeedAndEntries(
+        feed: Feed,
+        entries: List<Entry>,
+        crossRefs: List<FeedEntryCrossRef>
+    ) {
         addFeeds(feed)
         addEntries(entries)
         addFeedEntryCrossRefs(crossRefs)
-    }
-
-    @Transaction
-    fun updateEntryAndFeedUnreadCount(entryId: String, isRead: Boolean, isStarred: Boolean) {
-        updateEntryIsStarred(entryId, isStarred = isStarred)
-        updateEntryIsReadAndFeedUnreadCount(entryId, isRead = isRead)
-    }
-
-    @Transaction
-    fun updateEntryIsReadAndFeedUnreadCount(vararg entryId: String, isRead: Boolean) {
-        updateEntryIsRead(*entryId, isRead = isRead)
-        (if (isRead) -1 else 1).also { addend ->
-            for (id in entryId) {
-                addToFeedUnreadCountByEntry(id, addend)
-            }
-        }
     }
 
     @Transaction
@@ -59,9 +47,32 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
     }
 
     @Transaction
+    fun updateEntryAndFeedUnreadCount(
+        entryId: String,
+        isRead: Boolean,
+        isStarred: Boolean
+    ) {
+        updateEntryIsStarred(entryId, isStarred = isStarred)
+        updateEntryIsReadAndFeedUnreadCount(entryId, isRead = isRead)
+    }
+
+    @Transaction
+    fun updateEntryIsReadAndFeedUnreadCount(
+        vararg entryId: String,
+        isRead: Boolean
+    ) {
+        updateEntryIsRead(*entryId, isRead = isRead)
+        (if (isRead) -1 else 1).also { addend ->
+            for (id in entryId) {
+                addToFeedUnreadCountByEntry(id, addend)
+            }
+        }
+    }
+
+    @Transaction
     fun deleteFeedAndEntriesById(vararg feedId: String) {
-        deleteEntriesByFeedId(*feedId)
-        deleteCrossRefsByFeedId(*feedId)
+        deleteEntriesByFeed(*feedId)
+        deleteCrossRefsByFeed(*feedId)
         deleteFeeds(*feedId)
     }
 

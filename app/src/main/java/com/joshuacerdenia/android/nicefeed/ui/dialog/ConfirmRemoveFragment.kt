@@ -14,25 +14,12 @@ private const val ARG_COUNT = "ARG_COUNT"
 
 class ConfirmRemoveFragment : BottomSheetDialogFragment() {
 
-    companion object {
-        fun newInstance(title: String?, count: Int = 1): ConfirmRemoveFragment {
-            val args = Bundle().apply {
-                putString(ARG_TITLE, title)
-                putInt(ARG_COUNT, count)
-            }
-            return ConfirmRemoveFragment().apply {
-                arguments = args
-            }
-        }
-    }
-
-    private lateinit var dialogTitle: TextView
-    private lateinit var cancelButton: Button
-    private lateinit var confirmButton: Button
-
     interface Callbacks {
         fun onRemoveConfirmed()
     }
+
+    private lateinit var dialogTitle: TextView
+    private lateinit var confirmButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +28,6 @@ class ConfirmRemoveFragment : BottomSheetDialogFragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_confirm_remove, container, false)
         dialogTitle = view.findViewById(R.id.dialog_title)
-        cancelButton = view.findViewById(R.id.cancel_button)
         confirmButton = view.findViewById(R.id.confirm_button)
         return view
     }
@@ -59,15 +45,23 @@ class ConfirmRemoveFragment : BottomSheetDialogFragment() {
 
         dialogTitle.text = getString(R.string.confirm_remove, whatToRemove)
 
-        cancelButton.setOnClickListener {
-            dismiss()
-        }
-
         confirmButton.setOnClickListener {
             targetFragment?.let { fragment ->
                 (fragment as Callbacks).onRemoveConfirmed()
             }
             dismiss()
+        }
+    }
+
+    companion object {
+        fun newInstance(title: String?, count: Int = 1): ConfirmRemoveFragment {
+            val args = Bundle().apply {
+                putString(ARG_TITLE, title)
+                putInt(ARG_COUNT, count)
+            }
+            return ConfirmRemoveFragment().apply {
+                arguments = args
+            }
         }
     }
 }

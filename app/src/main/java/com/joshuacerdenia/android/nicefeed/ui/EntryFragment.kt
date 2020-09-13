@@ -14,20 +14,18 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
+import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.ui.dialog.TextSizeFragment
 import com.joshuacerdenia.android.nicefeed.utils.EntryToHtmlFormatter
-
-private const val TAG = "EntryFragment"
-private const val ARG_ENTRY_ID = "ARG_ENTRY_ID"
-private const val MIME_TYPE = "text/html; charset=UTF-8"
-private const val ENCODING = "base64"
+import com.joshuacerdenia.android.nicefeed.utils.ToolbarCallbacks
+import com.joshuacerdenia.android.nicefeed.utils.Utils
+import com.joshuacerdenia.android.nicefeed.utils.shortened
 
 class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
@@ -38,20 +36,11 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
     private val handler = Handler()
-    private var callbacks: Callbacks? = null
-
-    interface Callbacks {
-        fun onEntryLoaded(website: String)
-    }
+    private var callbacks: ToolbarCallbacks? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        callbacks = activity as Callbacks?
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
+        callbacks = activity as ToolbarCallbacks?
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,38 +61,42 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         toolbar = view.findViewById(R.id.toolbar)
         progressBar = view.findViewById(R.id.progress_bar)
         webView = view.findViewById(R.id.web_view)
-        webView.setBackgroundColor(Color.TRANSPARENT)
-        webView.settings.javaScriptEnabled = true
-        webView.settings.builtInZoomControls = true
-        webView.settings.displayZoomControls = false
-        webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(
-                view: WebView?,
-                request: WebResourceRequest?
-            ): Boolean {
-                // Open links with default browser
-                Intent(Intent.ACTION_VIEW, request?.url).run {
-                    startActivity(this)
+        webView.apply {
+            setBackgroundColor(Color.TRANSPARENT)
+            settings.apply {
+                javaScriptEnabled = true
+                settings.builtInZoomControls = true
+                settings.displayZoomControls = false
+            }
+
+            webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): Boolean {
+                    // Open links with default browser
+                    request?.url?.let { url -> Utils.openLink(requireActivity(), webView, url) }
+                    return true
                 }
-                return true
             }
         }
 
-        (activity as AppCompatActivity?)?.setSupportActionBar(toolbar)
+        toolbar.title = getString(R.string.loading)
+        callbacks?.onToolbarInflated(toolbar)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        toolbar.setOnClickListener() {
+        toolbar.setOnClickListener {
             webView.scrollTo(0, 0)
         }
 
         viewModel.entryLiveData.observe(viewLifecycleOwner, Observer { entry ->
             if (entry != null) {
                 this.entry = entry
+                toolbar.title = entry.website.shortened()
                 drawEntry(entry, viewModel.lastPosition)
-                callbacks?.onEntryLoaded(entry.website)
             }
 
             progressBar.visibility = View.GONE
@@ -122,7 +115,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
             R.id.menuItem_star -> handleStar(item)
             R.id.menuItem_share -> handleShare()
             R.id.menuItem_copy_link -> handleCopyLink()
-            R.id.menuItem_view_in_browser -> handleViewInBrowser()
+            R.id.menuItem_view_in_browser -> handleViewInBrowser(entry.url)
             R.id.menuItem_text_size -> handleChangeTextSize()
             else -> super.onOptionsItemSelected(item)
         }
@@ -130,15 +123,13 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     private fun drawEntry(entry: Entry, position: Pair<Int, Int>) {
         context?.let { context ->
-            EntryToHtmlFormatter(context).format(entry)
+            EntryToHtmlFormatter(NiceFeedPreferences.getTextSize(context)).format(entry)
         }.also { html ->
             webView.loadData(html, MIME_TYPE, ENCODING)
         }
 
         handler.postDelayed({
-            viewModel.lastPosition.let { position ->
-                webView.scrollTo(position.first, position.second)
-            }
+            webView.scrollTo(position.first, position.second)
         }, 200)
     }
 
@@ -187,9 +178,8 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         return true
     }
 
-    private fun handleViewInBrowser(): Boolean {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(entry.url))
-        startActivity(intent)
+    private fun handleViewInBrowser(url: String): Boolean {
+        Utils.openLink(requireActivity(), webView, Uri.parse(url))
         return true
     }
 
@@ -213,7 +203,16 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         viewModel.lastPosition = Pair(webView.scrollX, webView.scrollY)
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
+    }
+
     companion object {
+        private const val ARG_ENTRY_ID = "ARG_ENTRY_ID"
+        private const val MIME_TYPE = "text/html; charset=UTF-8"
+        private const val ENCODING = "base64"
+
         fun newInstance(entryId: String): EntryFragment {
             return EntryFragment().apply {
                 arguments = Bundle().apply {

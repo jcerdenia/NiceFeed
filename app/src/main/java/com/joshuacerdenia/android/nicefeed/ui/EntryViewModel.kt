@@ -23,8 +23,4 @@ class EntryViewModel: ViewModel() {
     fun updateEntry(entry: Entry) {
         repo.updateEntryAndFeedUnreadCount(entry.url, entry.isRead, entry.isStarred)
     }
-
-    fun updateFeedUnreadCountById(id: String, count: Int) {
-        repo.updateFeedUnreadCount(id, count)
-    }
 }

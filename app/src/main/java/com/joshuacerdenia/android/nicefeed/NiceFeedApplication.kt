@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 private const val TAG = "NiceFeedApplication"
-const val NOTIFICATION_CHANNEL_ID = "nicefeed_latest_entries"
+const val NOTIFICATION_CHANNEL_ID = "nicefeed_new_entries"
 
 class NiceFeedApplication : Application(), ManagingActivity.OnBackgroundWorkSettingListener {
 
@@ -36,14 +36,12 @@ class NiceFeedApplication : Application(), ManagingActivity.OnBackgroundWorkSett
             notificationManager?.createNotificationChannel(channel)
         }
 
-        delayedInit()
+        NiceFeedPreferences.getPollingSetting(this).run {
+            delayedInit(this)
+        }
     }
 
-    // TODO create a method to toggle background work based on current user setting.
-
-    private fun delayedInit() {
-        val shouldPoll = NiceFeedPreferences.getPollingSetting(this)
-
+    private fun delayedInit(shouldPoll: Boolean) {
         applicationScope.launch {
             if (shouldPoll) {
                 setupNewEntriesWork()
@@ -76,7 +74,7 @@ class NiceFeedApplication : Application(), ManagingActivity.OnBackgroundWorkSett
     private fun setupSweeperWork() {
         val request = PeriodicWorkRequest.Builder(
             SweeperWorker::class.java,
-            1,
+            3,
             TimeUnit.DAYS
         ).build()
 

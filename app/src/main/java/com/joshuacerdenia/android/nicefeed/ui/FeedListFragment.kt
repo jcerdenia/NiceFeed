@@ -20,10 +20,17 @@ private const val TAG = "FeedListFragment"
 
 class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
+    interface Callbacks {
+        fun onManageFeedsSelected()
+        fun onAddFeedSelected()
+        fun onFeedSelected(feedId: String, activeFeedId: String?)
+        fun onSettingsSelected()
+    }
+
     private lateinit var viewModel: FeedListViewModel
     private lateinit var manageButton: Button
     private lateinit var addButton: Button
-    private lateinit var recentEntriesButton: Button
+    private lateinit var newEntriesButton: Button
     private lateinit var starredEntriesButton: Button
     private lateinit var settingsButton: Button
     private lateinit var bottomDivider: View
@@ -31,13 +38,6 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     lateinit var adapter: FeedListAdapter
     private val handler = Handler()
     private var callbacks: Callbacks? = null
-
-    interface Callbacks {
-        fun onManageFeedsSelected()
-        fun onAddFeedSelected()
-        fun onFeedSelected(feedId: String, activeFeedId: String?)
-        fun onSettingsSelected()
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -53,8 +53,9 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(FeedListViewModel::class.java)
         adapter = FeedListAdapter(context, this)
-
+        
         context?.let { context ->
+            viewModel.setFeedOrder(NiceFeedPreferences.getFeedsOrder(context))
             viewModel.setMinimizedCategories(NiceFeedPreferences.getMinimizedCategories(context))
         }
     }
@@ -67,7 +68,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         val view = inflater.inflate(R.layout.fragment_feed_list, container, false)
         manageButton = view.findViewById(R.id.manage_button)
         addButton = view.findViewById(R.id.add_button)
-        recentEntriesButton = view.findViewById(R.id.recent_entries_button)
+        newEntriesButton = view.findViewById(R.id.recent_entries_button)
         starredEntriesButton = view.findViewById(R.id.starred_entries_button)
         settingsButton = view.findViewById(R.id.settings_button)
         bottomDivider = view.findViewById(R.id.bottom_divider)
@@ -87,7 +88,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
             callbacks?.onAddFeedSelected()
         }
 
-        recentEntriesButton.setOnClickListener {
+        newEntriesButton.setOnClickListener {
             callbacks?.onFeedSelected(EntryListFragment.KEY_RECENT, viewModel.activeFeedId)
         }
 
@@ -103,12 +104,12 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
             adapter.submitList(list)
             if (list.isNotEmpty()) {
                 manageButton.visibility = View.VISIBLE
-                recentEntriesButton.visibility = View.VISIBLE
+                newEntriesButton.visibility = View.VISIBLE
                 starredEntriesButton.visibility = View.VISIBLE
                 bottomDivider.visibility = View.VISIBLE
             } else {
                 manageButton.visibility = View.GONE
-                recentEntriesButton.visibility = View.GONE
+                newEntriesButton.visibility = View.GONE
                 starredEntriesButton.visibility = View.GONE
                 bottomDivider.visibility = View.GONE
                 updateActiveFeedId(null)
@@ -116,8 +117,17 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        context?.let { context ->
+            NiceFeedPreferences.getFeedsOrder(context).run {
+                viewModel.setFeedOrder(this)
+            }
+        }
+    }
+
     override fun onFeedSelected(feedId: String) {
-        recentEntriesButton.background = null
+        newEntriesButton.background = null
         starredEntriesButton.background = null
 
         callbacks?.onFeedSelected(feedId, viewModel.activeFeedId)
@@ -138,12 +148,12 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         recyclerView.adapter = adapter
 
         starredEntriesButton.addRipple()
-        recentEntriesButton.addRipple()
+        newEntriesButton.addRipple()
 
         context?.let { context ->
             val color = ContextCompat.getColor(context, R.color.colorSelect)
             if (feedId == EntryListFragment.KEY_RECENT) {
-                recentEntriesButton.setBackgroundColor(color)
+                newEntriesButton.setBackgroundColor(color)
             } else if (feedId == EntryListFragment.KEY_STARRED) {
                 starredEntriesButton.setBackgroundColor(color)
             }
@@ -163,6 +173,9 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     }
 
     companion object {
+        const val ORDER_TITLE = 0
+        const val ORDER_UNREAD_ITEMS = 1
+
         fun newInstance(): FeedListFragment {
             return FeedListFragment()
         }

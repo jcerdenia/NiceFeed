@@ -20,31 +20,13 @@ private const val ARG_CATEGORIES = "ARG_CATEGORIES"
 
 class EditCategoryFragment : BottomSheetDialogFragment() {
 
-    companion object {
-        fun newInstance(categories: Array<String>,
-                        title: String?,
-                        count: Int = 1
-        ): EditCategoryFragment {
-            val args = Bundle().apply {
-                putInt(ARG_COUNT, count)
-                putString(ARG_TITLE, title)
-                putStringArray(ARG_CATEGORIES, categories)
-            }
-            return EditCategoryFragment()
-                .apply {
-                arguments = args
-            }
-        }
+    interface Callbacks {
+        fun onEditCategoryConfirmed(category: String)
     }
 
     private lateinit var dialogMessage: TextView
     private lateinit var categoryTextView: AutoCompleteTextView
-    private lateinit var cancelButton: Button
     private lateinit var confirmButton: Button
-
-    interface Callbacks {
-        fun onEditCategoryConfirmed(category: String)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +41,6 @@ class EditCategoryFragment : BottomSheetDialogFragment() {
         val view = inflater.inflate(R.layout.fragment_edit_category, container, false)
         dialogMessage = view.findViewById(R.id.dialog_message)
         categoryTextView = view.findViewById(R.id.category_edit_text)
-        cancelButton = view.findViewById(R.id.cancel_button)
         confirmButton = view.findViewById(R.id.confirm_button)
         return view
     }
@@ -95,10 +76,6 @@ class EditCategoryFragment : BottomSheetDialogFragment() {
             })
         }
 
-        cancelButton.setOnClickListener {
-            dismiss()
-        }
-
         confirmButton.apply {
             isEnabled = false
 
@@ -107,6 +84,23 @@ class EditCategoryFragment : BottomSheetDialogFragment() {
                 targetFragment?.let { (it as Callbacks).onEditCategoryConfirmed(category) }
                 dismiss()
             }
+        }
+    }
+
+    companion object {
+        fun newInstance(categories: Array<String>,
+                        title: String?,
+                        count: Int = 1
+        ): EditCategoryFragment {
+            val args = Bundle().apply {
+                putInt(ARG_COUNT, count)
+                putString(ARG_TITLE, title)
+                putStringArray(ARG_CATEGORIES, categories)
+            }
+            return EditCategoryFragment()
+                .apply {
+                    arguments = args
+                }
         }
     }
 }

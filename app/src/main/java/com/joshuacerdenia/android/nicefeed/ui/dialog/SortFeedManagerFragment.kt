@@ -4,19 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.RadioGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
 
 class SortFeedManagerFragment: BottomSheetDialogFragment() {
 
-    private lateinit var radioGroupSortFeeds: RadioGroup
-    private lateinit var cancelButton: Button
-
     interface Callbacks {
         fun onOrderSelected(order: Int)
     }
+
+    private lateinit var radioGroupSortFeeds: RadioGroup
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,7 +23,6 @@ class SortFeedManagerFragment: BottomSheetDialogFragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_sort_feeds, container, false)
         radioGroupSortFeeds = view.findViewById(R.id.radioGroup_sort)
-        cancelButton = view.findViewById(R.id.cancel_button)
         return view
     }
 
@@ -52,10 +49,6 @@ class SortFeedManagerFragment: BottomSheetDialogFragment() {
                 }
                 dismiss()
             }
-        }
-
-        cancelButton.setOnClickListener {
-                dismiss()
         }
     }
 

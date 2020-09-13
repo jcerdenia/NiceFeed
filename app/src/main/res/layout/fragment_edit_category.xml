@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/edit_category_dialog"
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -18,9 +17,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:drawableStart="@drawable/ic_edit_light"
         android:drawablePadding="16dp"
-        android:text="@string/edit_category" />
+        android:text="@string/edit_category"
+        app:drawableStartCompat="@drawable/ic_edit_light" />
 
     <TextView
         android:id="@+id/dialog_message"
@@ -47,13 +46,6 @@
         android:paddingHorizontal="8dp"
         android:gravity="end"
         android:orientation="horizontal">
-
-        <Button
-            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-            android:id="@+id/cancel_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cancel" />
 
         <Button
             style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"

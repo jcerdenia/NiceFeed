@@ -1,3 +1,6 @@
 package com.joshuacerdenia.android.nicefeed.data.model
 
-data class FeedMenuItem(val content: Any) // Can be a Feed item or category header
+/*  Holder for data that goes into the Feed RecyclerView.
+    Content can be an actual Feed item or category header.
+*/
+data class FeedMenuItem(val content: Any)

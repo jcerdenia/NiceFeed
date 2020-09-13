@@ -9,7 +9,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -22,23 +21,12 @@ import com.joshuacerdenia.android.nicefeed.utils.OpmlImporter
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import java.util.*
 
-private const val TAG = "AddFeedFragment"
-private const val HTTPS = "https://"
-
 class AddFeedsFragment: FeedAddingFragment(),
     OpmlImporter.OnOpmlParsedListener,
     ConfirmImportFragment.Callbacks {
 
-    companion object {
-        fun newInstance(): AddFeedsFragment {
-            return AddFeedsFragment()
-        }
-    }
-
     private val fragment = this@AddFeedsFragment
-    private val viewModel: AddFeedsViewModel by lazy {
-        ViewModelProvider(this).get(AddFeedsViewModel::class.java)
-    }
+    private lateinit var viewModel: AddFeedsViewModel
     private lateinit var toolbar: Toolbar
     private lateinit var linearLayout: LinearLayout
     private lateinit var urlEditText: EditText
@@ -50,6 +38,7 @@ class AddFeedsFragment: FeedAddingFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(AddFeedsViewModel::class.java)
         opmlImporter = context?.let { context ->
             OpmlImporter(context, this)
         }
@@ -69,11 +58,8 @@ class AddFeedsFragment: FeedAddingFragment(),
         searchView = view.findViewById(R.id.searchView)
         progressBar = view.findViewById(R.id.progressBar_add_feed)
 
-        toolbar.title = "Add Feeds" // TODO change to string resource
-        (activity as AppCompatActivity?)?.let { activity ->
-            activity.setSupportActionBar(toolbar)
-            activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        }
+        toolbar.title = getString(R.string.add_feeds)
+        callbacks?.onToolbarInflated(toolbar)
         return view
     }
 
@@ -86,12 +72,12 @@ class AddFeedsFragment: FeedAddingFragment(),
             urlEditText
         )
 
-        viewModel.feedIdsLiveData.observe(viewLifecycleOwner, Observer {
-            currentFeedIds = it
+        viewModel.feedIdsLiveData.observe(viewLifecycleOwner, Observer { feedIds ->
+            currentFeedIds = feedIds
         })
 
-        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, Observer {
-            manager.submitData(it)
+        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, Observer { feedWithEntries ->
+            manager.submitData(feedWithEntries)
             progressBar.visibility = View.INVISIBLE
             subscribeButton.apply {
                 isEnabled = true
@@ -173,5 +159,13 @@ class AddFeedsFragment: FeedAddingFragment(),
             viewModel.addFeeds(*this)
         }
         viewModel.feedsToImport = emptyList()
+    }
+
+    companion object {
+        private const val HTTPS = "https://"
+
+        fun newInstance(): AddFeedsFragment {
+            return AddFeedsFragment()
+        }
     }
 }

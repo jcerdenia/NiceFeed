@@ -11,12 +11,12 @@ private const val DATABASE_NAME = "database"
 
 class NiceFeedRepository private constructor(context: Context) {
     
-    private val database: NiceFeedDatabase = Room.databaseBuilder(
+    private val database = Room.databaseBuilder(
         context.applicationContext,
         NiceFeedDatabase::class.java,
         DATABASE_NAME
     ).build()
-    
+
     private val dao = database.combinedDao()
     private val executor = Executors.newSingleThreadExecutor()
 
@@ -34,7 +34,7 @@ class NiceFeedRepository private constructor(context: Context) {
 
     fun getEntriesByFeed(feedId: String): LiveData<List<Entry>> = dao.getEntriesByFeed(feedId)
 
-    fun getRecentEntries(): LiveData<List<Entry>> = dao.getRecentEntries()
+    fun getRecentEntries(max: Int): LiveData<List<Entry>> = dao.getRecentEntries(max)
 
     fun getStarredEntries(): LiveData<List<Entry>> = dao.getStarredEntries()
 

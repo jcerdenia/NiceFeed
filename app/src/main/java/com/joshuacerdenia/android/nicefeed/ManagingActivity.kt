@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.ui.*
 
-private const val TAG = "ManagingActivity"
 private const val EXTRA_MANAGING = "com.joshuacerdenia.android.nicefeed.managing"
 private const val REQUEST_CODE_READ_OPML = 0
 private const val REQUEST_CODE_WRITE_OPML = 1
@@ -134,8 +134,9 @@ class ManagingActivity : AppCompatActivity(),
         listener.onBackgroundWorkSettingChanged(isOn)
     }
 
-    override fun onDoneChangingSettings() {
-        finish()
+    override fun onToolbarInflated(toolbar: Toolbar, isNavigableUp: Boolean) {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(isNavigableUp)
     }
 
     companion object {

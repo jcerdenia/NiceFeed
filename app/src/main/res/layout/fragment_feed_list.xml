@@ -2,7 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/background_light">
+    android:background="?android:attr/colorBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_manage_feeds"
-            android:text="@string/manage" />
+            android:text="@string/manage_feeds" />
 
         <Button
             android:id="@+id/add_button"
@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_add"
-            android:text="@string/add" />
+            android:text="@string/add_feeds" />
 
         <View style="@style/Divider"/>
 
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_folder"
-            android:text="@string/recent" />
+            android:text="@string/new_entries" />
 
         <Button
             android:id="@+id/starred_entries_button"
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_folder_starred"
-            android:text="@string/starred" />
+            android:text="@string/starred_entries" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"

@@ -22,6 +22,7 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment
 import com.joshuacerdenia.android.nicefeed.utils.OpmlExporter
+import com.joshuacerdenia.android.nicefeed.utils.ToolbarCallbacks
 
 private const val TAG = "ManageFeedsFragment"
 
@@ -31,6 +32,12 @@ class ManageFeedsFragment: VisibleFragment(),
     SortFeedManagerFragment.Callbacks,
     FeedManagerAdapter.ItemCheckBoxListener,
     OpmlExporter.ExportResultListener {
+
+    interface Callbacks: ToolbarCallbacks {
+        fun onAddFeedsSelected()
+        fun onExportOpmlSelected()
+        fun onDoneManaging()
+    }
 
     private val fragment = this@ManageFeedsFragment
     private lateinit var viewModel: ManageFeedsViewModel
@@ -43,12 +50,6 @@ class ManageFeedsFragment: VisibleFragment(),
     private var opmlExporter: OpmlExporter? = null
     private val handler = Handler()
     private var callbacks: Callbacks? = null
-
-    interface Callbacks {
-        fun onAddFeedsSelected()
-        fun onExportOpmlSelected()
-        fun onDoneManaging()
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -116,11 +117,7 @@ class ManageFeedsFragment: VisibleFragment(),
         recyclerView.adapter = adapter
 
         toolbar.title = getString(R.string.loading)
-        (activity as AppCompatActivity?)?.let { activity ->
-            activity.setSupportActionBar(toolbar)
-            activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        }
-
+        callbacks?.onToolbarInflated(toolbar)
         return view
     }
 

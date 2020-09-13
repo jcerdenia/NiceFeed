@@ -15,7 +15,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.net.URLEncoder
 
 private const val TAG = "FeedSearcher"
-private const val BASE_URL = "https://cloud.feedly.com/"
 
 class FeedSearcher {
 
@@ -29,7 +28,7 @@ class FeedSearcher {
     private val fetcherService: FetcherService = retrofit.create(FetcherService::class.java)
 
     fun performSearch(query: String): LiveData<List<SearchResultItem>> {
-        val path: String = generatePath(query)
+        val path = generatePath(query)
         val searchRequest: Call<SearchResult> = fetcherService.fetchSearchResult(path)
 
         return fetchSearchResult(searchRequest)
@@ -39,7 +38,7 @@ class FeedSearcher {
         val path = Uri.Builder()
             .path("v3/search/feeds")
             .appendQueryParameter("count", "50")
-            .appendQueryParameter("locale", "en") // TODO: Change language based on locale
+            .appendQueryParameter("locale", "en") // Change depending on locale?
             .appendQueryParameter("query", URLEncoder.encode(query, "UTF-8"))
             .build()
             .toString()
@@ -71,5 +70,9 @@ class FeedSearcher {
         })
 
         return searchResultLiveData
+    }
+
+    companion object {
+        private const val BASE_URL = "https://cloud.feedly.com/"
     }
 }

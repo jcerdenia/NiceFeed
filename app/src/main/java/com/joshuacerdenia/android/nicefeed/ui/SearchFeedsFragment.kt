@@ -3,7 +3,6 @@ package com.joshuacerdenia.android.nicefeed.ui
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -15,9 +14,6 @@ import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SubscribeFragment
 import com.joshuacerdenia.android.nicefeed.utils.RssUrlTransformer
 import com.joshuacerdenia.android.nicefeed.utils.Utils
-
-private const val TAG = "SearchFeedsFragment"
-private const val ARG_INITIAL_QUERY = "ARG_INITIAL_QUERY"
 
 class SearchFeedsFragment : FeedAddingFragment(),
     SubscribeFragment.Callbacks,
@@ -50,11 +46,8 @@ class SearchFeedsFragment : FeedAddingFragment(),
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
-        toolbar.title = "Search Feeds" // TODO change to string resource
-        (activity as AppCompatActivity?)?.let { activity ->
-            activity.setSupportActionBar(toolbar)
-            activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        }
+        toolbar.title = getString(R.string.search_feeds)
+        callbacks?.onToolbarInflated(toolbar)
         return view
     }
 
@@ -141,6 +134,8 @@ class SearchFeedsFragment : FeedAddingFragment(),
     }
 
     companion object {
+        private const val ARG_INITIAL_QUERY = "ARG_INITIAL_QUERY"
+
         fun newInstance(initialQuery: String?): SearchFeedsFragment {
             return SearchFeedsFragment().apply {
                 arguments = Bundle().apply {

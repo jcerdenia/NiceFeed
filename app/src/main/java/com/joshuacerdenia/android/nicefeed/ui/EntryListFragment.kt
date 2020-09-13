@@ -1,7 +1,6 @@
 package com.joshuacerdenia.android.nicefeed.ui
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -9,7 +8,6 @@ import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -26,6 +24,8 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.menu.EntryPopupMenu
+import com.joshuacerdenia.android.nicefeed.utils.ToolbarCallbacks
+import com.joshuacerdenia.android.nicefeed.utils.Utils
 
 private const val TAG = "EntryListFragment"
 
@@ -36,6 +36,14 @@ class EntryListFragment : VisibleFragment(),
     AboutFeedFragment.Callbacks,
     EditCategoryFragment.Callbacks,
     ConfirmRemoveFragment.Callbacks {
+
+    interface Callbacks: ToolbarCallbacks {
+        fun onHomeSelected()
+        fun onFeedLoaded(feedId: String)
+        fun onEntrySelected(entryId: String)
+        fun onCategoriesNeeded(): Array<String>
+        fun onFeedRemoved()
+    }
 
     private val fragment = this@EntryListFragment
     private lateinit var viewModel: EntryListViewModel
@@ -52,14 +60,6 @@ class EntryListFragment : VisibleFragment(),
     private var starAllOptionsItem: MenuItem? = null
     private val handler = Handler()
     private var callbacks: Callbacks? = null
-
-    interface Callbacks {
-        fun onHomeSelected()
-        fun onFeedLoaded(feedId: String)
-        fun onEntrySelected(entryId: String)
-        fun onCategoriesNeeded(): Array<String>
-        fun onFeedRemoved()
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -111,12 +111,12 @@ class EntryListFragment : VisibleFragment(),
         recyclerView.adapter = adapter
 
         toolbar.title = when (feedId) {
-            KEY_RECENT -> getString(R.string.recent_entries)
+            KEY_RECENT -> getString(R.string.new_entries)
             KEY_STARRED -> getString(R.string.starred_entries)
             else -> getString(R.string.loading)
         }
 
-        (activity as AppCompatActivity?)?.setSupportActionBar(toolbar)
+        callbacks?.onToolbarInflated(toolbar, false)
         setHasOptionsMenu(feedId != null)
         return view
     }
@@ -131,7 +131,6 @@ class EntryListFragment : VisibleFragment(),
 
         toolbar.apply {
             setNavigationIcon(R.drawable.ic_menu)
-
             setNavigationOnClickListener {
                 callbacks?.onHomeSelected()
             }
@@ -155,7 +154,7 @@ class EntryListFragment : VisibleFragment(),
             }
         })
 
-        viewModel.entriesMinimalLiveData.observe(viewLifecycleOwner, Observer { entries ->
+        viewModel.entriesLightLiveData.observe(viewLifecycleOwner, Observer { entries ->
             Log.d(TAG, "Entries observer triggered!")
             viewModel.submitInitialEntries()
             adapter.submitList(entries)
@@ -200,20 +199,17 @@ class EntryListFragment : VisibleFragment(),
             handler.postDelayed({
                 feedId?.let { feedId ->
                     viewModel.requestUpdate(feedId)
-                    toolbar.title = getString(R.string.updating)
+                    toolbar.title = context?.getString(R.string.updating)
                     progressBar.visibility = View.VISIBLE
                 }
-            }, 500)
+            }, 750)
         }
     }
 
     override fun onResume() {
         super.onResume()
         context?.let {  context ->
-            val order = NiceFeedPreferences.getEntriesOrder(context)
-            if (order != viewModel.currentOrder) {
-                viewModel.setOrder(order)
-            }
+            viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(context))
         }
     }
 
@@ -223,6 +219,15 @@ class EntryListFragment : VisibleFragment(),
         searchItem = menu.findItem(R.id.menuItem_search)
         markAllOptionsItem = menu.findItem(R.id.menuItem_mark_all)
         starAllOptionsItem = menu.findItem(R.id.menuItem_star_all)
+
+        feedId?.let { feedId ->
+            if (feedId.startsWith(KEY)) {
+                menu.findItem(R.id.menuItem_refresh).isVisible = false
+                menu.findItem(R.id.menuItem_about_feed).isVisible = false
+                menu.findItem(R.id.menuItem_visit_website).isVisible = false
+                menu.findItem(R.id.menuItem_delete_feed).isVisible = false
+            }
+        }
 
         val searchView = searchItem.actionView as SearchView
         searchView.apply {
@@ -360,19 +365,25 @@ class EntryListFragment : VisibleFragment(),
     }
 
     private fun handleVisitWebsite(website: String?): Boolean {
-        if (website == null) return false
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(website))
-        startActivity(intent)
-        return true
+        return if (website != null) {
+            Utils.openLink(requireActivity(), recyclerView, Uri.parse(website))
+            true
+        } else {
+            false
+        }
     }
 
     private fun handleRemoveFeed(): Boolean {
-        val title = viewModel.getCurrentFeed()?.title
-        ConfirmRemoveFragment.newInstance(title).apply {
-            setTargetFragment(fragment, 0)
-            show(fragment.requireFragmentManager(),"unsubscribe")
+        val feed = viewModel.getCurrentFeed()
+        return if (feed != null) {
+            ConfirmRemoveFragment.newInstance(feed.title).apply {
+                setTargetFragment(fragment, 0)
+                show(fragment.requireFragmentManager(),"unsubscribe")
+            }
+            true
+        } else {
+            false
         }
-        return true
     }
 
     override fun onRemoveConfirmed() {

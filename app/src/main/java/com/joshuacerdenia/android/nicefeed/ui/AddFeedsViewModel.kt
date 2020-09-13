@@ -7,6 +7,7 @@ import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
+import com.joshuacerdenia.android.nicefeed.utils.Utils
 import kotlinx.coroutines.launch
 
 open class AddFeedsViewModel: ViewModel() {

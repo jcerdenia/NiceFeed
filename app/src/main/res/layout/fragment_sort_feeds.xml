@@ -1,71 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:padding="16dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/dialog_title"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/sort_by" />
-
-        <RadioGroup
-            android:id="@+id/radioGroup_sort"
-            android:layout_marginTop="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-
-            <RadioButton
-                android:id="@+id/radioButton_added"
-                android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="@string/recently_added"/>
-
-            <RadioButton
-                android:id="@+id/radioButton_category"
-                android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="@string/category"/>
-
-            <RadioButton
-                android:id="@+id/radioButton_title"
-                android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/title"/>
-
-        </RadioGroup>
-
-    </LinearLayout>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/dialog_title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="8dp"
-        android:gravity="end"
-        android:orientation="horizontal">
+        android:layout_gravity="center"
+        android:text="@string/sort_by" />
 
-        <Button
-            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-            android:id="@+id/cancel_button"
-            android:layout_width="wrap_content"
+    <RadioGroup
+        android:id="@+id/radioGroup_sort"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <RadioButton
+            android:id="@+id/radioButton_added"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/cancel" />
+            android:layout_marginBottom="16dp"
+            android:text="@string/recently_added"/>
 
-    </LinearLayout>
+        <RadioButton
+            android:id="@+id/radioButton_category"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/category"/>
+
+        <RadioButton
+            android:id="@+id/radioButton_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/title"/>
+
+    </RadioGroup>
 </LinearLayout>
