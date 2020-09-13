@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.ui
+package com.joshuacerdenia.android.nicefeed.ui.viewmodel
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
@@ -6,6 +6,7 @@ import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.CategoryHeader
 import com.joshuacerdenia.android.nicefeed.data.model.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMenuItem
+import com.joshuacerdenia.android.nicefeed.ui.fragment.FeedListFragment
 import com.joshuacerdenia.android.nicefeed.utils.sortedByTitle
 import com.joshuacerdenia.android.nicefeed.utils.sortedByUnreadCount
 

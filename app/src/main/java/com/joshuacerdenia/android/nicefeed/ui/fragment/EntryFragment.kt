@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.ui
+package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.annotation.SuppressLint
 import android.content.ClipData
@@ -21,9 +21,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
+import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryViewModel
 import com.joshuacerdenia.android.nicefeed.ui.dialog.TextSizeFragment
 import com.joshuacerdenia.android.nicefeed.utils.EntryToHtmlFormatter
-import com.joshuacerdenia.android.nicefeed.utils.ToolbarCallbacks
+import com.joshuacerdenia.android.nicefeed.ui.ToolbarCallbacks
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.shortened
 

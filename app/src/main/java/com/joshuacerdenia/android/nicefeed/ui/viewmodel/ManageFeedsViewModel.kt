@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.ui
+package com.joshuacerdenia.android.nicefeed.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData

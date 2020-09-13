@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.work.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.ui.activity.ManagingActivity
 import com.joshuacerdenia.android.nicefeed.work.NewEntriesWorker
 import com.joshuacerdenia.android.nicefeed.work.SweeperWorker
 import kotlinx.coroutines.CoroutineScope

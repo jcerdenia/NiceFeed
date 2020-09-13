@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.ui
+package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmImportFragment
 import com.joshuacerdenia.android.nicefeed.utils.OpmlImporter
 import com.joshuacerdenia.android.nicefeed.utils.Utils

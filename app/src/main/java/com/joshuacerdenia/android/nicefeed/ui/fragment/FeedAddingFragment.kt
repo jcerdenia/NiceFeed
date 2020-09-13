@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.ui
+package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.content.Context
 import android.view.View
@@ -6,7 +6,8 @@ import android.widget.EditText
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
-import com.joshuacerdenia.android.nicefeed.utils.ToolbarCallbacks
+import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
+import com.joshuacerdenia.android.nicefeed.ui.ToolbarCallbacks
 
 // An abstract class with the ability to add new feeds. Must be extended.
 

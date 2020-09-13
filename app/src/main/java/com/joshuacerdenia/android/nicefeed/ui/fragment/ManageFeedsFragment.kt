@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.ui
+package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.content.Context
 import android.net.Uri
@@ -8,7 +8,6 @@ import android.view.*
 import android.widget.CheckBox
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,11 +17,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMinimal
+import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedManagerAdapter
+import com.joshuacerdenia.android.nicefeed.ui.viewmodel.ManageFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment
 import com.joshuacerdenia.android.nicefeed.utils.OpmlExporter
-import com.joshuacerdenia.android.nicefeed.utils.ToolbarCallbacks
+import com.joshuacerdenia.android.nicefeed.ui.ToolbarCallbacks
 
 private const val TAG = "ManageFeedsFragment"
 

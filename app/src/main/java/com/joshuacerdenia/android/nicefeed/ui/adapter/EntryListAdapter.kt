@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.ui
+package com.joshuacerdenia.android.nicefeed.ui.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color

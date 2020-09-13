@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.ui
+package com.joshuacerdenia.android.nicefeed.ui.viewmodel
 
 import androidx.lifecycle.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
@@ -8,6 +8,7 @@ import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
+import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
 import com.joshuacerdenia.android.nicefeed.utils.*
 import kotlinx.coroutines.launch
 import java.util.*

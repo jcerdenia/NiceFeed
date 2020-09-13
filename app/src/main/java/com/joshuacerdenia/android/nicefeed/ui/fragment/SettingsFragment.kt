@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.ui
+package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.content.Context
 import android.net.Uri
@@ -11,7 +11,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
-import com.joshuacerdenia.android.nicefeed.utils.ToolbarCallbacks
+import com.joshuacerdenia.android.nicefeed.ui.ToolbarCallbacks
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 
 class SettingsFragment: VisibleFragment() {

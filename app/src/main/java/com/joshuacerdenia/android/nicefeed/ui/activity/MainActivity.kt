@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed
+package com.joshuacerdenia.android.nicefeed.ui.activity
 
 import android.app.Activity
 import android.content.Context
@@ -10,15 +10,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
+import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
-import com.joshuacerdenia.android.nicefeed.ui.EntryFragment
-import com.joshuacerdenia.android.nicefeed.ui.EntryListFragment
-import com.joshuacerdenia.android.nicefeed.ui.FeedListFragment
-import com.joshuacerdenia.android.nicefeed.utils.ToolbarCallbacks
+import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryFragment
+import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
+import com.joshuacerdenia.android.nicefeed.ui.fragment.FeedListFragment
+import com.joshuacerdenia.android.nicefeed.ui.ToolbarCallbacks
 import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.work.UnreadCounterWorker
 
 class MainActivity : AppCompatActivity(),
     FeedListFragment.Callbacks,
@@ -137,9 +135,6 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onEntrySelected(entryId: String) {
-        OneTimeWorkRequest.Builder(UnreadCounterWorker::class.java).build().also { request ->
-            WorkManager.getInstance(this).enqueue(request)
-        }
         replaceMainFragment(EntryFragment.newInstance(entryId), true)
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }

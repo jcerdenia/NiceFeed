@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.ui
+package com.joshuacerdenia.android.nicefeed.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +13,6 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.utils.simplified
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_entry_list.view.*
 
 class FeedSearchAdapter(
     private val listener: OnItemClickListener,

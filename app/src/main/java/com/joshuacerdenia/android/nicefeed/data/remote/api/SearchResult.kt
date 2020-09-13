@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.data.remote.service
+package com.joshuacerdenia.android.nicefeed.data.remote.api
 
 import com.google.gson.annotations.SerializedName
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem

@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.ui
+package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedListAdapter
+import com.joshuacerdenia.android.nicefeed.ui.viewmodel.FeedListViewModel
 import com.joshuacerdenia.android.nicefeed.utils.addRipple
 
 private const val TAG = "FeedListFragment"

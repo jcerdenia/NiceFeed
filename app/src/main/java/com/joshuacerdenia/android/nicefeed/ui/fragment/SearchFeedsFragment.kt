@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.ui
+package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.os.Bundle
 import android.view.*
@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
+import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedSearchAdapter
+import com.joshuacerdenia.android.nicefeed.ui.viewmodel.FeedSearchViewModel
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SubscribeFragment
 import com.joshuacerdenia.android.nicefeed.utils.RssUrlTransformer
 import com.joshuacerdenia.android.nicefeed.utils.Utils

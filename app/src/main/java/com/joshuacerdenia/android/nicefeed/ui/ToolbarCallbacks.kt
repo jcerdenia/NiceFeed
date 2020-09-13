@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.utils
+package com.joshuacerdenia.android.nicefeed.ui
 
 import androidx.appcompat.widget.Toolbar
 

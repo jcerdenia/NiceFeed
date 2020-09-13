@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
-import com.joshuacerdenia.android.nicefeed.data.remote.service.SearchResult
-import com.joshuacerdenia.android.nicefeed.data.remote.service.FetcherService
+import com.joshuacerdenia.android.nicefeed.data.remote.api.FeedlyApi
+import com.joshuacerdenia.android.nicefeed.data.remote.api.SearchResult
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,11 +25,11 @@ class FeedSearcher {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    private val fetcherService: FetcherService = retrofit.create(FetcherService::class.java)
+    private val feedlyApi: FeedlyApi = retrofit.create(FeedlyApi::class.java)
 
     fun performSearch(query: String): LiveData<List<SearchResultItem>> {
         val path = generatePath(query)
-        val searchRequest: Call<SearchResult> = fetcherService.fetchSearchResult(path)
+        val searchRequest: Call<SearchResult> = feedlyApi.fetchSearchResult(path)
 
         return fetchSearchResult(searchRequest)
     }

@@ -9,7 +9,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.text.HtmlCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.joshuacerdenia.android.nicefeed.MainActivity
+import com.joshuacerdenia.android.nicefeed.ui.activity.MainActivity
 import com.joshuacerdenia.android.nicefeed.NOTIFICATION_CHANNEL_ID
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
