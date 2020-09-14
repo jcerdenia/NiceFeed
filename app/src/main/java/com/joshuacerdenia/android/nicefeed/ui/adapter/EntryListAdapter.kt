@@ -23,12 +23,12 @@ class EntryListAdapter(
     private val listener: OnItemClickListener
 ) : ListAdapter<EntryLight, EntryListAdapter.EntryHolder>(DiffCallback()) {
 
-    var latestClickedPosition = 0
-
     interface OnItemClickListener {
         fun onItemClicked(entry: EntryLight)
         fun onItemLongClicked(entry: EntryLight, view: View?)
     }
+
+    var latestClickedPosition = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EntryHolder {
         val view = LayoutInflater.from(parent.context).inflate(

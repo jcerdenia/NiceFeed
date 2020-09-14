@@ -51,7 +51,6 @@ class EntryListFragment : VisibleFragment(),
         fun onFeedRemoved()
     }
 
-    private val fragment = this@EntryListFragment
     private lateinit var viewModel: EntryListViewModel
     private lateinit var toolbar: Toolbar
     private lateinit var emptyMessageTextView: TextView
@@ -60,12 +59,15 @@ class EntryListFragment : VisibleFragment(),
     private lateinit var searchItem: MenuItem
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: EntryListAdapter
-    private var feedId: String? = null
-    private var autoUpdateIsEnabled = true
+
     private var markAllOptionsItem: MenuItem? = null
     private var starAllOptionsItem: MenuItem? = null
-    private val handler = Handler()
+    private var autoUpdateIsEnabled = true
+    private var feedId: String? = null
     private var callbacks: Callbacks? = null
+
+    private val fragment = this@EntryListFragment
+    private val handler = Handler()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

@@ -15,18 +15,8 @@ import com.squareup.picasso.Picasso
 
 class AboutFeedFragment: BottomSheetDialogFragment() {
 
-    companion object {
-        private const val ARG_FEED = "ARG_FEED"
-
-        fun newInstance(feed: Feed): AboutFeedFragment {
-            val args = Bundle().apply {
-                putSerializable(ARG_FEED, feed)
-            }
-
-            return AboutFeedFragment().apply {
-                arguments = args
-            }
-        }
+    interface Callbacks {
+        fun onEditCategoryClicked()
     }
 
     private lateinit var titleTextView: TextView
@@ -34,10 +24,6 @@ class AboutFeedFragment: BottomSheetDialogFragment() {
     private lateinit var categoryTextView: TextView
     private lateinit var imageView: ImageView
     private lateinit var editCategoryButton: Button
-
-    interface Callbacks {
-        fun onEditCategoryClicked()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,6 +63,20 @@ class AboutFeedFragment: BottomSheetDialogFragment() {
             setOnClickListener {
                 targetFragment?.let { (it as Callbacks).onEditCategoryClicked() }
                 dismiss()
+            }
+        }
+    }
+
+    companion object {
+        private const val ARG_FEED = "ARG_FEED"
+
+        fun newInstance(feed: Feed): AboutFeedFragment {
+            val args = Bundle().apply {
+                putSerializable(ARG_FEED, feed)
+            }
+
+            return AboutFeedFragment().apply {
+                arguments = args
             }
         }
     }

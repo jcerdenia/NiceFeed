@@ -23,7 +23,6 @@ class SearchFeedsFragment : FeedAddingFragment(),
     SubscribeFragment.Callbacks,
     FeedSearchAdapter.OnItemClickListener {
 
-    private val fragment = this@SearchFeedsFragment
     private lateinit var viewModel: FeedSearchViewModel
     private lateinit var toolbar: Toolbar
     private lateinit var progressBar: ProgressBar
@@ -31,6 +30,8 @@ class SearchFeedsFragment : FeedAddingFragment(),
     private lateinit var emptyMessageTextView: TextView
     private lateinit var searchView: SearchView
     private lateinit var adapter: FeedSearchAdapter
+
+    private val fragment = this@SearchFeedsFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

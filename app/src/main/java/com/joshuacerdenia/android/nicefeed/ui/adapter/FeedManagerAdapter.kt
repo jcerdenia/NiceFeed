@@ -17,12 +17,12 @@ class FeedManagerAdapter(
     var selectedItems: List<FeedMinimal>
 ) : ListAdapter<FeedMinimal, FeedManagerAdapter.FeedHolder>(DiffCallback()) {
 
-    private val checkBoxes = mutableSetOf<CheckBox>()
-
     interface ItemCheckBoxListener {
         fun onItemClicked(feed: FeedMinimal, isChecked: Boolean)
         fun onAllItemsChecked(isChecked: Boolean)
     }
+
+    private val checkBoxes = mutableSetOf<CheckBox>()
 
     fun toggleCheckBoxes(checkAll: Boolean) {
         selectedItems = if (checkAll) {

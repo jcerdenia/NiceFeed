@@ -10,11 +10,11 @@ import com.joshuacerdenia.android.nicefeed.R
 
 class FilterEntriesFragment: BottomSheetDialogFragment() {
 
-    private lateinit var filterRadioGroup: RadioGroup
-
     interface Callbacks {
         fun onFilterSelected(filter: Int)
     }
+
+    private lateinit var filterRadioGroup: RadioGroup
 
     override fun onCreateView(
         inflater: LayoutInflater,

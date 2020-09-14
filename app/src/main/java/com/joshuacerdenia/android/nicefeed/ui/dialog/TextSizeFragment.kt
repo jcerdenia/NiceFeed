@@ -14,12 +14,6 @@ import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_S
 
 class TextSizeFragment: BottomSheetDialogFragment() {
 
-    companion object {
-        fun newInstance(): TextSizeFragment {
-            return TextSizeFragment()
-        }
-    }
-
     interface Callbacks {
         fun onTextSizeSelected()
     }
@@ -65,6 +59,12 @@ class TextSizeFragment: BottomSheetDialogFragment() {
                 }
                 dismiss()
             }
+        }
+    }
+
+    companion object {
+        fun newInstance(): TextSizeFragment {
+            return TextSizeFragment()
         }
     }
 }

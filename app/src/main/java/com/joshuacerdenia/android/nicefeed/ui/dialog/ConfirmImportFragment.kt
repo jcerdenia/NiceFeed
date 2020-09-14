@@ -11,25 +11,12 @@ import com.joshuacerdenia.android.nicefeed.R
 
 class ConfirmImportFragment: BottomSheetDialogFragment() {
 
-    companion object {
-        private const val ARG_COUNT = "ARG_COUNT"
-
-        fun newInstance(count: Int): ConfirmImportFragment {
-            val args = Bundle().apply {
-                putInt(ARG_COUNT, count)
-            }
-            return ConfirmImportFragment().apply {
-                arguments = args
-            }
-        }
+    interface Callbacks {
+        fun onImportConfirmed(count: Int)
     }
 
     private lateinit var titleTextView: TextView
     private lateinit var confirmButton: Button
-
-    interface Callbacks {
-        fun onImportConfirmed(count: Int)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,6 +41,19 @@ class ConfirmImportFragment: BottomSheetDialogFragment() {
                 (fragment as Callbacks).onImportConfirmed(count)
             }
             dismiss()
+        }
+    }
+
+    companion object {
+        private const val ARG_COUNT = "ARG_COUNT"
+
+        fun newInstance(count: Int): ConfirmImportFragment {
+            val args = Bundle().apply {
+                putInt(ARG_COUNT, count)
+            }
+            return ConfirmImportFragment().apply {
+                arguments = args
+            }
         }
     }
 }

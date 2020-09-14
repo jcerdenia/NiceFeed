@@ -25,8 +25,6 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment
 import com.joshuacerdenia.android.nicefeed.utils.OpmlExporter
 import com.joshuacerdenia.android.nicefeed.ui.ToolbarCallbacks
 
-private const val TAG = "ManageFeedsFragment"
-
 class ManageFeedsFragment: VisibleFragment(),
     EditCategoryFragment.Callbacks,
     ConfirmRemoveFragment.Callbacks,
@@ -40,7 +38,6 @@ class ManageFeedsFragment: VisibleFragment(),
         fun onDoneManaging()
     }
 
-    private val fragment = this@ManageFeedsFragment
     private lateinit var viewModel: ManageFeedsViewModel
     private lateinit var toolbar: Toolbar
     private lateinit var progressBar: ProgressBar
@@ -48,9 +45,11 @@ class ManageFeedsFragment: VisibleFragment(),
     private lateinit var emptyMessageTextView: TextView
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: FeedManagerAdapter
+
     private var opmlExporter: OpmlExporter? = null
-    private val handler = Handler()
     private var callbacks: Callbacks? = null
+    private val fragment = this@ManageFeedsFragment
+    private val handler = Handler()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

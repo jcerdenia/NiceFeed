@@ -19,11 +19,11 @@ class ManagingActivity : AppCompatActivity(),
     ManageFeedsFragment.Callbacks,
     SettingsFragment.Callbacks {
 
-    private lateinit var listener: OnBackgroundWorkSettingListener
-
     interface OnBackgroundWorkSettingListener {
         fun onBackgroundWorkSettingChanged(isOn: Boolean)
     }
+
+    private lateinit var listener: OnBackgroundWorkSettingListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

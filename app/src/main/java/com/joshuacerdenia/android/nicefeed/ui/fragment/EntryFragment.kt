@@ -30,14 +30,15 @@ import com.joshuacerdenia.android.nicefeed.utils.shortened
 
 class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
-    private val fragment = this@EntryFragment
     private lateinit var viewModel: EntryViewModel
     private lateinit var toolbar: Toolbar
     private lateinit var entry: Entry
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
-    private val handler = Handler()
+
     private var callbacks: ToolbarCallbacks? = null
+    private val fragment = this@EntryFragment
+    private val handler = Handler()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

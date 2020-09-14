@@ -20,12 +20,12 @@ class FeedSearchAdapter(
     private var clickingIsEnabled: Boolean
 ) : ListAdapter<SearchResultItem, FeedSearchAdapter.FeedHolder>(DiffCallback()) {
 
-    private var activeItemProgressBar: ProgressBar? = null
-    private var loadingItemId = loadingItem?.id
-
     interface OnItemClickListener {
         fun onItemClicked(searchResultItem: SearchResultItem)
     }
+
+    private var activeItemProgressBar: ProgressBar? = null
+    private var loadingItemId = loadingItem?.id
 
     fun onLoadingItem(itemId: String?) {
         clickingIsEnabled = false

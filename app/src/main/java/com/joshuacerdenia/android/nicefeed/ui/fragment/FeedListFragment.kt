@@ -18,8 +18,6 @@ import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedListAdapter
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.FeedListViewModel
 import com.joshuacerdenia.android.nicefeed.utils.addRipple
 
-private const val TAG = "FeedListFragment"
-
 class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
     interface Callbacks {
@@ -38,8 +36,9 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     private lateinit var bottomDivider: View
     private lateinit var recyclerView: RecyclerView
     lateinit var adapter: FeedListAdapter
-    private val handler = Handler()
+
     private var callbacks: Callbacks? = null
+    private val handler = Handler()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

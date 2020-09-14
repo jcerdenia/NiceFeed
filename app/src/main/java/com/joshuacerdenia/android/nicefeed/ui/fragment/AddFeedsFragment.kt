@@ -27,7 +27,6 @@ class AddFeedsFragment: FeedAddingFragment(),
     OpmlImporter.OnOpmlParsedListener,
     ConfirmImportFragment.Callbacks {
 
-    private val fragment = this@AddFeedsFragment
     private lateinit var viewModel: AddFeedsViewModel
     private lateinit var toolbar: Toolbar
     private lateinit var linearLayout: LinearLayout
@@ -36,6 +35,8 @@ class AddFeedsFragment: FeedAddingFragment(),
     private lateinit var importOpmlButton: Button
     private lateinit var searchView: SearchView
     private lateinit var progressBar: ProgressBar
+
+    private val fragment = this@AddFeedsFragment
     private var opmlImporter: OpmlImporter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

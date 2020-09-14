@@ -28,8 +28,7 @@ class SettingsFragment: VisibleFragment() {
     private lateinit var sortFeedsSpinner: Spinner
     private lateinit var sortEntriesSpinner: Spinner
     private lateinit var aboutTextView: TextView
-    private val spinnerLayout = android.R.layout.simple_spinner_item
-    private val spinnerItem = android.R.layout.simple_spinner_dropdown_item
+
     private var callbacks: Callbacks? = null
 
     override fun onAttach(context: Context) {
@@ -109,8 +108,8 @@ class SettingsFragment: VisibleFragment() {
     }
 
     private fun getDefaultAdapter(context: Context, items: Array<String>): ArrayAdapter<String> {
-        return ArrayAdapter(context, spinnerLayout, items).apply {
-            setDropDownViewResource(spinnerItem)
+        return ArrayAdapter(context, android.R.layout.simple_spinner_item, items).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
     }
 

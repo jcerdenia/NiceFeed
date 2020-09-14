@@ -27,12 +27,12 @@ class FeedListAdapter(
     private val listener: OnItemClickListener
 ) : ListAdapter<FeedMenuItem, RecyclerView.ViewHolder>(DiffCallback()) {
 
-    private var activeFeedId: String? = null
-
     interface OnItemClickListener {
         fun onFeedSelected(feedId: String)
         fun onCategoryClicked(category: String)
     }
+
+    private var activeFeedId: String? = null
 
     fun setActiveFeedId(feedId: String?) {
         activeFeedId = feedId

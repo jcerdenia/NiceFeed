@@ -16,18 +16,8 @@ import java.text.DateFormat
 
 class SubscribeFragment: BottomSheetDialogFragment() {
 
-    companion object {
-        private const val ARG_SEARCH_RESULT_ITEM = "ARG_SEARCH_RESULT_ITEM"
-
-        fun newInstance(searchResultItem: SearchResultItem): SubscribeFragment {
-            val args = Bundle().apply {
-                putSerializable(ARG_SEARCH_RESULT_ITEM, searchResultItem)
-            }
-
-            return SubscribeFragment().apply {
-                arguments = args
-            }
-        }
+    interface Callbacks {
+        fun onAddConfirmed(searchResultItem: SearchResultItem)
     }
 
     private lateinit var titleTextView: TextView
@@ -35,10 +25,6 @@ class SubscribeFragment: BottomSheetDialogFragment() {
     private lateinit var updatedTextView: TextView
     private lateinit var imageView: ImageView
     private lateinit var subscribeButton: Button
-
-    interface Callbacks {
-        fun onAddConfirmed(searchResultItem: SearchResultItem)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,6 +77,20 @@ class SubscribeFragment: BottomSheetDialogFragment() {
             DateFormat.getDateInstance(DateFormat.LONG).format(epoch)
         } else {
             null
+        }
+    }
+
+    companion object {
+        private const val ARG_SEARCH_RESULT_ITEM = "ARG_SEARCH_RESULT_ITEM"
+
+        fun newInstance(searchResultItem: SearchResultItem): SubscribeFragment {
+            val args = Bundle().apply {
+                putSerializable(ARG_SEARCH_RESULT_ITEM, searchResultItem)
+            }
+
+            return SubscribeFragment().apply {
+                arguments = args
+            }
         }
     }
 }
