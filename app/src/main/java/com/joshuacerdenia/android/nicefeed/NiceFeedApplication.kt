@@ -45,31 +45,6 @@ class NiceFeedApplication : Application(), ManagingActivity.OnBackgroundWorkSett
         NiceFeedPreferences.getPollingSetting(this).run {
             delayedInit(this)
         }
-
-        val cm: ConnectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val builder: NetworkRequest.Builder = NetworkRequest.Builder()
-
-        cm.registerNetworkCallback(
-            builder.build(),
-            object : ConnectivityManager.NetworkCallback() {
-
-                override fun onAvailable(network: Network) {
-                    Log.i("MainActivity", "onAvailable!")
-
-                    // check if NetworkCapabilities has TRANSPORT_WIFI
-                    val isWifi: Boolean = cm.getNetworkCapabilities(network).hasTransport(
-                        NetworkCapabilities.TRANSPORT_WIFI)
-
-                    // doSomething()
-                }
-
-                override fun onLost(network: Network) {
-                    Log.i("MainActivity", "onLost!")
-
-                    // doSomething
-                }
-            }
-        )
     }
 
     private fun delayedInit(shouldPoll: Boolean) {
