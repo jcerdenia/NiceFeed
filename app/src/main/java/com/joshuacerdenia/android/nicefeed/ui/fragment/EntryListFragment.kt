@@ -1,6 +1,7 @@
 package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.content.Context
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -19,14 +20,15 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.EntryLight
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.ui.ToolbarCallbacks
 import com.joshuacerdenia.android.nicefeed.ui.adapter.EntryListAdapter
-import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryListViewModel
 import com.joshuacerdenia.android.nicefeed.ui.dialog.AboutFeedFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.menu.EntryPopupMenu
-import com.joshuacerdenia.android.nicefeed.ui.ToolbarCallbacks
+import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryListViewModel
+import com.joshuacerdenia.android.nicefeed.utils.ConnectionChecker
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 
 private const val TAG = "EntryListFragment"
@@ -37,7 +39,8 @@ class EntryListFragment : VisibleFragment(),
     FilterEntriesFragment.Callbacks,
     AboutFeedFragment.Callbacks,
     EditCategoryFragment.Callbacks,
-    ConfirmRemoveFragment.Callbacks {
+    ConfirmRemoveFragment.Callbacks
+{
 
     interface Callbacks: ToolbarCallbacks {
         fun onHomeSelected()
@@ -90,10 +93,9 @@ class EntryListFragment : VisibleFragment(),
             }
         }
 
-        arguments?.getBoolean(ARG_IS_NEWLY_ADDED)?.let { isNewlyAdded ->
-            if (isNewlyAdded || !autoUpdateIsEnabled) {
-                viewModel.shouldAutoRefresh = false
-            }
+        val isNewlyAdded = arguments?.getBoolean(ARG_IS_NEWLY_ADDED) ?: false
+        if (isNewlyAdded || !autoUpdateIsEnabled || !ConnectionChecker.isConnected(context)) {
+            viewModel.shouldAutoRefresh = false
         }
     }
 
@@ -289,12 +291,16 @@ class EntryListFragment : VisibleFragment(),
 
     private fun handleRefresh(url: String?): Boolean {
         return if (url != null) {
-            searchItem.collapseActionView()
-            progressBar.visibility = View.VISIBLE
-            toolbar.title = getString(R.string.updating)
+            if (ConnectionChecker.isConnected(context)) {
+                searchItem.collapseActionView()
+                progressBar.visibility = View.VISIBLE
+                toolbar.title = getString(R.string.updating)
 
-            viewModel.submitQuery("")
-            viewModel.requestUpdate(url)
+                viewModel.submitQuery("")
+                viewModel.requestUpdate(url)
+            } else {
+                ConnectionChecker.showNoConnectionMessage(recyclerView, resources)
+            }
             true
         } else {
             false
@@ -430,6 +436,11 @@ class EntryListFragment : VisibleFragment(),
     override fun onDetach() {
         super.onDetach()
         callbacks = null
+    }
+
+    override fun onStop() {
+        super.onStop()
+        context?.let { NiceFeedPreferences.saveLastViewedFeedId(it, feedId) }
     }
 
     companion object {

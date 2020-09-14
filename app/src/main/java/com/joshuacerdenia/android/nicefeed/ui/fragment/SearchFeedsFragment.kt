@@ -3,6 +3,7 @@ package com.joshuacerdenia.android.nicefeed.ui.fragment
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -14,6 +15,7 @@ import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedSearchAdapter
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.FeedSearchViewModel
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SubscribeFragment
+import com.joshuacerdenia.android.nicefeed.utils.ConnectionChecker
 import com.joshuacerdenia.android.nicefeed.utils.RssUrlTransformer
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 
@@ -26,6 +28,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
     private lateinit var toolbar: Toolbar
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
+    private lateinit var emptyMessageTextView: TextView
     private lateinit var searchView: SearchView
     private lateinit var adapter: FeedSearchAdapter
 
@@ -42,8 +45,9 @@ class SearchFeedsFragment : FeedAddingFragment(),
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_search_feeds, container, false)
-        progressBar = view.findViewById(R.id.progressBar_search)
-        recyclerView = view.findViewById(R.id.recyclerView_feed)
+        progressBar = view.findViewById(R.id.search_progress_bar)
+        emptyMessageTextView = view.findViewById(R.id.empty_message_text_view)
+        recyclerView = view.findViewById(R.id.recycler_view)
         toolbar = view.findViewById(R.id.toolbar)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
@@ -57,17 +61,22 @@ class SearchFeedsFragment : FeedAddingFragment(),
         super.onViewCreated(view, savedInstanceState)
         val manager = RequestResultManager(viewModel, recyclerView, R.string.failed_to_connect)
 
-        viewModel.feedIdsLiveData.observe(viewLifecycleOwner, Observer {
-            currentFeedIds = it
+        viewModel.feedIdsLiveData.observe(viewLifecycleOwner, Observer { feedIds ->
+            currentFeedIds = feedIds
         })
 
-        viewModel.searchResultLiveData.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
+        viewModel.searchResultLiveData.observe(viewLifecycleOwner, Observer { results ->
+            adapter.submitList(results)
             progressBar.visibility = View.GONE
+            emptyMessageTextView.visibility = if (results.isEmpty()) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
         })
 
-        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, Observer {
-            manager.submitData(it)
+        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, Observer { feedWithEntries ->
+            manager.submitData(feedWithEntries)
             adapter.onFinishedLoading()
             viewModel.itemBeingLoaded = null
             viewModel.itemSelectionEnabled = true
@@ -87,12 +96,16 @@ class SearchFeedsFragment : FeedAddingFragment(),
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(queryText: String): Boolean {
                     if (queryText.isNotEmpty()) {
-                        viewModel.performSearch(queryText)
-                        progressBar.visibility = View.VISIBLE
+                        if (ConnectionChecker.isConnected(context)) {
+                            viewModel.performSearch(queryText)
+                            progressBar.visibility = View.VISIBLE
+                        } else {
+                            ConnectionChecker.showNoConnectionMessage(recyclerView, resources)
+                        }
                     }
 
                     clearFocus()
-                    activity?.let { Utils.hideSoftKeyBoard(it, this@apply) }
+                    Utils.hideSoftKeyBoard(requireActivity(), this@apply)
                     return true
                 }
 
@@ -103,7 +116,12 @@ class SearchFeedsFragment : FeedAddingFragment(),
             })
 
             if (!viewModel.initialQueryIsMade) {
-                setQuery(initialQuery, true)
+                if (ConnectionChecker.isConnected(context)) {
+                    setQuery(initialQuery, true)
+                } else {
+                    setQuery(initialQuery, false)
+                    ConnectionChecker.showNoConnectionMessage(recyclerView, resources)
+                }
                 viewModel.initialQueryIsMade = true
             } else {
                 setQuery(viewModel.newQuery, false)
@@ -111,7 +129,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
             }
         }
 
-        activity?.let { Utils.hideSoftKeyBoard(it, searchView) }
+        Utils.hideSoftKeyBoard(requireActivity(), searchView)
     }
 
     override fun onAddConfirmed(searchResultItem: SearchResultItem) {

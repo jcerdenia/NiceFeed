@@ -169,7 +169,6 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     override fun onStop() {
         super.onStop()
         context?.let { context ->
-            NiceFeedPreferences.saveLastViewedFeedId(context, viewModel.activeFeedId)
             NiceFeedPreferences.saveMinimizedCategories(context, viewModel.minimizedCategories)
         }
     }

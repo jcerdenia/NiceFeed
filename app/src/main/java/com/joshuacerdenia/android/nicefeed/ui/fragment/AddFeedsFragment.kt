@@ -18,6 +18,7 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmImportFragment
+import com.joshuacerdenia.android.nicefeed.utils.ConnectionChecker
 import com.joshuacerdenia.android.nicefeed.utils.OpmlImporter
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import java.util.*
@@ -99,21 +100,24 @@ class AddFeedsFragment: FeedAddingFragment(),
             }
         })
 
-        subscribeButton.setOnClickListener {
-            val address = urlEditText.text.toString()
-                .substringAfter("://")
-                .toLowerCase(Locale.ROOT)
-                .trim()
-
-            viewModel.requestFeed(HTTPS + address)
-            progressBar.visibility = View.VISIBLE
-
-            subscribeButton.apply {
-                isEnabled = false
-                text = getString(R.string.loading)
+        subscribeButton.setOnClickListener { view ->
+            if (ConnectionChecker.isConnected(context)) {
+                urlEditText.text.toString()
+                    .substringAfter("://")
+                    .toLowerCase(Locale.ROOT)
+                    .trim()
+                    .run {
+                        viewModel.requestFeed(HTTPS + this)
+                    }
+                progressBar.visibility = View.VISIBLE
+                subscribeButton.apply {
+                    isEnabled = false
+                    text = getString(R.string.loading)
+                }
+            } else {
+                ConnectionChecker.showNoConnectionMessage(linearLayout, resources)
             }
-
-            activity?.let { view -> Utils.hideSoftKeyBoard(view, it) }
+            Utils.hideSoftKeyBoard(requireActivity(), view)
         }
 
         importOpmlButton.setOnClickListener {

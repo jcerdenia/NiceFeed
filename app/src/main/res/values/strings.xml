@@ -104,6 +104,7 @@
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="system_default">System default</string>
+    <string name="no_internet_connection">No internet connection.</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>
