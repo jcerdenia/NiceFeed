@@ -1,7 +1,7 @@
 package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.content.Context
-import android.net.ConnectivityManager
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -13,6 +13,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -111,7 +112,11 @@ class EntryListFragment : VisibleFragment(),
         progressBar = view.findViewById(R.id.progress_bar)
 
         recyclerView = view.findViewById(R.id.recycler_view)
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = if (resources.configuration.orientation == ORIENTATION_LANDSCAPE) {
+            GridLayoutManager(context, 2)
+        } else {
+            LinearLayoutManager(context)
+        }
         recyclerView.adapter = adapter
 
         toolbar.title = when (feedId) {
@@ -149,7 +154,14 @@ class EntryListFragment : VisibleFragment(),
                 viewModel.submitInitialFeed()
                 callbacks?.onFeedLoaded(feed.url)
             } else {
-                feedId?.let { callbacks?.onFeedLoaded(it) }
+                // feedId could either be a KEY instead of url, so
+                feedId?.let { feedId ->
+                    if (feedId.startsWith(KEY)) {
+                        callbacks?.onFeedLoaded(feedId)
+                    } else {
+                        callbacks?.onFeedRemoved()
+                    }
+                }
             }
 
             // Check if not currently updating:

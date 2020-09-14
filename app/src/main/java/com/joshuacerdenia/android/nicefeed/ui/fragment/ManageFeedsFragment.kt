@@ -198,16 +198,15 @@ class ManageFeedsFragment: VisibleFragment(),
         }.toTypedArray()
 
         if (feedIds.size == 1) {
-            showFeedsRemovedNotice(title = viewModel.selectedItems[0].title)
+            showFeedsRemovedNotice(title = viewModel.selectedItems.first().title)
         } else {
-            if (feedIds.size == adapter.currentList.size) {
-                context?.let { context ->
+            context?.let { context ->
+                if (feedIds.contains(NiceFeedPreferences.getLastViewedFeedId(context))) {
                     NiceFeedPreferences.saveLastViewedFeedId(context, null)
                 }
             }
             showFeedsRemovedNotice(feedIds.size)
         }
-
         viewModel.deleteItems(*feedIds)
         resetSelection()
     }

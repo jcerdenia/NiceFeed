@@ -11,8 +11,8 @@ android {
         applicationId "com.joshuacerdenia.android.nicefeed"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 01
+        versionName "1.0.0-beta01"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -63,7 +63,6 @@ dependencies {
 
     // Database
     implementation "androidx.room:room-runtime:$room_version"
-    implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
 
