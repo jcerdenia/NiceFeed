@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.NetworkInfo
 import android.os.Build
 import android.view.View
+import androidx.core.content.ContextCompat.getSystemService
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 

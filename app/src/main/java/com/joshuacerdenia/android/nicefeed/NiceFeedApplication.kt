@@ -3,17 +3,13 @@ package com.joshuacerdenia.android.nicefeed
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.os.Build
 import android.util.Log
 import androidx.work.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
-import com.joshuacerdenia.android.nicefeed.ui.activity.ManagingActivity
+import com.joshuacerdenia.android.nicefeed.ui.OnBackgroundWorkSettingChanged
+import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.work.NewEntriesWorker
 import com.joshuacerdenia.android.nicefeed.work.SweeperWorker
 import kotlinx.coroutines.CoroutineScope
@@ -24,12 +20,13 @@ import java.util.concurrent.TimeUnit
 private const val TAG = "NiceFeedApplication"
 const val NOTIFICATION_CHANNEL_ID = "nicefeed_new_entries"
 
-class NiceFeedApplication : Application(), ManagingActivity.OnBackgroundWorkSettingListener {
+class NiceFeedApplication : Application(), OnBackgroundWorkSettingChanged {
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
     override fun onCreate() {
         super.onCreate()
+        Utils.setTheme(NiceFeedPreferences.getTheme(this))
         NiceFeedRepository.initialize(this)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

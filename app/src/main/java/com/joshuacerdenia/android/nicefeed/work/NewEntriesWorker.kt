@@ -54,10 +54,8 @@ class NewEntriesWorker(
                 }
             }
 
-            Log.d(TAG, "Got ${newEntries.size} new items in ${feedWithEntries.feed.title}")
             if (newEntries.isNotEmpty()) {
                 repo.handleNewEntriesFound(newEntries, feedWithEntries.feed.url)
-
                 val notification = createNotification(
                     feedWithEntries.feed.url,
                     feedWithEntries.feed.title,

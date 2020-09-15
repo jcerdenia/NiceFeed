@@ -12,16 +12,15 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.FeedListFragment
-import com.joshuacerdenia.android.nicefeed.ui.ToolbarCallbacks
-import com.joshuacerdenia.android.nicefeed.utils.Utils
 
 class MainActivity : AppCompatActivity(),
     FeedListFragment.Callbacks,
     EntryListFragment.Callbacks,
-    ToolbarCallbacks {
+    OnToolbarInflated {
 
     private lateinit var drawerLayout: DrawerLayout
     private val handler = Handler()
@@ -30,9 +29,8 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         drawerLayout = findViewById(R.id.drawerLayout)
-        Utils.setTheme(NiceFeedPreferences.getTheme(this))
 
-        if (getMainFragment() == null) {
+        if (getFragment(FRAGMENT_MAIN) == null) {
             val feedId = intent?.getStringExtra(EXTRA_FEED_ID)
                 ?: NiceFeedPreferences.getLastViewedFeedId(this)
             val entryId = intent?.getStringExtra(EXTRA_ENTRY_ID)
@@ -48,7 +46,6 @@ class MainActivity : AppCompatActivity(),
         super.onNewIntent(intent)
         val feedId = intent?.getStringExtra(EXTRA_FEED_ID)
         val entryId = intent?.getStringExtra(EXTRA_ENTRY_ID)
-
         replaceMainFragment(EntryListFragment.newInstance(feedId, entryId), false)
         drawerLayout.closeDrawers()
     }
@@ -59,30 +56,29 @@ class MainActivity : AppCompatActivity(),
             return
         } else if (requestCode == REQUEST_CODE_ADD_FEED) {
             data?.getStringExtra(EXTRA_FEED_ID)?.let { feedId ->
-                val fragment = EntryListFragment.newInstance(feedId, isNewlyAdded = true)
-                handler.postDelayed({
-                    replaceMainFragment(fragment, false)
-                }, 350)
-
-                (getNavigationFragment() as FeedListFragment?)?.updateActiveFeedId(feedId)
-                drawerLayout.closeDrawers()
+                loadFeed(feedId, true)
             }
         }
     }
 
-    private fun loadFragments(main: Fragment, drawer: Fragment) {
+    private fun loadFragments(main: Fragment, navigation: Fragment) {
         supportFragmentManager.beginTransaction()
             .add(R.id.main_fragment_container, main)
-            .add(R.id.drawer_fragment_container, drawer)
+            .add(R.id.drawer_fragment_container, navigation)
             .commit()
     }
 
-    private fun getMainFragment(): Fragment? {
-        return supportFragmentManager.findFragmentById(R.id.main_fragment_container)
-    }
-
-    private fun getNavigationFragment(): Fragment? {
-        return supportFragmentManager.findFragmentById(R.id.drawer_fragment_container)
+    private fun getFragment(code: Int): Fragment? {
+        val fragmentId = when (code) {
+            FRAGMENT_MAIN -> R.id.main_fragment_container
+            FRAGMENT_NAVIGATION -> R.id.drawer_fragment_container
+            else -> null
+        }
+        return if (fragmentId != null) {
+            supportFragmentManager.findFragmentById(fragmentId)
+        } else {
+            null
+        }
     }
 
     private fun replaceMainFragment(newFragment: Fragment, addToBackStack: Boolean) {
@@ -98,32 +94,34 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onManageFeedsSelected() {
-        val intent = ManagingActivity.newIntent(this@MainActivity, MANAGE_FEEDS)
-        startActivityForResult(intent, REQUEST_CODE_ADD_FEED)
-    }
-
-    override fun onAddFeedSelected() {
-        val intent = ManagingActivity.newIntent(this@MainActivity, ADD_FEEDS)
-        startActivityForResult(intent, REQUEST_CODE_ADD_FEED)
+    override fun onMenuItemSelected(item: Int) {
+        val intent = ManagingActivity.newIntent(this@MainActivity, item)
+        if (item == FeedListFragment.ITEM_SETTINGS) {
+            startActivity(intent)
+        } else {
+            startActivityForResult(intent, REQUEST_CODE_ADD_FEED)
+        }
     }
 
     override fun onFeedSelected(feedId: String, activeFeedId: String?) {
         if (feedId != activeFeedId) {
-            val fragment = EntryListFragment.newInstance(feedId)
+            loadFeed(feedId)
+        } else {
+            drawerLayout.closeDrawers()
+        }
+    }
+
+    private fun loadFeed(feedId: String, isNewlyAdded: Boolean = false) {
+        EntryListFragment.newInstance(feedId, isNewlyAdded = isNewlyAdded).let { fragment ->
             handler.postDelayed({
                 replaceMainFragment(fragment, false)
             }, 350)
         }
         drawerLayout.closeDrawers()
+        (getFragment(FRAGMENT_NAVIGATION) as? FeedListFragment)?.updateActiveFeedId(feedId)
     }
 
-    override fun onSettingsSelected() {
-        val intent = ManagingActivity.newIntent(this@MainActivity, SETTINGS)
-        startActivity(intent)
-    }
-
-    override fun onHomeSelected() {
+    override fun onHomePressed() {
         drawerLayout.apply {
             openDrawer(GravityCompat.START, true)
             setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED)
@@ -131,7 +129,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onFeedLoaded(feedId: String) {
-        (getNavigationFragment() as FeedListFragment?)?.updateActiveFeedId(feedId)
+        (getFragment(FRAGMENT_NAVIGATION) as? FeedListFragment)?.updateActiveFeedId(feedId)
     }
 
     override fun onEntrySelected(entryId: String) {
@@ -145,7 +143,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onCategoriesNeeded(): Array<String> {
-        return (getNavigationFragment() as FeedListFragment).getCategories()
+        return (getFragment(FRAGMENT_NAVIGATION) as? FeedListFragment)?.getCategories()
+            ?: emptyArray()
     }
 
     override fun onFeedRemoved() {
@@ -159,11 +158,11 @@ class MainActivity : AppCompatActivity(),
 
     companion object {
         private const val REQUEST_CODE_ADD_FEED = 0
+        private const val FRAGMENT_MAIN = 0
+        private const val FRAGMENT_NAVIGATION = 1
+
         const val EXTRA_FEED_ID = "com.joshuacerdenia.android.nicefeed.feed_id"
         const val EXTRA_ENTRY_ID = "com.joshuacerdenia.android.nicefeed.entry_id"
-        const val MANAGE_FEEDS = 0
-        const val ADD_FEEDS = 1
-        const val SETTINGS = 2
 
         fun newIntent(context: Context, feedId: String, latestEntryId: String): Intent {
             return Intent(context, MainActivity::class.java).apply {

@@ -17,7 +17,7 @@ interface EntriesDao {
             "FROM Entry WHERE isRead = 0 ORDER BY date DESC LIMIT :max"
     )
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    fun getRecentEntries(max: Int): LiveData<List<Entry>>
+    fun getNewEntries(max: Int): LiveData<List<Entry>>
 
     @Query(
         "SELECT url, title, website, date, image, isStarred, isRead " +

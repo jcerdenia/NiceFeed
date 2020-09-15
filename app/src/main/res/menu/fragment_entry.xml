@@ -9,15 +9,15 @@
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/menuItem_share"
-        android:icon="@drawable/ic_share"
-        android:title="@string/share"
-        app:showAsAction="ifRoom"/>
-
-    <item
         android:id="@+id/menuItem_view_in_browser"
         android:icon="@drawable/ic_browser"
         android:title="@string/view_in_browser"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menuItem_share"
+        android:icon="@drawable/ic_share"
+        android:title="@string/share"
         app:showAsAction="ifRoom"/>
 
     <item

@@ -1,8 +1,8 @@
 package com.joshuacerdenia.android.nicefeed.utils
 
-import android.util.Log
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 
 /*  This class compares recently requested data from the web with current data saved locally.
     It outputs which entries to add, update, and delete, as well as updated feed data, if any.
@@ -25,11 +25,11 @@ class UpdateManager(private val listener: UpdateListener) {
     private var currentEntries = listOf<Entry>()
         get() = field.sortedByDescending { it.date }
 
-    fun submitInitialFeed(feed: Feed) {
+    fun setInitialFeed(feed: Feed) {
         currentFeed = feed
     }
 
-    fun submitInitialEntries(entries: List<Entry>) {
+    fun setInitialEntries(entries: List<Entry>) {
         currentEntries = entries
         var unreadCount = 0
         for (entry in entries) {
@@ -43,10 +43,9 @@ class UpdateManager(private val listener: UpdateListener) {
         }
     }
 
-    fun submitNewData(feed: Feed, entries: List<Entry>) {
-        Log.d("UpdateManager", "Submitting new data to UpdateManager...")
-        handleFeedUpdate(feed)
-        handleNewEntries(entries)
+    fun submitUpdates(feedWithEntries: FeedWithEntries) {
+        handleFeedUpdate(feedWithEntries.feed)
+        handleNewEntries(feedWithEntries.entries)
     }
 
     private fun handleNewEntries(newEntries: List<Entry>) {

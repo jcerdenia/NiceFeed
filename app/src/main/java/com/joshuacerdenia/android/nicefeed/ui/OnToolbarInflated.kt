@@ -2,7 +2,7 @@ package com.joshuacerdenia.android.nicefeed.ui
 
 import androidx.appcompat.widget.Toolbar
 
-interface ToolbarCallbacks {
+interface OnToolbarInflated {
 
     fun onToolbarInflated(toolbar: Toolbar, isNavigableUp: Boolean = true)
 }

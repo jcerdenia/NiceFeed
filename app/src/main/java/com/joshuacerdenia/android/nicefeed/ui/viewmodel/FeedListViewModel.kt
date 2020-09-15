@@ -96,7 +96,7 @@ class FeedListViewModel: ViewModel() {
         for (feed in feeds) {
             categories.add(feed.category)
         }
-        // Sort alphabetically
+        // Sort alphabetically:
         return categories.toList().sorted()
     }
 }

@@ -158,7 +158,7 @@ class AddFeedsFragment: FeedAddingFragment(),
             getString(R.string.feeds_imported, feedsImported),
             Snackbar.LENGTH_SHORT
         ).setAction(R.string.done) {
-            callbacks?.onDoneImporting()
+            callbacks?.onFinished()
         }.show()
 
         viewModel.feedsToImport.toTypedArray().run {

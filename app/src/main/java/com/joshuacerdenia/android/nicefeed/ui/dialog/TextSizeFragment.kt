@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.RadioGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_SIZE_LARGE
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_SIZE_LARGER
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_SIZE_NORMAL
@@ -15,7 +14,7 @@ import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_S
 class TextSizeFragment: BottomSheetDialogFragment() {
 
     interface Callbacks {
-        fun onTextSizeSelected()
+        fun onTextSizeSelected(textSize: Int)
     }
 
     private lateinit var radioGroup: RadioGroup
@@ -32,9 +31,7 @@ class TextSizeFragment: BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val currentSelection = context?.let {
-            NiceFeedPreferences.getTextSize(it)
-        } ?: TEXT_SIZE_NORMAL
+        val currentSelection = arguments?.getInt(ARG_TEXT_SIZE) ?: 0
 
         radioGroup.apply {
             when (currentSelection) {
@@ -46,16 +43,13 @@ class TextSizeFragment: BottomSheetDialogFragment() {
             }
 
             setOnCheckedChangeListener { _, checkedId ->
-                when (checkedId) {
+                val textSize = when (checkedId) {
                     R.id.radio_button_large -> TEXT_SIZE_LARGE
                     R.id.radio_button_larger -> TEXT_SIZE_LARGER
                     else -> TEXT_SIZE_NORMAL
-                }.let { selection ->
-                    NiceFeedPreferences.saveTextSize(context, selection)
                 }
-
                 targetFragment?.let { fragment ->
-                    (fragment as Callbacks).onTextSizeSelected()
+                    (fragment as Callbacks).onTextSizeSelected(textSize)
                 }
                 dismiss()
             }
@@ -63,8 +57,14 @@ class TextSizeFragment: BottomSheetDialogFragment() {
     }
 
     companion object {
-        fun newInstance(): TextSizeFragment {
-            return TextSizeFragment()
+        private const val ARG_TEXT_SIZE = "ARG_TEXT_SIZE"
+
+        fun newInstance(currentTextSize: Int): TextSizeFragment {
+            return TextSizeFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_TEXT_SIZE, currentTextSize)
+                }
+            }
         }
     }
 }

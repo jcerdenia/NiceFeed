@@ -17,13 +17,14 @@ import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMinimal
+import com.joshuacerdenia.android.nicefeed.ui.OnFinished
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedManagerAdapter
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.ManageFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment
 import com.joshuacerdenia.android.nicefeed.utils.OpmlExporter
-import com.joshuacerdenia.android.nicefeed.ui.ToolbarCallbacks
+import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 
 class ManageFeedsFragment: VisibleFragment(),
     EditCategoryFragment.Callbacks,
@@ -32,10 +33,9 @@ class ManageFeedsFragment: VisibleFragment(),
     FeedManagerAdapter.ItemCheckBoxListener,
     OpmlExporter.ExportResultListener {
 
-    interface Callbacks: ToolbarCallbacks {
+    interface Callbacks: OnToolbarInflated, OnFinished {
         fun onAddFeedsSelected()
         fun onExportOpmlSelected()
-        fun onDoneManaging()
     }
 
     private lateinit var viewModel: ManageFeedsViewModel
@@ -225,7 +225,7 @@ class ManageFeedsFragment: VisibleFragment(),
             getString(R.string.feed_removed_message, feedsRemoved),
             Snackbar.LENGTH_LONG
         ).setAction(R.string.done) {
-            callbacks?.onDoneManaging()
+            callbacks?.onFinished()
         }.show()
     }
 
@@ -274,7 +274,7 @@ class ManageFeedsFragment: VisibleFragment(),
             getString(R.string.category_assigned, category, feedsUpdated),
             Snackbar.LENGTH_LONG
         ).setAction(R.string.done) {
-            callbacks?.onDoneManaging()
+            callbacks?.onFinished()
         }.show()
     }
 

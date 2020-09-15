@@ -21,10 +21,8 @@ import com.joshuacerdenia.android.nicefeed.utils.addRipple
 class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
     interface Callbacks {
-        fun onManageFeedsSelected()
-        fun onAddFeedSelected()
+        fun onMenuItemSelected(item: Int)
         fun onFeedSelected(feedId: String, activeFeedId: String?)
-        fun onSettingsSelected()
     }
 
     private lateinit var viewModel: FeedListViewModel
@@ -82,23 +80,23 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         manageButton.setOnClickListener {
-            callbacks?.onManageFeedsSelected()
+            callbacks?.onMenuItemSelected(ITEM_MANAGE_FEEDS)
         }
 
         addButton.setOnClickListener {
-            callbacks?.onAddFeedSelected()
+            callbacks?.onMenuItemSelected(ITEM_ADD_FEEDS)
         }
 
         newEntriesButton.setOnClickListener {
-            callbacks?.onFeedSelected(EntryListFragment.KEY_RECENT, viewModel.activeFeedId)
+            callbacks?.onFeedSelected(EntryListFragment.FOLDER_NEW, viewModel.activeFeedId)
         }
 
         starredEntriesButton.setOnClickListener {
-            callbacks?.onFeedSelected(EntryListFragment.KEY_STARRED, viewModel.activeFeedId)
+            callbacks?.onFeedSelected(EntryListFragment.FOLDER_STARRED, viewModel.activeFeedId)
         }
 
         settingsButton.setOnClickListener {
-            callbacks?.onSettingsSelected()
+            callbacks?.onMenuItemSelected(ITEM_SETTINGS)
         }
 
         viewModel.feedListLiveData.observe(viewLifecycleOwner, Observer { list ->
@@ -128,8 +126,8 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     }
 
     override fun onFeedSelected(feedId: String) {
-        newEntriesButton.background = null
-        starredEntriesButton.background = null
+        starredEntriesButton.addRipple()
+        newEntriesButton.addRipple()
 
         callbacks?.onFeedSelected(feedId, viewModel.activeFeedId)
         viewModel.activeFeedId = feedId
@@ -144,18 +142,21 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     }
 
     fun updateActiveFeedId(feedId: String?) {
+        if (feedId == EntryListFragment.FOLDER_NEW) {
+            starredEntriesButton.addRipple()
+        } else if (feedId == EntryListFragment.FOLDER_STARRED) {
+            newEntriesButton.addRipple()
+        }
+
         viewModel.activeFeedId = feedId
         adapter.setActiveFeedId(feedId)
         recyclerView.adapter = adapter
 
-        starredEntriesButton.addRipple()
-        newEntriesButton.addRipple()
-
         context?.let { context ->
             val color = ContextCompat.getColor(context, R.color.colorSelect)
-            if (feedId == EntryListFragment.KEY_RECENT) {
+            if (feedId == EntryListFragment.FOLDER_NEW) {
                 newEntriesButton.setBackgroundColor(color)
-            } else if (feedId == EntryListFragment.KEY_STARRED) {
+            } else if (feedId == EntryListFragment.FOLDER_STARRED) {
                 starredEntriesButton.setBackgroundColor(color)
             }
         }
@@ -173,6 +174,10 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     }
 
     companion object {
+        const val ITEM_MANAGE_FEEDS = 0
+        const val ITEM_ADD_FEEDS = 1
+        const val ITEM_SETTINGS = 2
+
         const val ORDER_TITLE = 0
         const val ORDER_UNREAD_ITEMS = 1
 

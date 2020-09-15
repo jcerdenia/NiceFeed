@@ -11,14 +11,13 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
-import com.joshuacerdenia.android.nicefeed.ui.ToolbarCallbacks
+import com.joshuacerdenia.android.nicefeed.ui.OnBackgroundWorkSettingChanged
+import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 
 class SettingsFragment: VisibleFragment() {
 
-    interface Callbacks: ToolbarCallbacks {
-        fun onBackgroundWorkSettingChanged(isOn: Boolean)
-    }
+    interface Callbacks: OnToolbarInflated, OnBackgroundWorkSettingChanged
 
     private lateinit var toolbar: Toolbar
     private lateinit var scrollView: ScrollView

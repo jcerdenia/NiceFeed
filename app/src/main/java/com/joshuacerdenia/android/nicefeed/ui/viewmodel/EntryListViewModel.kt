@@ -13,7 +13,7 @@ import com.joshuacerdenia.android.nicefeed.utils.*
 import kotlinx.coroutines.launch
 import java.util.*
 
-private const val MAX_RECENT_ENTRIES = 50 // Maybe this can be changed dynamically
+private const val MAX_NEW_ENTRIES = 50 // Maybe this can be changed dynamically
 
 class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
 
@@ -27,8 +27,8 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
     }
     private val sourceEntriesLiveData = Transformations.switchMap(feedIdLiveData) { feedId ->
         when (feedId) {
-            EntryListFragment.KEY_RECENT -> repo.getRecentEntries(MAX_RECENT_ENTRIES)
-            EntryListFragment.KEY_STARRED -> repo.getStarredEntries()
+            EntryListFragment.FOLDER_NEW -> repo.getNewEntries(MAX_NEW_ENTRIES)
+            EntryListFragment.FOLDER_STARRED -> repo.getStarredEntries()
             else -> repo.getEntriesByFeed(feedId)
         }
     }
@@ -43,14 +43,17 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
         private set
     var currentFilter = 0
         private set
-    var shouldAutoRefresh = true
     var updateValues: Pair<Int, Int>? = null
+        private set
+
     private var updateWasRequested = false
+    var shouldAutoRefresh = true
 
     init {
         entriesLiveData.addSource(sourceEntriesLiveData) { source ->
             val filteredEntries = filterEntries(source, currentFilter)
             entriesLiveData.value = queryEntries(filteredEntries, currentQuery)
+            updateManager.setInitialEntries(source)
         }
 
         entriesLightLiveData.addSource(entriesLiveData) { entries ->
@@ -81,21 +84,15 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
         }
     }
 
-    fun submitInitialEntries() {
-        sourceEntriesLiveData.value?.let { entries ->
-            updateManager.submitInitialEntries(entries)
-        }
-    }
-
-    fun submitInitialFeed() {
+    fun onFeedLoaded() {
         feedLiveData.value?.let { feed ->
-            updateManager.submitInitialFeed(feed)
+            updateManager.setInitialFeed(feed)
         }
     }
 
-    fun compareNewData(feedWithEntries: FeedWithEntries) {
+    fun onUpdatesDownloaded(feedWithEntries: FeedWithEntries) {
         if (updateWasRequested) {
-            updateManager.submitNewData(feedWithEntries.feed, feedWithEntries.entries)
+            updateManager.submitUpdates(feedWithEntries)
             updateWasRequested = false
         }
     }
@@ -234,6 +231,10 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
 
     fun updateEntryIsRead(entryId: String, isRead: Boolean) {
         repo.updateEntryIsRead(entryId, isRead = isRead)
+    }
+
+    fun onUpdateNoticeShown() {
+        updateValues = null
     }
 
     fun deleteFeedAndEntries() {

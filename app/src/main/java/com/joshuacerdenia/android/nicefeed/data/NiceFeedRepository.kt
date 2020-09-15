@@ -34,7 +34,7 @@ class NiceFeedRepository private constructor(context: Context) {
 
     fun getEntriesByFeed(feedId: String): LiveData<List<Entry>> = dao.getEntriesByFeed(feedId)
 
-    fun getRecentEntries(max: Int): LiveData<List<Entry>> = dao.getRecentEntries(max)
+    fun getNewEntries(max: Int): LiveData<List<Entry>> = dao.getNewEntries(max)
 
     fun getStarredEntries(): LiveData<List<Entry>> = dao.getStarredEntries()
 
@@ -124,11 +124,9 @@ class NiceFeedRepository private constructor(context: Context) {
     }
 
     private fun getCrossRefs(feedId: String, entries: List<Entry>): List<FeedEntryCrossRef> {
-        val crossRefs = mutableListOf<FeedEntryCrossRef>()
-        for (entry in entries) {
-            crossRefs.add(FeedEntryCrossRef(feedId, entry.url))
+        return entries.map { entry ->
+            FeedEntryCrossRef(feedId, entry.url)
         }
-        return crossRefs
     }
 
     companion object {

@@ -15,16 +15,13 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
-import com.joshuacerdenia.android.nicefeed.data.model.Entry
-import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryViewModel
+import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.dialog.TextSizeFragment
-import com.joshuacerdenia.android.nicefeed.utils.EntryToHtmlFormatter
-import com.joshuacerdenia.android.nicefeed.ui.ToolbarCallbacks
+import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryViewModel
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.shortened
 
@@ -32,22 +29,24 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     private lateinit var viewModel: EntryViewModel
     private lateinit var toolbar: Toolbar
-    private lateinit var entry: Entry
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
 
-    private var callbacks: ToolbarCallbacks? = null
+    private var callbacks: OnToolbarInflated? = null
+    private var starItem: MenuItem? = null
     private val fragment = this@EntryFragment
-    private val handler = Handler()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        callbacks = activity as ToolbarCallbacks?
+        callbacks = activity as OnToolbarInflated?
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(EntryViewModel::class.java)
+        context?.let { context ->
+            viewModel.setTextSize(NiceFeedPreferences.getTextSize(context))
+        }
         arguments?.getString(ARG_ENTRY_ID)?.let { entryId ->
             viewModel.getEntryById(entryId)
         }
@@ -94,13 +93,18 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
             webView.scrollTo(0, 0)
         }
 
-        viewModel.entryLiveData.observe(viewLifecycleOwner, Observer { entry ->
-            if (entry != null) {
-                this.entry = entry
-                toolbar.title = entry.website.shortened()
-                drawEntry(entry, viewModel.lastPosition)
+        viewModel.htmlLiveData.observe(viewLifecycleOwner, { html ->
+            if (html != null) {
+                webView.loadData(html, MIME_TYPE, ENCODING)
+                toolbar.title = viewModel.website.shortened()
+                Handler().postDelayed({
+                    viewModel.lastPosition.let { position ->
+                        webView.scrollTo(position.first, position.second)
+                    }
+                }, 200)
+            } else {
+                toolbar.title = getString(R.string.app_name)
             }
-
             progressBar.visibility = View.GONE
             setHasOptionsMenu(true)
         })
@@ -109,41 +113,30 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_entry, menu)
-        toggleStarOptionItem(menu.findItem(R.id.menuItem_star))
+        starItem = menu.findItem(R.id.menuItem_star)
+        toggleStarOptionItem(viewModel.isStarred)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menuItem_star -> handleStar(item)
+            R.id.menuItem_star -> handleStar()
             R.id.menuItem_share -> handleShare()
             R.id.menuItem_copy_link -> handleCopyLink()
-            R.id.menuItem_view_in_browser -> handleViewInBrowser(entry.url)
+            R.id.menuItem_view_in_browser -> handleViewInBrowser(viewModel.url)
             R.id.menuItem_text_size -> handleChangeTextSize()
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun drawEntry(entry: Entry, position: Pair<Int, Int>) {
-        context?.let { context ->
-            EntryToHtmlFormatter(NiceFeedPreferences.getTextSize(context)).format(entry)
-        }.also { html ->
-            webView.loadData(html, MIME_TYPE, ENCODING)
-        }
-
-        handler.postDelayed({
-            webView.scrollTo(position.first, position.second)
-        }, 200)
-    }
-
-    private fun handleStar(item: MenuItem): Boolean {
-        entry.isStarred = !entry.isStarred
-        toggleStarOptionItem(item)
+    private fun handleStar(): Boolean {
+        viewModel.isStarred = !viewModel.isStarred
+        toggleStarOptionItem(viewModel.isStarred)
         return true
     }
 
-    private fun toggleStarOptionItem(item: MenuItem) {
-        item.apply {
-            title = if (entry.isStarred) {
+    private fun toggleStarOptionItem(isStarred: Boolean) {
+        starItem?.apply {
+            title = if (isStarred) {
                 setIcon(R.drawable.ic_star)
                 getString(R.string.unstar)
             } else {
@@ -156,19 +149,18 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     private fun handleShare(): Boolean {
         Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            putExtra(Intent.EXTRA_SUBJECT, entry.title)
-            putExtra(Intent.EXTRA_TEXT, entry.url)
+            putExtra(Intent.EXTRA_SUBJECT, viewModel.title)
+            putExtra(Intent.EXTRA_TEXT, viewModel.url)
         }.also { intent ->
             val chooserIntent = Intent.createChooser(intent, getString(R.string.share_entry))
             startActivity(chooserIntent)
         }
-
         return true
     }
 
     private fun handleCopyLink(): Boolean {
         val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        ClipData.newPlainText("link", entry.url).run {
+        ClipData.newPlainText("link", viewModel.url).run {
             clipboard.setPrimaryClip(this)
         }
 
@@ -187,22 +179,24 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     private fun handleChangeTextSize(): Boolean {
         viewModel.lastPosition = Pair(webView.scrollX, webView.scrollY)
-        TextSizeFragment.newInstance().apply {
+        TextSizeFragment.newInstance(viewModel.textSize).apply {
             setTargetFragment(fragment, 0)
             show(fragment.requireFragmentManager(), "change text size")
         }
         return true
     }
 
-    override fun onTextSizeSelected() {
-        drawEntry(entry, viewModel.lastPosition)
+    override fun onTextSizeSelected(textSize: Int) {
+        viewModel.setTextSize(textSize)
     }
 
     override fun onStop() {
         super.onStop()
-        entry.isRead = true
-        viewModel.updateEntry(entry)
+        viewModel.saveChanges()
         viewModel.lastPosition = Pair(webView.scrollX, webView.scrollY)
+        context?.let { context ->
+            NiceFeedPreferences.saveTextSize(context, viewModel.textSize)
+        }
     }
 
     override fun onDetach() {
