@@ -9,8 +9,6 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment
 import com.joshuacerdenia.android.nicefeed.utils.sortedByCategory
 import com.joshuacerdenia.android.nicefeed.utils.sortedByTitle
 
-private const val TAG = "ManageFeedsViewModel"
-
 class ManageFeedsViewModel: ViewModel() {
 
     private val repository = NiceFeedRepository.get()

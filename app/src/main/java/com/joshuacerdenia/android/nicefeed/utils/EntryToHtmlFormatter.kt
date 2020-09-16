@@ -32,9 +32,7 @@ class EntryToHtmlFormatter(textSizeKey: Int) {
         } else {
             "<p id=\"subtitle\">$formattedDate</p>"
         }
-        val content = entry.content?.let { content ->
-            removeCss(content)
-        } ?: ""
+        val content = entry.content.run (::removeCss)
         val html = StringBuilder(style)
             .append(OPEN_BODY_TAG)
             .append(title)

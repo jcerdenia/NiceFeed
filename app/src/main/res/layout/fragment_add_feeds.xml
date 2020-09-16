@@ -130,8 +130,5 @@
                 android:text="@string/select_file" />
 
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
-
-
 </LinearLayout>

@@ -17,6 +17,8 @@ object NiceFeedPreferences {
     private const val KEY_TEXT_SIZE = "KEY_TEXT_SIZE"
     private const val KEY_MIN_CATEGORIES = "KEY_MIN_CATEGORIES"
     private const val KEY_THEME = "KEY_THEME"
+    private const val KEY_VIEW_IN_BROWSER = "KEY_VIEW_IN_BROWSER"
+    private const val KEY_AUTO_OPEN_PREVIEW = "KEY_AUTO_OPEN_PREVIEW"
 
     const val TEXT_SIZE_NORMAL = 0
     const val TEXT_SIZE_LARGE = 1
@@ -107,5 +109,21 @@ object NiceFeedPreferences {
 
     fun saveTheme(context: Context, theme: Int) {
         getPrefs(context).edit().putInt(KEY_THEME, theme).apply()
+    }
+
+    fun getBrowserViewSetting(context: Context): Boolean {
+        return getPrefs(context).getBoolean(KEY_VIEW_IN_BROWSER, false)
+    }
+
+    fun setBrowserViewSetting(context: Context, shouldViewInBrowser: Boolean) {
+        getPrefs(context).edit().putBoolean(KEY_VIEW_IN_BROWSER, shouldViewInBrowser).apply()
+    }
+
+    fun getAutoOpenPreviewSetting(context: Context): Boolean {
+        return getPrefs(context).getBoolean(KEY_AUTO_OPEN_PREVIEW, false)
+    }
+
+    fun setAutoOpenPreviewSetting(context: Context, shouldAutoOpenPreview: Boolean) {
+        getPrefs(context).edit().putBoolean(KEY_AUTO_OPEN_PREVIEW, shouldAutoOpenPreview).apply()
     }
 }

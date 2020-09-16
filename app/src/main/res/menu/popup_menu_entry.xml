@@ -4,13 +4,16 @@
     <item
         android:id="@+id/menuItem_star"
         android:title="@string/star"
-        app:showAsAction="never"/>
+        android:icon="@drawable/ic_star_border"
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/menuItem_mark_as_read"
         android:title="@string/mark_as_read"
-        app:showAsAction="never"/>
+        android:icon="@drawable/ic_check_circle"
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/menuItem_read"
+        android:icon="@drawable/ic_read"
         android:title="@string/read"
-        app:showAsAction="never"/>
+        app:showAsAction="ifRoom"/>
 </menu>

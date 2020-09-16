@@ -146,7 +146,9 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
         repo.updateEntryIsRead(*entryIds, isRead = isRead)
     }
 
-    fun allIsStarred(entries: List<EntryLight>): Boolean {
+    fun allIsStarred(
+        entries: List<EntryLight> = entriesLightLiveData.value ?: emptyList()
+    ): Boolean {
         var count = 0
         for (entry in entries) {
             if (entry.isStarred) {
@@ -156,7 +158,9 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
         return count == entries.size
     }
 
-    fun allIsRead(entries: List<EntryLight>): Boolean {
+    fun allIsRead(
+        entries: List<EntryLight> = entriesLightLiveData.value ?: emptyList()
+    ): Boolean {
         var count = 0
         for (entry in entries) {
             if (entry.isRead) {

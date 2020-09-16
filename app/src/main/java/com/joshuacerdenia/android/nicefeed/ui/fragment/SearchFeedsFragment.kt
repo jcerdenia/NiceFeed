@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedSearchAdapter
-import com.joshuacerdenia.android.nicefeed.ui.viewmodel.FeedSearchViewModel
+import com.joshuacerdenia.android.nicefeed.ui.viewmodel.SearchFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SubscribeFragment
 import com.joshuacerdenia.android.nicefeed.utils.ConnectionChecker
 import com.joshuacerdenia.android.nicefeed.utils.RssUrlTransformer
@@ -23,7 +23,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
     SubscribeFragment.Callbacks,
     FeedSearchAdapter.OnItemClickListener {
 
-    private lateinit var viewModel: FeedSearchViewModel
+    private lateinit var viewModel: SearchFeedsViewModel
     private lateinit var toolbar: Toolbar
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
@@ -35,7 +35,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(FeedSearchViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(SearchFeedsViewModel::class.java)
         adapter = FeedSearchAdapter(this, viewModel.itemBeingLoaded, viewModel.itemSelectionEnabled)
         setHasOptionsMenu(true)
     }
@@ -62,11 +62,11 @@ class SearchFeedsFragment : FeedAddingFragment(),
         super.onViewCreated(view, savedInstanceState)
         val manager = RequestResultManager(viewModel, recyclerView, R.string.failed_to_connect)
 
-        viewModel.feedIdsLiveData.observe(viewLifecycleOwner, Observer { feedIds ->
+        viewModel.feedIdsLiveData.observe(viewLifecycleOwner, { feedIds ->
             currentFeedIds = feedIds
         })
 
-        viewModel.searchResultLiveData.observe(viewLifecycleOwner, Observer { results ->
+        viewModel.searchResultLiveData.observe(viewLifecycleOwner, { results ->
             adapter.submitList(results)
             progressBar.visibility = View.GONE
             emptyMessageTextView.visibility = if (results.isEmpty()) {
@@ -76,7 +76,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
             }
         })
 
-        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, Observer { feedWithEntries ->
+        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { feedWithEntries ->
             manager.submitData(feedWithEntries)
             adapter.onFinishedLoading()
             viewModel.itemBeingLoaded = null

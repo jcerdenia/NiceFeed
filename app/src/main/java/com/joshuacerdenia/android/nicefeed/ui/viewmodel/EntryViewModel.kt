@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.EntryMinimal
+import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import com.joshuacerdenia.android.nicefeed.utils.EntryToHtmlFormatter
 
 class EntryViewModel : ViewModel() {
@@ -30,6 +31,8 @@ class EntryViewModel : ViewModel() {
     lateinit var website: String
         private set
     var isStarred = false
+    var isPreview = false
+        private set
 
     init {
         htmlLiveData.addSource(entryLiveData) { data ->
@@ -38,6 +41,7 @@ class EntryViewModel : ViewModel() {
                 title = entry.title
                 website = entry.website
                 isStarred = entry.isStarred
+                isPreview = entry.content?.startsWith(FeedParser.FLAG_PREVIEW) ?: false
                 drawHtml(entry)
             }
         }
@@ -59,7 +63,7 @@ class EntryViewModel : ViewModel() {
             title = entry.title,
             date = entry.date,
             author = entry.author,
-            content = entry.content
+            content = entry.content?.removePrefix(FeedParser.FLAG_PREVIEW) ?: ""
         ).let { minimalEntry ->
             htmlLiveData.value = EntryToHtmlFormatter(textSize).getHtml(minimalEntry)
         }

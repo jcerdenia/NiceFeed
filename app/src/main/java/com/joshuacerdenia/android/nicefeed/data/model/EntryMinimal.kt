@@ -8,5 +8,5 @@ data class EntryMinimal (
     val title: String,
     val date: Date?,
     val author: String?,
-    val content: String?
+    val content: String
 )

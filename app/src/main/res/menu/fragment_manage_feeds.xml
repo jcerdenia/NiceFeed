@@ -15,17 +15,27 @@
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/menuItem_sort"
-        android:title="@string/sort"
-        app:showAsAction="never"/>
+        android:title="@string/more_options"
+        android:icon="@drawable/ic_more_vert"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/menuItem_sort"
+                android:title="@string/sort"
+                android:icon="@drawable/ic_sort"
+                app:showAsAction="never"/>
 
-    <item
-        android:id="@+id/menuItem_add_feeds"
-        android:title="@string/add_feeds"
-        app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuItem_add_feeds"
+                android:icon="@drawable/ic_add"
+                android:title="@string/add_feeds"
+                app:showAsAction="never"/>
 
-    <item
-        android:id="@+id/menuItem_export_opml"
-        android:title="@string/export_opml"
-        app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuItem_export_opml"
+                android:icon="@drawable/ic_export"
+                android:title="@string/export_opml"
+                app:showAsAction="never"/>
+        </menu>
+    </item>
 </menu>

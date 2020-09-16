@@ -13,8 +13,9 @@ import com.prof.rssparser.Parser
 import java.text.SimpleDateFormat
 import java.util.*
 
+private fun String?.flagAsPreview() = FeedParser.FLAG_PREVIEW + this
+
 private const val TAG = "FeedParser"
-private const val NO_TITLE = "No Title"
 
 class FeedParser {
 
@@ -85,9 +86,9 @@ class FeedParser {
                     val entry = Entry(
                         url = article.link ?: article.guid ?: "",
                         website = channel.link ?: url,
-                        title = article.title ?: NO_TITLE,
+                        title = article.title ?: UNTITLED,
                         author = article.author,
-                        content = article.content ?: article.description,
+                        content = article.content ?: article.description.flagAsPreview(),
                         date = parseDate(article.pubDate),
                         image = article.image
                     )
@@ -109,6 +110,7 @@ class FeedParser {
     }
 
     companion object {
-        const val SYNCHRONOUS = 1
+        private const val UNTITLED = "Untitled"
+        const val FLAG_PREVIEW = "com.joshuacerdenia.android.nicefeed.preview "
     }
 }

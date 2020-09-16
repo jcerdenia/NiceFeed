@@ -8,44 +8,52 @@
         android:title="@string/search"
         android:icon="@drawable/ic_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="collapseActionView|always"
-        tools:ignore="AlwaysShowAction" />
+        app:showAsAction="collapseActionView|ifRoom" />
 
     <item
-        android:id="@+id/menuItem_refresh"
-        android:icon="@drawable/ic_refresh"
-        android:title="@string/check_for_updates"
-        app:showAsAction="never"/>
+        android:title="@string/more_options"
+        android:icon="@drawable/ic_more_vert"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/menuItem_refresh"
+                android:icon="@drawable/ic_update"
+                android:title="@string/check_for_updates"
+                app:showAsAction="ifRoom"/>
 
-    <item
-        android:id="@+id/menuItem_about_feed"
-        android:title="@string/view_edit_feed_info"
-        app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuItem_about_feed"
+                android:icon="@drawable/ic_edit"
+                android:title="@string/view_edit_feed_info"
+                app:showAsAction="ifRoom"/>
 
-    <item
-        android:id="@+id/menuItem_filter"
-        android:title="@string/filter"
-        app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuItem_filter"
+                android:icon="@drawable/ic_filter"
+                android:title="@string/filter"
+                app:showAsAction="ifRoom"/>
 
-    <item
-        android:id="@+id/menuItem_mark_all"
-        android:title="@string/mark_all_as_read"
-        app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuItem_mark_all"
+                android:title="@string/mark_all_as_read"
+                app:showAsAction="ifRoom"/>
 
-    <item
-        android:id="@+id/menuItem_star_all"
-        android:title="@string/star_all"
-        app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuItem_star_all"
+                android:title="@string/star_all"
+                app:showAsAction="ifRoom"/>
 
-    <item
-        android:id="@+id/menuItem_visit_website"
-        android:title="@string/visit_website"
-        app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuItem_visit_website"
+                android:icon="@drawable/ic_browser"
+                android:title="@string/visit_website"
+                app:showAsAction="ifRoom"/>
 
-    <item
-        android:id="@+id/menuItem_delete_feed"
-        android:icon="@drawable/ic_delete"
-        android:title="@string/remove_feed"
-        app:showAsAction="never"/>
-
+            <item
+                android:id="@+id/menuItem_delete_feed"
+                android:icon="@drawable/ic_delete"
+                android:title="@string/remove_feed"
+                app:showAsAction="ifRoom"/>
+        </menu>
+    </item>
 </menu>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
@@ -15,18 +16,27 @@
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/menuItem_share"
-        android:icon="@drawable/ic_share"
-        android:title="@string/share"
-        app:showAsAction="ifRoom"/>
+        android:title="@string/more_options"
+        android:icon="@drawable/ic_more_vert"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/menuItem_share"
+                android:icon="@drawable/ic_share"
+                android:title="@string/share"
+                app:showAsAction="ifRoom"/>
 
-    <item
-        android:id="@+id/menuItem_copy_link"
-        android:title="@string/copy_link"
-        app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuItem_copy_link"
+                android:title="@string/copy_link"
+                android:icon="@drawable/ic_link"
+                app:showAsAction="ifRoom"/>
 
-    <item
-        android:id="@+id/menuItem_text_size"
-        android:title="@string/change_text_size"
-        app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuItem_text_size"
+                android:icon="@drawable/ic_text_size"
+                android:title="@string/change_text_size"
+                app:showAsAction="ifRoom"/>
+        </menu>
+    </item>
 </menu>

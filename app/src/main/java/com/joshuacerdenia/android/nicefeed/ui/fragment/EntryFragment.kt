@@ -8,8 +8,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.view.*
+import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -75,9 +75,27 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
                     view: WebView?,
                     request: WebResourceRequest?
                 ): Boolean {
-                    // Open links with default browser
-                    request?.url?.let { url -> Utils.openLink(requireActivity(), webView, url) }
+                    // Open all links with default browser
+                    request?.url?.let { url ->
+                        Utils.openLink(requireActivity(), webView, url)
+                    }
                     return true
+                }
+
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    viewModel.lastPosition.let { position ->
+                        view?.scrollTo(position.first, position.second)
+                    }
+                }
+            }
+
+            webChromeClient = object : WebChromeClient() {
+                override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                    super.onProgressChanged(view, newProgress)
+                    if (newProgress == 100) {
+                        progressBar.visibility = View.GONE
+                    }
                 }
             }
         }
@@ -89,25 +107,22 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        toolbar.setOnClickListener {
-            webView.scrollTo(0, 0)
-        }
-
         viewModel.htmlLiveData.observe(viewLifecycleOwner, { html ->
             if (html != null) {
                 webView.loadData(html, MIME_TYPE, ENCODING)
                 toolbar.title = viewModel.website.shortened()
-                Handler().postDelayed({
-                    viewModel.lastPosition.let { position ->
-                        webView.scrollTo(position.first, position.second)
-                    }
-                }, 200)
             } else {
                 toolbar.title = getString(R.string.app_name)
             }
-            progressBar.visibility = View.GONE
             setHasOptionsMenu(true)
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        toolbar.setOnClickListener {
+            webView.scrollTo(0, 0)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

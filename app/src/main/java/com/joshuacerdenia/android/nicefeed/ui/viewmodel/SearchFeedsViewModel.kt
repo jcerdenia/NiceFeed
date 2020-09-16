@@ -6,7 +6,7 @@ import androidx.lifecycle.Transformations
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedSearcher
 
-class FeedSearchViewModel: AddFeedsViewModel() {
+class SearchFeedsViewModel: AddFeedsViewModel() {
 
     private val searcher = FeedSearcher()
 

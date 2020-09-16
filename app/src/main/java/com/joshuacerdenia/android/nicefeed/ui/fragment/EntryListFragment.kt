@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
@@ -35,7 +36,7 @@ private const val TAG = "EntryListFragment"
 
 class EntryListFragment : VisibleFragment(),
     EntryListAdapter.OnItemClickListener,
-    EntryPopupMenu.OnItemClickListener,
+    EntryPopupMenu.OnPopupMenuItemClicked,
     FilterEntriesFragment.Callbacks,
     AboutFeedFragment.Callbacks,
     EditCategoryFragment.Callbacks,
@@ -157,8 +158,7 @@ class EntryListFragment : VisibleFragment(),
 
             masterProgressBar.visibility = View.GONE
             adapter.submitList(entries)
-            toggleMarkAllOptionsItem(entries)
-            toggleStarAllOptionsItem(entries)
+            toggleOptionsItems()
 
             if (adapter.latestClickedPosition == 0) {
                 Handler().postDelayed({
@@ -230,6 +230,7 @@ class EntryListFragment : VisibleFragment(),
         searchItem = menu.findItem(R.id.menuItem_search)
         markAllOptionsItem = menu.findItem(R.id.menuItem_mark_all)
         starAllOptionsItem = menu.findItem(R.id.menuItem_star_all)
+        toggleOptionsItems()
 
         feedId?.let { feedId ->
             if (feedId.startsWith(FOLDER)) {
@@ -280,19 +281,25 @@ class EntryListFragment : VisibleFragment(),
         }
     }
 
-    private fun toggleMarkAllOptionsItem(list: List<EntryLight>) {
-        markAllOptionsItem?.title = if (viewModel.allIsRead(list)) {
-            getString(R.string.mark_all_as_unread)
-        } else {
-            getString(R.string.mark_all_as_read)
+    private fun toggleOptionsItems() {
+        markAllOptionsItem?.apply {
+            if (viewModel.allIsRead()) {
+                title = getString(R.string.mark_all_as_unread)
+                setIcon(R.drawable.ic_check_circle_outline)
+            } else {
+                title = getString(R.string.mark_all_as_read)
+                setIcon(R.drawable.ic_check_circle)
+            }
         }
-    }
 
-    private fun toggleStarAllOptionsItem(list: List<EntryLight>) {
-        starAllOptionsItem?.title = if (viewModel.allIsStarred(list)) {
-            getString(R.string.unstar_all)
-        } else {
-            getString(R.string.star_all)
+        starAllOptionsItem?.apply {
+            if (viewModel.allIsStarred()) {
+                title = getString(R.string.unstar_all)
+                setIcon(R.drawable.ic_star)
+            } else {
+                title = getString(R.string.star_all)
+                setIcon(R.drawable.ic_star_border)
+            }
         }
     }
 
@@ -417,8 +424,11 @@ class EntryListFragment : VisibleFragment(),
     }
 
     override fun onItemLongClicked(entry: EntryLight, view: View?) {
-        val popupMenu = EntryPopupMenu(context, view, this, entry)
-        popupMenu.show()
+        context?.let { context ->
+            view?.let { view ->
+                EntryPopupMenu(context, view, this, entry).show()
+            }
+        }
     }
 
     override fun onPopupMenuItemClicked(entry: EntryLight, action: Int) {
@@ -438,14 +448,14 @@ class EntryListFragment : VisibleFragment(),
         viewModel.setFilter(filter)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
-    }
-
     override fun onStop() {
         super.onStop()
         context?.let { NiceFeedPreferences.saveLastViewedFeedId(it, feedId) }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
     companion object {
