@@ -90,7 +90,8 @@
     <string name="large">Large</string>
     <string name="larger">Larger</string>
     <string name="no_items">No items found.</string>
-    <string name="auto_update_on_launch">Update automatically on launch</string>
+    <string name="auto_update_on_launch">Auto-update on launch</string>
+    <string name="auto_update_on_launch_description">Each feed will automatically check for updates when opened.</string>
     <string name="sort_entries_by">Sort entries by</string>
     <string name="notifications">Notifications</string>
     <string name="notification_switch_description">Check for new entries when app is closed</string>
@@ -106,6 +107,11 @@
     <string name="system_default">System default</string>
     <string name="no_internet_connection">No internet connection.</string>
     <string name="more_options">More options</string>
+    <string name="open_entries_in_app">Open entries in-app</string>
+    <string name="open_entries_in_app_description">Switch off to use system browser instead.</string>
+    <string name="feeds_and_entries">Feeds and Entries</string>
+    <string name="subscription_limit_reached">Subscription limit reached.</string>
+    <string name="enable_header_images">Enable header images</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

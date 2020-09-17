@@ -13,9 +13,4 @@ data class Feed(
     val imageUrl: String? = null,
     var category: String = "Uncategorized",
     var unreadCount: Int
-): Serializable {
-
-    fun updateUnreadCount() {
-        // TODO
-    }
-}
+): Serializable

@@ -7,7 +7,9 @@ import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_S
 import com.joshuacerdenia.android.nicefeed.data.model.EntryMinimal
 import java.text.DateFormat
 
-class EntryToHtmlFormatter(textSizeKey: Int) {
+// Prepares the contents of an Entry to be loaded into a WebView
+
+class EntryToHtmlFormatter(textSizeKey: Int, private val includeHeader: Boolean) {
 
     private val linkColor = "#444E64" // Change dynamically?
     private val fontSize = when (textSizeKey) {
@@ -15,23 +17,32 @@ class EntryToHtmlFormatter(textSizeKey: Int) {
         TEXT_SIZE_LARGER -> "x-large"
         else -> "medium"
     }
+
     private val style = OPEN_STYLE_TAG + "* {max-width:100%}" +
-            "body {font-size:$fontSize; font-family:$FONT_SANS_SERIF; word-wrap:break-word}" +
+            "body {font-size:$fontSize; font-family:$FONT_SANS_SERIF; word-wrap:break-word; margin:16dp}" +
             "#subtitle {color:gray}" +
             "a:link, a:visited, a:hover, a:active {color:$linkColor; text-decoration:none; font-weight:bold}" +
             "img, figure {display:block; margin-left:auto; margin-right:auto; height:auto; max-width:100%}" +
             "iframe {width:100%}" + CLOSE_STYLE_TAG
 
+    private var title = ""
+    private var subtitle = ""
+
+    // Outputs an HTML string
     fun getHtml(entry: EntryMinimal): String {
-        val title = "<h2>${entry.title}</h2>"
-        val formattedDate = entry.date?.let { date ->
-            DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(date)
-        } ?: ""
-        val subtitle = if (!entry.author.isNullOrEmpty()) {
-            "<p id=\"subtitle\">$formattedDate – ${entry.author}</p>"
-        } else {
-            "<p id=\"subtitle\">$formattedDate</p>"
+        if (includeHeader) {
+            title = "<h2>${entry.title}</h2>"
+            val formattedDate = entry.date?.let { date ->
+                DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(date)
+            } ?: ""
+
+            subtitle = if (!entry.author.isNullOrEmpty()) {
+                "<p id=\"subtitle\">$formattedDate – ${entry.author}</p>"
+            } else {
+                "<p id=\"subtitle\">$formattedDate</p>"
+            }
         }
+
         val content = entry.content.run (::removeCss)
         val html = StringBuilder(style)
             .append(OPEN_BODY_TAG)
@@ -46,13 +57,13 @@ class EntryToHtmlFormatter(textSizeKey: Int) {
 
     private fun removeCss(content: String): String {
         return if (content.contains(OPEN_CODE_TAG) && content.contains(CLOSE_CODE_TAG)) {
-            //  Admittedly, this is a gamble that an entry with <code> and </code> tags will
+            //  Admittedly, this is a gamble that an entry with <code></code> tags will
             //  not be image-heavy, let alone have special style tags, so we can safely ignore it
             content
         } else {
             var baseContent = content
             var editedContent = content
-
+            // Remove all <style></style> tags and content in between
             while (baseContent.contains(OPEN_STYLE_TAG)) {
                 editedContent = baseContent.substringBefore(OPEN_STYLE_TAG) +
                         baseContent.substringAfter(CLOSE_STYLE_TAG)

@@ -8,6 +8,8 @@ import android.content.IntentFilter
 import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.work.NewEntriesWorker
 
+// To be extended by all fragments
+
 abstract class VisibleFragment : Fragment() {
 
     private val onShowNotification = object : BroadcastReceiver() {

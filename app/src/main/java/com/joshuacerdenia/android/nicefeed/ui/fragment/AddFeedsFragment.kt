@@ -11,21 +11,21 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmImportFragment
-import com.joshuacerdenia.android.nicefeed.utils.ConnectionChecker
+import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
+import com.joshuacerdenia.android.nicefeed.utils.ConnectionMonitor
 import com.joshuacerdenia.android.nicefeed.utils.OpmlImporter
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import java.util.*
 
 class AddFeedsFragment: FeedAddingFragment(),
     OpmlImporter.OnOpmlParsedListener,
-    ConfirmImportFragment.Callbacks {
+    ConfirmImportFragment.Callbacks
+{
 
     private lateinit var viewModel: AddFeedsViewModel
     private lateinit var toolbar: Toolbar
@@ -42,8 +42,8 @@ class AddFeedsFragment: FeedAddingFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(AddFeedsViewModel::class.java)
-        opmlImporter = context?.let { context ->
-            OpmlImporter(context, this)
+        context?.let { context ->
+            opmlImporter = OpmlImporter(context, this)
         }
     }
     
@@ -75,11 +75,11 @@ class AddFeedsFragment: FeedAddingFragment(),
             urlEditText
         )
 
-        viewModel.feedIdsLiveData.observe(viewLifecycleOwner, Observer { feedIds ->
+        viewModel.feedIdsLiveData.observe(viewLifecycleOwner, { feedIds ->
             currentFeedIds = feedIds
         })
 
-        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, Observer { feedWithEntries ->
+        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { feedWithEntries ->
             manager.submitData(feedWithEntries)
             progressBar.visibility = View.INVISIBLE
             subscribeButton.apply {
@@ -101,24 +101,20 @@ class AddFeedsFragment: FeedAddingFragment(),
             }
         })
 
-        subscribeButton.setOnClickListener { view ->
-            if (ConnectionChecker.isConnected(context)) {
-                urlEditText.text.toString()
-                    .substringAfter("://")
-                    .toLowerCase(Locale.ROOT)
-                    .trim()
-                    .run {
-                        viewModel.requestFeed(HTTPS + this)
-                    }
-                progressBar.visibility = View.VISIBLE
-                subscribeButton.apply {
-                    isEnabled = false
-                    text = getString(R.string.loading)
+        subscribeButton.setOnClickListener {
+            Utils.hideSoftKeyBoard(requireActivity(), linearLayout)
+            urlEditText.text.toString()
+                .substringAfter("://")
+                .toLowerCase(Locale.ROOT)
+                .trim()
+                .run {
+                    viewModel.requestFeed(HTTPS + this)
                 }
-            } else {
-                ConnectionChecker.showNoConnectionMessage(linearLayout, resources)
+            progressBar.visibility = View.VISIBLE
+            subscribeButton.apply {
+                isEnabled = false
+                text = getString(R.string.loading)
             }
-            Utils.hideSoftKeyBoard(requireActivity(), view)
         }
 
         importOpmlButton.setOnClickListener {

@@ -14,6 +14,7 @@ import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.ui.OnBackgroundWorkSettingChanged
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.utils.Utils
+import com.joshuacerdenia.android.nicefeed.utils.addRipple
 
 class SettingsFragment: VisibleFragment() {
 
@@ -22,7 +23,9 @@ class SettingsFragment: VisibleFragment() {
     private lateinit var toolbar: Toolbar
     private lateinit var scrollView: ScrollView
     private lateinit var autoUpdateSwitch: SwitchCompat
+    private lateinit var browserSwitch: SwitchCompat
     private lateinit var notificationSwitch: SwitchCompat
+    private lateinit var bannerSwitch: SwitchCompat
     private lateinit var themeSpinner: Spinner
     private lateinit var sortFeedsSpinner: Spinner
     private lateinit var sortEntriesSpinner: Spinner
@@ -44,7 +47,9 @@ class SettingsFragment: VisibleFragment() {
         toolbar = view.findViewById(R.id.toolbar)
         scrollView = view.findViewById(R.id.scroll_view)
         autoUpdateSwitch = view.findViewById(R.id.auto_update_switch)
+        browserSwitch = view.findViewById(R.id.browser_switch)
         notificationSwitch = view.findViewById(R.id.notification_switch)
+        bannerSwitch = view.findViewById(R.id.banner_switch)
         themeSpinner = view.findViewById(R.id.theme_spinner)
         sortFeedsSpinner = view.findViewById(R.id.sort_feeds_spinner)
         sortEntriesSpinner = view.findViewById(R.id.sort_entries_spinner)
@@ -57,7 +62,6 @@ class SettingsFragment: VisibleFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         themeSpinner.apply {
             adapter = arrayOf(
                 getString(R.string.system_default),
@@ -93,6 +97,21 @@ class SettingsFragment: VisibleFragment() {
             }
         }
 
+        bannerSwitch.apply {
+            isChecked = NiceFeedPreferences.getEnableBanner(context)
+            setOnCheckedChangeListener { _, isOn ->
+                NiceFeedPreferences.setEnableBanner(context, isOn)
+            }
+        }
+
+        browserSwitch.apply {
+            // Values are reversed on purpose
+            isChecked = !NiceFeedPreferences.getBrowserSetting(context)
+            setOnCheckedChangeListener { _, isOn ->
+                NiceFeedPreferences.setBrowserSetting(context, !isOn)
+            }
+        }
+
         notificationSwitch.apply {
             isChecked = NiceFeedPreferences.getPollingSetting(context)
             setOnCheckedChangeListener { _, isOn ->
@@ -101,8 +120,11 @@ class SettingsFragment: VisibleFragment() {
             }
         }
 
-        aboutTextView.setOnClickListener {
-            Utils.openLink(requireActivity(), scrollView, Uri.parse(GITHUB_REPO))
+        aboutTextView.apply {
+            addRipple()
+            setOnClickListener {
+                Utils.openLink(requireActivity(), scrollView, Uri.parse(GITHUB_REPO))
+            }
         }
     }
 

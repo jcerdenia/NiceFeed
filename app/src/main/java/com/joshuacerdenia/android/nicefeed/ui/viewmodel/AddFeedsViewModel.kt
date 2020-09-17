@@ -7,35 +7,39 @@ import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
-import com.joshuacerdenia.android.nicefeed.utils.Utils
 import kotlinx.coroutines.launch
 
 open class AddFeedsViewModel: ViewModel() {
 
-    private val repository = NiceFeedRepository.get()
-    private val feedParser = FeedParser()
+    val repo = NiceFeedRepository.get()
+    private val parser = FeedParser.newInstance(repo.isOnline)
 
     var requestFailedNoticeEnabled = false
     var alreadyAddedNoticeEnabled = false
+    var subscriptionLimitNoticeEnabled = false
 
-    val feedRequestLiveData: LiveData<FeedWithEntries?> = feedParser.feedRequestLiveData
-    val feedIdsLiveData = repository.getFeedIds()
+    val feedRequestLiveData: LiveData<FeedWithEntries?> = parser.feedRequestLiveData
+    val feedIdsLiveData = repo.getFeedIds()
     var feedsToImport = listOf<Feed>()
 
     fun requestFeed(url: String, backup: String? = null) {
-        requestFailedNoticeEnabled = true
-        alreadyAddedNoticeEnabled = true
-
+        onFeedRequested()
         viewModelScope.launch {
-            feedParser.requestFeed(url, backup)
+            parser.requestFeed(url, backup)
         }
     }
 
     fun addFeedWithEntries(feedWithEntries: FeedWithEntries) {
-        repository.addFeedWithEntries(feedWithEntries)
+        repo.addFeedWithEntries(feedWithEntries)
     }
 
     fun addFeeds(vararg feed: Feed) {
-        repository.addFeeds(*feed)
+        repo.addFeeds(*feed)
+    }
+
+    private fun onFeedRequested() {
+        requestFailedNoticeEnabled = true
+        alreadyAddedNoticeEnabled = true
+        subscriptionLimitNoticeEnabled = true
     }
 }

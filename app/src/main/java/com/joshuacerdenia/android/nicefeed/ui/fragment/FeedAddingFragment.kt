@@ -10,7 +10,7 @@ import com.joshuacerdenia.android.nicefeed.ui.OnFinished
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 
-// An abstract class with the ability to add new feeds. Must be extended.
+// Gives ability to subscribe to new feeds, must be extended
 
 abstract class FeedAddingFragment: VisibleFragment() {
 
@@ -18,7 +18,6 @@ abstract class FeedAddingFragment: VisibleFragment() {
         fun onNewFeedAdded(feedId: String)
         fun onQuerySubmitted(query: String)
         fun onImportOpmlSelected()
-        //fun onDoneImporting()
     }
 
     var currentFeedIds: List<String> = emptyList()
@@ -42,12 +41,16 @@ abstract class FeedAddingFragment: VisibleFragment() {
     ) {
 
         fun submitData(feedWithEntries: FeedWithEntries?) {
-            feedWithEntries?.let {
-                if (!isAlreadyAdded(it.feed.url)) {
-                    viewModel.addFeedWithEntries(it)
-                    showFeedAddedNotice(it.feed.url, it.feed.title)
+            feedWithEntries?.let { data ->
+                if (currentFeedIds.size < SUBSCRIPTION_LIMIT) {
+                    if (!isAlreadyAdded(data.feed.url)) {
+                        viewModel.addFeedWithEntries(data)
+                        showFeedAddedNotice(data.feed.url, data.feed.title)
+                    } else {
+                        showAlreadyAddedNotice()
+                    }
                 } else {
-                    showAlreadyAddedNotice()
+                    showLimitReachedNotice()
                 }
             } ?: showRequestFailedNotice()
         }
@@ -91,5 +94,20 @@ abstract class FeedAddingFragment: VisibleFragment() {
                 viewModel.requestFailedNoticeEnabled = false
             }
         }
+
+        private fun showLimitReachedNotice() {
+            if (viewModel.subscriptionLimitNoticeEnabled) {
+                Snackbar.make(
+                    view,
+                    getString(R.string.subscription_limit_reached),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+                viewModel.subscriptionLimitNoticeEnabled = false
+            }
+        }
+    }
+
+    companion object {
+        private const val SUBSCRIPTION_LIMIT = 100
     }
 }

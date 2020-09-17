@@ -18,31 +18,26 @@ class EntryViewModel : ViewModel() {
     private val entryLiveData = Transformations.switchMap(entryIdLiveData) { entryId ->
         repo.getEntry(entryId)
     }
-    val htmlLiveData = MediatorLiveData<String>()
+    val htmlLiveData = MediatorLiveData<String?>()
 
     var lastPosition: Pair<Int, Int> = Pair(0, 0)
     var textSize = 0
         private set
+    var bannerIsEnabled = true
 
-    lateinit var url: String
+    var entry: Entry? = null
         private set
-    lateinit var title: String
-        private set
-    lateinit var website: String
-        private set
-    var isStarred = false
-    var isPreview = false
+    var isExcerpt = false
         private set
 
     init {
-        htmlLiveData.addSource(entryLiveData) { data ->
-            data?.let { entry ->
-                url = entry.url
-                title = entry.title
-                website = entry.website
-                isStarred = entry.isStarred
-                isPreview = entry.content?.startsWith(FeedParser.FLAG_PREVIEW) ?: false
-                drawHtml(entry)
+        htmlLiveData.addSource(entryLiveData) { source ->
+            if (source != null) {
+                entry = source
+                isExcerpt = source.content?.startsWith(FeedParser.FLAG_EXCERPT) ?: false
+                drawHtml(source)
+            } else {
+                htmlLiveData.value = null
             }
         }
     }
@@ -58,18 +53,27 @@ class EntryViewModel : ViewModel() {
         }
     }
 
+    fun setBanner(isEnabled: Boolean) {
+        bannerIsEnabled = isEnabled
+        entryLiveData.value?.let { entry ->
+            drawHtml(entry)
+        }
+    }
+
     private fun drawHtml(entry: Entry) {
         EntryMinimal(
             title = entry.title,
             date = entry.date,
             author = entry.author,
-            content = entry.content?.removePrefix(FeedParser.FLAG_PREVIEW) ?: ""
-        ).let { minimalEntry ->
-            htmlLiveData.value = EntryToHtmlFormatter(textSize).getHtml(minimalEntry)
+            content = entry.content?.removePrefix(FeedParser.FLAG_EXCERPT) ?: ""
+        ).let {
+            htmlLiveData.value = EntryToHtmlFormatter(textSize, !bannerIsEnabled).getHtml(it)
         }
     }
 
     fun saveChanges() {
-        repo.updateEntryAndFeedUnreadCount(url, true, isStarred)
+        entry?.let { entry ->
+            repo.updateEntryAndFeedUnreadCount(entry.url, true, entry.isStarred)
+        }
     }
 }

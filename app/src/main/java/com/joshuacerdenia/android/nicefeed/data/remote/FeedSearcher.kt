@@ -16,7 +16,9 @@ import java.net.URLEncoder
 
 private const val TAG = "FeedSearcher"
 
-class FeedSearcher {
+// Search engine
+
+class FeedSearcher private constructor (var isOnline: Boolean) {
 
     private var feedSearchResultItems: List<SearchResultItem>? = null
 
@@ -28,28 +30,28 @@ class FeedSearcher {
     private val feedlyApi: FeedlyApi = retrofit.create(FeedlyApi::class.java)
 
     fun performSearch(query: String): LiveData<List<SearchResultItem>> {
-        val path = generatePath(query)
-        val searchRequest: Call<SearchResult> = feedlyApi.fetchSearchResult(path)
-
-        return fetchSearchResult(searchRequest)
+        return if (isOnline) {
+            val path = generatePath(query)
+            val searchRequest: Call<SearchResult> = feedlyApi.fetchSearchResult(path)
+            fetchSearchResult(searchRequest)
+        } else {
+            MutableLiveData(emptyList())
+        }
     }
 
     private fun generatePath(query: String): String {
-        val path = Uri.Builder()
+        return Uri.Builder()
             .path("v3/search/feeds")
             .appendQueryParameter("count", "50")
             .appendQueryParameter("locale", "en") // Change depending on locale?
             .appendQueryParameter("query", URLEncoder.encode(query, "UTF-8"))
             .build()
             .toString()
-
-        Log.d(TAG, "URL generated: $BASE_URL$path")
-        return path
     }
 
-    private fun fetchSearchResult(searchRequest: Call<SearchResult>):
-            MutableLiveData<List<SearchResultItem>> {
-
+    private fun fetchSearchResult(
+        searchRequest: Call<SearchResult>
+    ): MutableLiveData<List<SearchResultItem>> {
         val searchResultLiveData = MutableLiveData<List<SearchResultItem>>()
 
         searchRequest.enqueue(object : Callback<SearchResult> {
@@ -64,7 +66,6 @@ class FeedSearcher {
                 val feedSearchResult: SearchResult? = response.body()
                 feedSearchResultItems = feedSearchResult?.items
                 Log.d(TAG, "Response received!")
-
                 searchResultLiveData.value = feedSearchResultItems
             }
         })
@@ -74,5 +75,15 @@ class FeedSearcher {
 
     companion object {
         private const val BASE_URL = "https://cloud.feedly.com/"
+        private var INSTANCE: FeedSearcher? = null
+
+        fun newInstance(isOnline: Boolean = false): FeedSearcher {
+            INSTANCE = FeedSearcher(isOnline)
+            return INSTANCE as FeedSearcher
+        }
+
+        fun getInstance(): FeedSearcher? {
+            return INSTANCE
+        }
     }
 }

@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
@@ -29,13 +28,13 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.menu.EntryPopupMenu
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryListViewModel
-import com.joshuacerdenia.android.nicefeed.utils.ConnectionChecker
+import com.joshuacerdenia.android.nicefeed.utils.ConnectionMonitor
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 
 private const val TAG = "EntryListFragment"
 
 class EntryListFragment : VisibleFragment(),
-    EntryListAdapter.OnItemClickListener,
+    EntryListAdapter.OnEntrySelected,
     EntryPopupMenu.OnPopupMenuItemClicked,
     FilterEntriesFragment.Callbacks,
     AboutFeedFragment.Callbacks,
@@ -59,6 +58,7 @@ class EntryListFragment : VisibleFragment(),
     private lateinit var searchItem: MenuItem
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: EntryListAdapter
+    private lateinit var connectionMonitor: ConnectionMonitor
 
     private var markAllOptionsItem: MenuItem? = null
     private var starAllOptionsItem: MenuItem? = null
@@ -95,7 +95,7 @@ class EntryListFragment : VisibleFragment(),
         }
 
         val isNewlyAdded = arguments?.getBoolean(ARG_IS_NEWLY_ADDED) ?: false
-        if (isNewlyAdded || !autoUpdateIsEnabled || !ConnectionChecker.isConnected(context)) {
+        if (isNewlyAdded || !autoUpdateIsEnabled) {
             viewModel.shouldAutoRefresh = false
         }
     }
@@ -133,7 +133,6 @@ class EntryListFragment : VisibleFragment(),
         super.onViewCreated(view, savedInstanceState)
         viewModel.feedLiveData.observe(viewLifecycleOwner, { feed ->
             Log.d(TAG, "Feed observer triggered!")
-            
             if (feed != null) {
                 viewModel.onFeedLoaded()
                 callbacks?.onFeedLoaded(feed.url)
@@ -155,7 +154,6 @@ class EntryListFragment : VisibleFragment(),
 
         viewModel.entriesLightLiveData.observe(viewLifecycleOwner, { entries ->
             Log.d(TAG, "Entries observer triggered!")
-
             masterProgressBar.visibility = View.GONE
             adapter.submitList(entries)
             toggleOptionsItems()
@@ -178,12 +176,14 @@ class EntryListFragment : VisibleFragment(),
             }
         })
 
-        viewModel.updateResultLiveData.observe(viewLifecycleOwner, { result ->
-            result?.let { feedWithEntries ->
-                viewModel.onUpdatesDownloaded(feedWithEntries)
-                toolbar.title = feedWithEntries.feed.title
-            }
+        viewModel.updateResultLiveData.observe(viewLifecycleOwner, { results ->
             progressBar.visibility = View.GONE
+            if (results != null) {
+                viewModel.onUpdatesDownloaded(results)
+                toolbar.title = results.feed.title
+            } else {
+                toolbar.title = viewModel.getCurrentFeed()?.title
+            }
         })
     }
 
@@ -201,7 +201,7 @@ class EntryListFragment : VisibleFragment(),
                 callbacks?.onHomePressed()
             }
             setOnClickListener {
-                recyclerView.scrollToPosition(0)
+                recyclerView.smoothScrollToPosition(0)
             }
         }
         
@@ -235,8 +235,8 @@ class EntryListFragment : VisibleFragment(),
         feedId?.let { feedId ->
             if (feedId.startsWith(FOLDER)) {
                 menu.findItem(R.id.menuItem_refresh).isVisible = false
-                menu.findItem(R.id.menuItem_about_feed).isVisible = false
                 menu.findItem(R.id.menuItem_visit_website).isVisible = false
+                menu.findItem(R.id.menuItem_about_feed).isVisible = false
                 menu.findItem(R.id.menuItem_delete_feed).isVisible = false
             }
         }
@@ -305,16 +305,12 @@ class EntryListFragment : VisibleFragment(),
 
     private fun handleRefresh(url: String?): Boolean {
         return if (url != null) {
-            if (ConnectionChecker.isConnected(context)) {
-                searchItem.collapseActionView()
-                progressBar.visibility = View.VISIBLE
-                toolbar.title = getString(R.string.updating)
+            searchItem.collapseActionView()
+            progressBar.visibility = View.VISIBLE
+            toolbar.title = getString(R.string.updating)
 
-                viewModel.submitQuery("")
-                viewModel.requestUpdate(url)
-            } else {
-                ConnectionChecker.showNoConnectionMessage(recyclerView, resources)
-            }
+            viewModel.submitQuery("")
+            viewModel.requestUpdate(url)
             true
         } else {
             false
@@ -419,11 +415,16 @@ class EntryListFragment : VisibleFragment(),
         callbacks?.onFeedRemoved()
     }
 
-    override fun onItemClicked(entry: EntryLight) {
-        callbacks?.onEntrySelected(entry.url)
+    override fun onEntryClicked(entryId: String) {
+        if (NiceFeedPreferences.getBrowserSetting(requireContext())) {
+            Utils.openLink(requireContext(), recyclerView, Uri.parse(entryId))
+            viewModel.updateEntryIsRead(entryId, true)
+        } else {
+            callbacks?.onEntrySelected(entryId)
+        }
     }
 
-    override fun onItemLongClicked(entry: EntryLight, view: View?) {
+    override fun onEntryLongClicked(entry: EntryLight, view: View?) {
         context?.let { context ->
             view?.let { view ->
                 EntryPopupMenu(context, view, this, entry).show()
@@ -437,7 +438,7 @@ class EntryListFragment : VisibleFragment(),
             EntryPopupMenu.ACTION_STAR -> viewModel.updateEntryIsStarred(url, !entry.isStarred)
             EntryPopupMenu.ACTION_MARK_AS -> viewModel.updateEntryIsRead(url, !entry.isRead)
             else -> {
-                callbacks?.onEntrySelected(url)
+                onEntryClicked(entry.url)
                 return
             }
         }

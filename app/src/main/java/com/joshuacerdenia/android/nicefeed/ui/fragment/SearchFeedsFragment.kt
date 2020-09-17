@@ -6,16 +6,14 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedSearchAdapter
-import com.joshuacerdenia.android.nicefeed.ui.viewmodel.SearchFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SubscribeFragment
-import com.joshuacerdenia.android.nicefeed.utils.ConnectionChecker
+import com.joshuacerdenia.android.nicefeed.ui.viewmodel.SearchFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.RssUrlTransformer
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 
@@ -97,12 +95,8 @@ class SearchFeedsFragment : FeedAddingFragment(),
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(queryText: String): Boolean {
                     if (queryText.isNotEmpty()) {
-                        if (ConnectionChecker.isConnected(context)) {
-                            viewModel.performSearch(queryText)
-                            progressBar.visibility = View.VISIBLE
-                        } else {
-                            ConnectionChecker.showNoConnectionMessage(recyclerView, resources)
-                        }
+                        viewModel.performSearch(queryText)
+                        progressBar.visibility = View.VISIBLE
                     }
 
                     clearFocus()
@@ -117,12 +111,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
             })
 
             if (!viewModel.initialQueryIsMade) {
-                if (ConnectionChecker.isConnected(context)) {
-                    setQuery(initialQuery, true)
-                } else {
-                    setQuery(initialQuery, false)
-                    ConnectionChecker.showNoConnectionMessage(recyclerView, resources)
-                }
+                setQuery(initialQuery, true)
                 viewModel.initialQueryIsMade = true
             } else {
                 setQuery(viewModel.newQuery, false)

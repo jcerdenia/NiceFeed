@@ -13,33 +13,49 @@ import com.prof.rssparser.Parser
 import java.text.SimpleDateFormat
 import java.util.*
 
-private fun String?.flagAsPreview() = FeedParser.FLAG_PREVIEW + this
+private fun String?.flagAsExcerpt() = FeedParser.FLAG_EXCERPT + this
+
+// Responsible for retrieving and parsing RSS feeds
 
 private const val TAG = "FeedParser"
 
-class FeedParser {
+class FeedParser private constructor (var isOnline: Boolean) {
 
     private val parser = Parser.Builder().build()
-    private val backupUrlManager = BackupUrlManager()
-
     private val _feedRequestLiveData = MutableLiveData<FeedWithEntries>()
     val feedRequestLiveData: LiveData<FeedWithEntries?>
         get() = _feedRequestLiveData
 
+    init {
+        Log.d(TAG, "New instance created")
+    }
+
     suspend fun getFeedSynchronously(url: String): FeedWithEntries? {
-        return try {
-            val channel = parser.getChannel(url)
-            ChannelMapper.makeFeedWithEntries(url, channel)
-        } catch(e: Exception) {
-            e.printStackTrace()
+        return if (isOnline) {
+            try {
+                val channel = parser.getChannel(url)
+                ChannelMapper.makeFeedWithEntries(url, channel)
+            } catch(e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        } else {
             null
         }
     }
 
     suspend fun requestFeed(url: String, backup: String? = null) {
+        if (isOnline) {
+            executeRequest(url, backup)
+        } else {
+            _feedRequestLiveData.postValue(null)
+        }
+    }
+
+    private suspend fun executeRequest(url: String, backup: String? = null) {
         // Automatically makes several requests with different possible URLs
         Log.d(TAG, "Requesting $url...")
-        backupUrlManager.setBase(backup)
+        BackupUrlManager.setBase(backup)
 
         try {
             val channel = parser.getChannel(url)
@@ -49,9 +65,10 @@ class FeedParser {
         } catch (e: Exception) {
             e.printStackTrace()
             // If the initial request fails, try backup URL in different variations
-            if (backupUrlManager.getUrl() != null) {
-                requestFeed(backupUrlManager.getUrl()!!) // Try the next URL
-                backupUrlManager.countUp() // Ticked when a request fails
+            val nextUrl = BackupUrlManager.getUrl()
+            if (nextUrl != null) {
+                requestFeed(nextUrl) // Try the next URL
+                BackupUrlManager.countUp() // Ticked when a request fails
             } else {
                 _feedRequestLiveData.postValue(null)
                 Log.d(TAG, "Request failed")
@@ -88,7 +105,7 @@ class FeedParser {
                         website = channel.link ?: url,
                         title = article.title ?: UNTITLED,
                         author = article.author,
-                        content = article.content ?: article.description.flagAsPreview(),
+                        content = article.content ?: article.description.flagAsExcerpt(),
                         date = parseDate(article.pubDate),
                         image = article.image
                     )
@@ -111,6 +128,16 @@ class FeedParser {
 
     companion object {
         private const val UNTITLED = "Untitled"
-        const val FLAG_PREVIEW = "com.joshuacerdenia.android.nicefeed.preview "
+        const val FLAG_EXCERPT = "com.joshuacerdenia.android.nicefeed.excerpt "
+        private var INSTANCE: FeedParser? = null
+
+        fun newInstance(isOnline: Boolean = false): FeedParser {
+            INSTANCE = FeedParser(isOnline)
+            return INSTANCE as FeedParser
+        }
+
+        fun getInstance(): FeedParser? {
+            return INSTANCE
+        }
     }
 }

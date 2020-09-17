@@ -13,6 +13,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 
+// General methods needed in multiple places
+
 object Utils {
 
     fun openLink(context: Context, view: View, url: Uri) {
@@ -48,10 +50,18 @@ object Utils {
         }
     }
 
-    private fun showErrorMessage(view: View, resources: Resources) {
+    fun showErrorMessage(view: View, resources: Resources) {
         Snackbar.make(
             view,
             resources.getString(R.string.error_message),
+            Snackbar.LENGTH_SHORT
+        ).show()
+    }
+
+    fun showDisconnectedNotice(view: View, resources: Resources) {
+        Snackbar.make(
+            view,
+            resources.getString(R.string.no_internet_connection),
             Snackbar.LENGTH_SHORT
         ).show()
     }

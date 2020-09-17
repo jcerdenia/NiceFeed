@@ -52,6 +52,7 @@ class FilterEntriesFragment: BottomSheetDialogFragment() {
 
     companion object {
         private const val ARG_CURRENT_FILTER = "ARG_CURRENT_FILTER"
+
         const val FILTER_DEFAULT = 0
         const val FILTER_UNREAD = 1
         const val FILTER_STARRED = 2

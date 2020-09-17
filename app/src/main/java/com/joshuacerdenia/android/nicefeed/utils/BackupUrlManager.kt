@@ -3,10 +3,13 @@ package com.joshuacerdenia.android.nicefeed.utils
 import android.util.Log
 
 private const val TAG = "BackupUrls"
-private const val COUNTER_MAX = 4
 
-class BackupUrlManager {
+/*  This class generates variations of a base URL to be used for requesting a feed,
+    in case the original URL doesn't work the first time.
+ */
+object BackupUrlManager {
 
+    private const val COUNTER_MAX = 4
     private var attemptCount = 0
 
     private var url: String? = null // Base URL

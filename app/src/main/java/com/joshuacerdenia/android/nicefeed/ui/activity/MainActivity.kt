@@ -12,7 +12,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
-import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.FeedListFragment
@@ -20,7 +19,8 @@ import com.joshuacerdenia.android.nicefeed.ui.fragment.FeedListFragment
 class MainActivity : AppCompatActivity(),
     FeedListFragment.Callbacks,
     EntryListFragment.Callbacks,
-    OnToolbarInflated {
+    EntryFragment.Callbacks
+{
 
     private lateinit var drawerLayout: DrawerLayout
     private val handler = Handler()
@@ -140,6 +140,10 @@ class MainActivity : AppCompatActivity(),
     override fun onToolbarInflated(toolbar: Toolbar, isNavigableUp: Boolean) {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(isNavigableUp)
+    }
+
+    override fun onFinished() {
+        onBackPressed()
     }
 
     override fun onCategoriesNeeded(): Array<String> {

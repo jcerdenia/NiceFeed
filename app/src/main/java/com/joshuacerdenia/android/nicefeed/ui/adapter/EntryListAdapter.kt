@@ -20,12 +20,12 @@ import java.text.DateFormat.*
 import java.util.*
 
 class EntryListAdapter(
-    private val listener: OnItemClickListener
+    private val listener: OnEntrySelected
 ) : ListAdapter<EntryLight, EntryListAdapter.EntryHolder>(DiffCallback()) {
 
-    interface OnItemClickListener {
-        fun onItemClicked(entry: EntryLight)
-        fun onItemLongClicked(entry: EntryLight, view: View?)
+    interface OnEntrySelected {
+        fun onEntryClicked(entryId: String)
+        fun onEntryLongClicked(entry: EntryLight, view: View?)
     }
 
     var latestClickedPosition = 0
@@ -45,7 +45,7 @@ class EntryListAdapter(
 
     inner class EntryHolder(
         view: View,
-        private val listener: OnItemClickListener
+        private val listener: OnEntrySelected
     ) : RecyclerView.ViewHolder(view), View.OnClickListener, View.OnLongClickListener {
 
         private lateinit var entry: EntryLight
@@ -103,12 +103,12 @@ class EntryListAdapter(
 
         override fun onClick(v: View) {
             latestClickedPosition = adapterPosition
-            listener.onItemClicked(entry)
+            listener.onEntryClicked(entry.url)
         }
 
         override fun onLongClick(v: View?): Boolean {
             latestClickedPosition = adapterPosition
-            listener.onItemLongClicked(entry, v)
+            listener.onEntryLongClicked(entry, v)
             return true
         }
     }

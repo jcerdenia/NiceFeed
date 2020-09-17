@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- APPEARANCE -->
             <TextView
                 android:layout_width='match_parent'
                 android:layout_height="wrap_content"
@@ -31,14 +32,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
                 <TextView
                     android:layout_width='wrap_content'
                     android:layout_height="wrap_content"
                     android:padding="16dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                     android:text="@string/theme" />
-
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/theme_spinner"
                     android:layout_width="fill_parent"
@@ -46,27 +45,34 @@
                     android:padding="16dp" />
             </LinearLayout>
 
+            <androidx.appcompat.widget.SwitchCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/banner_switch"
+                android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                android:padding="16dp"
+                android:text="@string/enable_header_images"/>
+
             <View style="@style/Divider"/>
 
+            <!-- FEEDS AND ENTRIES -->
             <TextView
                 android:layout_width='match_parent'
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:textAppearance="@style/MainItemText"
-                android:text="@string/feeds" />
+                android:text="@string/feeds_and_entries" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
                 <TextView
                     android:layout_width='wrap_content'
                     android:layout_height="wrap_content"
                     android:padding="16dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                     android:text="@string/sort_feeds_by" />
-
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/sort_feeds_spinner"
                     android:layout_width="fill_parent"
@@ -78,14 +84,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
                 <TextView
                     android:layout_width='wrap_content'
                     android:layout_height="wrap_content"
                     android:padding="16dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                     android:text="@string/sort_entries_by"/>
-
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/sort_entries_spinner"
                     android:layout_width="fill_parent"
@@ -100,9 +104,28 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                 android:padding="16dp"
                 android:text="@string/auto_update_on_launch"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
+                android:text="@string/auto_update_on_launch_description"/>
 
+            <androidx.appcompat.widget.SwitchCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/browser_switch"
+                android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                android:padding="16dp"
+                android:text="@string/open_entries_in_app"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="16dp"
+                android:text="@string/open_entries_in_app_description"/>
             <View style="@style/Divider"/>
 
+            <!-- NOTIFICATIONS -->
             <TextView
                 android:layout_width='match_parent'
                 android:layout_height="wrap_content"
@@ -117,9 +140,9 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                 android:padding="16dp"
                 android:text="@string/notification_switch_description"/>
-
             <View style="@style/Divider"/>
 
+            <!-- ABOUT -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -134,15 +157,11 @@
 
             <TextView
                 android:id="@+id/about_text_view"
-                style="@style/Buttonized"
-                android:textAppearance="@style/TextAppearance.AppCompat"
-                android:textAlignment="viewStart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
                 android:padding="16dp"
                 android:text="@string/about_nicefeed" />
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

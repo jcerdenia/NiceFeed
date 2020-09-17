@@ -7,7 +7,7 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment.Com
 object NiceFeedPreferences {
 
     private const val NICE_FEED_PREFS = "NICE_FEED_PREFS"
-    private const val KEY_FEED_ID = "KEY_WEBSITE"
+    private const val KEY_FEED_ID = "KEY_FEED_ID"
     private const val KEY_FEED_MANAGER_ORDER = "KEY_FEED_MANAGER_ORDER"
     private const val KEY_SORT_FEEDS = "KEY_SORT_FEEDS"
     private const val KEY_SORT_ENTRIES = "KEY_SORT_ENTRIES"
@@ -19,6 +19,7 @@ object NiceFeedPreferences {
     private const val KEY_THEME = "KEY_THEME"
     private const val KEY_VIEW_IN_BROWSER = "KEY_VIEW_IN_BROWSER"
     private const val KEY_AUTO_OPEN_PREVIEW = "KEY_AUTO_OPEN_PREVIEW"
+    private const val KEY_BANNER = "KEY_BANNER"
 
     const val TEXT_SIZE_NORMAL = 0
     const val TEXT_SIZE_LARGE = 1
@@ -111,19 +112,19 @@ object NiceFeedPreferences {
         getPrefs(context).edit().putInt(KEY_THEME, theme).apply()
     }
 
-    fun getBrowserViewSetting(context: Context): Boolean {
+    fun getBrowserSetting(context: Context): Boolean {
         return getPrefs(context).getBoolean(KEY_VIEW_IN_BROWSER, false)
     }
 
-    fun setBrowserViewSetting(context: Context, shouldViewInBrowser: Boolean) {
+    fun setBrowserSetting(context: Context, shouldViewInBrowser: Boolean) {
         getPrefs(context).edit().putBoolean(KEY_VIEW_IN_BROWSER, shouldViewInBrowser).apply()
     }
 
-    fun getAutoOpenPreviewSetting(context: Context): Boolean {
-        return getPrefs(context).getBoolean(KEY_AUTO_OPEN_PREVIEW, false)
+    fun getEnableBanner(context: Context): Boolean {
+        return getPrefs(context).getBoolean(KEY_BANNER, true)
     }
 
-    fun setAutoOpenPreviewSetting(context: Context, shouldAutoOpenPreview: Boolean) {
-        getPrefs(context).edit().putBoolean(KEY_AUTO_OPEN_PREVIEW, shouldAutoOpenPreview).apply()
+    fun setEnableBanner(context: Context, isEnabled: Boolean) {
+        getPrefs(context).edit().putBoolean(KEY_BANNER, isEnabled).apply()
     }
 }

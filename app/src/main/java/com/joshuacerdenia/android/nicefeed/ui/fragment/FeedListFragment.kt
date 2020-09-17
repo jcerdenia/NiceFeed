@@ -79,6 +79,25 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.feedListLiveData.observe(viewLifecycleOwner, { list ->
+            adapter.submitList(list)
+            if (list.isNotEmpty()) {
+                manageButton.visibility = View.VISIBLE
+                newEntriesButton.visibility = View.VISIBLE
+                starredEntriesButton.visibility = View.VISIBLE
+                bottomDivider.visibility = View.VISIBLE
+            } else {
+                manageButton.visibility = View.GONE
+                newEntriesButton.visibility = View.GONE
+                starredEntriesButton.visibility = View.GONE
+                bottomDivider.visibility = View.GONE
+                updateActiveFeedId(null)
+            }
+        })
+    }
+
+    override fun onStart() {
+        super.onStart()
         manageButton.setOnClickListener {
             callbacks?.onMenuItemSelected(ITEM_MANAGE_FEEDS)
         }
@@ -98,22 +117,6 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         settingsButton.setOnClickListener {
             callbacks?.onMenuItemSelected(ITEM_SETTINGS)
         }
-
-        viewModel.feedListLiveData.observe(viewLifecycleOwner, Observer { list ->
-            adapter.submitList(list)
-            if (list.isNotEmpty()) {
-                manageButton.visibility = View.VISIBLE
-                newEntriesButton.visibility = View.VISIBLE
-                starredEntriesButton.visibility = View.VISIBLE
-                bottomDivider.visibility = View.VISIBLE
-            } else {
-                manageButton.visibility = View.GONE
-                newEntriesButton.visibility = View.GONE
-                starredEntriesButton.visibility = View.GONE
-                bottomDivider.visibility = View.GONE
-                updateActiveFeedId(null)
-            }
-        })
     }
 
     override fun onResume() {

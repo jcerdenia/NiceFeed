@@ -9,7 +9,10 @@ import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
-import com.joshuacerdenia.android.nicefeed.utils.*
+import com.joshuacerdenia.android.nicefeed.utils.UpdateManager
+import com.joshuacerdenia.android.nicefeed.utils.shortened
+import com.joshuacerdenia.android.nicefeed.utils.sortedByDatePublished
+import com.joshuacerdenia.android.nicefeed.utils.sortedUnreadOnTop
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -18,7 +21,7 @@ private const val MAX_NEW_ENTRIES = 50 // Maybe this can be changed dynamically
 class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
 
     private val repo = NiceFeedRepository.get()
-    private val parser = FeedParser()
+    private val parser = FeedParser.newInstance(repo.isOnline)
     private val updateManager = UpdateManager(this)
 
     private val feedIdLiveData = MutableLiveData<String>()
@@ -65,7 +68,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
                     date = entry.date,
                     image = entry.image,
                     isRead = entry.isRead,
-                    isStarred = entry.isStarred
+                    isStarred = entry.isStarred,
                 )
             }
             entriesLightLiveData.value = sortEntries(list, currentOrder)
