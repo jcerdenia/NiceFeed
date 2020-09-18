@@ -57,12 +57,4 @@ object Utils {
             Snackbar.LENGTH_SHORT
         ).show()
     }
-
-    fun showDisconnectedNotice(view: View, resources: Resources) {
-        Snackbar.make(
-            view,
-            resources.getString(R.string.no_internet_connection),
-            Snackbar.LENGTH_SHORT
-        ).show()
-    }
 }

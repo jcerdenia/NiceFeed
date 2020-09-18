@@ -18,10 +18,10 @@ import java.util.*
 
 private const val MAX_NEW_ENTRIES = 50 // Maybe this can be changed dynamically
 
-class EntryListViewModel: ViewModel(), UpdateManager.UpdateListener {
+class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
 
     private val repo = NiceFeedRepository.get()
-    private val parser = FeedParser.newInstance(repo.isOnline)
+    private val parser = FeedParser(repo.connectionMonitor)
     private val updateManager = UpdateManager(this)
 
     private val feedIdLiveData = MutableLiveData<String>()

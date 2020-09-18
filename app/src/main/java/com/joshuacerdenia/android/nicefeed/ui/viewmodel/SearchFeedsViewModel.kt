@@ -8,7 +8,7 @@ import com.joshuacerdenia.android.nicefeed.data.remote.FeedSearcher
 
 class SearchFeedsViewModel: AddFeedsViewModel() {
 
-    private val searcher = FeedSearcher.newInstance(repo.isOnline)
+    private val searcher = FeedSearcher(repo.connectionMonitor)
 
     var newQuery: String = ""
     var initialQueryIsMade = false
@@ -16,8 +16,7 @@ class SearchFeedsViewModel: AddFeedsViewModel() {
     var itemSelectionEnabled = true
 
     private val mutableQuery = MutableLiveData<String>()
-    val searchResultLiveData: LiveData<List<SearchResultItem>> =
-        Transformations.switchMap(mutableQuery) { query ->
+    val searchResultLiveData: LiveData<List<SearchResultItem>> = Transformations.switchMap(mutableQuery) { query ->
             searcher.performSearch(query)
         }
 

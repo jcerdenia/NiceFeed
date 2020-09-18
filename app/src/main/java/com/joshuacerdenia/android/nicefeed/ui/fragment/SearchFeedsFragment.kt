@@ -1,6 +1,7 @@
 package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -65,6 +66,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
         })
 
         viewModel.searchResultLiveData.observe(viewLifecycleOwner, { results ->
+            Log.d("FUCK", "Result observer fired")
             adapter.submitList(results)
             progressBar.visibility = View.GONE
             emptyMessageTextView.visibility = if (results.isEmpty()) {
@@ -95,8 +97,8 @@ class SearchFeedsFragment : FeedAddingFragment(),
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(queryText: String): Boolean {
                     if (queryText.isNotEmpty()) {
-                        viewModel.performSearch(queryText)
                         progressBar.visibility = View.VISIBLE
+                        viewModel.performSearch(queryText)
                     }
 
                     clearFocus()

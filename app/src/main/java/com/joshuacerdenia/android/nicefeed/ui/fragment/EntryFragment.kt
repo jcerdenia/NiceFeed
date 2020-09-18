@@ -104,7 +104,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
                     viewModel.lastPosition.let { position ->
-                        nestedScrollView.scrollTo(position.first, position.second)
+                        nestedScrollView.smoothScrollTo(position.first, position.second)
                     }
                 }
             }
@@ -112,6 +112,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
             webChromeClient = object : WebChromeClient() {
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
                     super.onProgressChanged(view, newProgress)
+                    progressBar.progress = newProgress
                     if (newProgress == 100) {
                         progressBar.visibility = View.GONE
                     }

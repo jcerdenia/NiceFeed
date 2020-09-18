@@ -7,9 +7,9 @@ import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 /*  This class compares recently requested data from the web with current data saved locally.
     It outputs which entries to add, update, and delete, as well as updated feed data, if any.
 */
-class UpdateManager(private val listener: UpdateListener) {
+class UpdateManager(private val receiver: UpdateReceiver) {
 
-    interface UpdateListener {
+    interface UpdateReceiver {
         fun onUnreadEntriesCounted(feedId: String, unreadCount: Int)
         fun onFeedNeedsUpdate(feed: Feed)
         fun onOldAndNewEntriesCompared(
@@ -39,7 +39,7 @@ class UpdateManager(private val listener: UpdateListener) {
         }
 
         currentFeed?.let { feed ->
-            listener.onUnreadEntriesCounted(feed.url, unreadCount)
+            receiver.onUnreadEntriesCounted(feed.url, unreadCount)
         }
     }
 
@@ -80,7 +80,7 @@ class UpdateManager(private val listener: UpdateListener) {
         // Check if entries are changed at all
         if (entriesToAdd.size + entriesToUpdate.size + entriesToDelete.size > 0) {
             currentFeed?.let { feed->
-                listener.onOldAndNewEntriesCompared(
+                receiver.onOldAndNewEntriesCompared(
                     entriesToAdd,
                     entriesToUpdate,
                     entriesToDelete,
@@ -97,7 +97,7 @@ class UpdateManager(private val listener: UpdateListener) {
         }
 
         if (feed !== currentFeed) {
-            listener.onFeedNeedsUpdate(feed)
+            receiver.onFeedNeedsUpdate(feed)
         }
     }
 

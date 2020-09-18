@@ -1,38 +1,20 @@
 package com.joshuacerdenia.android.nicefeed.data
 
-import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.room.Room
 import com.joshuacerdenia.android.nicefeed.data.local.database.NiceFeedDatabase
 import com.joshuacerdenia.android.nicefeed.data.model.*
-import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
-import com.joshuacerdenia.android.nicefeed.data.remote.FeedSearcher
 import com.joshuacerdenia.android.nicefeed.utils.ConnectionMonitor
 import java.util.concurrent.Executors
 
 private const val TAG = "NiceFeedRepo"
 
 class NiceFeedRepository private constructor(
-    context: Context
-) : ConnectionMonitor.OnConnectionChangedListener {
-
-    private val database = Room.databaseBuilder(
-        context.applicationContext,
-        NiceFeedDatabase::class.java,
-        DATABASE_NAME
-    ).build()
+    database: NiceFeedDatabase,
+    val connectionMonitor: ConnectionMonitor
+) {
 
     private val dao = database.combinedDao()
     private val executor = Executors.newSingleThreadExecutor()
-
-    var isOnline: Boolean = false
-        private set
-
-    init {
-        // Make Repository receive network callbacks, all ViewModels can now refer
-        // to the repository for the current network state
-        ConnectionMonitor(context, this).initialize()
-    }
 
     fun getFeed(feedId: String): LiveData<Feed?> = dao.getFeed(feedId)
 
@@ -143,20 +125,12 @@ class NiceFeedRepository private constructor(
         }
     }
 
-    override fun onConnectionChanged(isConnected: Boolean) {
-        isOnline = isConnected
-        // If FeedParser and FeedSearcher are instantiated, inform them of the network change
-        FeedParser.getInstance()?.isOnline = isConnected
-        FeedSearcher.getInstance()?.isOnline = isConnected
-    }
-
     companion object {
-        private const val DATABASE_NAME = "database"
         private var INSTANCE: NiceFeedRepository? = null
 
-        fun initialize(context: Context) {
+        fun initialize(database: NiceFeedDatabase, connectionMonitor: ConnectionMonitor) {
             if (INSTANCE == null) {
-                INSTANCE = NiceFeedRepository(context)
+                INSTANCE = NiceFeedRepository(database, connectionMonitor)
             }
         }
 

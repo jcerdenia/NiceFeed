@@ -7,8 +7,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.text.HtmlCompat
-import androidx.work.CoroutineWorker
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.joshuacerdenia.android.nicefeed.ui.activity.MainActivity
 import com.joshuacerdenia.android.nicefeed.NOTIFICATION_CHANNEL_ID
 import com.joshuacerdenia.android.nicefeed.R
@@ -17,22 +16,22 @@ import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
+import java.util.concurrent.TimeUnit
 
 private fun List<Entry>.sortedByDate() = this.sortedByDescending { it.date }
 
 private const val TAG = "NewEntriesWorker"
 
 class NewEntriesWorker(
-    val context: Context,
+    private val context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
     private val repo = NiceFeedRepository.get()
-    private val feedParser = FeedParser.newInstance()
+    private val feedParser = FeedParser(repo.connectionMonitor)
     private val resources = context.resources
 
     override suspend fun doWork(): Result {
-        Log.d(TAG, "Background work started")
         val feedUrls = repo.getFeedUrlsSynchronously()
         val lastIndex = NiceFeedPreferences.getLastPolledIndex(context)
         val newIndex = if (lastIndex + 1 >= feedUrls.size) {
@@ -108,11 +107,37 @@ class NewEntriesWorker(
     }
 
     companion object {
-        const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.work.NewEntriesWorker"
+        private const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.work.NewEntriesWorker"
         const val ACTION_SHOW_NOTIFICATION = "com.joshuacerdenia.android.nicefeed.work.SHOW_NOTIFICATION"
         const val NOTIFICATION_ID = 0
         const val PERM_PRIVATE = "com.joshuacerdenia.android.nicefeed.PRIVATE"
         const val EXTRA_REQUEST_CODE = "REQUEST_CODE"
         const val EXTRA_NOTIFICATION = "NOTIFICATION"
+
+        fun setup(context: Context) {
+            Log.d(TAG, "Setting up polling for new entries")
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .setRequiresBatteryNotLow(true)
+                .setRequiresStorageNotLow(true)
+                .build()
+            val request = PeriodicWorkRequest.Builder(
+                NewEntriesWorker::class.java,
+                15,
+                TimeUnit.MINUTES
+            ).setConstraints(constraints)
+                .build()
+
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                WORK_NAME,
+                ExistingPeriodicWorkPolicy.KEEP,
+                request
+            )
+        }
+
+        fun cancel(context: Context) {
+            WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
+            Log.d(TAG, "Polling for new entries cancelled!")
+        }
     }
 }

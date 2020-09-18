@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.data.remote.api.FeedlyApi
 import com.joshuacerdenia.android.nicefeed.data.remote.api.SearchResult
+import com.joshuacerdenia.android.nicefeed.utils.ConnectionMonitor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,7 +19,7 @@ private const val TAG = "FeedSearcher"
 
 // Search engine
 
-class FeedSearcher private constructor (var isOnline: Boolean) {
+class FeedSearcher(private val monitor: ConnectionMonitor) {
 
     private var feedSearchResultItems: List<SearchResultItem>? = null
 
@@ -30,7 +31,7 @@ class FeedSearcher private constructor (var isOnline: Boolean) {
     private val feedlyApi: FeedlyApi = retrofit.create(FeedlyApi::class.java)
 
     fun performSearch(query: String): LiveData<List<SearchResultItem>> {
-        return if (isOnline) {
+        return if (monitor.isOnline) {
             val path = generatePath(query)
             val searchRequest: Call<SearchResult> = feedlyApi.fetchSearchResult(path)
             fetchSearchResult(searchRequest)
@@ -75,15 +76,5 @@ class FeedSearcher private constructor (var isOnline: Boolean) {
 
     companion object {
         private const val BASE_URL = "https://cloud.feedly.com/"
-        private var INSTANCE: FeedSearcher? = null
-
-        fun newInstance(isOnline: Boolean = false): FeedSearcher {
-            INSTANCE = FeedSearcher(isOnline)
-            return INSTANCE as FeedSearcher
-        }
-
-        fun getInstance(): FeedSearcher? {
-            return INSTANCE
-        }
     }
 }

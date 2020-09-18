@@ -58,7 +58,6 @@ class EntryListFragment : VisibleFragment(),
     private lateinit var searchItem: MenuItem
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: EntryListAdapter
-    private lateinit var connectionMonitor: ConnectionMonitor
 
     private var markAllOptionsItem: MenuItem? = null
     private var starAllOptionsItem: MenuItem? = null

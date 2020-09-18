@@ -7,6 +7,7 @@ import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.utils.BackupUrlManager
+import com.joshuacerdenia.android.nicefeed.utils.ConnectionMonitor
 import com.joshuacerdenia.android.nicefeed.utils.simplified
 import com.prof.rssparser.Channel
 import com.prof.rssparser.Parser
@@ -19,19 +20,15 @@ private fun String?.flagAsExcerpt() = FeedParser.FLAG_EXCERPT + this
 
 private const val TAG = "FeedParser"
 
-class FeedParser private constructor (var isOnline: Boolean) {
+class FeedParser (private val monitor: ConnectionMonitor) {
 
     private val parser = Parser.Builder().build()
     private val _feedRequestLiveData = MutableLiveData<FeedWithEntries>()
     val feedRequestLiveData: LiveData<FeedWithEntries?>
         get() = _feedRequestLiveData
 
-    init {
-        Log.d(TAG, "New instance created")
-    }
-
     suspend fun getFeedSynchronously(url: String): FeedWithEntries? {
-        return if (isOnline) {
+        return if (monitor.isOnline) {
             try {
                 val channel = parser.getChannel(url)
                 ChannelMapper.makeFeedWithEntries(url, channel)
@@ -45,7 +42,7 @@ class FeedParser private constructor (var isOnline: Boolean) {
     }
 
     suspend fun requestFeed(url: String, backup: String? = null) {
-        if (isOnline) {
+        if (monitor.isOnline) {
             executeRequest(url, backup)
         } else {
             _feedRequestLiveData.postValue(null)
@@ -129,15 +126,5 @@ class FeedParser private constructor (var isOnline: Boolean) {
     companion object {
         private const val UNTITLED = "Untitled"
         const val FLAG_EXCERPT = "com.joshuacerdenia.android.nicefeed.excerpt "
-        private var INSTANCE: FeedParser? = null
-
-        fun newInstance(isOnline: Boolean = false): FeedParser {
-            INSTANCE = FeedParser(isOnline)
-            return INSTANCE as FeedParser
-        }
-
-        fun getInstance(): FeedParser? {
-            return INSTANCE
-        }
     }
 }

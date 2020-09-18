@@ -4,20 +4,18 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
-import android.util.Log
-import androidx.work.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.database.NiceFeedDatabase
 import com.joshuacerdenia.android.nicefeed.ui.OnBackgroundWorkSettingChanged
+import com.joshuacerdenia.android.nicefeed.utils.ConnectionMonitor
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.work.NewEntriesWorker
 import com.joshuacerdenia.android.nicefeed.work.SweeperWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 
-private const val TAG = "NiceFeedApplication"
 const val NOTIFICATION_CHANNEL_ID = "nicefeed_new_entries"
 
 class NiceFeedApplication : Application(), OnBackgroundWorkSettingChanged {
@@ -27,7 +25,9 @@ class NiceFeedApplication : Application(), OnBackgroundWorkSettingChanged {
     override fun onCreate() {
         super.onCreate()
         Utils.setTheme(NiceFeedPreferences.getTheme(this))
-        NiceFeedRepository.initialize(this)
+        val database = NiceFeedDatabase.build(this)
+        val connectionMonitor = ConnectionMonitor(this)
+        NiceFeedRepository.initialize(database, connectionMonitor)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = getSystemService(NotificationManager::class.java)
@@ -39,61 +39,24 @@ class NiceFeedApplication : Application(), OnBackgroundWorkSettingChanged {
             notificationManager?.createNotificationChannel(channel)
         }
 
-        NiceFeedPreferences.getPollingSetting(this).run {
-            delayedInit(this)
-        }
+        delayedInit()
     }
 
-    private fun delayedInit(shouldPoll: Boolean) {
+    private fun delayedInit() {
+        val shouldPoll = NiceFeedPreferences.getPollingSetting(this)
         applicationScope.launch {
+            SweeperWorker.setup(applicationContext)
             if (shouldPoll) {
-                setupNewEntriesWork()
+                NewEntriesWorker.setup(applicationContext)
             }
-            setupSweeperWork()
         }
-    }
-
-    private fun setupNewEntriesWork() {
-        Log.d(TAG, "Setting up polling for new entries...")
-
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.UNMETERED)
-            .setRequiresBatteryNotLow(true)
-            .build()
-        val request = PeriodicWorkRequest.Builder(
-            NewEntriesWorker::class.java,
-            15,
-            TimeUnit.MINUTES
-        ).setConstraints(constraints)
-            .build()
-
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-            NewEntriesWorker.WORK_NAME,
-            ExistingPeriodicWorkPolicy.KEEP,
-            request
-        )
-    }
-
-    private fun setupSweeperWork() {
-        val request = PeriodicWorkRequest.Builder(
-            SweeperWorker::class.java,
-            3,
-            TimeUnit.DAYS
-        ).build()
-
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-            SweeperWorker.WORK_NAME,
-            ExistingPeriodicWorkPolicy.KEEP,
-            request
-        )
     }
 
     override fun onBackgroundWorkSettingChanged(isOn: Boolean) {
         if (isOn) {
-            setupNewEntriesWork()
+            NewEntriesWorker.setup(this)
         } else {
-            WorkManager.getInstance(this).cancelUniqueWork(NewEntriesWorker.WORK_NAME)
-            Log.d(TAG, "Background work cancelled!")
+            NewEntriesWorker.cancel(this)
         }
     }
 }
