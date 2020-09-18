@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMinimal
-import com.joshuacerdenia.android.nicefeed.utils.simplified
+import com.joshuacerdenia.android.nicefeed.utils.extensions.pathified
 
 class FeedManagerAdapter(
     private val listener: ItemCheckBoxListener,
@@ -62,7 +62,7 @@ class FeedManagerAdapter(
 
         fun bind(feed: FeedMinimal, isChecked: Boolean) {
             this.feed = feed
-            websiteTextView.text = feed.url.simplified()
+            websiteTextView.text = feed.url.pathified()
             categoryTextView.text = feed.category
 
             titleCheckBox.apply {

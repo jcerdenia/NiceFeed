@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.data.remote.api.FeedlyApi
 import com.joshuacerdenia.android.nicefeed.data.remote.api.SearchResult
-import com.joshuacerdenia.android.nicefeed.utils.ConnectionMonitor
+import com.joshuacerdenia.android.nicefeed.utils.NetworkMonitor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,7 +19,7 @@ private const val TAG = "FeedSearcher"
 
 // Search engine
 
-class FeedSearcher(private val monitor: ConnectionMonitor) {
+class FeedSearcher(private val networkMonitor: NetworkMonitor) {
 
     private var feedSearchResultItems: List<SearchResultItem>? = null
 
@@ -31,7 +31,7 @@ class FeedSearcher(private val monitor: ConnectionMonitor) {
     private val feedlyApi: FeedlyApi = retrofit.create(FeedlyApi::class.java)
 
     fun performSearch(query: String): LiveData<List<SearchResultItem>> {
-        return if (monitor.isOnline) {
+        return if (networkMonitor.isOnline) {
             val path = generatePath(query)
             val searchRequest: Call<SearchResult> = feedlyApi.fetchSearchResult(path)
             fetchSearchResult(searchRequest)

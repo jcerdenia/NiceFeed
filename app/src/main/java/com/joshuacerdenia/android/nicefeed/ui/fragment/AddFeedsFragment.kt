@@ -17,7 +17,6 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmImportFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
-import com.joshuacerdenia.android.nicefeed.utils.ConnectionMonitor
 import com.joshuacerdenia.android.nicefeed.utils.OpmlImporter
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import java.util.*

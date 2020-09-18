@@ -3,14 +3,14 @@ package com.joshuacerdenia.android.nicefeed.data
 import androidx.lifecycle.LiveData
 import com.joshuacerdenia.android.nicefeed.data.local.database.NiceFeedDatabase
 import com.joshuacerdenia.android.nicefeed.data.model.*
-import com.joshuacerdenia.android.nicefeed.utils.ConnectionMonitor
+import com.joshuacerdenia.android.nicefeed.utils.NetworkMonitor
 import java.util.concurrent.Executors
 
 private const val TAG = "NiceFeedRepo"
 
 class NiceFeedRepository private constructor(
     database: NiceFeedDatabase,
-    val connectionMonitor: ConnectionMonitor
+    val networkMonitor: NetworkMonitor
 ) {
 
     private val dao = database.combinedDao()
@@ -128,9 +128,9 @@ class NiceFeedRepository private constructor(
     companion object {
         private var INSTANCE: NiceFeedRepository? = null
 
-        fun initialize(database: NiceFeedDatabase, connectionMonitor: ConnectionMonitor) {
+        fun initialize(database: NiceFeedDatabase, networkMonitor: NetworkMonitor) {
             if (INSTANCE == null) {
-                INSTANCE = NiceFeedRepository(database, connectionMonitor)
+                INSTANCE = NiceFeedRepository(database, networkMonitor)
             }
         }
 

@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 open class AddFeedsViewModel: ViewModel() {
 
     val repo = NiceFeedRepository.get()
-    private val parser = FeedParser(repo.connectionMonitor)
+    private val parser = FeedParser(repo.networkMonitor)
 
     var requestFailedNoticeEnabled = false
     var alreadyAddedNoticeEnabled = false

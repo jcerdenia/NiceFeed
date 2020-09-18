@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.EntryLight
-import com.joshuacerdenia.android.nicefeed.utils.shortened
+import com.joshuacerdenia.android.nicefeed.utils.extensions.shortened
 import com.squareup.picasso.Picasso
 import java.text.DateFormat.*
 import java.util.*

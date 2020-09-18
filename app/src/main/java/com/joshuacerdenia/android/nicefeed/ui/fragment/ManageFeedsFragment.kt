@@ -126,17 +126,6 @@ class ManageFeedsFragment: VisibleFragment(),
         updateToolbar(toolbar, viewModel.selectedItems.size)
         progressBar.visibility = View.VISIBLE
 
-        selectAllCheckBox.setOnClickListener { (it as CheckBox)
-            if (it.isChecked) {
-                viewModel.selectedItems = adapter.currentList.toMutableList()
-            } else {
-                viewModel.selectedItems.clear()
-            }
-
-            adapter.toggleCheckBoxes(it.isChecked)
-            updateToolbar(toolbar, viewModel.selectedItems.size)
-        }
-
         viewModel.feedsMinimalLiveData.observe(viewLifecycleOwner, Observer { feeds ->
             adapter.submitList(feeds)
             progressBar.visibility = View.GONE
@@ -150,6 +139,24 @@ class ManageFeedsFragment: VisibleFragment(),
                 emptyMessageTextView.visibility = View.VISIBLE
             }
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        toolbar.setOnClickListener {
+            recyclerView.smoothScrollToPosition(0)
+        }
+
+        selectAllCheckBox.setOnClickListener { (it as CheckBox)
+            if (it.isChecked) {
+                viewModel.selectedItems = adapter.currentList.toMutableList()
+            } else {
+                viewModel.selectedItems.clear()
+            }
+
+            adapter.toggleCheckBoxes(it.isChecked)
+            updateToolbar(toolbar, viewModel.selectedItems.size)
+        }
     }
 
     private fun updateToolbar(toolbar: Toolbar, selectedItemCount: Int) {

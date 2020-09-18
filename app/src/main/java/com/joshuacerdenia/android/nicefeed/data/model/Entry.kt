@@ -32,6 +32,7 @@ data class Entry(
         for (itemChecked in checklist) {
             if (itemChecked) count += 1 else break
         }
+        // ALL items must match to return true
         return count == checklist.size
     }
 }

@@ -10,7 +10,7 @@ import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.utils.pathified
+import com.joshuacerdenia.android.nicefeed.utils.extensions.pathified
 import com.squareup.picasso.Picasso
 
 class AboutFeedFragment: BottomSheetDialogFragment() {

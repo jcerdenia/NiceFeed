@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +15,7 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedListAdapter
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.FeedListViewModel
-import com.joshuacerdenia.android.nicefeed.utils.addRipple
+import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
 
 class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 

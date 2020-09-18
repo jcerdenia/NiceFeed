@@ -27,7 +27,7 @@ import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.dialog.TextSizeFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryViewModel
 import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.utils.shortened
+import com.joshuacerdenia.android.nicefeed.utils.extensions.shortened
 import com.squareup.picasso.Picasso
 import java.text.DateFormat
 import java.util.*

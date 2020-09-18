@@ -28,7 +28,7 @@ class NewEntriesWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     private val repo = NiceFeedRepository.get()
-    private val feedParser = FeedParser(repo.connectionMonitor)
+    private val feedParser = FeedParser(repo.networkMonitor)
     private val resources = context.resources
 
     override suspend fun doWork(): Result {

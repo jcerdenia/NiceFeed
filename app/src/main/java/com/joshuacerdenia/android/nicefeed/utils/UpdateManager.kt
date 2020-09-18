@@ -3,6 +3,7 @@ package com.joshuacerdenia.android.nicefeed.utils
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
+import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByDate
 
 /*  This class compares recently requested data from the web with current data saved locally.
     It outputs which entries to add, update, and delete, as well as updated feed data, if any.
@@ -23,7 +24,7 @@ class UpdateManager(private val receiver: UpdateReceiver) {
     var currentFeed: Feed? = null
         private set
     private var currentEntries = listOf<Entry>()
-        get() = field.sortedByDescending { it.date }
+        get() = field.sortedByDate()
 
     fun setInitialFeed(feed: Feed) {
         currentFeed = feed
@@ -57,7 +58,7 @@ class UpdateManager(private val receiver: UpdateReceiver) {
         val entriesToDelete = mutableListOf<Entry>()
 
         for (entry in newEntries) {
-            if (!isAddedAndUnchanged(entry, currentEntries)) {
+            if (!isAlreadyAddedAndUnchanged(entry)) {
                 // Check for old version of the new entry:
                 if (currentEntryIds.contains(entry.url)) {
                     val currentItemIndex = currentEntryIds.indexOf(entry.url)
@@ -90,6 +91,24 @@ class UpdateManager(private val receiver: UpdateReceiver) {
         }
     }
 
+    // Check a new entry against all current entries to see if the content is the same
+    private fun isAlreadyAddedAndUnchanged(newEntry: Entry): Boolean {
+        var isAddedAndUnchanged = false
+        for (currentEntry in currentEntries) {
+            if (newEntry.isSameAs(currentEntry)) {
+                isAddedAndUnchanged = true
+                break
+            }
+        }
+        return isAddedAndUnchanged
+    }
+
+    private fun getEntryIds(entries: List<Entry>): List<String> {
+        return entries.map { entry ->
+            entry.url
+        }
+    }
+
     private fun handleFeedUpdate(feed: Feed) {
         currentFeed?.let {
             feed.category = it.category
@@ -99,24 +118,5 @@ class UpdateManager(private val receiver: UpdateReceiver) {
         if (feed !== currentFeed) {
             receiver.onFeedNeedsUpdate(feed)
         }
-    }
-
-    private fun getEntryIds(entries: List<Entry>): List<String> {
-        return entries.map { entry ->
-            entry.url
-        }
-    }
-
-    // Check a new entry against all current entries to see if the content is the same
-    private fun isAddedAndUnchanged(newEntry: Entry, currentEntries: List<Entry>): Boolean {
-        var isAddedAndUnchanged = false
-        for (currentEntry in currentEntries) {
-            if (newEntry.isSameAs(currentEntry)) {
-                isAddedAndUnchanged = true
-                break
-            }
-        }
-
-        return isAddedAndUnchanged
     }
 }

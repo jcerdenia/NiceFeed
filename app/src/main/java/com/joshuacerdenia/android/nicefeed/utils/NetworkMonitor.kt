@@ -6,7 +6,7 @@ import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import android.net.NetworkRequest
 
-class ConnectionMonitor(context: Context) {
+class NetworkMonitor(context: Context) {
 
     var isOnline = false
         private set

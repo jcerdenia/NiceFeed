@@ -28,7 +28,6 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.menu.EntryPopupMenu
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryListViewModel
-import com.joshuacerdenia.android.nicefeed.utils.ConnectionMonitor
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 
 private const val TAG = "EntryListFragment"

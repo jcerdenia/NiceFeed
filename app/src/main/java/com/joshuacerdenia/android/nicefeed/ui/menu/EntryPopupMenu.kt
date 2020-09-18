@@ -1,13 +1,12 @@
 package com.joshuacerdenia.android.nicefeed.ui.menu
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.EntryLight
-import com.joshuacerdenia.android.nicefeed.utils.addRipple
+import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
 
 class EntryPopupMenu(
     context: Context,

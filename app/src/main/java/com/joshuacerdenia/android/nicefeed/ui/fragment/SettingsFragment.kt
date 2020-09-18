@@ -14,7 +14,7 @@ import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.ui.OnBackgroundWorkSettingChanged
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.utils.addRipple
+import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
 
 class SettingsFragment: VisibleFragment() {
 

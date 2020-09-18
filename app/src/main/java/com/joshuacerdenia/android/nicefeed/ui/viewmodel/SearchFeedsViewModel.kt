@@ -8,7 +8,7 @@ import com.joshuacerdenia.android.nicefeed.data.remote.FeedSearcher
 
 class SearchFeedsViewModel: AddFeedsViewModel() {
 
-    private val searcher = FeedSearcher(repo.connectionMonitor)
+    private val searcher = FeedSearcher(repo.networkMonitor)
 
     var newQuery: String = ""
     var initialQueryIsMade = false

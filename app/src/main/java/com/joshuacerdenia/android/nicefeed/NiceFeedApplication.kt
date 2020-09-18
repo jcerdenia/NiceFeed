@@ -8,7 +8,7 @@ import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.local.database.NiceFeedDatabase
 import com.joshuacerdenia.android.nicefeed.ui.OnBackgroundWorkSettingChanged
-import com.joshuacerdenia.android.nicefeed.utils.ConnectionMonitor
+import com.joshuacerdenia.android.nicefeed.utils.NetworkMonitor
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.work.NewEntriesWorker
 import com.joshuacerdenia.android.nicefeed.work.SweeperWorker
@@ -26,7 +26,7 @@ class NiceFeedApplication : Application(), OnBackgroundWorkSettingChanged {
         super.onCreate()
         Utils.setTheme(NiceFeedPreferences.getTheme(this))
         val database = NiceFeedDatabase.build(this)
-        val connectionMonitor = ConnectionMonitor(this)
+        val connectionMonitor = NetworkMonitor(this)
         NiceFeedRepository.initialize(database, connectionMonitor)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

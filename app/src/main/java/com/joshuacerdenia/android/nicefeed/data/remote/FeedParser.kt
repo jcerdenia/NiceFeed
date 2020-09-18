@@ -7,8 +7,8 @@ import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.utils.BackupUrlManager
-import com.joshuacerdenia.android.nicefeed.utils.ConnectionMonitor
-import com.joshuacerdenia.android.nicefeed.utils.simplified
+import com.joshuacerdenia.android.nicefeed.utils.NetworkMonitor
+import com.joshuacerdenia.android.nicefeed.utils.extensions.shortened
 import com.prof.rssparser.Channel
 import com.prof.rssparser.Parser
 import java.text.SimpleDateFormat
@@ -20,7 +20,7 @@ private fun String?.flagAsExcerpt() = FeedParser.FLAG_EXCERPT + this
 
 private const val TAG = "FeedParser"
 
-class FeedParser (private val monitor: ConnectionMonitor) {
+class FeedParser (private val networkMonitor: NetworkMonitor) {
 
     private val parser = Parser.Builder().build()
     private val _feedRequestLiveData = MutableLiveData<FeedWithEntries>()
@@ -28,7 +28,7 @@ class FeedParser (private val monitor: ConnectionMonitor) {
         get() = _feedRequestLiveData
 
     suspend fun getFeedSynchronously(url: String): FeedWithEntries? {
-        return if (monitor.isOnline) {
+        return if (networkMonitor.isOnline) {
             try {
                 val channel = parser.getChannel(url)
                 ChannelMapper.makeFeedWithEntries(url, channel)
@@ -42,7 +42,7 @@ class FeedParser (private val monitor: ConnectionMonitor) {
     }
 
     suspend fun requestFeed(url: String, backup: String? = null) {
-        if (monitor.isOnline) {
+        if (networkMonitor.isOnline) {
             executeRequest(url, backup)
         } else {
             _feedRequestLiveData.postValue(null)
@@ -83,7 +83,7 @@ class FeedParser (private val monitor: ConnectionMonitor) {
             val feed = Feed(
                 url = url, // The url that successfully completes the request is applied
                 website = channel.link ?: url,
-                title = channel.title ?: channel.link?.simplified() ?: url.simplified(),
+                title = channel.title ?: channel.link?.shortened() ?: url.shortened(),
                 description = channel.description,
                 imageUrl = channel.image?.url ?: channel.image?.link,
                 unreadCount = entries.size

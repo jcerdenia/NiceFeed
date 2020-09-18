@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity(),
         super.onNewIntent(intent)
         val feedId = intent?.getStringExtra(EXTRA_FEED_ID)
         val entryId = intent?.getStringExtra(EXTRA_ENTRY_ID)
+        supportFragmentManager.popBackStack()
         replaceMainFragment(EntryListFragment.newInstance(feedId, entryId), false)
         drawerLayout.closeDrawers()
     }
