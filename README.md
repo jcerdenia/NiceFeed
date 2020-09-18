@@ -1,6 +1,10 @@
 # NiceFeed
 NiceFeed is an RSS Reader for Android — mainly something for me to use to keep up with the news. RSS is an old technology and there are already many readers out there, but I find many of them clunky, hard to navigate, and jam-packed with features I don't need. The aim is a nimble but fully functional app with not too many frills. Stay tuned for releases.
 
+<b>Early Access – Sept 19, 2020</b>
+Now in Beta and available on Google Play! 
+<a href='https://play.google.com/store/apps/details?id=com.joshuacerdenia.android.nicefeed&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
+
 <b>Update – Sept 8, 2020</b><br>
 In the last couple of weeks I've found it useful to rewrite much of the existing code and to get it somewhat closer to the MVVM pattern, i.e., moving all "business logic" to View Models, resulting in more manageable, reactive, and less finicky UI code. This has been helpful in implementing some new features, such as a drop-down items in the drawer menu, as well as easier sorting and filtering of entries in the main screeen. A first release should not be too far in the future!<br>
 
