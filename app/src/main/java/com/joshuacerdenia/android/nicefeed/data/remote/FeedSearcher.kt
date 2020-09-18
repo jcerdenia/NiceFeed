@@ -21,16 +21,13 @@ private const val TAG = "FeedSearcher"
 
 class FeedSearcher(private val networkMonitor: NetworkMonitor) {
 
-    private var feedSearchResultItems: List<SearchResultItem>? = null
-
-    private val retrofit: Retrofit = Retrofit.Builder()
+    private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
+    private val feedlyApi = retrofit.create(FeedlyApi::class.java)
 
-    private val feedlyApi: FeedlyApi = retrofit.create(FeedlyApi::class.java)
-
-    fun performSearch(query: String): LiveData<List<SearchResultItem>> {
+    fun getFeedList(query: String): LiveData<List<SearchResultItem>> {
         return if (networkMonitor.isOnline) {
             val path = generatePath(query)
             val searchRequest: Call<SearchResult> = feedlyApi.fetchSearchResult(path)
@@ -54,23 +51,21 @@ class FeedSearcher(private val networkMonitor: NetworkMonitor) {
         searchRequest: Call<SearchResult>
     ): MutableLiveData<List<SearchResultItem>> {
         val searchResultLiveData = MutableLiveData<List<SearchResultItem>>()
-
-        searchRequest.enqueue(object : Callback<SearchResult> {
+        val callback = object : Callback<SearchResult> {
             override fun onFailure(call: Call<SearchResult>, t: Throwable) {
-                Log.d(TAG, "No response received", t)
+                // Do nothing
             }
 
             override fun onResponse(
                 call: Call<SearchResult>,
                 response: Response<SearchResult>
             ) {
-                val feedSearchResult: SearchResult? = response.body()
-                feedSearchResultItems = feedSearchResult?.items
-                Log.d(TAG, "Response received!")
-                searchResultLiveData.value = feedSearchResultItems
+                val feedSearchResult = response.body()
+                searchResultLiveData.value = feedSearchResult?.items ?: emptyList()
             }
-        })
+        }
 
+        searchRequest.enqueue(callback)
         return searchResultLiveData
     }
 

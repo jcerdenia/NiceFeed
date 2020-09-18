@@ -17,7 +17,7 @@ class SearchFeedsViewModel: AddFeedsViewModel() {
 
     private val mutableQuery = MutableLiveData<String>()
     val searchResultLiveData: LiveData<List<SearchResultItem>> = Transformations.switchMap(mutableQuery) { query ->
-            searcher.performSearch(query)
+            searcher.getFeedList(query)
         }
 
     fun performSearch(query: String) {

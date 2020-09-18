@@ -10,15 +10,15 @@ class SweeperWorker(
     workerParams: WorkerParameters
 ): Worker(context, workerParams) {
 
-    private val repository = NiceFeedRepository.get()
+    private val repo = NiceFeedRepository.get()
 
     override fun doWork(): Result {
-        repository.deleteLeftoverItems()
+        repo.deleteLeftoverItems()
         return Result.success()
     }
 
     companion object {
-        const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.work.SweeperWorker"
+        private const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.work.SweeperWorker"
 
         fun setup(context: Context) {
             val request = PeriodicWorkRequest.Builder(
