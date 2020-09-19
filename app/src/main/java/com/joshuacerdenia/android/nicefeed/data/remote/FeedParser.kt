@@ -22,7 +22,7 @@ private const val TAG = "FeedParser"
 
 class FeedParser (private val networkMonitor: NetworkMonitor) {
 
-    private val parser = Parser.Builder().build()
+    private val rssParser = Parser.Builder().build()
     private val _feedRequestLiveData = MutableLiveData<FeedWithEntries>()
     val feedRequestLiveData: LiveData<FeedWithEntries?>
         get() = _feedRequestLiveData
@@ -30,7 +30,7 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
     suspend fun getFeedSynchronously(url: String): FeedWithEntries? {
         return if (networkMonitor.isOnline) {
             try {
-                val channel = parser.getChannel(url)
+                val channel = rssParser.getChannel(url)
                 ChannelMapper.makeFeedWithEntries(url, channel)
             } catch(e: Exception) {
                 e.printStackTrace()
@@ -55,7 +55,7 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
         BackupUrlManager.setBase(backup)
 
         try {
-            val channel = parser.getChannel(url)
+            val channel = rssParser.getChannel(url)
             val feedWithEntries = ChannelMapper.makeFeedWithEntries(url, channel)
             _feedRequestLiveData.postValue(feedWithEntries)
 

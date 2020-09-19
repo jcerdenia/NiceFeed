@@ -11,8 +11,8 @@ android {
         applicationId "com.joshuacerdenia.android.nicefeed"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 02
-        versionName "1.0.0-beta02"
+        versionCode 03
+        versionName "1.0.0-beta03"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

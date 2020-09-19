@@ -42,11 +42,6 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         callbacks = activity as Callbacks?
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(FeedListViewModel::class.java)
@@ -175,13 +170,15 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         }
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
+    }
+
     companion object {
         const val ITEM_MANAGE_FEEDS = 0
         const val ITEM_ADD_FEEDS = 1
         const val ITEM_SETTINGS = 2
-
-        const val ORDER_TITLE = 0
-        const val ORDER_UNREAD_ITEMS = 1
 
         fun newInstance(): FeedListFragment {
             return FeedListFragment()

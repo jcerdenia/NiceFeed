@@ -18,10 +18,9 @@ data class Entry(
     var isRead: Boolean = false
 ) : Serializable {
 
-    // Compare new and existing versions of an entry, ignoring certain properties
+    // Compare new and existing versions of the same entry, ignoring certain properties
     fun isSameAs(entry: Entry): Boolean {
         val checklist = listOf(
-            entry.url == url,
             entry.title == title,
             entry.author == author,
             entry.date == date,

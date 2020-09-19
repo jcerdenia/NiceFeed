@@ -58,8 +58,9 @@ class UpdateManager(private val receiver: UpdateReceiver) {
         val entriesToDelete = mutableListOf<Entry>()
 
         for (entry in newEntries) {
-            if (!isAlreadyAddedAndUnchanged(entry)) {
-                // Check for old version of the new entry:
+            // First, check if entry already exists unchanged
+            if (isUnique(entry)) {
+                // If entry is unique, check for existing older versions
                 if (currentEntryIds.contains(entry.url)) {
                     val currentItemIndex = currentEntryIds.indexOf(entry.url)
                     entry.isStarred = currentEntries[currentItemIndex].isStarred
@@ -91,16 +92,16 @@ class UpdateManager(private val receiver: UpdateReceiver) {
         }
     }
 
-    // Check a new entry against all current entries to see if the content is the same
-    private fun isAlreadyAddedAndUnchanged(newEntry: Entry): Boolean {
-        var isAddedAndUnchanged = false
-        for (currentEntry in currentEntries) {
+    // Check to see if there is any one old entry that is the same as the new entry
+    private fun isUnique(newEntry: Entry): Boolean {
+        var isUnique = true
+        for (currentEntry in currentEntries.filter { it.url == newEntry.url }) {
             if (newEntry.isSameAs(currentEntry)) {
-                isAddedAndUnchanged = true
+                isUnique = false
                 break
             }
         }
-        return isAddedAndUnchanged
+        return isUnique
     }
 
     private fun getEntryIds(entries: List<Entry>): List<String> {

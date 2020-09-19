@@ -18,7 +18,6 @@ object NiceFeedPreferences {
     private const val KEY_MIN_CATEGORIES = "KEY_MIN_CATEGORIES"
     private const val KEY_THEME = "KEY_THEME"
     private const val KEY_VIEW_IN_BROWSER = "KEY_VIEW_IN_BROWSER"
-    private const val KEY_AUTO_OPEN_PREVIEW = "KEY_AUTO_OPEN_PREVIEW"
     private const val KEY_BANNER = "KEY_BANNER"
 
     const val TEXT_SIZE_NORMAL = 0
@@ -27,6 +26,10 @@ object NiceFeedPreferences {
     private const val THEME_DEFAULT = 0
     const val THEME_LIGHT = 1
     const val THEME_DARK = 2
+    private const val FEED_ORDER_TITLE = 0
+    const val FEED_ORDER_UNREAD = 1
+    private const val ENTRY_ORDER_TITLE = 0
+    const val ENTRY_ORDER_UNREAD = 1
 
     private fun getPrefs(context: Context): SharedPreferences {
         return context.getSharedPreferences(NICE_FEED_PREFS, Context.MODE_PRIVATE)
@@ -49,7 +52,7 @@ object NiceFeedPreferences {
     }
 
     fun getFeedsOrder(context: Context): Int {
-        return getPrefs(context).getInt(KEY_SORT_FEEDS, 0)
+        return getPrefs(context).getInt(KEY_SORT_FEEDS, FEED_ORDER_TITLE)
     }
     
     fun saveFeedsOrder(context: Context, order: Int) {
@@ -57,7 +60,7 @@ object NiceFeedPreferences {
     }
 
     fun getEntriesOrder(context: Context): Int {
-        return getPrefs(context).getInt(KEY_SORT_ENTRIES, 0)
+        return getPrefs(context).getInt(KEY_SORT_ENTRIES, ENTRY_ORDER_TITLE)
     }
 
     fun saveEntriesOrder(context: Context, order: Int) {
