@@ -3,9 +3,7 @@ package com.joshuacerdenia.android.nicefeed.ui.fragment
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
@@ -13,10 +11,11 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.ui.OnBackgroundWorkSettingChanged
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
+import com.joshuacerdenia.android.nicefeed.ui.dialog.AboutFragment
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
 
-class SettingsFragment: VisibleFragment() {
+class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
 
     interface Callbacks: OnToolbarInflated, OnBackgroundWorkSettingChanged
 
@@ -29,8 +28,9 @@ class SettingsFragment: VisibleFragment() {
     private lateinit var themeSpinner: Spinner
     private lateinit var sortFeedsSpinner: Spinner
     private lateinit var sortEntriesSpinner: Spinner
-    private lateinit var aboutTextView: TextView
+    private lateinit var fontSpinner: Spinner
 
+    private val fragment = this@SettingsFragment
     private var callbacks: Callbacks? = null
 
     override fun onAttach(context: Context) {
@@ -53,10 +53,11 @@ class SettingsFragment: VisibleFragment() {
         themeSpinner = view.findViewById(R.id.theme_spinner)
         sortFeedsSpinner = view.findViewById(R.id.sort_feeds_spinner)
         sortEntriesSpinner = view.findViewById(R.id.sort_entries_spinner)
-        aboutTextView = view.findViewById(R.id.about_text_view)
+        fontSpinner = view.findViewById(R.id.font_spinner)
 
         toolbar.title = getString(R.string.settings)
         callbacks?.onToolbarInflated(toolbar)
+        setHasOptionsMenu(true)
         return view
     }
 
@@ -90,6 +91,15 @@ class SettingsFragment: VisibleFragment() {
             onItemSelectedListener = getSpinnerListener(context, ACTION_SAVE_ENTRIES_ORDER)
         }
 
+        fontSpinner.apply {
+            adapter = arrayOf(
+                getString(R.string.sans_serif),
+                getString(R.string.serif)
+            ).run { getDefaultAdapter(context, this)}
+            setSelection(NiceFeedPreferences.getFont(context))
+            onItemSelectedListener = getSpinnerListener(context, ACTION_SAVE_FONT)
+        }
+
         autoUpdateSwitch.apply {
             isChecked = NiceFeedPreferences.getAutoUpdateSetting(context)
             setOnCheckedChangeListener { _, isOn ->
@@ -119,12 +129,22 @@ class SettingsFragment: VisibleFragment() {
                 callbacks?.onBackgroundWorkSettingChanged(isOn)
             }
         }
+    }
 
-        aboutTextView.apply {
-            addRipple()
-            setOnClickListener {
-                Utils.openLink(requireActivity(), scrollView, Uri.parse(GITHUB_REPO))
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_settings, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == R.id.about_menu_item) {
+            AboutFragment.newInstance().apply {
+                setTargetFragment(fragment, 0)
+                show(fragment.parentFragmentManager, "about")
             }
+            true
+        } else {
+            super.onOptionsItemSelected(item)
         }
     }
 
@@ -149,6 +169,7 @@ class SettingsFragment: VisibleFragment() {
                     }
                     ACTION_SAVE_FEEDS_ORDER -> NiceFeedPreferences.saveFeedsOrder(context, position)
                     ACTION_SAVE_ENTRIES_ORDER -> NiceFeedPreferences.saveEntriesOrder(context, position)
+                    ACTION_SAVE_FONT -> NiceFeedPreferences.saveFont(context, position)
                 }
             }
 
@@ -168,9 +189,14 @@ class SettingsFragment: VisibleFragment() {
         private const val ACTION_SAVE_THEME = 0
         private const val ACTION_SAVE_FEEDS_ORDER = 1
         private const val ACTION_SAVE_ENTRIES_ORDER = 2
+        private const val ACTION_SAVE_FONT = 3
 
         fun newInstance(): SettingsFragment {
             return SettingsFragment()
         }
+    }
+
+    override fun onGoToRepoClicked() {
+        Utils.openLink(requireActivity(), scrollView, Uri.parse(GITHUB_REPO))
     }
 }

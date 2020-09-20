@@ -12,14 +12,17 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.ui.OnHomePressed
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.FeedListFragment
+import com.joshuacerdenia.android.nicefeed.ui.fragment.WelcomeFragment
 
 class MainActivity : AppCompatActivity(),
     FeedListFragment.Callbacks,
     EntryListFragment.Callbacks,
-    EntryFragment.Callbacks
+    EntryFragment.Callbacks,
+    OnHomePressed
 {
 
     private lateinit var drawerLayout: DrawerLayout
@@ -69,6 +72,19 @@ class MainActivity : AppCompatActivity(),
             .commit()
     }
 
+    private fun replaceMainFragment(newFragment: Fragment, addToBackStack: Boolean) {
+        if (addToBackStack) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragment_container, newFragment)
+                .addToBackStack(null)
+                .commit()
+        } else {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragment_container, newFragment)
+                .commit()
+        }
+    }
+
     private fun getFragment(code: Int): Fragment? {
         val fragmentId = when (code) {
             FRAGMENT_MAIN -> R.id.main_fragment_container
@@ -82,16 +98,15 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun replaceMainFragment(newFragment: Fragment, addToBackStack: Boolean) {
-        if (addToBackStack) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment_container, newFragment)
-                .addToBackStack(null)
-                .commit()
-        } else {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment_container, newFragment)
-                .commit()
+    override fun onToolbarInflated(toolbar: Toolbar, isNavigableUp: Boolean) {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(isNavigableUp)
+    }
+
+    override fun onHomePressed() {
+        drawerLayout.apply {
+            openDrawer(GravityCompat.START, true)
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED)
         }
     }
 
@@ -112,6 +127,10 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    override fun onNoFeeds() {
+        replaceMainFragment(WelcomeFragment.newInstance(), false)
+    }
+
     private fun loadFeed(feedId: String, isNewlyAdded: Boolean = false) {
         EntryListFragment.newInstance(feedId, isNewlyAdded = isNewlyAdded).let { fragment ->
             handler.postDelayed({
@@ -122,15 +141,12 @@ class MainActivity : AppCompatActivity(),
         (getFragment(FRAGMENT_NAVIGATION) as? FeedListFragment)?.updateActiveFeedId(feedId)
     }
 
-    override fun onHomePressed() {
-        drawerLayout.apply {
-            openDrawer(GravityCompat.START, true)
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED)
-        }
-    }
-
     override fun onFeedLoaded(feedId: String) {
         (getFragment(FRAGMENT_NAVIGATION) as? FeedListFragment)?.updateActiveFeedId(feedId)
+    }
+
+    override fun onFeedRemoved() {
+        replaceMainFragment(EntryListFragment.newInstance(null), false)
     }
 
     override fun onEntrySelected(entryId: String) {
@@ -138,22 +154,9 @@ class MainActivity : AppCompatActivity(),
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
-    override fun onToolbarInflated(toolbar: Toolbar, isNavigableUp: Boolean) {
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(isNavigableUp)
-    }
-
-    override fun onFinished() {
-        onBackPressed()
-    }
-
     override fun onCategoriesNeeded(): Array<String> {
         return (getFragment(FRAGMENT_NAVIGATION) as? FeedListFragment)?.getCategories()
             ?: emptyArray()
-    }
-
-    override fun onFeedRemoved() {
-        replaceMainFragment(EntryListFragment.newInstance(null), false)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -173,7 +176,8 @@ class MainActivity : AppCompatActivity(),
             return Intent(context, MainActivity::class.java).apply {
                 putExtra(EXTRA_FEED_ID, feedId)
                 putExtra(EXTRA_ENTRY_ID, latestEntryId)
-                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
         }

@@ -24,7 +24,7 @@
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textAppearance="@style/DrawerMenuItemText"
+        style="@style/DrawerMenuItemText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/item_count_text_view"
         app:layout_constraintStart_toEndOf="@+id/image_view"

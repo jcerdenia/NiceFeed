@@ -64,7 +64,6 @@ class SubscribeFragment: BottomSheetDialogFragment() {
 
         subscribeButton.apply {
             text = getString(R.string.subscribe)
-
             setOnClickListener {
                 targetFragment?.let { (it as Callbacks).onAddConfirmed(searchResultItem) }
                 dismiss()
@@ -74,7 +73,7 @@ class SubscribeFragment: BottomSheetDialogFragment() {
 
     private fun formatDate(epoch: Long?): String? {
         return if (epoch != null) {
-            DateFormat.getDateInstance(DateFormat.LONG).format(epoch)
+            DateFormat.getDateInstance(DateFormat.MEDIUM).format(epoch)
         } else {
             null
         }

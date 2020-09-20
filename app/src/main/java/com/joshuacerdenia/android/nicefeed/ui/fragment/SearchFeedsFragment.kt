@@ -141,7 +141,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
 
         SubscribeFragment.newInstance(searchResultItem).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.requireFragmentManager(), "subscribe")
+            show(fragment.parentFragmentManager, "subscribe")
         }
     }
 

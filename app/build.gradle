@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdkVersion 29
@@ -25,14 +26,16 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
     def room_version = "2.2.5"
     def lifecycle_version = "2.2.0"
+    def hilt_version = "2.28-alpha"
+    def androidx_hilt_version = "1.0.0-alpha02"
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -46,6 +49,7 @@ dependencies {
     // Lifecycle
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
     // Internet
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.google.code.gson:gson:2.8.6'
@@ -53,7 +57,7 @@ dependencies {
     // RSS
     implementation 'com.prof.rssparser:rssparser:3.0.0'
     implementation 'com.rometools:rome-opml:1.12.2'
-    // Image loading
+    // Image Loading
     implementation 'com.squareup.picasso:picasso:2.71828'
     // Database
     implementation "androidx.room:room-runtime:$room_version"
@@ -61,6 +65,11 @@ dependencies {
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
     // WorkManager
     implementation "androidx.work:work-runtime-ktx:2.4.0"
+    // Dependency Injection
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidx_hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    kapt "androidx.hilt:hilt-compiler:$androidx_hilt_version"
     // Testing
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

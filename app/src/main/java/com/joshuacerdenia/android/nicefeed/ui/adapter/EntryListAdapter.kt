@@ -69,7 +69,7 @@ class EntryListAdapter(
                 if (getDateInstance().format(it) == getDateInstance().format(Date())) {
                     getTimeInstance(SHORT).format(it)
                 } else {
-                    getDateInstance(MEDIUM).format(it)
+                    getDateInstance(SHORT).format(it)
                 }
             } ?: ""
 

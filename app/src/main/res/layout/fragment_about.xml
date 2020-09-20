@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="8dp"
+        android:drawablePadding="16dp"
+        android:gravity="start|center_vertical"
+        android:text="@string/about_nicefeed"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        app:drawableStartCompat="@mipmap/ic_launcher_round" />
+
+    <TextView
+        android:id="@+id/about_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:padding="16dp"
+        android:text="@string/about_nicefeed_detail" />
+
+</LinearLayout>

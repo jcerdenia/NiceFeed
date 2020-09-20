@@ -126,7 +126,7 @@ class ManageFeedsFragment: VisibleFragment(),
         updateToolbar(toolbar, viewModel.selectedItems.size)
         progressBar.visibility = View.VISIBLE
 
-        viewModel.feedsMinimalLiveData.observe(viewLifecycleOwner, Observer { feeds ->
+        viewModel.feedsMinimalLiveData.observe(viewLifecycleOwner, { feeds ->
             adapter.submitList(feeds)
             progressBar.visibility = View.GONE
             selectAllCheckBox.visibility = if (feeds.size > 1) {
@@ -170,7 +170,7 @@ class ManageFeedsFragment: VisibleFragment(),
     private fun handleSortFeeds(): Boolean {
         SortFeedManagerFragment.newInstance(viewModel.currentOrder).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.requireFragmentManager(), "sort")
+            show(fragment.parentFragmentManager, "sort")
         }
         return true
     }
@@ -188,7 +188,7 @@ class ManageFeedsFragment: VisibleFragment(),
 
             ConfirmRemoveFragment.newInstance(title, count).apply {
                 setTargetFragment(fragment, 0)
-                show(fragment.requireFragmentManager(),"unsubscribe")
+                show(fragment.parentFragmentManager,"unsubscribe")
             }
 
             return true
@@ -245,7 +245,7 @@ class ManageFeedsFragment: VisibleFragment(),
 
             EditCategoryFragment.newInstance(viewModel.getCategories(), title, count).apply {
                 setTargetFragment(fragment, 0)
-                show(fragment.requireFragmentManager(), "edit category")
+                show(fragment.parentFragmentManager, "edit category")
             }
         } else {
             showNothingSelectedNotice(ACTION_EDIT)

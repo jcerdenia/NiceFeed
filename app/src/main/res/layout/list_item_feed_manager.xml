@@ -18,10 +18,12 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:paddingStart="24dp"
-        android:textAppearance="@style/MainItemText"
+        style="@style/HeadlineItemText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Title" />
+        tools:text="Title"
+        android:focusable="true"
+        tools:ignore="RtlSymmetry" />
 
     <TextView
         android:id="@+id/feed_website"

@@ -36,7 +36,6 @@ class AboutFeedFragment: BottomSheetDialogFragment() {
         categoryTextView = view.findViewById(R.id.textView_additional_info)
         imageView = view.findViewById(R.id.imageView_feed)
         editCategoryButton = view.findViewById(R.id.button_positive)
-
         return view
     }
 
@@ -59,7 +58,6 @@ class AboutFeedFragment: BottomSheetDialogFragment() {
 
         editCategoryButton.apply {
             text = getString(R.string.edit_category)
-
             setOnClickListener {
                 targetFragment?.let { (it as Callbacks).onEditCategoryClicked() }
                 dismiss()

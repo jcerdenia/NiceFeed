@@ -23,7 +23,9 @@ class EntryViewModel : ViewModel() {
     var lastPosition: Pair<Int, Int> = Pair(0, 0)
     var textSize = 0
         private set
+    var font = 0
     var bannerIsEnabled = true
+    var isInitialLoading = true
 
     var entry: Entry? = null
         private set
@@ -53,13 +55,6 @@ class EntryViewModel : ViewModel() {
         }
     }
 
-    fun setBanner(isEnabled: Boolean) {
-        bannerIsEnabled = isEnabled
-        entryLiveData.value?.let { entry ->
-            drawHtml(entry)
-        }
-    }
-
     private fun drawHtml(entry: Entry) {
         EntryMinimal(
             title = entry.title,
@@ -67,7 +62,7 @@ class EntryViewModel : ViewModel() {
             author = entry.author,
             content = entry.content?.removePrefix(FeedParser.FLAG_EXCERPT) ?: ""
         ).let {
-            htmlLiveData.value = EntryToHtmlFormatter(textSize, !bannerIsEnabled).getHtml(it)
+            htmlLiveData.value = EntryToHtmlFormatter(textSize, font, !bannerIsEnabled).getHtml(it)
         }
     }
 

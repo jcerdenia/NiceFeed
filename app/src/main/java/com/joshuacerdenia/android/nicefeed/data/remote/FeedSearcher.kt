@@ -1,7 +1,6 @@
 package com.joshuacerdenia.android.nicefeed.data.remote
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
@@ -17,7 +16,7 @@ import java.net.URLEncoder
 
 private const val TAG = "FeedSearcher"
 
-// Search engine
+// Generates a search query and returns a list of results from Feedly
 
 class FeedSearcher(private val networkMonitor: NetworkMonitor) {
 
@@ -40,8 +39,7 @@ class FeedSearcher(private val networkMonitor: NetworkMonitor) {
     private fun generatePath(query: String): String {
         return Uri.Builder()
             .path("v3/search/feeds")
-            .appendQueryParameter("count", "50")
-            .appendQueryParameter("locale", "en") // Change depending on locale?
+            .appendQueryParameter("count", RESULTS_COUNT.toString())
             .appendQueryParameter("query", URLEncoder.encode(query, "UTF-8"))
             .build()
             .toString()
@@ -70,6 +68,7 @@ class FeedSearcher(private val networkMonitor: NetworkMonitor) {
     }
 
     companion object {
+        private const val RESULTS_COUNT = 100
         private const val BASE_URL = "https://cloud.feedly.com/"
     }
 }

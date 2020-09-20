@@ -20,6 +20,7 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.EntryLight
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.ui.OnHomePressed
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.adapter.EntryListAdapter
 import com.joshuacerdenia.android.nicefeed.ui.dialog.AboutFeedFragment
@@ -29,6 +30,7 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.menu.EntryPopupMenu
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryListViewModel
 import com.joshuacerdenia.android.nicefeed.utils.Utils
+import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
 
 private const val TAG = "EntryListFragment"
 
@@ -41,8 +43,7 @@ class EntryListFragment : VisibleFragment(),
     ConfirmRemoveFragment.Callbacks
 {
 
-    interface Callbacks: OnToolbarInflated {
-        fun onHomePressed()
+    interface Callbacks: OnHomePressed, OnToolbarInflated {
         fun onFeedLoaded(feedId: String)
         fun onEntrySelected(entryId: String)
         fun onCategoriesNeeded(): Array<String>
@@ -117,11 +118,7 @@ class EntryListFragment : VisibleFragment(),
         }
         recyclerView.adapter = adapter
 
-        toolbar.title = when (feedId) {
-            FOLDER_NEW -> getString(R.string.new_entries)
-            FOLDER_STARRED -> getString(R.string.starred_entries)
-            else -> getString(R.string.loading)
-        }
+        toolbar.title = getString(R.string.loading)
         callbacks?.onToolbarInflated(toolbar, false)
         setHasOptionsMenu(feedId != null)
         return view
@@ -146,7 +143,11 @@ class EntryListFragment : VisibleFragment(),
             }
             // Check if not currently updating:
             if (toolbar.title != getString(R.string.updating)) {
-                feed?.title?.let { toolbar.title = it }
+                toolbar.title = when (feedId) {
+                    FOLDER_NEW -> getString(R.string.new_entries)
+                    FOLDER_STARRED -> getString(R.string.starred_entries)
+                    else -> feed?.title
+                }
             }
         })
 
@@ -335,7 +336,7 @@ class EntryListFragment : VisibleFragment(),
         if (feed == null) return false
         AboutFeedFragment.newInstance(feed).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.requireFragmentManager(), "about")
+            show(fragment.parentFragmentManager, "about")
         }
         return true
     }
@@ -344,7 +345,7 @@ class EntryListFragment : VisibleFragment(),
         val categories = callbacks?.onCategoriesNeeded() ?: emptyArray()
         EditCategoryFragment.newInstance(categories, viewModel.getCurrentFeed()?.title).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.requireFragmentManager(), "edit category")
+            show(fragment.parentFragmentManager, "edit category")
         }
     }
 
@@ -362,7 +363,7 @@ class EntryListFragment : VisibleFragment(),
     private fun handleFilter(): Boolean {
         FilterEntriesFragment.newInstance(viewModel.currentFilter).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.requireFragmentManager(), "filter")
+            show(fragment.parentFragmentManager, "filter")
         }
         return true
     }
@@ -393,7 +394,7 @@ class EntryListFragment : VisibleFragment(),
         return if (feed != null) {
             ConfirmRemoveFragment.newInstance(feed.title).apply {
                 setTargetFragment(fragment, 0)
-                show(fragment.requireFragmentManager(),"unsubscribe")
+                show(fragment.parentFragmentManager,"unsubscribe")
             }
             true
         } else {

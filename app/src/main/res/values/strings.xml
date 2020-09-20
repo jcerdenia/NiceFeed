@@ -16,7 +16,7 @@
     <string name="failed_to_get_feed">Failed to get feed. Please try again.</string>
     <string name="failed_to_connect">Failed to connect to feed. Please retry later or enter the address manually.</string>
     <string name="view">View</string>
-    <string name="last_updated">Last updated %s</string>
+    <string name="last_updated">Updated %s</string>
     <string name="added">Added %s.</string>
     <string name="updated">Updated %s.</string>
     <string name="added_and_updated">Added %1$s and updated %2$d.</string>
@@ -24,7 +24,7 @@
     <string name="select_all">Select All</string>
     <string name="sort">Sort</string>
     <string name="confirm">Confirm</string>
-    <string name="about">About</string>
+    <string name="about_nicefeed">About NiceFeed</string>
     <string name="feeds">Feeds</string>
     <string name="edit_category">Edit Category</string>
     <string name="number_selected">%d selected</string>
@@ -73,8 +73,9 @@
     <string name="confirm_import_message">This will not overwrite existing subscriptions.</string>
     <string name="select_file">Select file</string>
     <string name="import_feeds_via_opml">Import feeds via OPML</string>
-    <string name="about_nicefeed">
-        NiceFeed is a project of Joshua Cerdenia. Please visit github.com/joshuacerdenia/nicefeed for information.
+    <string name="about_nicefeed_detail">
+        NiceFeed is developed and maintained by Joshua Cerdenia.
+        Please visit github.com/joshuacerdenia/nicefeed for information.
     </string>
     <string name="view_edit_feed_info">View/Edit Feed Info</string>
     <string name="check_for_updates">Check for Updates</string>
@@ -105,15 +106,22 @@
     <string name="appearance">Appearance</string>
     <string name="theme">Theme</string>
     <string name="light">Light</string>
-    <string name="dark">Dark</string>
+    <string name="dark">Dark (Android 10+ only)</string>
     <string name="system_default">System default</string>
     <string name="no_internet_connection">No internet connection.</string>
     <string name="more_options">More options</string>
-    <string name="open_entries_in_app">Open entries in-app</string>
-    <string name="open_entries_in_app_description">Switch off to use system browser instead.</string>
+    <string name="read_entries_in_app">Read entries in-app</string>
+    <string name="read_entries_in_app_description">Switch off to use system browser instead.</string>
     <string name="feeds_and_entries">Feeds and Entries</string>
     <string name="subscription_limit_reached">Subscription limit reached.</string>
     <string name="enable_header_images">Enable header images</string>
+    <string name="ok">OK</string>
+    <string name="go">Go</string>
+    <string name="reading">Reading</string>
+    <string name="font">Font</string>
+    <string name="sans_serif">Sans Serif</string>
+    <string name="serif">Serif</string>
+    <string name="add_your_first_feed">Add your first feed.</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

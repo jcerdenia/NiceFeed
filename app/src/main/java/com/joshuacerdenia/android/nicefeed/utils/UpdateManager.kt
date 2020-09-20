@@ -60,7 +60,7 @@ class UpdateManager(private val receiver: UpdateReceiver) {
         for (entry in newEntries) {
             // First, check if entry already exists unchanged
             if (isUnique(entry)) {
-                // If entry is unique, check for existing older versions
+                // If entry is unique, look for existing older version
                 if (currentEntryIds.contains(entry.url)) {
                     val currentItemIndex = currentEntryIds.indexOf(entry.url)
                     entry.isStarred = currentEntries[currentItemIndex].isStarred

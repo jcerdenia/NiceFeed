@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/linearLayout"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -25,7 +23,7 @@
                 android:layout_width='match_parent'
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:textAppearance="@style/MainItemText"
+                style="@style/HeadlineItemText"
                 android:text="@string/appearance" />
 
             <LinearLayout
@@ -44,15 +42,6 @@
                     android:layout_height="match_parent"
                     android:padding="16dp" />
             </LinearLayout>
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/banner_switch"
-                android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                android:padding="16dp"
-                android:text="@string/enable_header_images"/>
-
             <View style="@style/Divider"/>
 
             <!-- FEEDS AND ENTRIES -->
@@ -60,7 +49,7 @@
                 android:layout_width='match_parent'
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:textAppearance="@style/MainItemText"
+                style="@style/HeadlineItemText"
                 android:text="@string/feeds_and_entries" />
 
             <LinearLayout
@@ -108,7 +97,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
-                android:text="@string/auto_update_on_launch_description"/>
+                android:text="@string/auto_update_on_launch_description"
+                android:paddingBottom="16dp"/>
+            <View style="@style/Divider"/>
+
+            <!-- READING -->
+            <TextView
+                android:layout_width='match_parent'
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                style="@style/HeadlineItemText"
+                android:text="@string/reading" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:layout_width="match_parent"
@@ -116,13 +115,39 @@
                 android:id="@+id/browser_switch"
                 android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                 android:padding="16dp"
-                android:text="@string/open_entries_in_app"/>
+                android:text="@string/read_entries_in_app"/>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
                 android:paddingBottom="16dp"
-                android:text="@string/open_entries_in_app_description"/>
+                android:text="@string/read_entries_in_app_description"/>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/banner_switch"
+                android:padding="16dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                android:text="@string/enable_header_images"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width='wrap_content'
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                    android:text="@string/font"/>
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/font_spinner"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:padding="16dp" />
+            </LinearLayout>
             <View style="@style/Divider"/>
 
             <!-- NOTIFICATIONS -->
@@ -130,7 +155,7 @@
                 android:layout_width='match_parent'
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:textAppearance="@style/MainItemText"
+                style="@style/HeadlineItemText"
                 android:text="@string/notifications" />
 
             <androidx.appcompat.widget.SwitchCompat
@@ -140,28 +165,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                 android:padding="16dp"
                 android:text="@string/notification_switch_description"/>
-            <View style="@style/Divider"/>
 
-            <!-- ABOUT -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="16dp"
-                android:paddingHorizontal="16dp"
-                android:paddingBottom="8dp"
-                android:drawablePadding="16dp"
-                android:gravity="start|center_vertical"
-                android:text="@string/about"
-                android:textAppearance="@style/MainItemText"
-                app:drawableStartCompat="@drawable/ic_info" />
-
-            <TextView
-                android:id="@+id/about_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:padding="16dp"
-                android:text="@string/about_nicefeed" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

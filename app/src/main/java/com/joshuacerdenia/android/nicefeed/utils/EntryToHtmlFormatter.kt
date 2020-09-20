@@ -2,6 +2,7 @@ package com.joshuacerdenia.android.nicefeed.utils
 
 import android.util.Base64
 import android.util.Base64.encodeToString
+import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.FONT_SERIF
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_SIZE_LARGE
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_SIZE_LARGER
 import com.joshuacerdenia.android.nicefeed.data.model.EntryMinimal
@@ -9,19 +10,28 @@ import java.text.DateFormat
 
 // Prepares the contents of an Entry to be loaded into a WebView
 
-class EntryToHtmlFormatter(textSizeKey: Int, private val includeHeader: Boolean) {
+class EntryToHtmlFormatter(
+    textSizeKey: Int,
+    font: Int,
+    private val includeHeader: Boolean
+) {
 
-    private val linkColor = "#444E64" // Change dynamically?
-    private val fontSize = when (textSizeKey) {
+    private val textSize = when (textSizeKey) {
         TEXT_SIZE_LARGE -> "large"
         TEXT_SIZE_LARGER -> "x-large"
         else -> "medium"
     }
+    private val fontFamily = if (font == FONT_SERIF) {
+        "serif"
+    } else {
+        "sans-serif"
+    }
 
     private val style = OPEN_STYLE_TAG + "* {max-width:100%}" +
-            "body {font-size:$fontSize; font-family:$FONT_SANS_SERIF; word-wrap:break-word; margin:16dp}" +
+            "body {font-size:$textSize; font-family:$fontFamily; word-wrap:break-word; line-height:1.4}" +
+            "h1, h2, h3, h4, h5, h6 {line-height:normal}" +
             "#subtitle {color:gray}" +
-            "a:link, a:visited, a:hover, a:active {color:$linkColor; text-decoration:none; font-weight:bold}" +
+            "a:link, a:visited, a:hover, a:active {color:$LINK_COLOR; text-decoration:none; font-weight:bold}" +
             "img, figure {display:block; margin-left:auto; margin-right:auto; height:auto; max-width:100%}" +
             "iframe {width:100%}" + CLOSE_STYLE_TAG
 
@@ -80,6 +90,6 @@ class EntryToHtmlFormatter(textSizeKey: Int, private val includeHeader: Boolean)
         private const val CLOSE_BODY_TAG = "</body>"
         private const val OPEN_CODE_TAG = "<code>"
         private const val CLOSE_CODE_TAG = "</code>"
-        private const val FONT_SANS_SERIF = "Roboto, sans-serif"
+        private const val LINK_COLOR = "#444E64"
     }
 }

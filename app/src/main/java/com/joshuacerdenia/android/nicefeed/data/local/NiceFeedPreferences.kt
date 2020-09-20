@@ -3,6 +3,7 @@ package com.joshuacerdenia.android.nicefeed.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment.Companion.SORT_BY_ADDED
+import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
 
 object NiceFeedPreferences {
 
@@ -15,6 +16,7 @@ object NiceFeedPreferences {
     private const val KEY_LAST_POLLED_INDEX = "KEY_LAST_POLLED_INDEX"
     private const val KEY_POLLING = "KEY_POLLING"
     private const val KEY_TEXT_SIZE = "KEY_TEXT_SIZE"
+    private const val KEY_FONT = "KEY_FONT"
     private const val KEY_MIN_CATEGORIES = "KEY_MIN_CATEGORIES"
     private const val KEY_THEME = "KEY_THEME"
     private const val KEY_VIEW_IN_BROWSER = "KEY_VIEW_IN_BROWSER"
@@ -23,6 +25,8 @@ object NiceFeedPreferences {
     const val TEXT_SIZE_NORMAL = 0
     const val TEXT_SIZE_LARGE = 1
     const val TEXT_SIZE_LARGER = 2
+    private const val FONT_SANS = 0
+    const val FONT_SERIF = 1
     private const val THEME_DEFAULT = 0
     const val THEME_LIGHT = 1
     const val THEME_DARK = 2
@@ -97,6 +101,14 @@ object NiceFeedPreferences {
 
     fun saveTextSize(context: Context, textSize: Int) {
         getPrefs(context).edit().putInt(KEY_TEXT_SIZE, textSize).apply()
+    }
+
+    fun getFont(context: Context): Int {
+        return getPrefs(context).getInt(KEY_FONT, FONT_SANS)
+    }
+
+    fun saveFont(context: Context, font: Int) {
+        getPrefs(context).edit().putInt(KEY_FONT, font).apply()
     }
 
     fun getMinimizedCategories(context: Context): Set<String>? {

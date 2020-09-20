@@ -12,12 +12,14 @@ import com.joshuacerdenia.android.nicefeed.utils.NetworkMonitor
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.work.NewEntriesWorker
 import com.joshuacerdenia.android.nicefeed.work.SweeperWorker
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 const val NOTIFICATION_CHANNEL_ID = "nicefeed_new_entries"
 
+@HiltAndroidApp
 class NiceFeedApplication : Application(), OnBackgroundWorkSettingChanged {
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)

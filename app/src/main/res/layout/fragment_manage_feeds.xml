@@ -28,7 +28,6 @@
         android:paddingHorizontal="24dp"
         android:paddingVertical="16dp"
         android:text="@string/select_all"
-        android:textAppearance="@style/DrawerMenuHeaderText"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,6 +37,7 @@
         tools:visibility="visible" />
 
     <View
+        android:id="@+id/view"
         style="@style/Divider"
         android:layout_width="0dp"
         android:layout_height="1dp"
@@ -74,14 +74,16 @@
         android:id="@+id/empty_message_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:padding="16dp"
         android:text="@string/no_items"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,6 +22,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     interface Callbacks {
         fun onMenuItemSelected(item: Int)
         fun onFeedSelected(feedId: String, activeFeedId: String?)
+        fun onNoFeeds()
     }
 
     private lateinit var viewModel: FeedListViewModel
@@ -86,6 +87,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
                 starredEntriesButton.visibility = View.GONE
                 bottomDivider.visibility = View.GONE
                 updateActiveFeedId(null)
+                callbacks?.onNoFeeds()
             }
         })
     }

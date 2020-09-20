@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
-import com.joshuacerdenia.android.nicefeed.ui.OnFinished
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.dialog.TextSizeFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryViewModel
@@ -34,7 +33,7 @@ import java.util.*
 
 class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
-    interface Callbacks: OnToolbarInflated, OnFinished
+    interface Callbacks: OnToolbarInflated
 
     private lateinit var viewModel: EntryViewModel
     private lateinit var nestedScrollView: NestedScrollView
@@ -59,7 +58,8 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         viewModel = ViewModelProvider(this).get(EntryViewModel::class.java)
         context?.let { context ->
             viewModel.setTextSize(NiceFeedPreferences.getTextSize(context))
-            viewModel.setBanner(NiceFeedPreferences.getEnableBanner(context))
+            viewModel.bannerIsEnabled = NiceFeedPreferences.getEnableBanner(context)
+            viewModel.font = NiceFeedPreferences.getFont(context)
         }
         arguments?.getString(ARG_ENTRY_ID)?.let { entryId ->
             viewModel.getEntryById(entryId)
@@ -269,7 +269,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         saveScrollPosition()
         TextSizeFragment.newInstance(viewModel.textSize).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.requireFragmentManager(), "change text size")
+            show(fragment.parentFragmentManager, "change text size")
         }
         return true
     }
