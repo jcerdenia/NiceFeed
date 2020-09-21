@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">NiceFeed</string>
     <string name="sample_feed_url">www.example.com/feed</string>
-    <string name="cancel">Cancel</string>
     <string name="add_feed_by_url">Add feed by URL</string>
     <string name="feed_already_added">That feed has already been added.</string>
     <string name="settings">Settings</string>
@@ -25,7 +24,6 @@
     <string name="sort">Sort</string>
     <string name="confirm">Confirm</string>
     <string name="about_nicefeed">About NiceFeed</string>
-    <string name="feeds">Feeds</string>
     <string name="edit_category">Edit Category</string>
     <string name="number_selected">%d selected</string>
     <string name="edit_category_dialog_message">Change will be applied to %s.</string>
@@ -67,7 +65,6 @@
     <string name="add_feeds">Add Feeds</string>
     <string name="updating">Updating…</string>
     <string name="share">Share</string>
-    <string name="feeds_imported">Imported %s.</string>
     <string name="import_successful">Import successful.</string>
     <string name="error_message">An error has occurred.</string>
     <string name="confirm_import_title">Import %s?</string>
@@ -109,14 +106,12 @@
     <string name="light">Light</string>
     <string name="dark">Dark (Android 10+ only)</string>
     <string name="system_default">System default</string>
-    <string name="no_internet_connection">No internet connection.</string>
     <string name="more_options">More options</string>
     <string name="read_entries_in_app">Read entries in-app</string>
     <string name="read_entries_in_app_description">Switch off to use system browser instead.</string>
     <string name="feeds_and_entries">Feeds and Entries</string>
     <string name="subscription_limit_reached">Subscription limit reached.</string>
     <string name="enable_header_images">Enable header images</string>
-    <string name="ok">OK</string>
     <string name="go">Go</string>
     <string name="reading">Reading</string>
     <string name="font">Font</string>
