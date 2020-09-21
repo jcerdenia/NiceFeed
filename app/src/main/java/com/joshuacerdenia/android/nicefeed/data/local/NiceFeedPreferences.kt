@@ -7,6 +7,7 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment.Com
 object NiceFeedPreferences {
 
     private const val NICE_FEED_PREFS = "NICE_FEED_PREFS"
+    private const val KEY_IS_EMPTY = "KEY_IS_EMPTY"
     private const val KEY_FEED_ID = "KEY_FEED_ID"
     private const val KEY_FEED_MANAGER_ORDER = "KEY_FEED_MANAGER_ORDER"
     private const val KEY_SORT_FEEDS = "KEY_SORT_FEEDS"
@@ -36,6 +37,14 @@ object NiceFeedPreferences {
 
     private fun getPrefs(context: Context): SharedPreferences {
         return context.getSharedPreferences(NICE_FEED_PREFS, Context.MODE_PRIVATE)
+    }
+
+    fun isEmpty(context: Context): Boolean {
+        return getPrefs(context).getBoolean(KEY_IS_EMPTY, true)
+    }
+
+    fun isEmpty(context: Context, isEmpty: Boolean) {
+        getPrefs(context).edit().putBoolean(KEY_IS_EMPTY, isEmpty).apply()
     }
 
     fun getLastViewedFeedId(context: Context): String? {

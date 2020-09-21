@@ -35,7 +35,6 @@ class WelcomeFragment : VisibleFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         toolbar.apply {
             setNavigationIcon(R.drawable.ic_menu)
             setNavigationOnClickListener { callback?.onHomePressed() }

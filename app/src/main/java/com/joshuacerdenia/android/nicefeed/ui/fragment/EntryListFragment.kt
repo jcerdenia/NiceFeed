@@ -50,7 +50,8 @@ class EntryListFragment : VisibleFragment(),
 
     private lateinit var viewModel: EntryListViewModel
     private lateinit var toolbar: Toolbar
-    private lateinit var emptyMessageTextView: TextView
+    private lateinit var noItemsTextView: TextView
+    private lateinit var noFeedsTextView: TextView
     private lateinit var masterProgressBar: ProgressBar
     private lateinit var progressBar: ProgressBar
     private lateinit var searchItem: MenuItem
@@ -82,20 +83,8 @@ class EntryListFragment : VisibleFragment(),
         adapter = EntryListAdapter(this)
         
         feedId = arguments?.getString(ARG_FEED_ID)
-        feedId?.let { feedId ->
-            viewModel.getFeedWithEntries(feedId)
-            if (feedId.startsWith(FOLDER)) {
-                viewModel.shouldAutoRefresh = false
-                callbacks?.onFeedLoaded(feedId)
-            }
-        } ?: run {
-            masterProgressBar.visibility = View.GONE
-            emptyMessageTextView.visibility = View.VISIBLE
-            toolbar.title = getString(R.string.app_name)
-        }
-
         val isNewlyAdded = arguments?.getBoolean(ARG_IS_NEWLY_ADDED) ?: false
-        if (isNewlyAdded || !autoUpdateIsEnabled) viewModel.shouldAutoRefresh = false
+        if (isNewlyAdded || !autoUpdateIsEnabled) viewModel.isAutoUpdating = false
     }
 
     override fun onCreateView(
@@ -105,7 +94,8 @@ class EntryListFragment : VisibleFragment(),
     ): View? {
         val view = inflater.inflate(R.layout.fragment_entry_list, container, false)
         toolbar = view.findViewById(R.id.toolbar)
-        emptyMessageTextView = view.findViewById(R.id.empty_message_text_view)
+        noItemsTextView = view.findViewById(R.id.empty_message_text_view)
+        noFeedsTextView = view.findViewById(R.id.no_feeds_text_view)
         masterProgressBar = view.findViewById(R.id.master_progress_bar)
         progressBar = view.findViewById(R.id.progress_bar)
 
@@ -141,7 +131,7 @@ class EntryListFragment : VisibleFragment(),
         })
 
         viewModel.entriesLightLiveData.observe(viewLifecycleOwner, { entries ->
-            emptyMessageTextView.visibility = if (entries.isNullOrEmpty()) View.VISIBLE else View.GONE
+            noItemsTextView.visibility = if (entries.isNullOrEmpty()) View.VISIBLE else View.GONE
             masterProgressBar.visibility = View.GONE
             adapter.submitList(entries)
             toggleOptionsItems()
@@ -150,9 +140,9 @@ class EntryListFragment : VisibleFragment(),
                 Handler().postDelayed({ recyclerView.scrollToPosition(0) }, 250)
             }
             // Show update notice, if any
-            viewModel.updateValues?.let { values ->
-                showRefreshedNotice(values.first, values.second)
-                viewModel.onUpdateNoticeShown()
+            if (viewModel.updateValues.isNotEmpty()) viewModel.updateValues.let { values ->
+                showUpdatedNotice(values.added, values.updated)
+                viewModel.updateValues.clear()
             }
         })
 
@@ -167,19 +157,29 @@ class EntryListFragment : VisibleFragment(),
 
     override fun onStart() {
         super.onStart()
+        feedId?.let { feedId ->
+            viewModel.getFeedWithEntries(feedId)
+            if (feedId.startsWith(FOLDER)) {
+                viewModel.isAutoUpdating = false
+                callbacks?.onFeedLoaded(feedId)
+            }
+            // Auto-update on launch
+            if (viewModel.isAutoUpdating) Handler().postDelayed({
+                viewModel.requestUpdate(feedId)
+                toolbar.title = context?.getString(R.string.updating)
+                progressBar.visibility = View.VISIBLE
+            }, 750)
+        } ?: let {
+            masterProgressBar.visibility = View.GONE
+            noItemsTextView.visibility = View.VISIBLE
+            toolbar.title = getString(R.string.app_name)
+        }
+        
         toolbar.apply {
             setNavigationIcon(R.drawable.ic_menu)
             setNavigationOnClickListener { callbacks?.onHomePressed() }
             setOnClickListener { recyclerView.smoothScrollToPosition(0) }
         }
-        // Auto-refresh on launch
-        if (viewModel.shouldAutoRefresh) Handler().postDelayed({
-                feedId?.let { feedId ->
-                    viewModel.requestUpdate(feedId)
-                    toolbar.title = context?.getString(R.string.updating)
-                    progressBar.visibility = View.VISIBLE 
-                } 
-            }, 750)
     }
 
     override fun onResume() {
@@ -274,7 +274,7 @@ class EntryListFragment : VisibleFragment(),
         } else false
     }
 
-    private fun showRefreshedNotice(newCount: Int, updatedCount: Int) {
+    private fun showUpdatedNotice(newCount: Int, updatedCount: Int) {
         val entriesAdded = resources.getQuantityString(R.plurals.numberOfNewEntries, newCount, newCount)
         val entriesUpdated = resources.getQuantityString(R.plurals.numberOfEntries, updatedCount, updatedCount)
         val message = when {

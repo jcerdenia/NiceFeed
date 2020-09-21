@@ -36,23 +36,19 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
                 e.printStackTrace()
                 null
             }
-        } else {
-            null
-        }
+        } else null
     }
 
     suspend fun requestFeed(url: String, backup: String? = null) {
         if (networkMonitor.isOnline) {
-            executeRequest(url, backup)
-        } else {
-            _feedRequestLiveData.postValue(null)
-        }
+            BackupUrlManager.setBase(backup)
+            executeRequest(url)
+        } else _feedRequestLiveData.postValue(null)
     }
 
-    private suspend fun executeRequest(url: String, backup: String? = null) {
+    private suspend fun executeRequest(url: String) {
         // Automatically makes several requests with different possible URLs
         Log.d(TAG, "Requesting $url...")
-        BackupUrlManager.setBase(backup)
 
         try {
             val channel = rssParser.getChannel(url)
@@ -62,11 +58,9 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
         } catch (e: Exception) {
             e.printStackTrace()
             // If the initial request fails, try backup URL in different variations
-            val nextUrl = BackupUrlManager.getUrl()
-            if (nextUrl != null) {
-                requestFeed(nextUrl) // Try the next URL
-                BackupUrlManager.countUp() // Ticked when a request fails
-            } else {
+            BackupUrlManager.getNextUrl()?.let {
+                executeRequest(it) // Keep trying
+            } ?: let {
                 _feedRequestLiveData.postValue(null)
                 Log.d(TAG, "Request failed")
             }
@@ -107,9 +101,7 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
                         image = article.image
                     )
                     entries.add(entry)
-                } else {
-                    break
-                }
+                } else break
             }
             return entries
         }
@@ -117,9 +109,7 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
         private fun parseDate(stringDate: String?): Date? {
             return if (stringDate != null) {
                 SimpleDateFormat(DATE_PATTERN, Locale.ENGLISH).parse(stringDate)
-            } else {
-                null
-            }
+            } else null
         }
     }
 

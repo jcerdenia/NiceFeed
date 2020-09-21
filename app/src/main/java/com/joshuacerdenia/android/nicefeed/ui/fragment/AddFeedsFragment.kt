@@ -41,9 +41,7 @@ class AddFeedsFragment: FeedAddingFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(AddFeedsViewModel::class.java)
-        context?.let { context ->
-            opmlImporter = OpmlImporter(context, this)
-        }
+        context?.let { context -> opmlImporter = OpmlImporter(context, this) }
     }
     
     override fun onCreateView(
@@ -89,9 +87,7 @@ class AddFeedsFragment: FeedAddingFragment(),
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(queryText: String): Boolean {
-                if (queryText.isNotBlank()) {
-                    callbacks?.onQuerySubmitted(queryText)
-                }
+                if (queryText.isNotBlank()) callbacks?.onQuerySubmitted(queryText)
                 return true
             }
 
@@ -106,8 +102,8 @@ class AddFeedsFragment: FeedAddingFragment(),
                 .substringAfter("://")
                 .toLowerCase(Locale.ROOT)
                 .trim()
-                .run {
-                    viewModel.requestFeed(HTTPS + this)
+                .run { // Allow http:// request in case https:// fails
+                    viewModel.requestFeed(HTTPS + this, HTTP + this)
                 }
             progressBar.visibility = View.VISIBLE
             subscribeButton.apply {
@@ -116,9 +112,7 @@ class AddFeedsFragment: FeedAddingFragment(),
             }
         }
 
-        importOpmlButton.setOnClickListener {
-            callbacks?.onImportOpmlSelected()
-        }
+        importOpmlButton.setOnClickListener { callbacks?.onImportOpmlSelected() }
     }
 
     fun submitUriForImport(uri: Uri) {
@@ -129,41 +123,32 @@ class AddFeedsFragment: FeedAddingFragment(),
         viewModel.feedsToImport = feeds
         ConfirmImportFragment.newInstance(feeds.size).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.requireFragmentManager(), "confirm import")
+            show(fragment.parentFragmentManager, "confirm import")
         }
     }
 
     override fun onParseOpmlFailed() {
-        Snackbar.make(
-            linearLayout,
-            getString(R.string.error_message),
-            Snackbar.LENGTH_SHORT
-        ).show()
+        Utils.showErrorMessage(linearLayout, resources)
     }
 
     override fun onImportConfirmed(count: Int) {
         val feedsImported = if (count == 1) {
             viewModel.feedsToImport.first().title
-        } else {
-            resources.getQuantityString(R.plurals.numberOfFeeds, count, count)
-        }
+        } else resources.getQuantityString(R.plurals.numberOfFeeds, count, count)
 
         Snackbar.make(
             linearLayout,
             getString(R.string.feeds_imported, feedsImported),
             Snackbar.LENGTH_SHORT
-        ).setAction(R.string.done) {
-            callbacks?.onFinished()
-        }.show()
+        ).setAction(R.string.done) { callbacks?.onFinished() }.show()
 
-        viewModel.feedsToImport.toTypedArray().run {
-            viewModel.addFeeds(*this)
-        }
+        viewModel.feedsToImport.toTypedArray().run { viewModel.addFeeds(*this) }
         viewModel.feedsToImport = emptyList()
     }
 
     companion object {
         private const val HTTPS = "https://"
+        private const val HTTP = "http://"
 
         fun newInstance(): AddFeedsFragment {
             return AddFeedsFragment()

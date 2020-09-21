@@ -20,9 +20,9 @@ import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
 class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
     interface Callbacks {
+        fun onFeedListEmpty()
         fun onMenuItemSelected(item: Int)
         fun onFeedSelected(feedId: String, activeFeedId: String?)
-        fun onNoFeeds()
     }
 
     private lateinit var viewModel: FeedListViewModel
@@ -72,19 +72,20 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.feedListLiveData.observe(viewLifecycleOwner, { list ->
+            NiceFeedPreferences.isEmpty(requireContext(), list.isEmpty())
             adapter.submitList(list)
             if (list.isNotEmpty()) {
-                manageButton.visibility = View.VISIBLE
                 newEntriesButton.visibility = View.VISIBLE
                 starredEntriesButton.visibility = View.VISIBLE
+                manageButton.visibility = View.VISIBLE
                 bottomDivider.visibility = View.VISIBLE
             } else {
-                manageButton.visibility = View.GONE
+                callbacks?.onFeedListEmpty()
                 newEntriesButton.visibility = View.GONE
                 starredEntriesButton.visibility = View.GONE
+                manageButton.visibility = View.GONE
                 bottomDivider.visibility = View.GONE
                 updateActiveFeedId(null)
-                callbacks?.onNoFeeds()
             }
         })
     }

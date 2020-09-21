@@ -33,12 +33,9 @@ class NewEntriesWorker(
 
     override suspend fun doWork(): Result {
         val feedUrls = repo.getFeedUrlsSynchronously()
+        if (feedUrls.isEmpty()) return Result.success()
         val lastIndex = NiceFeedPreferences.getLastPolledIndex(context)
-        val newIndex = if (lastIndex + 1 >= feedUrls.size) {
-            0
-        } else {
-            lastIndex + 1
-        }
+        val newIndex = if (lastIndex + 1 >= feedUrls.size) 0 else lastIndex + 1
 
         val url = feedUrls[newIndex]
         val currentEntryIds: List<String> = repo.getEntryIdsByFeedSynchronously(url)
@@ -48,9 +45,7 @@ class NewEntriesWorker(
         return if (feedWithEntries != null) {
             val newEntries = mutableListOf<Entry>()
             for (entry in feedWithEntries.entries) {
-                if (!currentEntryIds.contains(entry.url)) {
-                    newEntries.add(entry)
-                }
+                if (!currentEntryIds.contains(entry.url)) newEntries.add(entry)
             }
 
             if (newEntries.isNotEmpty()) {
@@ -63,9 +58,7 @@ class NewEntriesWorker(
                 Intent(ACTION_SHOW_NOTIFICATION).apply {
                     putExtra(EXTRA_REQUEST_CODE, NOTIFICATION_ID)
                     putExtra(EXTRA_NOTIFICATION, notification)
-                }.also { intent ->
-                    context.sendOrderedBroadcast(intent, PERM_PRIVATE)
-                }
+                }.also { intent -> context.sendOrderedBroadcast(intent, PERM_PRIVATE) }
             }
 
             Result.success()
@@ -91,9 +84,7 @@ class NewEntriesWorker(
             resources.getString(R.string.and_more, latestEntry.title)
         } else {
             latestEntry.title
-        }.also { text ->
-            HtmlCompat.fromHtml(text, 0)
-        }
+        }.also { text -> HtmlCompat.fromHtml(text, 0) }
 
         return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setTicker(resources.getString(R.string.new_entries_notification_title, feedTitle))
@@ -125,8 +116,7 @@ class NewEntriesWorker(
                 NewEntriesWorker::class.java,
                 15,
                 TimeUnit.MINUTES
-            ).setConstraints(constraints)
-                .build()
+            ).setConstraints(constraints).build()
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WORK_NAME,

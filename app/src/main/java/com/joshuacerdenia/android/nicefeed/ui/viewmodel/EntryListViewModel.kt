@@ -3,10 +3,7 @@ package com.joshuacerdenia.android.nicefeed.ui.viewmodel
 import androidx.lifecycle.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
-import com.joshuacerdenia.android.nicefeed.data.model.Entry
-import com.joshuacerdenia.android.nicefeed.data.model.EntryLight
-import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
+import com.joshuacerdenia.android.nicefeed.data.model.*
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
@@ -47,11 +44,10 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
         private set
     var currentFilter = 0
         private set
-    var updateValues: Pair<Int, Int>? = null
-        private set
+    val updateValues = UpdateValues()
 
     private var updateWasRequested = false
-    var shouldAutoRefresh = true
+    var isAutoUpdating = true
 
     init {
         entriesLiveData.addSource(sourceEntriesLiveData) { source ->
@@ -79,7 +75,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     }
 
     fun requestUpdate(url: String) {
-        shouldAutoRefresh = false
+        isAutoUpdating = false
         updateWasRequested = true
         viewModelScope.launch { parser.requestFeed(url) }
     }
@@ -202,9 +198,10 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
         feedId: String
     ) {
         repo.handleEntryUpdates(entriesToAdd, entriesToUpdate, entriesToDelete, feedId)
-        updateValues = if (entriesToAdd.size + entriesToUpdate.size > 0) {
-            Pair(entriesToAdd.size, entriesToUpdate.size)
-        } else null
+        if (entriesToAdd.size + entriesToUpdate.size > 0) {
+            updateValues.added = entriesToAdd.size
+            updateValues.updated = entriesToUpdate.size
+        } else updateValues.clear()
     }
 
     fun updateCategory(category: String) {
@@ -221,10 +218,6 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
 
     fun updateEntryIsRead(entryId: String, isRead: Boolean) {
         repo.updateEntryIsRead(entryId, isRead = isRead)
-    }
-
-    fun onUpdateNoticeShown() {
-        updateValues = null
     }
 
     fun deleteFeedAndEntries() {

@@ -13,7 +13,7 @@ class SweeperWorker(
     private val repo = NiceFeedRepository.get()
 
     override fun doWork(): Result {
-        repo.deleteLeftoverItems()
+        repo.deleteLeftoverItems() // Just in case
         return Result.success()
     }
 

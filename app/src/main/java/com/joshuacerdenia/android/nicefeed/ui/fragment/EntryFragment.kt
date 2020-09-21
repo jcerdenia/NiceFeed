@@ -56,14 +56,10 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(EntryViewModel::class.java)
-        context?.let { context ->
-            viewModel.setTextSize(NiceFeedPreferences.getTextSize(context))
-            viewModel.bannerIsEnabled = NiceFeedPreferences.getEnableBanner(context)
-            viewModel.font = NiceFeedPreferences.getFont(context)
-        }
-        arguments?.getString(ARG_ENTRY_ID)?.let { entryId ->
-            viewModel.getEntryById(entryId)
-        }
+        viewModel.setTextSize(NiceFeedPreferences.getTextSize(requireContext()))
+        viewModel.bannerIsEnabled = NiceFeedPreferences.getEnableBanner(requireContext())
+        viewModel.font = NiceFeedPreferences.getFont(requireContext())
+        arguments?.getString(ARG_ENTRY_ID)?.let { entryId -> viewModel.getEntryById(entryId) }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -95,16 +91,17 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
                     request: WebResourceRequest?
                 ): Boolean {
                     // Open all links with default browser
-                    request?.url?.let { url ->
-                        Utils.openLink(requireActivity(), webView, url)
-                    }
+                    request?.url?.let { url -> Utils.openLink(requireActivity(), webView, url) }
                     return true
                 }
 
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
                     viewModel.lastPosition.let { position ->
-                        nestedScrollView.smoothScrollTo(position.first, position.second)
+                        if (!viewModel.isInitialLoading) {
+                            nestedScrollView.smoothScrollTo(position.first, position.second)
+                            viewModel.isInitialLoading = false
+                        }
                     }
                 }
             }
@@ -113,9 +110,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
                     super.onProgressChanged(view, newProgress)
                     progressBar.progress = newProgress
-                    if (newProgress == 100) {
-                        progressBar.visibility = View.GONE
-                    }
+                    if (newProgress == 100) progressBar.visibility = View.GONE
                 }
             }
         }
@@ -133,18 +128,12 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
             if (html != null) {
                 webView.loadData(html, MIME_TYPE, ENCODING)
                 toolbar.title = viewModel.entry?.website?.shortened()
-                if (viewModel.bannerIsEnabled) {
-                    viewModel.entry?.let { entry ->
-                        updateBanner(entry.title, entry.date, entry.author)
-                    }
+                if (viewModel.bannerIsEnabled) viewModel.entry?.let { entry ->
+                    updateBanner(entry.title, entry.date, entry.author)
                 }
 
-                Picasso.get()
-                    .load(viewModel.entry?.image)
-                    .fit()
-                    .centerCrop()
-                    .placeholder(R.drawable.vintage_newspaper)
-                    .into(imageView)
+                Picasso.get().load(viewModel.entry?.image).fit().centerCrop()
+                    .placeholder(R.drawable.vintage_newspaper).into(imageView)
                 setHasOptionsMenu(true)
             } else {
                 toggleBannerViews(false)
@@ -172,31 +161,20 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         val formattedDate = date?.let {
             DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(it)
         } ?: ""
-        subtitleTextView.text = if (!author.isNullOrEmpty()) {
-            "$formattedDate – $author"
-        } else {
-            formattedDate
-        }
+        subtitleTextView.text = if (!author.isNullOrEmpty()) "$formattedDate – $author" else formattedDate
     }
 
     override fun onStart() {
         super.onStart()
-        toolbar.setOnClickListener {
-            nestedScrollView.smoothScrollTo(0, 0)
-        }
-
-        imageView.setOnClickListener {
-            handleViewInBrowser()
-        }
+        toolbar.setOnClickListener { nestedScrollView.smoothScrollTo(0, 0) }
+        imageView.setOnClickListener { handleViewInBrowser() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_entry, menu)
         starItem = menu.findItem(R.id.menuItem_star)
-        viewModel.entry?.let { entry ->
-            toggleStarOptionItem(entry.isStarred)
-        }
+        viewModel.entry?.let { entry -> toggleStarOptionItem(entry.isStarred) }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -247,15 +225,8 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     private fun handleCopyLink(): Boolean {
         viewModel.entry?.let { entry ->
             val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            ClipData.newPlainText("link", entry.url).run {
-                clipboard.setPrimaryClip(this)
-            }
-
-            Snackbar.make(
-                webView,
-                getString(R.string.copied_link_to_clipboard),
-                Snackbar.LENGTH_SHORT
-            ).show()
+            ClipData.newPlainText("link", entry.url).run { clipboard.setPrimaryClip(this) }
+            Snackbar.make(webView, getString(R.string.copied_link), Snackbar.LENGTH_SHORT).show()
             return true
         } ?: return false
     }
@@ -286,9 +257,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         super.onStop()
         saveScrollPosition()
         viewModel.saveChanges()
-        context?.let { context ->
-            NiceFeedPreferences.saveTextSize(context, viewModel.textSize)
-        }
+        context?.let { NiceFeedPreferences.saveTextSize(it, viewModel.textSize) }
     }
 
     override fun onDetach() {

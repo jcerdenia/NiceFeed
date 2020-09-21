@@ -64,13 +64,10 @@ class ManageFeedsFragment: VisibleFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ManageFeedsViewModel::class.java)
+        viewModel.setOrder(NiceFeedPreferences.getFeedManagerOrder(requireContext()))
         adapter = FeedManagerAdapter(this, viewModel.selectedItems)
+        opmlExporter = OpmlExporter(requireContext(), this)
         setHasOptionsMenu(true)
-
-        context?.let { context ->
-            opmlExporter = OpmlExporter(context, this)
-            viewModel.setOrder(NiceFeedPreferences.getFeedManagerOrder(context))
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -96,9 +93,7 @@ class ManageFeedsFragment: VisibleFragment(),
         if (feeds.isNotEmpty()) {
             opmlExporter?.submitFeeds(feeds)
             callbacks?.onExportOpmlSelected()
-        } else {
-            showNothingSelectedNotice(ACTION_EXPORT)
-        }
+        } else showNothingSelectedNotice(ACTION_EXPORT)
         return true
     }
 
@@ -127,32 +122,25 @@ class ManageFeedsFragment: VisibleFragment(),
         progressBar.visibility = View.VISIBLE
 
         viewModel.feedsMinimalLiveData.observe(viewLifecycleOwner, { feeds ->
-            adapter.submitList(feeds)
             progressBar.visibility = View.GONE
-            selectAllCheckBox.visibility = if (feeds.size > 1) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
+            adapter.submitList(feeds)
+            selectAllCheckBox.visibility = if (feeds.size > 1) View.VISIBLE else View.GONE
 
             if (feeds.isEmpty()) {
                 emptyMessageTextView.visibility = View.VISIBLE
+                NiceFeedPreferences.isEmpty(requireContext(), true)
             }
         })
     }
 
     override fun onStart() {
         super.onStart()
-        toolbar.setOnClickListener {
-            recyclerView.smoothScrollToPosition(0)
-        }
+        toolbar.setOnClickListener { recyclerView.smoothScrollToPosition(0) }
 
         selectAllCheckBox.setOnClickListener { (it as CheckBox)
             if (it.isChecked) {
                 viewModel.selectedItems = adapter.currentList.toMutableList()
-            } else {
-                viewModel.selectedItems.clear()
-            }
+            } else viewModel.selectedItems.clear()
 
             adapter.toggleCheckBoxes(it.isChecked)
             updateToolbar(toolbar, viewModel.selectedItems.size)
@@ -162,9 +150,7 @@ class ManageFeedsFragment: VisibleFragment(),
     private fun updateToolbar(toolbar: Toolbar, selectedItemCount: Int) {
         toolbar.title = if (selectedItemCount > 0) {
             getString(R.string.number_selected, selectedItemCount)
-        } else {
-            getString(R.string.manage_feeds)
-        }
+        } else getString(R.string.manage_feeds)
     }
 
     private fun handleSortFeeds(): Boolean {
@@ -199,17 +185,13 @@ class ManageFeedsFragment: VisibleFragment(),
     }
 
     override fun onRemoveConfirmed() {
-        val feedIds = viewModel.selectedItems.map { feed ->
-            feed.url
-        }.toTypedArray()
-
+        val feedIds = viewModel.selectedItems.map { feed -> feed.url }.toTypedArray()
         if (feedIds.size == 1) {
             showFeedsRemovedNotice(title = viewModel.selectedItems.first().title)
         } else {
-            context?.let { context ->
-                if (feedIds.contains(NiceFeedPreferences.getLastViewedFeedId(context))) {
-                    NiceFeedPreferences.saveLastViewedFeedId(context, null)
-                }
+            val lastViewedFeedId = NiceFeedPreferences.getLastViewedFeedId(requireContext())
+            if (feedIds.contains(lastViewedFeedId)) {
+                NiceFeedPreferences.saveLastViewedFeedId(requireContext(), null)
             }
             showFeedsRemovedNotice(feedIds.size)
         }
@@ -217,23 +199,14 @@ class ManageFeedsFragment: VisibleFragment(),
         resetSelection()
     }
 
-    private fun showFeedsRemovedNotice(
-        count: Int = 1,
-        title: String? = null
-    ) {
+    private fun showFeedsRemovedNotice(count: Int = 1, title: String? = null) {
         val feedsRemoved = title ?: resources.getQuantityString(
             R.plurals.numberOfFeeds,
             count,
             count
         )
-
-        Snackbar.make(
-            recyclerView,
-            getString(R.string.unsubscribed_message, feedsRemoved),
-            Snackbar.LENGTH_LONG
-        ).setAction(R.string.done) {
-            callbacks?.onFinished()
-        }.show()
+        Snackbar.make(recyclerView, getString(R.string.unsubscribed_message, feedsRemoved), Snackbar.LENGTH_LONG)
+            .setAction(R.string.done) { callbacks?.onFinished() }.show()
     }
 
     private fun handleEditCategory(): Boolean {
@@ -247,26 +220,20 @@ class ManageFeedsFragment: VisibleFragment(),
                 setTargetFragment(fragment, 0)
                 show(fragment.parentFragmentManager, "edit category")
             }
-        } else {
-            showNothingSelectedNotice(ACTION_EDIT)
-        }
+        } else showNothingSelectedNotice(ACTION_EDIT)
         return true
     }
 
     override fun onEditCategoryConfirmed(category: String) {
         val ids = mutableListOf<String>()
-        for (feed in viewModel.selectedItems) {
-            ids.add(feed.url)
-        }
+        for (feed in viewModel.selectedItems) ids.add(feed.url)
 
         viewModel.updateCategoryByFeedIds(ids, category)
         adapter.notifyDataSetChanged()
         resetSelection()
 
         // Crude solution to Snackbar jumping: wait until keyboard is fully hidden
-        handler.postDelayed({
-            showFeedsCategorizedNotice(category, ids.size)
-        }, 400)
+        handler.postDelayed({ showFeedsCategorizedNotice(category, ids.size) }, 400)
     }
 
     private fun showFeedsCategorizedNotice(category: String, count: Int) {
@@ -275,14 +242,11 @@ class ManageFeedsFragment: VisibleFragment(),
             count,
             count
         )
-
         Snackbar.make(
             recyclerView,
             getString(R.string.category_assigned, category, feedsUpdated),
             Snackbar.LENGTH_LONG
-        ).setAction(R.string.done) {
-            callbacks?.onFinished()
-        }.show()
+        ).setAction(R.string.done) { callbacks?.onFinished() }.show()
     }
 
     private fun showNothingSelectedNotice(action: Int) {
@@ -291,9 +255,7 @@ class ManageFeedsFragment: VisibleFragment(),
             ACTION_REMOVE -> R.string.remove
             ACTION_EXPORT -> R.string.export
             else -> throw IllegalArgumentException()
-        }.run {
-            getString(this)
-        }
+        }.run { getString(this) }
 
         Snackbar.make(
             recyclerView,
@@ -341,22 +303,13 @@ class ManageFeedsFragment: VisibleFragment(),
     override fun onExportAttempted(isSuccessful: Boolean, fileName: String?) {
         val message = if (isSuccessful) {
             getString(R.string.exported_opml_message, fileName)
-        } else {
-            getString(R.string.error_message)
-        }
-
-        Snackbar.make(
-            recyclerView,
-            message,
-            Snackbar.LENGTH_SHORT
-        ).show()
+        } else getString(R.string.error_message)
+        Snackbar.make(recyclerView, message, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onStop() {
         super.onStop()
-        context?.let { context ->
-            NiceFeedPreferences.saveFeedManagerOrder(context, viewModel.currentOrder)
-        }
+        context?.let { NiceFeedPreferences.saveFeedManagerOrder(it, viewModel.currentOrder) }
     }
 
     companion object {

@@ -81,7 +81,7 @@
     <string name="check_for_updates">Check for Updates</string>
     <string name="share_entry">Share Entry</string>
     <string name="copy_link">Copy Link</string>
-    <string name="copied_link_to_clipboard">Copied link to clipboard.</string>
+    <string name="copied_link">Copied link to clipboard.</string>
     <string name="export_opml">Export OPML</string>
     <string name="exported_opml_message">Exported subscriptions to %s.</string>
     <string name="notification_channel_name">New Entries</string>

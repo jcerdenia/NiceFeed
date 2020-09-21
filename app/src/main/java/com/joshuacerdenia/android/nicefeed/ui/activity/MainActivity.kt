@@ -34,14 +34,21 @@ class MainActivity : AppCompatActivity(),
         drawerLayout = findViewById(R.id.drawerLayout)
 
         if (getFragment(FRAGMENT_MAIN) == null) {
-            val feedId = intent?.getStringExtra(EXTRA_FEED_ID)
-                ?: NiceFeedPreferences.getLastViewedFeedId(this)
-            val entryId = intent?.getStringExtra(EXTRA_ENTRY_ID)
+            val mainFragment = if (!NiceFeedPreferences.isEmpty(this)) {
+                val feedId = intent?.getStringExtra(EXTRA_FEED_ID)
+                    ?: NiceFeedPreferences.getLastViewedFeedId(this)
+                val entryId = intent?.getStringExtra(EXTRA_ENTRY_ID)
+                EntryListFragment.newInstance(feedId, entryId)
+            } else WelcomeFragment.newInstance()
 
-            loadFragments(
-                EntryListFragment.newInstance(feedId, entryId),
-                FeedListFragment.newInstance()
-            )
+            loadFragments(mainFragment, FeedListFragment.newInstance())
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (NiceFeedPreferences.isEmpty(this)) {
+            replaceMainFragment(WelcomeFragment.newInstance(), false)
         }
     }
 
@@ -80,8 +87,7 @@ class MainActivity : AppCompatActivity(),
                 .commit()
         } else {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment_container, newFragment)
-                .commit()
+                .replace(R.id.main_fragment_container, newFragment).commit()
         }
     }
 
@@ -93,9 +99,7 @@ class MainActivity : AppCompatActivity(),
         }
         return if (fragmentId != null) {
             supportFragmentManager.findFragmentById(fragmentId)
-        } else {
-            null
-        }
+        } else null
     }
 
     override fun onToolbarInflated(toolbar: Toolbar, isNavigableUp: Boolean) {
@@ -110,25 +114,23 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    override fun onFeedListEmpty() {
+        if ((getFragment(FRAGMENT_MAIN)) !is WelcomeFragment) {
+            replaceMainFragment(WelcomeFragment.newInstance(), false)
+        }
+    }
+
     override fun onMenuItemSelected(item: Int) {
         val intent = ManagingActivity.newIntent(this@MainActivity, item)
         if (item == FeedListFragment.ITEM_SETTINGS) {
             startActivity(intent)
-        } else {
-            startActivityForResult(intent, REQUEST_CODE_ADD_FEED)
-        }
+        } else startActivityForResult(intent, REQUEST_CODE_ADD_FEED)
     }
 
     override fun onFeedSelected(feedId: String, activeFeedId: String?) {
         if (feedId != activeFeedId) {
             loadFeed(feedId)
-        } else {
-            drawerLayout.closeDrawers()
-        }
-    }
-
-    override fun onNoFeeds() {
-        replaceMainFragment(WelcomeFragment.newInstance(), false)
+        } else drawerLayout.closeDrawers()
     }
 
     private fun loadFeed(feedId: String, isNewlyAdded: Boolean = false) {
