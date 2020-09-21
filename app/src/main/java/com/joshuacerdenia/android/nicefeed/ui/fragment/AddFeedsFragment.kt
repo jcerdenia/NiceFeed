@@ -132,15 +132,8 @@ class AddFeedsFragment: FeedAddingFragment(),
     }
 
     override fun onImportConfirmed(count: Int) {
-        val feedsImported = if (count == 1) {
-            viewModel.feedsToImport.first().title
-        } else resources.getQuantityString(R.plurals.numberOfFeeds, count, count)
-
-        Snackbar.make(
-            linearLayout,
-            getString(R.string.feeds_imported, feedsImported),
-            Snackbar.LENGTH_SHORT
-        ).setAction(R.string.done) { callbacks?.onFinished() }.show()
+        Snackbar.make(linearLayout, getString(R.string.import_successful), Snackbar.LENGTH_SHORT)
+            .setAction(R.string.done) { callbacks?.onFinished() }.show()
 
         viewModel.feedsToImport.toTypedArray().run { viewModel.addFeeds(*this) }
         viewModel.feedsToImport = emptyList()

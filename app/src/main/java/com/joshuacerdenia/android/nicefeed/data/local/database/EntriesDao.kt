@@ -59,15 +59,10 @@ interface EntriesDao {
         "DELETE FROM Entry WHERE url IN " +
                 "(SELECT url FROM FeedEntryCrossRef AS _junction " +
                 "INNER JOIN Entry ON (_junction.entryUrl = Entry.url) " +
-                "WHERE _junction.feedUrl IN (:feedId) " +
-                "AND isStarred = 0)"
+                "WHERE _junction.feedUrl IN (:feedId))"
     )
-    fun deleteUnstarredEntriesByFeed(vararg feedId: String)
+    fun deleteEntriesByFeed(vararg feedId: String)
 
-    @Query(
-        "DELETE FROM Entry " +
-            "WHERE url NOT IN (SELECT entryUrl FROM FeedEntryCrossRef) " +
-            "AND isStarred = 0"
-    )
-    fun deleteFeedlessUnstarredEntries()
+    @Query("DELETE FROM Entry WHERE url NOT IN (SELECT entryUrl FROM FeedEntryCrossRef)")
+    fun deleteFeedlessEntries()
 }

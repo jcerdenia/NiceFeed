@@ -36,7 +36,7 @@
     <string name="done">Done</string>
     <string name="confirm_remove">Remove %s?</string>
     <string name="confirm_remove_dialog_message">
-        Starred entries will be kept until unstarred. You can subscribe again later if you change your mind.
+        This will remove all associated entries. You can subscribe again later if you change your mind.
     </string>
     <string name="feed">feed</string>
     <string name="remove">remove</string>
@@ -68,6 +68,7 @@
     <string name="updating">Updating…</string>
     <string name="share">Share</string>
     <string name="feeds_imported">Imported %s.</string>
+    <string name="import_successful">Import successful.</string>
     <string name="error_message">An error has occurred.</string>
     <string name="confirm_import_title">Import %s?</string>
     <string name="confirm_import_message">This will not overwrite existing subscriptions.</string>

@@ -140,7 +140,6 @@ class MainActivity : AppCompatActivity(),
             }, 350)
         }
         drawerLayout.closeDrawers()
-        (getFragment(FRAGMENT_NAVIGATION) as? FeedListFragment)?.updateActiveFeedId(feedId)
     }
 
     override fun onFeedLoaded(feedId: String) {

@@ -71,14 +71,14 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
 
     @Transaction
     fun deleteFeedAndEntriesById(vararg feedId: String) {
-        deleteUnstarredEntriesByFeed(*feedId)
+        deleteEntriesByFeed(*feedId)
         deleteCrossRefsByFeed(*feedId)
         deleteFeeds(*feedId)
     }
 
     @Transaction
     fun deleteLeftoverItems() {
-        deleteFeedlessUnstarredEntries()
+        deleteFeedlessEntries()
         deleteLeftoverCrossRefs()
     }
 }

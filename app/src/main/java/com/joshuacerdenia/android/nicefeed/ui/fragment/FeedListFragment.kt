@@ -119,9 +119,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     }
 
     override fun onFeedSelected(feedId: String) {
-        starredEntriesButton.addRipple()
-        newEntriesButton.addRipple()
-
+        resetFolderHighlights()
         callbacks?.onFeedSelected(feedId, viewModel.activeFeedId)
         viewModel.activeFeedId = feedId
         handler.postDelayed({ recyclerView.adapter = adapter }, 500)
@@ -132,12 +130,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     }
 
     fun updateActiveFeedId(feedId: String?) {
-        if (feedId == EntryListFragment.FOLDER_NEW) {
-            starredEntriesButton.addRipple()
-        } else if (feedId == EntryListFragment.FOLDER_STARRED) {
-            newEntriesButton.addRipple()
-        }
-
+        resetFolderHighlights()
         viewModel.activeFeedId = feedId
         adapter.setActiveFeedId(feedId)
         recyclerView.adapter = adapter
@@ -150,6 +143,11 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
                 starredEntriesButton.setBackgroundColor(color)
             }
         }
+    }
+
+    private fun resetFolderHighlights() {
+        starredEntriesButton.addRipple()
+        newEntriesButton.addRipple()
     }
 
     fun getCategories(): Array<String> {
