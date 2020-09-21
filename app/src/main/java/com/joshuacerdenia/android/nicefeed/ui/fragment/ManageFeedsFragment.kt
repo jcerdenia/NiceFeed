@@ -9,7 +9,6 @@ import android.widget.CheckBox
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,13 +17,13 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMinimal
 import com.joshuacerdenia.android.nicefeed.ui.OnFinished
+import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedManagerAdapter
-import com.joshuacerdenia.android.nicefeed.ui.viewmodel.ManageFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment
+import com.joshuacerdenia.android.nicefeed.ui.viewmodel.ManageFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.OpmlExporter
-import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 
 class ManageFeedsFragment: VisibleFragment(),
     EditCategoryFragment.Callbacks,
