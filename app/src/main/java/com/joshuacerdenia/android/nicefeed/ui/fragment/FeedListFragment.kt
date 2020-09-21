@@ -46,12 +46,9 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(FeedListViewModel::class.java)
+        viewModel.setFeedOrder(NiceFeedPreferences.getFeedsOrder(requireContext()))
+        viewModel.setMinimizedCategories(NiceFeedPreferences.getMinimizedCategories(requireContext()))
         adapter = FeedListAdapter(context, this)
-        
-        context?.let { context ->
-            viewModel.setFeedOrder(NiceFeedPreferences.getFeedsOrder(context))
-            viewModel.setMinimizedCategories(NiceFeedPreferences.getMinimizedCategories(context))
-        }
     }
 
     override fun onCreateView(
@@ -117,11 +114,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
     override fun onResume() {
         super.onResume()
-        context?.let { context ->
-            NiceFeedPreferences.getFeedsOrder(context).run {
-                viewModel.setFeedOrder(this)
-            }
-        }
+        viewModel.setFeedOrder(NiceFeedPreferences.getFeedsOrder(requireContext()))
     }
 
     override fun onFeedSelected(feedId: String) {
@@ -130,10 +123,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
         callbacks?.onFeedSelected(feedId, viewModel.activeFeedId)
         viewModel.activeFeedId = feedId
-
-        handler.postDelayed({
-            recyclerView.adapter = adapter
-        }, 500)
+        handler.postDelayed({ recyclerView.adapter = adapter }, 500)
     }
 
     override fun onCategoryClicked(category: String) {

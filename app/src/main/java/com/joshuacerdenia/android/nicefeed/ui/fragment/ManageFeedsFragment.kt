@@ -229,7 +229,7 @@ class ManageFeedsFragment: VisibleFragment(),
 
         Snackbar.make(
             recyclerView,
-            getString(R.string.feed_removed_message, feedsRemoved),
+            getString(R.string.unsubscribed_message, feedsRemoved),
             Snackbar.LENGTH_LONG
         ).setAction(R.string.done) {
             callbacks?.onFinished()

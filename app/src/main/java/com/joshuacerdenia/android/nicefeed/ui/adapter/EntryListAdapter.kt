@@ -48,7 +48,7 @@ class EntryListAdapter(
         private val listener: OnEntrySelected
     ) : RecyclerView.ViewHolder(view), View.OnClickListener, View.OnLongClickListener {
 
-        private lateinit var entry: EntryLight
+        lateinit var entry: EntryLight
 
         private val container: ConstraintLayout = itemView.findViewById(R.id.constraintLayout_container)
         private val titleTextView: TextView = itemView.findViewById(R.id.textView_title)

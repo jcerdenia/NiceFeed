@@ -38,14 +38,10 @@ class WelcomeFragment : VisibleFragment() {
 
         toolbar.apply {
             setNavigationIcon(R.drawable.ic_menu)
-            setNavigationOnClickListener {
-                callback?.onHomePressed()
-            }
+            setNavigationOnClickListener { callback?.onHomePressed() }
         }
 
-        messageTextView.setOnClickListener {
-            callback?.onHomePressed()
-        }
+        messageTextView.setOnClickListener { callback?.onHomePressed() }
     }
 
     override fun onDetach() {

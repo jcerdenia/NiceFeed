@@ -61,8 +61,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
         }
 
         entriesLightLiveData.addSource(entriesLiveData) { entries ->
-            val list = entries.map { entry ->
-                EntryLight(
+            val list = entries.map { entry -> EntryLight(
                     url = entry.url,
                     title = entry.title,
                     website = entry.website,
@@ -70,8 +69,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
                     image = entry.image,
                     isRead = entry.isRead,
                     isStarred = entry.isStarred,
-                )
-            }
+            ) }
             entriesLightLiveData.value = sortEntries(list, currentOrder)
         }
     }
@@ -83,9 +81,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     fun requestUpdate(url: String) {
         shouldAutoRefresh = false
         updateWasRequested = true
-        viewModelScope.launch {
-            parser.requestFeed(url)
-        }
+        viewModelScope.launch { parser.requestFeed(url) }
     }
 
     fun onFeedLoaded() {
@@ -122,31 +118,23 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
         currentQuery = query
         sourceEntriesLiveData.value?.let { source ->
             val filteredEntries = filterEntries(source, currentFilter)
-            if (currentQuery.isNotEmpty()) {
-                entriesLiveData.value = queryEntries(filteredEntries, query)
-            } else {
-                entriesLiveData.value = filteredEntries
-            }
+            entriesLiveData.value = if (currentQuery.isNotEmpty()) {
+                queryEntries(filteredEntries, query)
+            } else filteredEntries
         }
     }
 
     fun starAllCurrentEntries() {
         val entries = entriesLightLiveData.value ?: emptyList()
         val isStarred = !allIsStarred(entries)
-        val entryIds = entries.map { entry ->
-            entry.url
-        }.toTypedArray()
-
+        val entryIds = entries.map { entry -> entry.url }.toTypedArray()
         repo.updateEntryIsStarred(*entryIds, isStarred = isStarred)
     }
 
     fun markAllCurrentEntriesAsRead() {
         val entries = entriesLightLiveData.value ?: emptyList()
         val isRead = !allIsRead(entries)
-        val entryIds = entries.map { entry ->
-            entry.url
-        }.toTypedArray()
-
+        val entryIds = entries.map { entry -> entry.url }.toTypedArray()
         repo.updateEntryIsRead(*entryIds, isRead = isRead)
     }
 
@@ -196,9 +184,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     private fun sortEntries(entries: List<EntryLight>, order: Int): List<EntryLight> {
         return if (order == NiceFeedPreferences.ENTRY_ORDER_UNREAD) {
             entries.sortedUnreadOnTop()
-        } else {
-            entries.sortedByDate()
-        }
+        } else entries.sortedByDate()
     }
 
     override fun onUnreadEntriesCounted(feedId: String, unreadCount: Int) {
@@ -218,17 +204,13 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
         repo.handleEntryUpdates(entriesToAdd, entriesToUpdate, entriesToDelete, feedId)
         updateValues = if (entriesToAdd.size + entriesToUpdate.size > 0) {
             Pair(entriesToAdd.size, entriesToUpdate.size)
-        } else {
-            null
-        }
+        } else null
     }
 
     fun updateCategory(category: String) {
         updateManager.currentFeed.apply {
             this?.category = category
-        }?.let { feed ->
-            repo.updateFeedCategory(feed.url, category = category)
-        }
+        }?.let { feed -> repo.updateFeedCategory(feed.url, category = category) }
     }
 
     fun getCurrentFeed() = updateManager.currentFeed
@@ -246,8 +228,6 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     }
 
     fun deleteFeedAndEntries() {
-        getCurrentFeed()?.url?.let { feedId ->
-            repo.deleteFeedAndEntriesById(feedId)
-        }
+        getCurrentFeed()?.url?.let { feedId -> repo.deleteFeedAndEntriesById(feedId) }
     }
 }

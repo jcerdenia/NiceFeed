@@ -5,7 +5,6 @@ import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -30,7 +29,6 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.menu.EntryPopupMenu
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryListViewModel
 import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
 
 private const val TAG = "EntryListFragment"
 
@@ -74,29 +72,30 @@ class EntryListFragment : VisibleFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.getString(ARG_ENTRY_ID)?.let { entryId ->
-           arguments?.remove(ARG_ENTRY_ID)
+           arguments?.remove(ARG_ENTRY_ID) // So it doesn't get loaded more than once
            callbacks?.onEntrySelected(entryId)
         }
 
         viewModel = ViewModelProvider(this).get(EntryListViewModel::class.java)
+        viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(requireContext()))
+        autoUpdateIsEnabled = NiceFeedPreferences.getAutoUpdateSetting(requireContext())
         adapter = EntryListAdapter(this)
-        context?.let { context ->
-            viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(context))
-            autoUpdateIsEnabled = NiceFeedPreferences.getAutoUpdateSetting(context)
-        }
-
+        
         feedId = arguments?.getString(ARG_FEED_ID)
         feedId?.let { feedId ->
             viewModel.getFeedWithEntries(feedId)
             if (feedId.startsWith(FOLDER)) {
-                autoUpdateIsEnabled = false
+                viewModel.shouldAutoRefresh = false
+                callbacks?.onFeedLoaded(feedId)
             }
+        } ?: run {
+            masterProgressBar.visibility = View.GONE
+            emptyMessageTextView.visibility = View.VISIBLE
+            toolbar.title = getString(R.string.app_name)
         }
 
         val isNewlyAdded = arguments?.getBoolean(ARG_IS_NEWLY_ADDED) ?: false
-        if (isNewlyAdded || !autoUpdateIsEnabled) {
-            viewModel.shouldAutoRefresh = false
-        }
+        if (isNewlyAdded || !autoUpdateIsEnabled) viewModel.shouldAutoRefresh = false
     }
 
     override fun onCreateView(
@@ -113,9 +112,7 @@ class EntryListFragment : VisibleFragment(),
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = if (resources.configuration.orientation == ORIENTATION_LANDSCAPE) {
             GridLayoutManager(context, 2)
-        } else {
-            LinearLayoutManager(context)
-        }
+        } else LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
         toolbar.title = getString(R.string.loading)
@@ -127,19 +124,11 @@ class EntryListFragment : VisibleFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.feedLiveData.observe(viewLifecycleOwner, { feed ->
-            Log.d(TAG, "Feed observer triggered!")
             if (feed != null) {
                 viewModel.onFeedLoaded()
                 callbacks?.onFeedLoaded(feed.url)
-            } else {
-                // feedId could still either be a FOLDER instead of url, so:
-                feedId?.let { feedId ->
-                    if (feedId.startsWith(FOLDER)) {
-                        callbacks?.onFeedLoaded(feedId)
-                    } else {
-                        callbacks?.onFeedRemoved()
-                    }
-                }
+            } else feedId?.let { feedId ->
+                if (!feedId.startsWith(FOLDER)) callbacks?.onFeedRemoved()
             }
             // Check if not currently updating:
             if (toolbar.title != getString(R.string.updating)) {
@@ -152,26 +141,18 @@ class EntryListFragment : VisibleFragment(),
         })
 
         viewModel.entriesLightLiveData.observe(viewLifecycleOwner, { entries ->
-            Log.d(TAG, "Entries observer triggered!")
+            emptyMessageTextView.visibility = if (entries.isNullOrEmpty()) View.VISIBLE else View.GONE
             masterProgressBar.visibility = View.GONE
             adapter.submitList(entries)
             toggleOptionsItems()
 
             if (adapter.latestClickedPosition == 0) {
-                Handler().postDelayed({
-                    recyclerView.scrollToPosition(0)
-                }, 250)
+                Handler().postDelayed({ recyclerView.scrollToPosition(0) }, 250)
             }
             // Show update notice, if any
             viewModel.updateValues?.let { values ->
                 showRefreshedNotice(values.first, values.second)
                 viewModel.onUpdateNoticeShown()
-            }
-            // Show if entry list is empty
-            emptyMessageTextView.visibility = if (entries.isNullOrEmpty()) {
-                View.VISIBLE
-            } else {
-                View.GONE
             }
         })
 
@@ -180,47 +161,30 @@ class EntryListFragment : VisibleFragment(),
             if (results != null) {
                 viewModel.onUpdatesDownloaded(results)
                 toolbar.title = results.feed.title
-            } else {
-                toolbar.title = viewModel.getCurrentFeed()?.title
-            }
+            } else toolbar.title = viewModel.getCurrentFeed()?.title
         })
     }
 
     override fun onStart() {
         super.onStart()
-        if (feedId == null) {
-            masterProgressBar.visibility = View.GONE
-            emptyMessageTextView.visibility = View.VISIBLE
-            toolbar.title = getString(R.string.app_name)
-        }
-        
         toolbar.apply {
             setNavigationIcon(R.drawable.ic_menu)
-            setNavigationOnClickListener {
-                callbacks?.onHomePressed()
-            }
-            setOnClickListener {
-                recyclerView.smoothScrollToPosition(0)
-            }
+            setNavigationOnClickListener { callbacks?.onHomePressed() }
+            setOnClickListener { recyclerView.smoothScrollToPosition(0) }
         }
-        
         // Auto-refresh on launch
-        if (viewModel.shouldAutoRefresh) {
-            Handler().postDelayed({
+        if (viewModel.shouldAutoRefresh) Handler().postDelayed({
                 feedId?.let { feedId ->
                     viewModel.requestUpdate(feedId)
                     toolbar.title = context?.getString(R.string.updating)
-                    progressBar.visibility = View.VISIBLE
-                }
+                    progressBar.visibility = View.VISIBLE 
+                } 
             }, 750)
-        }
     }
 
     override fun onResume() {
         super.onResume()
-        context?.let {  context ->
-            viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(context))
-        }
+        viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(requireContext()))
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -240,8 +204,7 @@ class EntryListFragment : VisibleFragment(),
             }
         }
 
-        val searchView = searchItem.actionView as SearchView
-        searchView.apply {
+        (searchItem.actionView as SearchView).apply {
             if (viewModel.currentQuery.isNotEmpty()) {
                 searchItem.expandActionView()
                 setQuery(viewModel.currentQuery, false)
@@ -259,9 +222,7 @@ class EntryListFragment : VisibleFragment(),
                     return if (queryText.isEmpty()) {
                         viewModel.submitQuery(queryText)
                         true
-                    } else {
-                        false
-                    }
+                    } else false
                 }
             })
         }
@@ -269,7 +230,7 @@ class EntryListFragment : VisibleFragment(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menuItem_refresh -> handleRefresh(feedId)
+            R.id.menuItem_refresh -> handleCheckForUpdates(feedId)
             R.id.menuItem_about_feed -> handleShowFeedInfo(viewModel.getCurrentFeed())
             R.id.menuItem_filter -> handleFilter()
             R.id.menuItem_mark_all -> handleMarkAll()
@@ -302,18 +263,15 @@ class EntryListFragment : VisibleFragment(),
         }
     }
 
-    private fun handleRefresh(url: String?): Boolean {
+    private fun handleCheckForUpdates(url: String?): Boolean {
         return if (url != null) {
-            searchItem.collapseActionView()
             progressBar.visibility = View.VISIBLE
-            toolbar.title = getString(R.string.updating)
-
             viewModel.submitQuery("")
             viewModel.requestUpdate(url)
+            toolbar.title = getString(R.string.updating)
+            searchItem.collapseActionView()
             true
-        } else {
-            false
-        }
+        } else false
     }
 
     private fun showRefreshedNotice(newCount: Int, updatedCount: Int) {
@@ -324,28 +282,25 @@ class EntryListFragment : VisibleFragment(),
             newCount == 0 && updatedCount > 0 -> getString(R.string.updated, entriesUpdated)
             else -> getString(R.string.added_and_updated, entriesAdded, updatedCount)
         }
-
-        Snackbar.make(
-            recyclerView,
-            message as CharSequence,
-            Snackbar.LENGTH_SHORT
-        ).show()
+        Snackbar.make(recyclerView, message as CharSequence, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun handleShowFeedInfo(feed: Feed?): Boolean {
-        if (feed == null) return false
-        AboutFeedFragment.newInstance(feed).apply {
-            setTargetFragment(fragment, 0)
-            show(fragment.parentFragmentManager, "about")
-        }
-        return true
+        return if (feed != null) {
+            AboutFeedFragment.newInstance(feed).apply {
+                setTargetFragment(fragment, 0)
+                show(fragment.parentFragmentManager, "about")
+            }
+            true
+        } else false
     }
 
     override fun onEditCategoryClicked() {
         val categories = callbacks?.onCategoriesNeeded() ?: emptyArray()
-        EditCategoryFragment.newInstance(categories, viewModel.getCurrentFeed()?.title).apply {
+        val title = viewModel.getCurrentFeed()?.title
+        EditCategoryFragment.newInstance(categories, title).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.parentFragmentManager, "edit category")
+            show(fragment.parentFragmentManager, "edit")
         }
     }
 
@@ -384,9 +339,7 @@ class EntryListFragment : VisibleFragment(),
         return if (website != null) {
             Utils.openLink(requireActivity(), recyclerView, Uri.parse(website))
             true
-        } else {
-            false
-        }
+        } else false
     }
 
     private fun handleRemoveFeed(): Boolean {
@@ -397,19 +350,12 @@ class EntryListFragment : VisibleFragment(),
                 show(fragment.parentFragmentManager,"unsubscribe")
             }
             true
-        } else {
-            false
-        }
+        } else false
     }
 
     override fun onRemoveConfirmed() {
         val title = viewModel.getCurrentFeed()?.title
-        Snackbar.make(
-            recyclerView,
-            getString(R.string.feed_removed_message, title),
-            Snackbar.LENGTH_SHORT
-        ).show()
-
+        Snackbar.make(recyclerView, getString(R.string.unsubscribed_message, title), Snackbar.LENGTH_SHORT).show()
         viewModel.deleteFeedAndEntries()
         callbacks?.onFeedRemoved()
     }
@@ -418,17 +364,11 @@ class EntryListFragment : VisibleFragment(),
         if (NiceFeedPreferences.getBrowserSetting(requireContext())) {
             Utils.openLink(requireContext(), recyclerView, Uri.parse(entryId))
             viewModel.updateEntryIsRead(entryId, true)
-        } else {
-            callbacks?.onEntrySelected(entryId)
-        }
+        } else callbacks?.onEntrySelected(entryId)
     }
 
     override fun onEntryLongClicked(entry: EntryLight, view: View?) {
-        context?.let { context ->
-            view?.let { view ->
-                EntryPopupMenu(context, view, this, entry).show()
-            }
-        }
+        view?.let { EntryPopupMenu(requireContext(), it, this, entry).show() }
     }
 
     override fun onPopupMenuItemClicked(entry: EntryLight, action: Int) {

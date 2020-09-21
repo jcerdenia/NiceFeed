@@ -11,7 +11,7 @@
     <string name="key_words">Enter keywords…</string>
     <string name="search">Search</string>
     <string name="feed_added_message">Subscribed to %s.</string>
-    <string name="feed_removed_message">Unsubscribed from %s.</string>
+    <string name="unsubscribed_message">Unsubscribed from %s.</string>
     <string name="loading">Loading…</string>
     <string name="failed_to_get_feed">Failed to get feed. Please try again.</string>
     <string name="failed_to_connect">Failed to connect to feed. Please retry later or enter the address manually.</string>
