@@ -97,12 +97,8 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
-                    viewModel.lastPosition.let { position ->
-                        if (!viewModel.isInitialLoading) {
-                            nestedScrollView.smoothScrollTo(position.first, position.second)
-                            viewModel.isInitialLoading = false
-                        }
-                    }
+                    val position = if (viewModel.isInitialLoading) Pair(0, 0) else viewModel.lastPosition
+                    nestedScrollView.smoothScrollTo(position.first, position.second)
                 }
             }
 
@@ -256,6 +252,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     override fun onStop() {
         super.onStop()
         saveScrollPosition()
+        viewModel.isInitialLoading = false
         viewModel.saveChanges()
         context?.let { NiceFeedPreferences.saveTextSize(it, viewModel.textSize) }
     }
