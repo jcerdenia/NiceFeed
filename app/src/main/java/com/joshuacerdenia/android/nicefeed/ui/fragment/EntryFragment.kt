@@ -120,6 +120,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         super.onViewCreated(view, savedInstanceState)
         toggleBannerViews(viewModel.bannerIsEnabled)
 
+        // Entry data converted to an HTML string
         viewModel.htmlLiveData.observe(viewLifecycleOwner, { html ->
             if (html != null) {
                 webView.loadData(html, MIME_TYPE, ENCODING)
@@ -156,8 +157,12 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         titleTextView.text = title
         val formattedDate = date?.let {
             DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(it)
-        } ?: ""
-        subtitleTextView.text = if (!author.isNullOrEmpty()) "$formattedDate – $author" else formattedDate
+        }
+        subtitleTextView.text = when {
+            author.isNullOrEmpty() -> formattedDate
+            formattedDate.isNullOrEmpty() -> author
+            else -> "$formattedDate – $author"
+        }
     }
 
     override fun onStart() {

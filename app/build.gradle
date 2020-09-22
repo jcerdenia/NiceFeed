@@ -65,7 +65,7 @@ dependencies {
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
     // WorkManager
     implementation "androidx.work:work-runtime-ktx:2.4.0"
-    // Dependency Injection
+    // Dependency Injection (Not used yet)
     implementation "com.google.dagger:hilt-android:$hilt_version"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidx_hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"

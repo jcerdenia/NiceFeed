@@ -51,7 +51,6 @@ class EntryListFragment : VisibleFragment(),
     private lateinit var viewModel: EntryListViewModel
     private lateinit var toolbar: Toolbar
     private lateinit var noItemsTextView: TextView
-    private lateinit var noFeedsTextView: TextView
     private lateinit var masterProgressBar: ProgressBar
     private lateinit var progressBar: ProgressBar
     private lateinit var searchItem: MenuItem
@@ -95,7 +94,6 @@ class EntryListFragment : VisibleFragment(),
         val view = inflater.inflate(R.layout.fragment_entry_list, container, false)
         toolbar = view.findViewById(R.id.toolbar)
         noItemsTextView = view.findViewById(R.id.empty_message_text_view)
-        noFeedsTextView = view.findViewById(R.id.no_feeds_text_view)
         masterProgressBar = view.findViewById(R.id.master_progress_bar)
         progressBar = view.findViewById(R.id.progress_bar)
 
