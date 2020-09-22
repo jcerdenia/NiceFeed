@@ -21,6 +21,8 @@ open class AddFeedsViewModel: ViewModel() {
     val feedRequestLiveData: LiveData<FeedWithEntries?> = parser.feedRequestLiveData
     val feedIdsLiveData = repo.getFeedIds()
     var feedsToImport = listOf<Feed>()
+    var currentFeedIds: List<String> = emptyList()
+        private set
 
     fun requestFeed(url: String, backup: String? = null) {
         onFeedRequested()
@@ -35,6 +37,10 @@ open class AddFeedsViewModel: ViewModel() {
 
     fun addFeeds(vararg feed: Feed) {
         repo.addFeeds(*feed)
+    }
+
+    fun onFeedIdsObtained(feedIds: List<String>) {
+        currentFeedIds = feedIds
     }
 
     private fun onFeedRequested() {

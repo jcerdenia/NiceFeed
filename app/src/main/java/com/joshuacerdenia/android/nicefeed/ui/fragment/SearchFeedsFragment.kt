@@ -1,7 +1,6 @@
 package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -62,18 +61,13 @@ class SearchFeedsFragment : FeedAddingFragment(),
         val manager = RequestResultManager(viewModel, recyclerView, R.string.failed_to_connect)
 
         viewModel.feedIdsLiveData.observe(viewLifecycleOwner, { feedIds ->
-            currentFeedIds = feedIds
+            viewModel.onFeedIdsObtained(feedIds)
         })
 
         viewModel.searchResultLiveData.observe(viewLifecycleOwner, { results ->
-            Log.d("FUCK", "Result observer fired")
             adapter.submitList(results)
             progressBar.visibility = View.GONE
-            emptyMessageTextView.visibility = if (results.isEmpty()) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
+            emptyMessageTextView.visibility = if (results.isEmpty()) View.VISIBLE else View.GONE
         })
 
         viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { feedWithEntries ->
@@ -129,10 +123,10 @@ class SearchFeedsFragment : FeedAddingFragment(),
         viewModel.itemSelectionEnabled = false
         adapter.onLoadingItem(searchResultItem.id)
 
-        val url = searchResultItem.id?.let { RssUrlTransformer.getUrl(it) } ?: ""
-        val backupUrl = searchResultItem.website?.let { RssUrlTransformer.getUrl(it) } ?: ""
+        val url = searchResultItem.id?.let { RssUrlTransformer.getUrl(it) }.toString()
+        val backup = searchResultItem.website?.let { RssUrlTransformer.getUrl(it) }
         // "website" property is also a usable URL
-        viewModel.requestFeed(url, backupUrl)
+        viewModel.requestFeed(url, backup)
     }
 
     override fun onItemClicked(searchResultItem: SearchResultItem) {

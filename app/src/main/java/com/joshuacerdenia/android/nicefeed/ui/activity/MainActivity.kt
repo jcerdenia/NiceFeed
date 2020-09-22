@@ -156,8 +156,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onCategoriesNeeded(): Array<String> {
-        return (getFragment(FRAGMENT_NAVIGATION) as? FeedListFragment)?.getCategories()
-            ?: emptyArray()
+        return (getFragment(FRAGMENT_NAVIGATION) as? FeedListFragment)?.getCategories() ?: emptyArray()
     }
 
     override fun onSupportNavigateUp(): Boolean {

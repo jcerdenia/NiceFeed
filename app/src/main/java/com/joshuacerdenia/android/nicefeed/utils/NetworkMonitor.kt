@@ -14,7 +14,7 @@ class NetworkMonitor(context: Context) {
     private val conMan = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     // ^ Couldn't resist
     private val builder = NetworkRequest.Builder()
-    private val networkCallback = object : NetworkCallback() {
+    private val callback = object : NetworkCallback() {
         override fun onAvailable(network: Network) {
             isOnline = true
         }
@@ -25,6 +25,6 @@ class NetworkMonitor(context: Context) {
     }
 
     init {
-        conMan.registerNetworkCallback(builder.build(), networkCallback)
+        conMan.registerNetworkCallback(builder.build(), callback)
     }
 }

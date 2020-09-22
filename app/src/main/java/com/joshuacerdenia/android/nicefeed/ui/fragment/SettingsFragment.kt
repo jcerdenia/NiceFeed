@@ -143,9 +143,7 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
                 show(fragment.parentFragmentManager, "about")
             }
             true
-        } else {
-            super.onOptionsItemSelected(item)
-        }
+        } else super.onOptionsItemSelected(item)
     }
 
     private fun getDefaultAdapter(context: Context, items: Array<String>): ArrayAdapter<String> {

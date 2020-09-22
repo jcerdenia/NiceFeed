@@ -20,7 +20,6 @@ abstract class FeedAddingFragment: VisibleFragment() {
         fun onImportOpmlSelected()
     }
 
-    var currentFeedIds: List<String> = emptyList()
     var callbacks: Callbacks? = null
 
     override fun onAttach(context: Context) {
@@ -42,31 +41,22 @@ abstract class FeedAddingFragment: VisibleFragment() {
 
         fun submitData(feedWithEntries: FeedWithEntries?) {
             feedWithEntries?.let { data ->
-                if (currentFeedIds.size < SUBSCRIPTION_LIMIT) {
+                if (viewModel.currentFeedIds.size < SUBSCRIPTION_LIMIT) {
                     if (!isAlreadyAdded(data.feed.url)) {
                         viewModel.addFeedWithEntries(data)
                         showFeedAddedNotice(data.feed.url, data.feed.title)
-                    } else {
-                        showAlreadyAddedNotice()
-                    }
-                } else {
-                    showLimitReachedNotice()
-                }
+                    } else showAlreadyAddedNotice()
+                } else showLimitReachedNotice()
             } ?: showRequestFailedNotice()
         }
 
         private fun isAlreadyAdded(feedId: String): Boolean {
-            return currentFeedIds.contains(feedId)
+            return viewModel.currentFeedIds.contains(feedId)
         }
 
         private fun showFeedAddedNotice(feedId: String, title: String) {
-            Snackbar.make(
-                view,
-                getString(R.string.feed_added_message, title),
-                Snackbar.LENGTH_LONG
-            ).setAction(R.string.view) {
-                callbacks?.onNewFeedAdded(feedId)
-            }.show()
+            Snackbar.make(view, getString(R.string.feed_added_message, title), Snackbar.LENGTH_LONG)
+                .setAction(R.string.view) { callbacks?.onNewFeedAdded(feedId) }.show()
 
             viewModel.alreadyAddedNoticeEnabled = false
             urlEditText?.text = null
@@ -74,11 +64,7 @@ abstract class FeedAddingFragment: VisibleFragment() {
 
         private fun showAlreadyAddedNotice() {
             if (viewModel.alreadyAddedNoticeEnabled) {
-                Snackbar.make(
-                    view,
-                    getString(R.string.feed_already_added),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                Snackbar.make(view, getString(R.string.feed_already_added), Snackbar.LENGTH_SHORT).show()
                 viewModel.alreadyAddedNoticeEnabled = false
                 urlEditText?.text = null
             }
@@ -86,28 +72,20 @@ abstract class FeedAddingFragment: VisibleFragment() {
 
         private fun showRequestFailedNotice() {
             if (viewModel.requestFailedNoticeEnabled) {
-                Snackbar.make(
-                    view,
-                    getString(negativeMessageResId),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                Snackbar.make(view, getString(negativeMessageResId), Snackbar.LENGTH_SHORT).show()
                 viewModel.requestFailedNoticeEnabled = false
             }
         }
 
         private fun showLimitReachedNotice() {
             if (viewModel.subscriptionLimitNoticeEnabled) {
-                Snackbar.make(
-                    view,
-                    getString(R.string.subscription_limit_reached),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                Snackbar.make(view, getString(R.string.subscription_limit_reached), Snackbar.LENGTH_SHORT).show()
                 viewModel.subscriptionLimitNoticeEnabled = false
             }
         }
     }
 
     companion object {
-        private const val SUBSCRIPTION_LIMIT = 100
+        private const val SUBSCRIPTION_LIMIT = 150 // For now
     }
 }

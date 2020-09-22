@@ -120,7 +120,7 @@ class EntryListFragment : VisibleFragment(),
             } else feedId?.let { feedId ->
                 if (!feedId.startsWith(FOLDER)) callbacks?.onFeedRemoved()
             }
-            // Check if not currently updating:
+            // Check if not currently updating
             if (toolbar.title != getString(R.string.updating)) {
                 toolbar.title = when (feedId) {
                     FOLDER_NEW -> getString(R.string.new_entries)
@@ -184,7 +184,7 @@ class EntryListFragment : VisibleFragment(),
 
     override fun onResume() {
         super.onResume()
-        viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(requireContext()))
+        context?.let { viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(it)) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -195,13 +195,11 @@ class EntryListFragment : VisibleFragment(),
         starAllOptionsItem = menu.findItem(R.id.menuItem_star_all)
         toggleOptionsItems()
 
-        feedId?.let { feedId ->
-            if (feedId.startsWith(FOLDER)) {
-                menu.findItem(R.id.menuItem_refresh).isVisible = false
-                menu.findItem(R.id.menuItem_visit_website).isVisible = false
-                menu.findItem(R.id.menuItem_about_feed).isVisible = false
-                menu.findItem(R.id.menuItem_delete_feed).isVisible = false
-            }
+        if (feedId?.startsWith(FOLDER) == true) {
+            menu.findItem(R.id.menuItem_refresh).isVisible = false
+            menu.findItem(R.id.menuItem_visit_website).isVisible = false
+            menu.findItem(R.id.menuItem_about_feed).isVisible = false
+            menu.findItem(R.id.menuItem_delete_feed).isVisible = false
         }
 
         (searchItem.actionView as SearchView).apply {

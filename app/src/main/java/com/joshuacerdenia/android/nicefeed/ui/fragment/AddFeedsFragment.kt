@@ -65,7 +65,7 @@ class AddFeedsFragment: FeedAddingFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val manager = RequestResultManager(
+        val resultManager = RequestResultManager(
             viewModel,
             linearLayout,
             R.string.failed_to_get_feed,
@@ -73,12 +73,12 @@ class AddFeedsFragment: FeedAddingFragment(),
         )
 
         viewModel.feedIdsLiveData.observe(viewLifecycleOwner, { feedIds ->
-            currentFeedIds = feedIds
+            viewModel.onFeedIdsObtained(feedIds)
         })
 
         viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { feedWithEntries ->
-            manager.submitData(feedWithEntries)
             progressBar.visibility = View.INVISIBLE
+            resultManager.submitData(feedWithEntries)
             subscribeButton.apply {
                 isEnabled = true
                 text = getString(R.string.subscribe)
@@ -97,14 +97,12 @@ class AddFeedsFragment: FeedAddingFragment(),
         })
 
         subscribeButton.setOnClickListener {
+            val url = urlEditText.text.toString().toLowerCase(Locale.ROOT).trim()
+            if (url.contains("://")) {
+                viewModel.requestFeed(url) // If scheme is provided, use as is
+            } else viewModel.requestFeed("https://$url", "http://$url")
+
             Utils.hideSoftKeyBoard(requireActivity(), linearLayout)
-            urlEditText.text.toString()
-                .substringAfter("://")
-                .toLowerCase(Locale.ROOT)
-                .trim()
-                .run { // Allow http:// request in case https:// fails
-                    viewModel.requestFeed(HTTPS + this, HTTP + this)
-                }
             progressBar.visibility = View.VISIBLE
             subscribeButton.apply {
                 isEnabled = false
@@ -140,8 +138,6 @@ class AddFeedsFragment: FeedAddingFragment(),
     }
 
     companion object {
-        private const val HTTPS = "https://"
-        private const val HTTP = "http://"
 
         fun newInstance(): AddFeedsFragment {
             return AddFeedsFragment()

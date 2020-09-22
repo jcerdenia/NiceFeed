@@ -38,9 +38,7 @@ class EntryViewModel : ViewModel() {
                 entry = source
                 isExcerpt = source.content?.startsWith(FeedParser.FLAG_EXCERPT) ?: false
                 drawHtml(source)
-            } else {
-                htmlLiveData.value = null
-            }
+            } else htmlLiveData.value = null
         }
     }
 
@@ -50,9 +48,7 @@ class EntryViewModel : ViewModel() {
 
     fun setTextSize(textSize: Int) {
         this.textSize = textSize
-        entryLiveData.value?.let { entry ->
-            drawHtml(entry)
-        }
+        entryLiveData.value?.let { entry -> drawHtml(entry) }
     }
 
     private fun drawHtml(entry: Entry) {
