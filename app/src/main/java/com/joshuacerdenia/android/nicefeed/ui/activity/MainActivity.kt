@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity(),
 {
 
     private lateinit var drawerLayout: DrawerLayout
-    private val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +56,7 @@ class MainActivity : AppCompatActivity(),
         val feedId = intent?.getStringExtra(EXTRA_FEED_ID)
         val entryId = intent?.getStringExtra(EXTRA_ENTRY_ID)
         supportFragmentManager.popBackStack()
-        replaceMainFragment(EntryListFragment.newInstance(feedId, entryId), false)
+        replaceMainFragment(EntryListFragment.newInstance(feedId, entryId, true), false)
         drawerLayout.closeDrawers()
     }
 
@@ -83,8 +82,7 @@ class MainActivity : AppCompatActivity(),
         if (addToBackStack) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment_container, newFragment)
-                .addToBackStack(null)
-                .commit()
+                .addToBackStack(null).commit()
         } else {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment_container, newFragment).commit()
@@ -128,16 +126,12 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onFeedSelected(feedId: String, activeFeedId: String?) {
-        if (feedId != activeFeedId) {
-            loadFeed(feedId)
-        } else drawerLayout.closeDrawers()
+        if (feedId != activeFeedId) loadFeed(feedId) else drawerLayout.closeDrawers()
     }
 
-    private fun loadFeed(feedId: String, isNewlyAdded: Boolean = false) {
-        EntryListFragment.newInstance(feedId, isNewlyAdded = isNewlyAdded).let { fragment ->
-            handler.postDelayed({
-                replaceMainFragment(fragment, false)
-            }, 350)
+    private fun loadFeed(feedId: String, blockAutoUpdate: Boolean = false) {
+        EntryListFragment.newInstance(feedId, blockAutoUpdate = blockAutoUpdate).let { fragment ->
+            Handler().postDelayed({ replaceMainFragment(fragment, false) }, 350)
         }
         drawerLayout.closeDrawers()
     }

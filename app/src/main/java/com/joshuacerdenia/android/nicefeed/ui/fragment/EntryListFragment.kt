@@ -30,8 +30,6 @@ import com.joshuacerdenia.android.nicefeed.ui.menu.EntryPopupMenu
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryListViewModel
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 
-private const val TAG = "EntryListFragment"
-
 class EntryListFragment : VisibleFragment(),
     EntryListAdapter.OnEntrySelected,
     EntryPopupMenu.OnPopupMenuItemClicked,
@@ -82,8 +80,8 @@ class EntryListFragment : VisibleFragment(),
         adapter = EntryListAdapter(this)
         
         feedId = arguments?.getString(ARG_FEED_ID)
-        val isNewlyAdded = arguments?.getBoolean(ARG_IS_NEWLY_ADDED) ?: false
-        if (isNewlyAdded || !autoUpdateIsEnabled) viewModel.isAutoUpdating = false
+        val blockAutoUpdate = arguments?.getBoolean(ARG_BLOCK_AUTOUPDATE) ?: false
+        if (blockAutoUpdate || !autoUpdateIsEnabled) viewModel.isAutoUpdating = false
     }
 
     override fun onCreateView(
@@ -400,19 +398,19 @@ class EntryListFragment : VisibleFragment(),
         const val FOLDER_STARRED = "FOLDER_STARRED"
 
         private const val ARG_FEED_ID = "ARG_FEED_ID"
-        private const val ARG_IS_NEWLY_ADDED = "ARG_IS_NEWLY_ADDED"
         private const val ARG_ENTRY_ID = "ARG_ENTRY_ID"
+        private const val ARG_BLOCK_AUTOUPDATE = "ARG_BLOCK_AUTOUPDATE"
 
         fun newInstance(
             feedId: String?,
             entryId: String? = null,
-            isNewlyAdded: Boolean = false
+            blockAutoUpdate: Boolean = false
         ): EntryListFragment {
             return EntryListFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_FEED_ID, feedId)
                     putString(ARG_ENTRY_ID, entryId)
-                    putBoolean(ARG_IS_NEWLY_ADDED, isNewlyAdded)
+                    putBoolean(ARG_BLOCK_AUTOUPDATE, blockAutoUpdate)
                 }
             }
         }

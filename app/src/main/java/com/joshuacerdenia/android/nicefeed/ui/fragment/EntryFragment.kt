@@ -97,8 +97,10 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
-                    val position = if (viewModel.isInitialLoading) Pair(0, 0) else viewModel.lastPosition
-                    nestedScrollView.smoothScrollTo(position.first, position.second)
+                    if (!viewModel.isInitialLoading) {
+                        val position = viewModel.lastPosition
+                        nestedScrollView.smoothScrollTo(position.first, position.second)
+                    }
                 }
             }
 
