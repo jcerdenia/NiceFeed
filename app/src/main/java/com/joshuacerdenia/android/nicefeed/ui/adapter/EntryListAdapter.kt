@@ -68,37 +68,20 @@ class EntryListAdapter(
             val date = entry.date?.let {
                 if (getDateInstance().format(it) == getDateInstance().format(Date())) {
                     getTimeInstance(SHORT).format(it)
-                } else {
-                    getDateInstance(SHORT).format(it)
-                }
+                } else getDateInstance(SHORT).format(it)
             } ?: ""
 
             titleTextView.apply {
                 text = HtmlCompat.fromHtml(entry.title, 0)
-                setTextColor(if (entry.isRead) {
-                    Color.GRAY
-                } else {
-                    Color.BLACK
-                })
+                setTextColor(if (entry.isRead) Color.GRAY else Color.BLACK)
             }
 
             infoTextView.text = "$date – ${entry.website.shortened()}"
-            starView.visibility = if (entry.isStarred) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
+            starView.visibility = if (entry.isStarred) View.VISIBLE else View.GONE
 
-            Picasso.get()
-                .load(entry.image?.let { image ->
-                    if (image.isNotEmpty()) {
-                        image
-                    } else null
-                })
-                .fit()
-                .centerCrop()
-                .placeholder(R.drawable.vintage_newspaper)
-                .into(imageView)
+            Picasso.get().load(
+                entry.image?.let { image -> if (image.isNotEmpty()) image else null }
+            ).fit().centerCrop().placeholder(R.drawable.vintage_newspaper).into(imageView)
         }
 
         override fun onClick(v: View) {
