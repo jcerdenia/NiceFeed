@@ -187,15 +187,15 @@ class EntryListFragment : VisibleFragment(),
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_entry_list, menu)
         searchItem = menu.findItem(R.id.menuItem_search)
-        markAllOptionsItem = menu.findItem(R.id.menuItem_mark_all)
-        starAllOptionsItem = menu.findItem(R.id.menuItem_star_all)
+        markAllOptionsItem = menu.findItem(R.id.mark_all_item)
+        starAllOptionsItem = menu.findItem(R.id.star_all_item)
         toggleOptionsItems()
 
         if (feedId?.startsWith(FOLDER) == true) {
-            menu.findItem(R.id.menuItem_refresh).isVisible = false
-            menu.findItem(R.id.menuItem_visit_website).isVisible = false
-            menu.findItem(R.id.menuItem_about_feed).isVisible = false
-            menu.findItem(R.id.menuItem_delete_feed).isVisible = false
+            menu.findItem(R.id.update_item).isVisible = false
+            menu.findItem(R.id.visit_website_item).isVisible = false
+            menu.findItem(R.id.about_feed_item).isVisible = false
+            menu.findItem(R.id.remove_feed_item).isVisible = false
         }
 
         (searchItem.actionView as SearchView).apply {
@@ -224,13 +224,13 @@ class EntryListFragment : VisibleFragment(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menuItem_refresh -> handleCheckForUpdates(feedId)
-            R.id.menuItem_about_feed -> handleShowFeedInfo(viewModel.getCurrentFeed())
-            R.id.menuItem_filter -> handleFilter()
-            R.id.menuItem_mark_all -> handleMarkAll()
-            R.id.menuItem_star_all -> handleStarAll()
-            R.id.menuItem_visit_website -> handleVisitWebsite(viewModel.getCurrentFeed()?.website)
-            R.id.menuItem_delete_feed -> handleRemoveFeed()
+            R.id.update_item -> handleCheckForUpdates(feedId)
+            R.id.about_feed_item -> handleShowFeedInfo(viewModel.getCurrentFeed())
+            R.id.filter_item -> handleFilter()
+            R.id.mark_all_item -> handleMarkAll()
+            R.id.star_all_item -> handleStarAll()
+            R.id.visit_website_item -> handleVisitWebsite(viewModel.getCurrentFeed()?.website)
+            R.id.remove_feed_item -> handleRemoveFeed()
             else -> super.onOptionsItemSelected(item)
         }
     }

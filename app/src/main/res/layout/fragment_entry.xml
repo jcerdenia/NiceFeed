@@ -13,8 +13,8 @@
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll_view"
-        android:layout_gravity="fill_vertical"
-        tools:fillViewport="true"
+        android:layout_gravity="fill"
+        android:fillViewport="true"
         android:scrollbars="horizontal|vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -74,7 +74,8 @@
             <WebView
                 android:id="@+id/web_view"
                 android:layout_margin="8dp"
-                android:scrollbars="none"
+                android:scrollbars="horizontal"
+                android:overScrollMode="never"
                 android:nestedScrollingEnabled="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

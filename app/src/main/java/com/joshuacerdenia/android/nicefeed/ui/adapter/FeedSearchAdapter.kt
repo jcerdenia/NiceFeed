@@ -73,16 +73,10 @@ class FeedSearchAdapter(
 
             titleTextView.text = searchResultItem.title
             infoTextView.text = searchResultItem.website?.simplified()
-            itemProgressBar.visibility = if (isLoading) {
-                View.VISIBLE
-            } else {
-                View.INVISIBLE
-            }
+            itemProgressBar.visibility = if (isLoading) View.VISIBLE else View.INVISIBLE
 
-            Picasso.get()
-                .load(searchResultItem.imageUrl)
-                .placeholder(R.drawable.feed_icon)
-                .into(imageView)
+            Picasso.get().load(searchResultItem.imageUrl)
+                .placeholder(R.drawable.feed_icon).into(imageView)
         }
 
         override fun onClick(v: View) {

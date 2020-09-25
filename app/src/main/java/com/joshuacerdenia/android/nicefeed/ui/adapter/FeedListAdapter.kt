@@ -91,28 +91,15 @@ class FeedListAdapter(
 
         fun bind(feed: FeedLight, isHighlighted: Boolean) {
             this.feed = feed
-
             if (isHighlighted) {
-                context?.let { context ->
-                    itemView.setBackgroundColor(getColor(context, R.color.colorSelect))
-                }
-            } else {
-                itemView.addRipple()
-            }
+                context?.let { itemView.setBackgroundColor(getColor(it, R.color.colorSelect)) }
+            } else itemView.addRipple()
 
             titleTextView.text = feed.title
-            countTextView.text = if (feed.unreadCount > 0) {
-                feed.unreadCount.toString()
-            } else {
-                null
-            }
+            countTextView.text = if (feed.unreadCount > 0) feed.unreadCount.toString() else null
 
-            Picasso.get()
-                .load(feed.imageUrl)
-                .fit()
-                .centerCrop(START)
-                .placeholder(R.drawable.feed_icon_small)
-                .into(itemView.image_view)
+            Picasso.get().load(feed.imageUrl).fit().centerCrop(START)
+                .placeholder(R.drawable.feed_icon_small).into(itemView.image_view)
         }
 
         override fun onClick(v: View) {
@@ -140,15 +127,13 @@ class FeedListAdapter(
                 if (categoryHeader.unreadCount > 0) {
                     countTextView.visibility = View.VISIBLE
                     countTextView.text = categoryHeader.unreadCount.toString()
-                } else {
-                    countTextView.visibility = View.GONE
-                }
+                } else countTextView.visibility = View.GONE
             } else {
                 drawableResId = R.drawable.ic_drop_up
                 countTextView.visibility = View.GONE
             }
 
-            context?.let {
+            context?.let { context ->
                 ContextCompat.getDrawable(context, drawableResId).also { drawable ->
                     categoryTextView.setCompoundDrawablesWithIntrinsicBounds(
                         drawable,

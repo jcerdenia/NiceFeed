@@ -16,24 +16,23 @@ class EntryToHtmlFormatter(
     private val includeHeader: Boolean
 ) {
 
+    private val fontFamily = if (font == FONT_SERIF) "serif" else "sans-serif"
     private val textSize = when (textSizeKey) {
         TEXT_SIZE_LARGE -> "large"
         TEXT_SIZE_LARGER -> "x-large"
         else -> "medium"
     }
-    private val fontFamily = if (font == FONT_SERIF) {
-        "serif"
-    } else {
-        "sans-serif"
-    }
 
-    private val style = OPEN_STYLE_TAG + "* {max-width:100%}" +
+    private val style = OPEN_STYLE_TAG +
+            "* {max-width:100%}" +
             "body {font-size:$textSize; font-family:$fontFamily; word-wrap:break-word; line-height:1.4}" +
             "h1, h2, h3, h4, h5, h6 {line-height:normal}" +
             "#subtitle {color:gray}" +
             "a:link, a:visited, a:hover, a:active {color:$LINK_COLOR; text-decoration:none; font-weight:bold}" +
+            "pre, code {white-space:pre-wrap; word-break:keep-all}" +
             "img, figure {display:block; margin-left:auto; margin-right:auto; height:auto; max-width:100%}" +
-            "iframe {width:100%}" + CLOSE_STYLE_TAG
+            "iframe {width:100%}" +
+            CLOSE_STYLE_TAG
 
     private var title = ""
     private var subtitle = ""
@@ -44,52 +43,41 @@ class EntryToHtmlFormatter(
             title = "<h2>${entry.title}</h2>"
             val formattedDate = entry.date?.let { date ->
                 DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(date)
-            } ?: ""
-
-            subtitle = if (!entry.author.isNullOrEmpty()) {
-                "<p id=\"subtitle\">$formattedDate – ${entry.author}</p>"
-            } else {
-                "<p id=\"subtitle\">$formattedDate</p>"
+            }
+            subtitle = when {
+                entry.author.isNullOrEmpty() -> "<p $ID_SUBTITLE>$formattedDate</p>"
+                formattedDate.isNullOrEmpty() -> "<p $ID_SUBTITLE>${entry.author}</p>"
+                else -> "<p $ID_SUBTITLE>$formattedDate – ${entry.author}</p>"
             }
         }
 
-        val content = entry.content.run (::removeCss)
+        val content = entry.content.run (::removeStyle)
         val html = StringBuilder(style)
-            .append(OPEN_BODY_TAG)
+            .append("<body>")
             .append(title)
             .append(subtitle)
             .append(content)
-            .append(CLOSE_BODY_TAG)
+            .append("</body>")
             .toString()
 
         return encodeToString(html.toByteArray(), Base64.NO_PADDING)
     }
 
-    private fun removeCss(content: String): String {
-        return if (content.contains(OPEN_CODE_TAG) && content.contains(CLOSE_CODE_TAG)) {
-            //  Admittedly, this is a gamble that an entry with <code></code> tags will
-            //  not be image-heavy, let alone have special style tags, so we can safely ignore it
-            content
-        } else {
-            var baseContent = content
-            var editedContent = content
-            // Remove all <style></style> tags and content in between
-            while (baseContent.contains(OPEN_STYLE_TAG)) {
-                editedContent = baseContent.substringBefore(OPEN_STYLE_TAG) +
-                        baseContent.substringAfter(CLOSE_STYLE_TAG)
-                baseContent = editedContent
-            }
-            editedContent
+    private fun removeStyle(content: String): String {
+        var base = content
+        var editedContent = content
+        // Remove all <style></style> tags and content in between
+        while (base.contains(OPEN_STYLE_TAG)) {
+            editedContent = base.substringBefore(OPEN_STYLE_TAG) + base.substringAfter(CLOSE_STYLE_TAG)
+            base = editedContent
         }
+        return editedContent
     }
 
     companion object {
         private const val OPEN_STYLE_TAG = "<style>"
         private const val CLOSE_STYLE_TAG = "</style>"
-        private const val OPEN_BODY_TAG = "<body>"
-        private const val CLOSE_BODY_TAG = "</body>"
-        private const val OPEN_CODE_TAG = "<code>"
-        private const val CLOSE_CODE_TAG = "</code>"
         private const val LINK_COLOR = "#444E64"
+        private const val ID_SUBTITLE = "id=\"subtitle\""
     }
 }

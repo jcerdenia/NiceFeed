@@ -25,14 +25,8 @@ class FeedManagerAdapter(
     private val checkBoxes = mutableSetOf<CheckBox>()
 
     fun toggleCheckBoxes(checkAll: Boolean) {
-        selectedItems = if (checkAll) {
-            currentList
-        } else {
-            emptyList()
-        }
-        checkBoxes.forEach { checkBox ->
-            checkBox.isChecked = checkAll
-        }
+        selectedItems = if (checkAll) currentList else emptyList()
+        checkBoxes.forEach { checkBox -> checkBox.isChecked = checkAll }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedHolder {
@@ -69,10 +63,7 @@ class FeedManagerAdapter(
                 text = feed.title
                 this.isChecked = isChecked
                 checkBoxes.add(this)
-
-                setOnClickListener {
-                    listener.onItemClicked(feed, this.isChecked)
-                }
+                setOnClickListener { listener.onItemClicked(feed, this.isChecked) }
             }
         }
 

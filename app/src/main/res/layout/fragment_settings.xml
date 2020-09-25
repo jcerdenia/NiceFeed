@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -30,15 +31,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
-                    android:layout_width='wrap_content'
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                    android:text="@string/theme" />
+                    android:text="@string/theme"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/theme_spinner"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="16dp" />
             </LinearLayout>
@@ -62,10 +65,12 @@
                     android:padding="16dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                     android:text="@string/sort_feeds_by" />
+
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/sort_feeds_spinner"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
+                    android:gravity="end"
                     android:padding="16dp" />
             </LinearLayout>
 
@@ -81,6 +86,7 @@
                     android:text="@string/sort_entries_by"/>
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/sort_entries_spinner"
+                    
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:padding="16dp" />
@@ -146,6 +152,7 @@
                     android:id="@+id/font_spinner"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
+                    
                     android:padding="16dp" />
             </LinearLayout>
             <View style="@style/Divider"/>

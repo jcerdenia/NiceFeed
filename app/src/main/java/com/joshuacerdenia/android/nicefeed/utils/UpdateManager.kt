@@ -110,14 +110,11 @@ class UpdateManager(private val receiver: UpdateReceiver) {
         }
     }
 
-    private fun handleFeedUpdate(feed: Feed) {
-        currentFeed?.let {
-            feed.category = it.category
-            feed.unreadCount = it.unreadCount
-        }
-
-        if (feed !== currentFeed) {
-            receiver.onFeedNeedsUpdate(feed)
+    private fun handleFeedUpdate(newFeed: Feed) {
+        currentFeed?.let { oldFeed ->
+            newFeed.category = oldFeed.category
+            newFeed.unreadCount = oldFeed.unreadCount
+            if (newFeed != oldFeed) receiver.onFeedNeedsUpdate(newFeed)
         }
     }
 }
