@@ -1,0 +1,9 @@
+<p><i>NiceFeed</i> ist ein RSS Reader für Android. Ich wollte eine App, die mich bezüglich aktueller News auf dem Laufenden hält – und mir gleichzeitig dabei hilft, Programmieren in Kotlin zu lernen.</p>
+<p>RSS ist eine bereits seit langem existierende Technologie, und es gibt bereits viele Apps dafür; doch viele davon erscheinen mir zu klobig, schwer zu navigieren, und vollgestopft mit Features die ich nicht benötige. Mein Ziel ist eine attraktive und intuitive App, leichtgewichtig und doch komplett funtionell, ohne viel Schnickschnack.</p>
+<p>Ich freue mich über Feedback und schätze dies sehr – insbesondere wenn jemand Bugs findet, oder Ideen für neue Features hat. Ebenso bin ich offen für „Contributions“.</p>
+<p><br>Features:</p><ul>
+<li>RSS-Parsing Dank <a href='https://github.com/prof18/RSS-Parser'>RSS Parser</a></li>
+<li>Die Suche wird angetrieben von der <a href='https://developer.feedly.com/v3/search/'>Feedly Search API</a></li>
+<li>OPML Support (Import und Export) via <a href='https://github.com/rometools/rome'>Rome Tools</a></li>
+<li>Die Möglichkeit, Feeds in Kategorien zu organisieren</li>
+<li>Star/unstar sowie Markieren von Einträgen als (un)gelesen</li></ul>
