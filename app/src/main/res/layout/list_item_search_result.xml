@@ -45,8 +45,7 @@
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/progressBar_item"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_rss_feed" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressBar_item"
