@@ -136,10 +136,7 @@ class FeedListAdapter(
             context?.let { context ->
                 ContextCompat.getDrawable(context, drawableResId).also { drawable ->
                     categoryTextView.setCompoundDrawablesWithIntrinsicBounds(
-                        drawable,
-                        null,
-                        null,
-                        null
+                        drawable, null, null, null
                     )
                 }
             }

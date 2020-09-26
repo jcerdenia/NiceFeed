@@ -21,6 +21,7 @@ object NiceFeedPreferences {
     private const val KEY_THEME = "KEY_THEME"
     private const val KEY_VIEW_IN_BROWSER = "KEY_VIEW_IN_BROWSER"
     private const val KEY_BANNER = "KEY_BANNER"
+    private const val KEY_VIEW_AS_WEB_PAGE = "KEY_VIEW_AS_WEB_PAGE"
 
     const val TEXT_SIZE_NORMAL = 0
     const val TEXT_SIZE_LARGE = 1
@@ -149,5 +150,15 @@ object NiceFeedPreferences {
 
     fun setEnableBanner(context: Context, isEnabled: Boolean) {
         getPrefs(context).edit().putBoolean(KEY_BANNER, isEnabled).apply()
+    }
+
+    // Not yet used. Eventually a setting to view entry as web page in WebView.
+    fun viewAsWebPage(context: Context): Boolean {
+        return getPrefs(context).getBoolean(KEY_VIEW_AS_WEB_PAGE, false)
+    }
+
+    // This one too.
+    fun setViewAsWebPage(context: Context, viewAsWebPage: Boolean) {
+        getPrefs(context).edit().putBoolean(KEY_VIEW_AS_WEB_PAGE, viewAsWebPage).apply()
     }
 }
