@@ -56,9 +56,13 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(EntryViewModel::class.java)
-        viewModel.setTextSize(NiceFeedPreferences.getTextSize(requireContext()))
-        viewModel.bannerIsEnabled = NiceFeedPreferences.getEnableBanner(requireContext())
-        viewModel.font = NiceFeedPreferences.getFont(requireContext())
+        viewModel.apply {
+            setTextSize(NiceFeedPreferences.getTextSize(requireContext()))
+            font = NiceFeedPreferences.getFont(requireContext())
+            bannerIsEnabled = NiceFeedPreferences.bannerIsEnabled(requireContext())
+            loadAsWebPage = NiceFeedPreferences.loadAsWebPage(requireContext())
+        }
+
         arguments?.getString(ARG_ENTRY_ID)?.let { entryId -> viewModel.getEntryById(entryId) }
     }
 
@@ -122,10 +126,16 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         super.onViewCreated(view, savedInstanceState)
         toggleBannerViews(viewModel.bannerIsEnabled)
 
-        // Entry data converted to an HTML string
-        viewModel.htmlLiveData.observe(viewLifecycleOwner, { html ->
-            if (html != null) {
-                webView.loadData(html, MIME_TYPE, ENCODING)
+        viewModel.htmlLiveData.observe(viewLifecycleOwner, { data ->
+            if (data != null) {
+                if (data.startsWith("http")) {
+                    toggleBannerViews(false)
+                    webView.loadUrl(data)
+                } else {
+                    toggleBannerViews(viewModel.bannerIsEnabled)
+                    webView.loadData(data, MIME_TYPE, ENCODING)
+                }
+
                 toolbar.title = viewModel.entry?.website?.shortened()
                 if (viewModel.bannerIsEnabled) viewModel.entry?.let { entry ->
                     updateBanner(entry.title, entry.date, entry.author)
@@ -176,17 +186,18 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_entry, menu)
-        starItem = menu.findItem(R.id.menuItem_star)
+        starItem = menu.findItem(R.id.item_star)
         viewModel.entry?.let { entry -> toggleStarOptionItem(entry.isStarred) }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menuItem_star -> handleStar()
-            R.id.menuItem_share -> handleShare()
-            R.id.menuItem_copy_link -> handleCopyLink()
-            R.id.menuItem_view_in_browser -> handleViewInBrowser()
-            R.id.menuItem_text_size -> handleChangeTextSize()
+            R.id.item_star -> handleStar()
+            R.id.item_share -> handleShare()
+            R.id.item_copy_link -> handleCopyLink()
+            R.id.item_view_in_browser -> handleViewInBrowser()
+            R.id.item_load_as_web_page -> handleLoadAsWebPage()
+            R.id.item_text_size -> handleChangeTextSize()
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -202,7 +213,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     private fun toggleStarOptionItem(isStarred: Boolean) {
         starItem?.apply {
             title = if (isStarred) {
-                setIcon(R.drawable.ic_star)
+                setIcon(R.drawable.ic_star_yellow)
                 getString(R.string.unstar)
             } else {
                 setIcon(R.drawable.ic_star_border)
@@ -236,6 +247,12 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     private fun handleViewInBrowser(): Boolean {
         Utils.openLink(requireActivity(), webView, Uri.parse(viewModel.entry?.url))
+        return true
+    }
+
+    private fun handleLoadAsWebPage(): Boolean {
+        progressBar.visibility = View.VISIBLE
+        viewModel.toggleLoadAsWebPage()
         return true
     }
 

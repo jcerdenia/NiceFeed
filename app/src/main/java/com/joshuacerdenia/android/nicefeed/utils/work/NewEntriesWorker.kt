@@ -1,14 +1,12 @@
-package com.joshuacerdenia.android.nicefeed.work
+package com.joshuacerdenia.android.nicefeed.utils.work
 
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.text.HtmlCompat
 import androidx.work.*
-import com.joshuacerdenia.android.nicefeed.ui.activity.MainActivity
 import com.joshuacerdenia.android.nicefeed.NOTIFICATION_CHANNEL_ID
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
@@ -16,11 +14,9 @@ import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
+import com.joshuacerdenia.android.nicefeed.ui.activity.MainActivity
+import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByDate
 import java.util.concurrent.TimeUnit
-
-private fun List<Entry>.sortedByDate() = this.sortedByDescending { it.date }
-
-private const val TAG = "NewEntriesWorker"
 
 class NewEntriesWorker(
     private val context: Context,
@@ -36,20 +32,19 @@ class NewEntriesWorker(
         if (feedUrls.isEmpty()) return Result.success()
         val lastIndex = NiceFeedPreferences.getLastPolledIndex(context)
         val newIndex = if (lastIndex + 1 >= feedUrls.size) 0 else lastIndex + 1
-
         val url = feedUrls[newIndex]
+
         val currentEntryIds: List<String> = repo.getEntryIdsByFeedSynchronously(url)
         val feedWithEntries: FeedWithEntries? = feedParser.getFeedSynchronously(url)
-        NiceFeedPreferences.saveLastPolledIndex(context, newIndex)
 
-        return if (feedWithEntries != null) {
+        if (feedWithEntries != null) {
             val newEntries = mutableListOf<Entry>()
             for (entry in feedWithEntries.entries) {
                 if (!currentEntryIds.contains(entry.url)) newEntries.add(entry)
             }
+            repo.handleNewEntriesFound(newEntries, url)
 
             if (newEntries.isNotEmpty()) {
-                repo.handleNewEntriesFound(newEntries, feedWithEntries.feed.url)
                 val notification = createNotification(
                     feedWithEntries.feed.url,
                     feedWithEntries.feed.title,
@@ -60,11 +55,10 @@ class NewEntriesWorker(
                     putExtra(EXTRA_NOTIFICATION, notification)
                 }.also { intent -> context.sendOrderedBroadcast(intent, PERM_PRIVATE) }
             }
-
-            Result.success()
-        } else {
-            Result.failure()
         }
+
+        NiceFeedPreferences.saveLastPolledIndex(context, newIndex)
+        return Result.success()
     }
 
     private fun createNotification(
@@ -98,15 +92,14 @@ class NewEntriesWorker(
     }
 
     companion object {
-        private const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.work.NewEntriesWorker"
-        const val ACTION_SHOW_NOTIFICATION = "com.joshuacerdenia.android.nicefeed.work.SHOW_NOTIFICATION"
+        private const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.utils.work.NewEntriesWorker"
+        const val ACTION_SHOW_NOTIFICATION = "com.joshuacerdenia.android.nicefeed.utils.work.SHOW_NOTIFICATION"
         const val NOTIFICATION_ID = 1
         const val PERM_PRIVATE = "com.joshuacerdenia.android.nicefeed.PRIVATE"
         const val EXTRA_REQUEST_CODE = "REQUEST_CODE"
         const val EXTRA_NOTIFICATION = "NOTIFICATION"
 
-        fun setup(context: Context) {
-            Log.d(TAG, "Setting up polling for new entries")
+        fun start(context: Context) {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.UNMETERED)
                 .setRequiresBatteryNotLow(true)
@@ -114,7 +107,7 @@ class NewEntriesWorker(
                 .build()
             val request = PeriodicWorkRequest.Builder(
                 NewEntriesWorker::class.java,
-                15,
+                20,
                 TimeUnit.MINUTES
             ).setConstraints(constraints).build()
 
@@ -127,7 +120,6 @@ class NewEntriesWorker(
 
         fun cancel(context: Context) {
             WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
-            Log.d(TAG, "Polling for new entries cancelled!")
         }
     }
 }

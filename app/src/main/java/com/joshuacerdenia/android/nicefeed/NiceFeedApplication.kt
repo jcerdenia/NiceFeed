@@ -10,8 +10,9 @@ import com.joshuacerdenia.android.nicefeed.data.local.database.NiceFeedDatabase
 import com.joshuacerdenia.android.nicefeed.ui.OnBackgroundWorkSettingChanged
 import com.joshuacerdenia.android.nicefeed.utils.NetworkMonitor
 import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.work.NewEntriesWorker
-import com.joshuacerdenia.android.nicefeed.work.SweeperWorker
+import com.joshuacerdenia.android.nicefeed.utils.work.NewEntriesWorker
+import com.joshuacerdenia.android.nicefeed.utils.work.SweeperWorker
+import com.joshuacerdenia.android.nicefeed.utils.work.UpdateAllWorker
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,17 +47,17 @@ class NiceFeedApplication : Application(), OnBackgroundWorkSettingChanged {
 
     private fun delayedInit() {
         val shouldPoll = NiceFeedPreferences.getPollingSetting(this)
+        val shouldSyncInBackground = NiceFeedPreferences.syncInBackground(this)
         applicationScope.launch {
+            if (shouldPoll) NewEntriesWorker.start(applicationContext)
+            if (shouldSyncInBackground) UpdateAllWorker.startRecurring(applicationContext)
             SweeperWorker.setup(applicationContext)
-            if (shouldPoll) {
-                NewEntriesWorker.setup(applicationContext)
-            }
         }
     }
 
     override fun onBackgroundWorkSettingChanged(isOn: Boolean) {
         if (isOn) {
-            NewEntriesWorker.setup(this)
+            NewEntriesWorker.start(this)
         } else {
             NewEntriesWorker.cancel(this)
         }

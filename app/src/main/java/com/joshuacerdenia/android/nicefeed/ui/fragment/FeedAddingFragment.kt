@@ -86,6 +86,6 @@ abstract class FeedAddingFragment: VisibleFragment() {
     }
 
     companion object {
-        private const val SUBSCRIPTION_LIMIT = 150 // For now
+        private const val SUBSCRIPTION_LIMIT = 500 // For now
     }
 }

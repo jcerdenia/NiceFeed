@@ -19,9 +19,6 @@ import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.list_item_feed.view.*
 
-private const val TYPE_ITEM = 0
-private const val TYPE_HEADER = 1
-
 class FeedListAdapter(
     private val context: Context?,
     private val listener: OnItemClickListener
@@ -164,5 +161,10 @@ class FeedListAdapter(
         override fun areContentsTheSame(oldItem: FeedMenuItem, newItem: FeedMenuItem): Boolean {
             return oldItem == newItem
         }
+    }
+
+    companion object {
+        private const val TYPE_ITEM = 0
+        private const val TYPE_HEADER = 1
     }
 }

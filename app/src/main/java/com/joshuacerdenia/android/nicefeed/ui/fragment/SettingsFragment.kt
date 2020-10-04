@@ -4,7 +4,10 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.ScrollView
+import android.widget.Spinner
 import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
 import com.joshuacerdenia.android.nicefeed.R
@@ -13,7 +16,6 @@ import com.joshuacerdenia.android.nicefeed.ui.OnBackgroundWorkSettingChanged
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.dialog.AboutFragment
 import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
 
 class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
 
@@ -25,6 +27,7 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
     private lateinit var browserSwitch: SwitchCompat
     private lateinit var notificationSwitch: SwitchCompat
     private lateinit var bannerSwitch: SwitchCompat
+    private lateinit var syncSwitch: SwitchCompat
     private lateinit var themeSpinner: Spinner
     private lateinit var sortFeedsSpinner: Spinner
     private lateinit var sortEntriesSpinner: Spinner
@@ -50,6 +53,7 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
         browserSwitch = view.findViewById(R.id.browser_switch)
         notificationSwitch = view.findViewById(R.id.notification_switch)
         bannerSwitch = view.findViewById(R.id.banner_switch)
+        syncSwitch = view.findViewById(R.id.sync_switch)
         themeSpinner = view.findViewById(R.id.theme_spinner)
         sortFeedsSpinner = view.findViewById(R.id.sort_feeds_spinner)
         sortEntriesSpinner = view.findViewById(R.id.sort_entries_spinner)
@@ -107,10 +111,17 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
             }
         }
 
-        bannerSwitch.apply {
-            isChecked = NiceFeedPreferences.getEnableBanner(context)
+        syncSwitch.apply {
+            isChecked = NiceFeedPreferences.syncInBackground(context)
             setOnCheckedChangeListener { _, isOn ->
-                NiceFeedPreferences.setEnableBanner(context, isOn)
+                NiceFeedPreferences.setSyncInBackground(context, isOn)
+            }
+        }
+
+        bannerSwitch.apply {
+            isChecked = NiceFeedPreferences.bannerIsEnabled(context)
+            setOnCheckedChangeListener { _, isOn ->
+                NiceFeedPreferences.setBannerIsEnabled(context, isOn)
             }
         }
 

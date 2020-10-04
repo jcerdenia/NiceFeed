@@ -4,13 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menuItem_star"
+        android:id="@+id/item_star"
         android:icon="@drawable/ic_star_border"
         android:title="@string/star"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/menuItem_view_in_browser"
+        android:id="@+id/item_view_in_browser"
         android:icon="@drawable/ic_browser"
         android:title="@string/view_in_browser"
         app:showAsAction="ifRoom"/>
@@ -21,19 +21,25 @@
         app:showAsAction="always">
         <menu>
             <item
-                android:id="@+id/menuItem_share"
+                android:id="@+id/item_load_as_web_page"
+                android:icon="@drawable/ic_web"
+                android:title="@string/load_as_web_page"
+                app:showAsAction="ifRoom"/>
+
+            <item
+                android:id="@+id/item_share"
                 android:icon="@drawable/ic_share"
                 android:title="@string/share"
                 app:showAsAction="ifRoom"/>
 
             <item
-                android:id="@+id/menuItem_copy_link"
+                android:id="@+id/item_copy_link"
                 android:title="@string/copy_link"
                 android:icon="@drawable/ic_link"
                 app:showAsAction="ifRoom"/>
 
             <item
-                android:id="@+id/menuItem_text_size"
+                android:id="@+id/item_text_size"
                 android:icon="@drawable/ic_text_size"
                 android:title="@string/change_text_size"
                 app:showAsAction="ifRoom"/>

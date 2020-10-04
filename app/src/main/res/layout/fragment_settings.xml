@@ -105,6 +105,20 @@
                 android:paddingHorizontal="16dp"
                 android:text="@string/auto_update_on_launch_description"
                 android:paddingBottom="16dp"/>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/sync_switch"
+                android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                android:padding="16dp"
+                android:text="@string/sync_in_bg"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
+                android:text="@string/sync_in_bg_description"
+                android:paddingBottom="16dp"/>
             <View style="@style/Divider"/>
 
             <!-- READING -->

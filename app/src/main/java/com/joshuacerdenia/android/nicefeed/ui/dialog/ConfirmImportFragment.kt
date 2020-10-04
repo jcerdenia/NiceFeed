@@ -12,7 +12,7 @@ import com.joshuacerdenia.android.nicefeed.R
 class ConfirmImportFragment: BottomSheetDialogFragment() {
 
     interface Callbacks {
-        fun onImportConfirmed(count: Int)
+        fun onImportConfirmed()
     }
 
     private lateinit var titleTextView: TextView
@@ -38,7 +38,7 @@ class ConfirmImportFragment: BottomSheetDialogFragment() {
 
         confirmButton.setOnClickListener {
             targetFragment?.let { fragment ->
-                (fragment as Callbacks).onImportConfirmed(count)
+                (fragment as Callbacks).onImportConfirmed()
             }
             dismiss()
         }

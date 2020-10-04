@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.work
+package com.joshuacerdenia.android.nicefeed.utils.work
 
 import android.content.Context
 import androidx.work.*
@@ -18,7 +18,7 @@ class SweeperWorker(
     }
 
     companion object {
-        private const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.work.SweeperWorker"
+        private const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.utils.work.SweeperWorker"
 
         fun setup(context: Context) {
             val request = PeriodicWorkRequest.Builder(

@@ -95,7 +95,7 @@
     <string name="auto_update_on_launch_description">Each feed will automatically check for updates when opened.</string>
     <string name="sort_entries_by">Sort entries by</string>
     <string name="notifications">Notifications</string>
-    <string name="notification_switch_description">Check for new entries when app is closed</string>
+    <string name="notification_switch_description">New entries</string>
     <string name="sort_feeds_by">Sort feeds by</string>
     <string name="unread_items">Unread items</string>
     <string name="export">export</string>
@@ -118,6 +118,10 @@
     <string name="sans_serif">Sans Serif</string>
     <string name="serif">Serif</string>
     <string name="add_your_first_feed">Add your first feed.</string>
+    <string name="load_as_web_page">Load as Web Page</string>
+    <string name="update_all">Update All</string>
+    <string name="sync_in_bg">Sync in background</string>
+    <string name="sync_in_bg_description">Subscriptions will update daily when app is closed.</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

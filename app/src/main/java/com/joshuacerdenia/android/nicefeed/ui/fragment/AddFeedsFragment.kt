@@ -19,6 +19,8 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmImportFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.OpmlImporter
 import com.joshuacerdenia.android.nicefeed.utils.Utils
+import com.joshuacerdenia.android.nicefeed.utils.work.NewEntriesWorker
+import com.joshuacerdenia.android.nicefeed.utils.work.UpdateAllWorker
 import java.util.*
 
 class AddFeedsFragment: FeedAddingFragment(),
@@ -118,7 +120,7 @@ class AddFeedsFragment: FeedAddingFragment(),
     }
 
     override fun onOpmlParsed(feeds: List<Feed>) {
-        viewModel.feedsToImport = feeds
+        viewModel.feedsToImport = feeds.filterNot { viewModel.currentFeedIds.contains(it.url) }
         ConfirmImportFragment.newInstance(feeds.size).apply {
             setTargetFragment(fragment, 0)
             show(fragment.parentFragmentManager, "confirm import")
@@ -129,12 +131,15 @@ class AddFeedsFragment: FeedAddingFragment(),
         Utils.showErrorMessage(linearLayout, resources)
     }
 
-    override fun onImportConfirmed(count: Int) {
-        Snackbar.make(linearLayout, getString(R.string.import_successful), Snackbar.LENGTH_SHORT)
-            .setAction(R.string.done) { callbacks?.onFinished() }.show()
-
+    override fun onImportConfirmed() {
         viewModel.feedsToImport.toTypedArray().run { viewModel.addFeeds(*this) }
         viewModel.feedsToImport = emptyList()
+
+        Snackbar.make(linearLayout, getString(R.string.import_successful), Snackbar.LENGTH_SHORT)
+            .setAction(R.string.update_all) {
+                UpdateAllWorker.start(requireContext().applicationContext)
+                callbacks?.onFinished()
+            }.show()
     }
 
     companion object {

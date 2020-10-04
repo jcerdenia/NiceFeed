@@ -33,11 +33,11 @@
         <activity android:name=".ui.activity.ManagingActivity" />
 
         <receiver
-            android:name=".work.NotificationReceiver"
+            android:name=".utils.NotificationReceiver"
             android:permission="com.joshuacerdenia.android.nicefeed.PRIVATE"
             android:exported="false">
             <intent-filter android:priority="-999">
-                <action android:name="com.joshuacerdenia.android.nicefeed.work.SHOW_NOTIFICATION"/>
+                <action android:name="com.joshuacerdenia.android.nicefeed.utils.work.SHOW_NOTIFICATION"/>
             </intent-filter>
         </receiver>
 
