@@ -64,5 +64,9 @@ class UpdateAllWorker(
                 request
             )
         }
+
+        fun cancel(context: Context) {
+            WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
+        }
     }
 }

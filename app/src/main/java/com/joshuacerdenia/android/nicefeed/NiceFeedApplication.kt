@@ -50,7 +50,9 @@ class NiceFeedApplication : Application(), OnBackgroundWorkSettingChanged {
         val shouldSyncInBackground = NiceFeedPreferences.syncInBackground(this)
         applicationScope.launch {
             if (shouldPoll) NewEntriesWorker.start(applicationContext)
-            if (shouldSyncInBackground) UpdateAllWorker.startRecurring(applicationContext)
+            if (shouldSyncInBackground) {
+                UpdateAllWorker.startRecurring(applicationContext)
+            } else UpdateAllWorker.cancel(applicationContext)
             SweeperWorker.setup(applicationContext)
         }
     }
