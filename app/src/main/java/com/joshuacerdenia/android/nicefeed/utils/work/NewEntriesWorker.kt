@@ -37,19 +37,14 @@ class NewEntriesWorker(
         val currentEntryIds: List<String> = repo.getEntryIdsByFeedSynchronously(url)
         val feedWithEntries: FeedWithEntries? = feedParser.getFeedSynchronously(url)
 
-        if (feedWithEntries != null) {
-            val newEntries = mutableListOf<Entry>()
-            for (entry in feedWithEntries.entries) {
-                if (!currentEntryIds.contains(entry.url)) newEntries.add(entry)
-            }
-            repo.handleNewEntriesFound(newEntries, url)
+        feedWithEntries?.let { fwe ->
+            val newEntries = fwe.entries.filterNot { currentEntryIds.contains(it.url) }
+            val newEntryIds = newEntries.map { it.url }
+            val oldEntryIds = currentEntryIds.filterNot { newEntryIds.contains(it) }
+            repo.handleBackgroundUpdate(url, newEntries, oldEntryIds)
 
             if (newEntries.isNotEmpty()) {
-                val notification = createNotification(
-                    feedWithEntries.feed.url,
-                    feedWithEntries.feed.title,
-                    newEntries
-                )
+                val notification = createNotification(fwe.feed.url, fwe.feed.title, newEntries)
                 Intent(ACTION_SHOW_NOTIFICATION).apply {
                     putExtra(EXTRA_REQUEST_CODE, NOTIFICATION_ID)
                     putExtra(EXTRA_NOTIFICATION, notification)
@@ -106,9 +101,7 @@ class NewEntriesWorker(
                 .setRequiresStorageNotLow(true)
                 .build()
             val request = PeriodicWorkRequest.Builder(
-                NewEntriesWorker::class.java,
-                20,
-                TimeUnit.MINUTES
+                NewEntriesWorker::class.java, 20, TimeUnit.MINUTES
             ).setConstraints(constraints).build()
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(

@@ -3,7 +3,6 @@ package com.joshuacerdenia.android.nicefeed.utils.work
 import android.content.Context
 import androidx.work.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
-import com.joshuacerdenia.android.nicefeed.data.model.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import java.util.concurrent.TimeUnit
@@ -23,13 +22,12 @@ class UpdateAllWorker(
         for (url in feedUrls) {
             val currentEntryIds: List<String> = repo.getEntryIdsByFeedSynchronously(url)
             val feedWithEntries: FeedWithEntries? = feedParser.getFeedSynchronously(url)
-            val newEntries = mutableListOf<Entry>()
 
-            if (feedWithEntries != null) {
-                for (entry in feedWithEntries.entries) {
-                    if (!currentEntryIds.contains(entry.url)) newEntries.add(entry)
-                }
-                repo.handleNewEntriesFound(newEntries, url)
+            feedWithEntries?.entries?.let { entries ->
+                val newEntries = entries.filterNot { currentEntryIds.contains(it.url) }
+                val newEntryIds = newEntries.map { it.url }
+                val oldEntryIds = currentEntryIds.filterNot { newEntryIds.contains(it) }
+                repo.handleBackgroundUpdate(url, newEntries, oldEntryIds)
             }
         }
 
@@ -53,9 +51,7 @@ class UpdateAllWorker(
 
         fun startRecurring(context: Context) {
             val request = PeriodicWorkRequest.Builder(
-                UpdateAllWorker::class.java,
-                24,
-                TimeUnit.HOURS
+                UpdateAllWorker::class.java, 24, TimeUnit.HOURS
             ).setConstraints(constraints).build()
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(

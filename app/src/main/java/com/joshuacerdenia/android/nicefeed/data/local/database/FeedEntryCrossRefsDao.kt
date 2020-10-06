@@ -11,6 +11,9 @@ interface FeedEntryCrossRefsDao {
     @Delete
     fun deleteFeedEntryCrossRefs(crossRefs: List<FeedEntryCrossRef>)
 
+    @Query("DELETE FROM FeedEntryCrossRef WHERE feedUrl = :feedId AND entryUrl IN (:entryIds)")
+    fun deleteFeedEntryCrossRefs(feedId: String, entryIds: List<String>)
+
     @Query("DELETE FROM FeedEntryCrossRef WHERE feedUrl IN (:feedId)")
     fun deleteCrossRefsByFeed(vararg feedId: String)
 

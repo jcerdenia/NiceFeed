@@ -99,10 +99,14 @@ class NiceFeedRepository private constructor(
         }
     }
 
-    fun handleNewEntriesFound(entries: List<Entry>, feedId: String) {
+    fun handleBackgroundUpdate(
+        feedId: String,
+        newEntries: List<Entry>,
+        oldEntryIds: List<String>
+    ) {
         executor.execute {
-            getCrossRefs(feedId, entries).also { crossRefs ->
-                dao.handleNewEntriesFound(entries, feedId, crossRefs)
+            getCrossRefs(feedId, newEntries).also { crossRefs ->
+                dao.handleBackgroundUpdate(feedId, newEntries, crossRefs, oldEntryIds)
             }
         }
     }

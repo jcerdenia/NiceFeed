@@ -36,14 +36,17 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
     }
 
     @Transaction
-    fun handleNewEntriesFound(
-        entries: List<Entry>,
+    fun handleBackgroundUpdate(
         feedId: String,
-        crossRefs: List<FeedEntryCrossRef>
+        newEntries: List<Entry>,
+        newCrossRefs: List<FeedEntryCrossRef>,
+        oldEntryIds: List<String>,
     ) {
-        addEntries(entries)
-        addFeedEntryCrossRefs(crossRefs)
-        addToFeedUnreadCount(feedId, entries.size)
+        addEntries(newEntries)
+        addFeedEntryCrossRefs(newCrossRefs)
+        deleteEntriesIfRead(oldEntryIds)
+        deleteFeedEntryCrossRefs(feedId, oldEntryIds)
+        addToFeedUnreadCount(feedId, newEntries.size - oldEntryIds.size)
     }
 
     @Transaction

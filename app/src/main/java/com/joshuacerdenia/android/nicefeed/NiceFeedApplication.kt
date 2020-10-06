@@ -13,14 +13,12 @@ import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.work.NewEntriesWorker
 import com.joshuacerdenia.android.nicefeed.utils.work.SweeperWorker
 import com.joshuacerdenia.android.nicefeed.utils.work.UpdateAllWorker
-import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 const val NOTIFICATION_CHANNEL_ID = "nicefeed_new_entries"
 
-@HiltAndroidApp
 class NiceFeedApplication : Application(), OnBackgroundWorkSettingChanged {
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)
@@ -48,6 +46,7 @@ class NiceFeedApplication : Application(), OnBackgroundWorkSettingChanged {
     private fun delayedInit() {
         val shouldPoll = NiceFeedPreferences.getPollingSetting(this)
         val shouldSyncInBackground = NiceFeedPreferences.syncInBackground(this)
+
         applicationScope.launch {
             if (shouldPoll) NewEntriesWorker.start(applicationContext)
             if (shouldSyncInBackground) {
@@ -58,10 +57,6 @@ class NiceFeedApplication : Application(), OnBackgroundWorkSettingChanged {
     }
 
     override fun onBackgroundWorkSettingChanged(isOn: Boolean) {
-        if (isOn) {
-            NewEntriesWorker.start(this)
-        } else {
-            NewEntriesWorker.cancel(this)
-        }
+        if (isOn) NewEntriesWorker.start(this) else NewEntriesWorker.cancel(this)
     }
 }

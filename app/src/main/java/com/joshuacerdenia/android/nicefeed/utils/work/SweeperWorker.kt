@@ -22,9 +22,7 @@ class SweeperWorker(
 
         fun setup(context: Context) {
             val request = PeriodicWorkRequest.Builder(
-                SweeperWorker::class.java,
-                3,
-                TimeUnit.DAYS
+                SweeperWorker::class.java, 3, TimeUnit.DAYS
             ).build()
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
