@@ -14,9 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.URLEncoder
 
-private const val TAG = "FeedSearcher"
-
-// Generates a search query and returns a list of results from Feedly
+// This class generates a search query and returns a list of results from Feedly
 
 class FeedSearcher(private val networkMonitor: NetworkMonitor) {
 

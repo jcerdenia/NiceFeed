@@ -4,7 +4,7 @@ import java.util.*
 
 object RssUrlTransformer {
 
-    private const val BASE_NYTIMES = "www.nytimes.com"
+    private const val BASE_NY_TIMES = "www.nytimes.com"
     private const val ATOM_XML = "atom.xml"
 
     fun getUrl(link: String): String {
@@ -15,7 +15,7 @@ object RssUrlTransformer {
             .toLowerCase(Locale.ROOT)
 
         return when {
-            url.contains(BASE_NYTIMES) -> url.replace(BASE_NYTIMES, "rss.nytimes.com")
+            url.contains(BASE_NY_TIMES) -> url.replace(BASE_NY_TIMES, "rss.nytimes.com")
             url.contains("feedproxy.google.com") -> "" // We don't want this
             url.contains("youtube.com") -> url
             url.contains("medium.com") -> url

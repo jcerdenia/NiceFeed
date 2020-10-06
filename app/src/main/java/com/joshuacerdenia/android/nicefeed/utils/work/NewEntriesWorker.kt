@@ -39,8 +39,8 @@ class NewEntriesWorker(
 
         feedWithEntries?.let { fwe ->
             val newEntries = fwe.entries.filterNot { currentEntryIds.contains(it.url) }
-            val newEntryIds = newEntries.map { it.url }
-            val oldEntryIds = currentEntryIds.filterNot { newEntryIds.contains(it) }
+            val entryIds = fwe.entries.map { it.url }
+            val oldEntryIds = currentEntryIds.filterNot { entryIds.contains(it) }
             repo.handleBackgroundUpdate(url, newEntries, oldEntryIds)
 
             if (newEntries.isNotEmpty()) {

@@ -6,7 +6,7 @@ private const val TAG = "FeedParser"
 
 /*  This object generates variations of a base URL to be used for requesting a feed,
     in case the original URL doesn't work the first time.
- */
+*/
 object BackupUrlManager {
 
     private const val COUNTER_MAX = 4

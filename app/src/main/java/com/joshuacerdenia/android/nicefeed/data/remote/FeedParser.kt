@@ -48,7 +48,7 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
 
     private suspend fun executeRequest(url: String) {
         // Automatically makes several requests with different possible URLs
-        Log.d(TAG, "Requesting $url...")
+        Log.d(TAG, "Requesting $url")
 
         try {
             val channel = rssParser.getChannel(url)
@@ -58,12 +58,8 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
         } catch (e: Exception) {
             e.printStackTrace()
             // If the initial request fails, try backup URL in different variations
-            BackupUrlManager.getNextUrl()?.let {
-                executeRequest(it) // Keep trying
-            } ?: let {
-                _feedRequestLiveData.postValue(null)
-                Log.d(TAG, "Request failed")
-            }
+            BackupUrlManager.getNextUrl()?.let { executeRequest(it) }
+                ?: _feedRequestLiveData.postValue(null)
         }
     }
 
@@ -83,7 +79,7 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
                 unreadCount = entries.size
             )
 
-            Log.d(TAG, "${entries.size} entries retrieved")
+            Log.d(TAG, "Retrieved ${entries.size} entries from $url")
             return FeedWithEntries(feed, entries)
         }
 
