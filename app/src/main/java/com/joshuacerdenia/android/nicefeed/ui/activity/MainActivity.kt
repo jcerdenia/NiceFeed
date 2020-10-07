@@ -3,11 +3,8 @@ package com.joshuacerdenia.android.nicefeed.ui.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -21,7 +18,6 @@ import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.FeedListFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.WelcomeFragment
 import com.joshuacerdenia.android.nicefeed.utils.Utils
-import kotlinx.android.synthetic.main.activity_managing.*
 
 class MainActivity : AppCompatActivity(),
     FeedListFragment.Callbacks,
