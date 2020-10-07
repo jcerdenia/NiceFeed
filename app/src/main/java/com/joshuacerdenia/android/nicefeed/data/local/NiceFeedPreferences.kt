@@ -161,12 +161,10 @@ object NiceFeedPreferences {
         getPrefs(context).edit().putBoolean(KEY_SYNC_IN_BG, isOn).apply()
     }
 
-    // Not yet used. Eventually a setting to view entry as web page in WebView.
     fun viewAsWebPage(context: Context): Boolean {
         return getPrefs(context).getBoolean(KEY_VIEW_AS_WEB_PAGE, false)
     }
 
-    // This one too.
     fun setViewAsWebPage(context: Context, viewAsWebPage: Boolean) {
         getPrefs(context).edit().putBoolean(KEY_VIEW_AS_WEB_PAGE, viewAsWebPage).apply()
     }
