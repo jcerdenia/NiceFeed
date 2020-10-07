@@ -25,7 +25,7 @@ class EntryViewModel : ViewModel() {
         private set
     var font = 0
     var bannerIsEnabled = true
-    var loadAsWebPage = true
+    var viewAsWebPage = true
     var isInitialLoading = true
 
     var entry: Entry? = null
@@ -54,7 +54,7 @@ class EntryViewModel : ViewModel() {
     }
 
     private fun drawHtml(entry: Entry) {
-        if (!loadAsWebPage) {
+        if (!viewAsWebPage) {
             EntryMinimal(
                 title = entry.title,
                 date = entry.date,
@@ -71,13 +71,11 @@ class EntryViewModel : ViewModel() {
     }
 
     fun toggleLoadAsWebPage() {
-        loadAsWebPage = !loadAsWebPage
+        viewAsWebPage = !viewAsWebPage
         entry?.let { drawHtml(it) }
     }
 
     fun saveChanges() {
-        entry?.let { entry ->
-            repo.updateEntryAndFeedUnreadCount(entry.url, true, entry.isStarred)
-        }
+        entry?.let { repo.updateEntryAndFeedUnreadCount(it.url, true, it.isStarred) }
     }
 }

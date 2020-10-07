@@ -3,8 +3,11 @@ package com.joshuacerdenia.android.nicefeed.ui.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -17,6 +20,8 @@ import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.FeedListFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.WelcomeFragment
+import com.joshuacerdenia.android.nicefeed.utils.Utils
+import kotlinx.android.synthetic.main.activity_managing.*
 
 class MainActivity : AppCompatActivity(),
     FeedListFragment.Callbacks,
@@ -31,6 +36,7 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         drawerLayout = findViewById(R.id.drawerLayout)
+        Utils.setStatusBarMode(this)
 
         if (getFragment(FRAGMENT_MAIN) == null) {
             val mainFragment = if (!NiceFeedPreferences.isEmpty(this)) {
@@ -46,9 +52,8 @@ class MainActivity : AppCompatActivity(),
 
     override fun onResume() {
         super.onResume()
-        if (NiceFeedPreferences.isEmpty(this)) {
+        if (NiceFeedPreferences.isEmpty(this))
             replaceMainFragment(WelcomeFragment.newInstance(), false)
-        }
     }
 
     override fun onNewIntent(intent: Intent?) {

@@ -20,11 +20,6 @@
         android:icon="@drawable/ic_more_vert"
         app:showAsAction="always">
         <menu>
-            <item
-                android:id="@+id/item_load_as_web_page"
-                android:icon="@drawable/ic_web"
-                android:title="@string/load_as_web_page"
-                app:showAsAction="ifRoom"/>
 
             <item
                 android:id="@+id/item_share"
@@ -36,6 +31,12 @@
                 android:id="@+id/item_copy_link"
                 android:title="@string/copy_link"
                 android:icon="@drawable/ic_link"
+                app:showAsAction="ifRoom"/>
+
+            <item
+                android:id="@+id/item_view_as_web_page"
+                android:icon="@drawable/ic_web"
+                android:title="@string/view_as_web_page"
                 app:showAsAction="ifRoom"/>
 
             <item

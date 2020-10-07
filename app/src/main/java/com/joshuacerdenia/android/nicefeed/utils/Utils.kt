@@ -1,11 +1,16 @@
 package com.joshuacerdenia.android.nicefeed.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.content.res.Resources
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat.startActivity
@@ -47,6 +52,27 @@ object Utils {
             else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
         }.let { mode ->
             AppCompatDelegate.setDefaultNightMode(mode)
+        }
+    }
+
+    fun setStatusBarMode(activity: Activity) {
+        val window = activity.window
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val statusBarMode = when (
+                activity.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
+                ) {
+                Configuration.UI_MODE_NIGHT_YES -> 0
+                Configuration.UI_MODE_NIGHT_NO -> View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                else -> View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+
+            window?.decorView?.systemUiVisibility = statusBarMode
+        } else {
+            window?.apply {
+                clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                statusBarColor = Color.GRAY
+            }
         }
     }
 

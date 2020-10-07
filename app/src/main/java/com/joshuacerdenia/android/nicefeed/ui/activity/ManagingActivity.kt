@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.ui.OnBackgroundWorkSettingChanged
 import com.joshuacerdenia.android.nicefeed.ui.fragment.*
+import com.joshuacerdenia.android.nicefeed.utils.Utils
 
 class ManagingActivity : AppCompatActivity(),
     ManageFeedsFragment.Callbacks,
@@ -22,6 +23,7 @@ class ManagingActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_managing)
         callback = applicationContext as OnBackgroundWorkSettingChanged
+        Utils.setStatusBarMode(this)
 
         if (getCurrentFragment() == null) {
             when (intent.getIntExtra(EXTRA_MANAGING, FeedListFragment.ITEM_ADD_FEEDS)) {

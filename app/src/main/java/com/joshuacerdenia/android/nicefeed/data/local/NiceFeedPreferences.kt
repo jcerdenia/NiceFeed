@@ -162,12 +162,12 @@ object NiceFeedPreferences {
     }
 
     // Not yet used. Eventually a setting to view entry as web page in WebView.
-    fun loadAsWebPage(context: Context): Boolean {
+    fun viewAsWebPage(context: Context): Boolean {
         return getPrefs(context).getBoolean(KEY_VIEW_AS_WEB_PAGE, false)
     }
 
     // This one too.
-    fun setLoadAsWebPage(context: Context, viewAsWebPage: Boolean) {
+    fun setViewAsWebPage(context: Context, viewAsWebPage: Boolean) {
         getPrefs(context).edit().putBoolean(KEY_VIEW_AS_WEB_PAGE, viewAsWebPage).apply()
     }
 }

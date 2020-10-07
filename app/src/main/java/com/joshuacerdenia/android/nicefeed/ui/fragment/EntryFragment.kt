@@ -46,6 +46,8 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     private var callbacks: Callbacks? = null
     private var starItem: MenuItem? = null
+    private var viewAsWebPageItem: MenuItem? = null
+    private var textSizeItem: MenuItem? = null
     private val fragment = this@EntryFragment
 
     override fun onAttach(context: Context) {
@@ -60,7 +62,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
             setTextSize(NiceFeedPreferences.getTextSize(requireContext()))
             font = NiceFeedPreferences.getFont(requireContext())
             bannerIsEnabled = NiceFeedPreferences.bannerIsEnabled(requireContext())
-            loadAsWebPage = NiceFeedPreferences.loadAsWebPage(requireContext())
+            viewAsWebPage = NiceFeedPreferences.viewAsWebPage(requireContext())
         }
 
         arguments?.getString(ARG_ENTRY_ID)?.let { entryId -> viewModel.getEntryById(entryId) }
@@ -129,11 +131,11 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         viewModel.htmlLiveData.observe(viewLifecycleOwner, { data ->
             if (data != null) {
                 if (data.startsWith("http")) {
-                    toggleBannerViews(false)
                     webView.loadUrl(data)
+                    toggleBannerViews(false)
                 } else {
-                    toggleBannerViews(viewModel.bannerIsEnabled)
                     webView.loadData(data, MIME_TYPE, ENCODING)
+                    toggleBannerViews(viewModel.bannerIsEnabled)
                 }
 
                 toolbar.title = viewModel.entry?.website?.shortened()
@@ -187,7 +189,10 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_entry, menu)
         starItem = menu.findItem(R.id.item_star)
+        viewAsWebPageItem = menu.findItem(R.id.item_view_as_web_page)
+        textSizeItem = menu.findItem(R.id.item_text_size)
         viewModel.entry?.let { entry -> toggleStarOptionItem(entry.isStarred) }
+        toggleViewAsWebPageItem(viewModel.viewAsWebPage)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -196,7 +201,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
             R.id.item_share -> handleShare()
             R.id.item_copy_link -> handleCopyLink()
             R.id.item_view_in_browser -> handleViewInBrowser()
-            R.id.item_load_as_web_page -> handleLoadAsWebPage()
+            R.id.item_view_as_web_page -> handleViewAsWebPage()
             R.id.item_text_size -> handleChangeTextSize()
             else -> super.onOptionsItemSelected(item)
         }
@@ -218,6 +223,20 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
             } else {
                 setIcon(R.drawable.ic_star_border)
                 getString(R.string.star)
+            }
+        }
+    }
+
+    private fun toggleViewAsWebPageItem(isViewingAsWebPage: Boolean) {
+        viewAsWebPageItem?.apply {
+            if (isViewingAsWebPage) {
+                textSizeItem?.isEnabled = false
+                title = getString(R.string.view_as_entry)
+                setIcon(R.drawable.ic_notes)
+            } else {
+                textSizeItem?.isEnabled = true
+                title = getString(R.string.view_as_web_page)
+                setIcon(R.drawable.ic_web)
             }
         }
     }
@@ -250,9 +269,10 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         return true
     }
 
-    private fun handleLoadAsWebPage(): Boolean {
+    private fun handleViewAsWebPage(): Boolean {
         progressBar.visibility = View.VISIBLE
         viewModel.toggleLoadAsWebPage()
+        toggleViewAsWebPageItem(viewModel.viewAsWebPage)
         return true
     }
 
@@ -278,7 +298,10 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         saveScrollPosition()
         viewModel.isInitialLoading = false
         viewModel.saveChanges()
-        context?.let { NiceFeedPreferences.saveTextSize(it, viewModel.textSize) }
+        context?.let { context ->
+            NiceFeedPreferences.saveTextSize(context, viewModel.textSize)
+            NiceFeedPreferences.setViewAsWebPage(context, viewModel.viewAsWebPage)
+        }
     }
 
     override fun onDetach() {
