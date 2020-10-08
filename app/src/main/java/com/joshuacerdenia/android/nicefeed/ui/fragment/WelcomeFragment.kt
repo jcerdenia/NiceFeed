@@ -9,16 +9,19 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.ui.OnHomePressed
+import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 
 class WelcomeFragment : VisibleFragment() {
 
+    interface Callbacks: OnToolbarInflated, OnHomePressed
+
     private lateinit var toolbar: Toolbar
     private lateinit var messageTextView: TextView
-    private var callback: OnHomePressed? = null
+    private var callbacks: Callbacks? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        callback = activity as OnHomePressed
+        callbacks = activity as Callbacks
     }
 
     override fun onCreateView(
@@ -30,6 +33,7 @@ class WelcomeFragment : VisibleFragment() {
         messageTextView = view.findViewById(R.id.no_feeds_text_view)
         toolbar = view.findViewById(R.id.toolbar)
         toolbar.title = getString(R.string.app_name)
+        callbacks?.onToolbarInflated(toolbar)
         return view
     }
 
@@ -37,15 +41,15 @@ class WelcomeFragment : VisibleFragment() {
         super.onViewCreated(view, savedInstanceState)
         toolbar.apply {
             setNavigationIcon(R.drawable.ic_menu)
-            setNavigationOnClickListener { callback?.onHomePressed() }
+            setNavigationOnClickListener { callbacks?.onHomePressed() }
         }
 
-        messageTextView.setOnClickListener { callback?.onHomePressed() }
+        messageTextView.setOnClickListener { callbacks?.onHomePressed() }
     }
 
     override fun onDetach() {
         super.onDetach()
-        callback = null
+        callbacks = null
     }
 
     companion object {

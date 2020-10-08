@@ -48,8 +48,9 @@ class MainActivity : AppCompatActivity(),
 
     override fun onResume() {
         super.onResume()
-        if (NiceFeedPreferences.isEmpty(this))
+        if (NiceFeedPreferences.isEmpty(this)) {
             replaceMainFragment(WelcomeFragment.newInstance(), false)
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {

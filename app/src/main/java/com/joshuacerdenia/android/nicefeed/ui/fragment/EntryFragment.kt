@@ -141,10 +141,9 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
                 toolbar.title = viewModel.entry?.website?.shortened()
                 if (viewModel.bannerIsEnabled) viewModel.entry?.let { entry ->
                     updateBanner(entry.title, entry.date, entry.author)
+                    Picasso.get().load(entry.image).fit().centerCrop()
+                        .placeholder(R.drawable.vintage_newspaper).into(imageView)
                 }
-
-                Picasso.get().load(viewModel.entry?.image).fit().centerCrop()
-                    .placeholder(R.drawable.vintage_newspaper).into(imageView)
                 setHasOptionsMenu(true)
             } else {
                 toggleBannerViews(false)
