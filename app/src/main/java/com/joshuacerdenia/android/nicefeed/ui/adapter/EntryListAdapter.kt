@@ -64,7 +64,6 @@ class EntryListAdapter(
         @SuppressLint("SetTextI18n")
         fun bind(entry: EntryLight) {
             this.entry = entry
-
             val date = entry.date?.let {
                 if (getDateInstance().format(it) == getDateInstance().format(Date())) {
                     getTimeInstance(SHORT).format(it)
@@ -79,9 +78,8 @@ class EntryListAdapter(
             infoTextView.text = "$date – ${entry.website.shortened()}"
             starView.visibility = if (entry.isStarred) View.VISIBLE else View.GONE
 
-            Picasso.get().load(
-                entry.image?.let { image -> if (image.isNotEmpty()) image else null }
-            ).fit().centerCrop().placeholder(R.drawable.vintage_newspaper).into(imageView)
+            Picasso.get().load(entry.image).fit().centerCrop()
+                .placeholder(R.drawable.vintage_newspaper).into(imageView)
         }
 
         override fun onClick(v: View) {

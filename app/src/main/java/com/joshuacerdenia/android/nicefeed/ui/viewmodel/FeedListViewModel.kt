@@ -19,8 +19,7 @@ class FeedListViewModel: ViewModel() {
     var categories = arrayOf<String>()
         private set
     val minimizedCategories = mutableSetOf<String>()
-    var feedOrder = 0
-        private set
+    private var feedOrder = 0
     val feedListLiveData = MediatorLiveData<List<FeedMenuItem>>()
 
     init {

@@ -40,11 +40,8 @@ class FeedSearchAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedHolder {
-        val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.list_item_search_result,
-            parent,
-            false
-        )
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.list_item_search_result, parent, false)
         return FeedHolder(view, listener)
     }
 

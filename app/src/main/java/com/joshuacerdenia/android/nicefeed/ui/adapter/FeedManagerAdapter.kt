@@ -30,11 +30,8 @@ class FeedManagerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedHolder {
-        val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.list_item_feed_manager,
-            parent,
-            false
-        )
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.list_item_feed_manager, parent, false)
         return FeedHolder(view)
     }
 

@@ -38,19 +38,13 @@ class FeedListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_ITEM -> {
-                val view = LayoutInflater.from(parent.context).inflate(
-                    R.layout.list_item_feed,
-                    parent,
-                    false
-                )
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.list_item_feed, parent, false)
                 FeedHolder(view)
             }
             TYPE_HEADER -> {
-                val view = LayoutInflater.from(parent.context).inflate(
-                    R.layout.list_item_category,
-                    parent,
-                    false
-                )
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.list_item_category, parent, false)
                 CategoryHolder(view)
             }
             else -> throw IllegalArgumentException()

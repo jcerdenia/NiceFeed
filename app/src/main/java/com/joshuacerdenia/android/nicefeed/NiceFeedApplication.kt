@@ -3,7 +3,6 @@ package com.joshuacerdenia.android.nicefeed
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.res.Configuration
 import android.os.Build
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
@@ -27,12 +26,6 @@ class NiceFeedApplication : Application(), OnBackgroundWorkSettingChanged {
     override fun onCreate() {
         super.onCreate()
         Utils.setTheme(NiceFeedPreferences.getTheme(this))
-        when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> {}
-            Configuration.UI_MODE_NIGHT_NO -> {}
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
-        }
-
         val database = NiceFeedDatabase.build(this)
         val connectionMonitor = NetworkMonitor(this)
         NiceFeedRepository.initialize(database, connectionMonitor)

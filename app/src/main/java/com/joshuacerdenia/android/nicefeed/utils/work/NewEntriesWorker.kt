@@ -63,12 +63,7 @@ class NewEntriesWorker(
     ): Notification {
         val latestEntry = entries.sortedByDate().first()
         val intent = MainActivity.newIntent(context, feedId, latestEntry.url)
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            0,
-            intent,
-            PendingIntent.FLAG_CANCEL_CURRENT
-        )
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
         val text = if (entries.size > 1) {
             resources.getString(R.string.and_more, latestEntry.title)
         } else {
