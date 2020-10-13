@@ -58,12 +58,12 @@ object Utils {
     fun setStatusBarMode(activity: Activity) {
         val window = activity.window
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val statusBarMode = if (
+            val statusBarColor = if (
                 activity.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
                 == Configuration.UI_MODE_NIGHT_YES
             ) 0 else View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
-            window?.decorView?.systemUiVisibility = statusBarMode
+            window?.decorView?.systemUiVisibility = statusBarColor
         } else {
             window?.apply {
                 clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)

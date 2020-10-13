@@ -6,8 +6,6 @@ import com.joshuacerdenia.android.nicefeed.data.model.*
 import com.joshuacerdenia.android.nicefeed.utils.NetworkMonitor
 import java.util.concurrent.Executors
 
-private const val TAG = "NiceFeedRepo"
-
 class NiceFeedRepository private constructor(
     database: NiceFeedDatabase,
     val networkMonitor: NetworkMonitor
@@ -37,9 +35,7 @@ class NiceFeedRepository private constructor(
     fun getEntryIdsByFeedSynchronously(feedId: String): List<String> = dao.getEntryIdsByFeedSynchronously(feedId)
 
     fun addFeeds(vararg feed: Feed) {
-        executor.execute {
-            dao.addFeeds(*feed)
-        }
+        executor.execute { dao.addFeeds(*feed) }
     }
 
     fun addFeedWithEntries(data: FeedWithEntries) {
@@ -51,39 +47,27 @@ class NiceFeedRepository private constructor(
     }
 
     fun updateFeed(feed: Feed) {
-        executor.execute {
-            dao.updateFeed(feed)
-        }
+        executor.execute { dao.updateFeed(feed) }
     }
 
     fun updateFeedCategory(vararg feedId: String, category: String) {
-        executor.execute {
-            dao.updateFeedCategory(*feedId, category = category)
-        }
+        executor.execute { dao.updateFeedCategory(*feedId, category = category) }
     }
 
     fun updateFeedUnreadCount(feedId: String, count: Int) {
-        executor.execute {
-            dao.updateFeedUnreadCount(feedId, count)
-        }
+        executor.execute { dao.updateFeedUnreadCount(feedId, count) }
     }
 
     fun updateEntryAndFeedUnreadCount(entryId: String, isRead: Boolean, isStarred: Boolean) {
-        executor.execute {
-            dao.updateEntryAndFeedUnreadCount(entryId, isRead, isStarred)
-        }
+        executor.execute { dao.updateEntryAndFeedUnreadCount(entryId, isRead, isStarred) }
     }
 
     fun updateEntryIsStarred(vararg entryId: String, isStarred: Boolean) {
-        executor.execute {
-            dao.updateEntryIsStarred(*entryId, isStarred = isStarred)
-        }
+        executor.execute { dao.updateEntryIsStarred(*entryId, isStarred = isStarred) }
     }
 
     fun updateEntryIsRead(vararg entryId: String, isRead: Boolean) {
-        executor.execute {
-            dao.updateEntryIsReadAndFeedUnreadCount(*entryId, isRead = isRead)
-        }
+        executor.execute { dao.updateEntryIsReadAndFeedUnreadCount(*entryId, isRead = isRead) }
     }
 
     fun handleEntryUpdates(
@@ -112,30 +96,22 @@ class NiceFeedRepository private constructor(
     }
 
     fun deleteFeedAndEntriesById(vararg feedId: String) {
-        executor.execute {
-            dao.deleteFeedAndEntriesById(*feedId)
-        }
+        executor.execute { dao.deleteFeedAndEntriesById(*feedId) }
     }
 
     fun deleteLeftoverItems() {
-        executor.execute {
-            dao.deleteLeftoverItems()
-        }
+        executor.execute { dao.deleteLeftoverItems() }
     }
 
     private fun getCrossRefs(feedId: String, entries: List<Entry>): List<FeedEntryCrossRef> {
-        return entries.map { entry ->
-            FeedEntryCrossRef(feedId, entry.url)
-        }
+        return entries.map { entry -> FeedEntryCrossRef(feedId, entry.url) }
     }
 
     companion object {
         private var INSTANCE: NiceFeedRepository? = null
 
         fun initialize(database: NiceFeedDatabase, networkMonitor: NetworkMonitor) {
-            if (INSTANCE == null) {
-                INSTANCE = NiceFeedRepository(database, networkMonitor)
-            }
+            if (INSTANCE == null) INSTANCE = NiceFeedRepository(database, networkMonitor)
         }
 
         fun get(): NiceFeedRepository {
