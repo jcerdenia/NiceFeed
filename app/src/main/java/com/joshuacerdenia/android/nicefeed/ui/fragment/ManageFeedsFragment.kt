@@ -55,11 +55,6 @@ class ManageFeedsFragment: VisibleFragment(),
         callbacks = context as Callbacks?
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ManageFeedsViewModel::class.java)
@@ -304,6 +299,11 @@ class ManageFeedsFragment: VisibleFragment(),
             getString(R.string.exported_opml_message, fileName)
         } else getString(R.string.error_message)
         Snackbar.make(recyclerView, message, Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
     override fun onStop() {

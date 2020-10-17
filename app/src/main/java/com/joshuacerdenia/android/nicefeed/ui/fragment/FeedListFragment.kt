@@ -40,7 +40,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        callbacks = activity as Callbacks?
+        callbacks = context as Callbacks?
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

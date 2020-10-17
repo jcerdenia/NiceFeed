@@ -38,7 +38,7 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        callbacks = context as Callbacks
+        callbacks = context as Callbacks?
     }
 
     override fun onCreateView(
