@@ -33,8 +33,6 @@ class OpmlImporter(
                         parseOpml(reader)
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace()
-
                     try {
                         val content = BufferedInputStream(inputStream).bufferedReader().readText()
                         val fixedReader = StringReader(content.replace(
@@ -45,7 +43,6 @@ class OpmlImporter(
                         parseOpml(fixedReader)
 
                     } catch (e: Exception) {
-                        e.printStackTrace()
                         listener.onParseOpmlFailed()
                     }
                 }

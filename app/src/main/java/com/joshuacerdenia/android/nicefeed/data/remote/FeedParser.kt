@@ -33,7 +33,6 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
                 val channel = rssParser.getChannel(url)
                 ChannelMapper.makeFeedWithEntries(url, channel)
             } catch(e: Exception) {
-                e.printStackTrace()
                 null
             }
         } else null
@@ -54,9 +53,7 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
             val channel = rssParser.getChannel(url)
             val feedWithEntries = ChannelMapper.makeFeedWithEntries(url, channel)
             _feedRequestLiveData.postValue(feedWithEntries)
-
         } catch (e: Exception) {
-            e.printStackTrace()
             // If the initial request fails, try backup URL in different variations
             BackupUrlManager.getNextUrl()?.let { executeRequest(it) }
                 ?: _feedRequestLiveData.postValue(null)

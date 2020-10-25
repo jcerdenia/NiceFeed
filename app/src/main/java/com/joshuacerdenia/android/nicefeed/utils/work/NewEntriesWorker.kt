@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.text.HtmlCompat
 import androidx.work.*
@@ -17,6 +18,8 @@ import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import com.joshuacerdenia.android.nicefeed.ui.activity.MainActivity
 import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByDate
 import java.util.concurrent.TimeUnit
+
+private const val TAG = "NewEntriesWorker"
 
 class NewEntriesWorker(
     private val context: Context,
@@ -38,9 +41,10 @@ class NewEntriesWorker(
         val feedWithEntries: FeedWithEntries? = feedParser.getFeedSynchronously(url)
 
         feedWithEntries?.let { fwe ->
-            val newEntries = fwe.entries.filterNot { currentEntryIds.contains(it.url) }
             val entryIds = fwe.entries.map { it.url }
+            val newEntries = fwe.entries.filterNot { currentEntryIds.contains(it.url) }
             val oldEntryIds = currentEntryIds.filterNot { entryIds.contains(it) }
+            Log.d(TAG, "${newEntries.size} new entries")
             repo.handleBackgroundUpdate(url, newEntries, oldEntryIds)
 
             if (newEntries.isNotEmpty()) {

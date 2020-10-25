@@ -16,7 +16,6 @@ import com.joshuacerdenia.android.nicefeed.ui.OnHomePressed
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.FeedListFragment
-import com.joshuacerdenia.android.nicefeed.ui.fragment.WelcomeFragment
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 
 class MainActivity : AppCompatActivity(),
@@ -35,21 +34,11 @@ class MainActivity : AppCompatActivity(),
         Utils.setStatusBarMode(this)
 
         if (getFragment(FRAGMENT_MAIN) == null) {
-            val mainFragment = if (!NiceFeedPreferences.isEmpty(this)) {
-                val feedId = intent?.getStringExtra(EXTRA_FEED_ID)
-                    ?: NiceFeedPreferences.getLastViewedFeedId(this)
-                val entryId = intent?.getStringExtra(EXTRA_ENTRY_ID)
-                EntryListFragment.newInstance(feedId, entryId)
-            } else WelcomeFragment.newInstance()
-
+            val feedId = intent?.getStringExtra(EXTRA_FEED_ID)
+                ?: NiceFeedPreferences.getLastViewedFeedId(this)
+            val entryId = intent?.getStringExtra(EXTRA_ENTRY_ID)
+            val mainFragment = EntryListFragment.newInstance(feedId, entryId)
             loadFragments(mainFragment, FeedListFragment.newInstance())
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (NiceFeedPreferences.isEmpty(this)) {
-            replaceMainFragment(WelcomeFragment.newInstance(), false)
         }
     }
 
@@ -111,12 +100,6 @@ class MainActivity : AppCompatActivity(),
         drawerLayout.apply {
             openDrawer(GravityCompat.START, true)
             setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED)
-        }
-    }
-
-    override fun onFeedListEmpty() {
-        if ((getFragment(FRAGMENT_MAIN)) !is WelcomeFragment) {
-            replaceMainFragment(WelcomeFragment.newInstance(), false)
         }
     }
 

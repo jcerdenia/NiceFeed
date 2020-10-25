@@ -50,7 +50,6 @@ class OpmlExporter(
                         }
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace()
                     listener.onExportAttempted(false, null)
                 }
             }

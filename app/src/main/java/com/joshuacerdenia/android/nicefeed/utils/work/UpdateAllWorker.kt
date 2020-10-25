@@ -24,8 +24,8 @@ class UpdateAllWorker(
             val feedWithEntries: FeedWithEntries? = feedParser.getFeedSynchronously(url)
 
             feedWithEntries?.entries?.let { entries ->
-                val newEntries = entries.filterNot { currentEntryIds.contains(it.url) }
                 val entryIds = entries.map { it.url }
+                val newEntries = entries.filterNot { currentEntryIds.contains(it.url) }
                 val oldEntryIds = currentEntryIds.filterNot { entryIds.contains(it) }
                 repo.handleBackgroundUpdate(url, newEntries, oldEntryIds)
             }

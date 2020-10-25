@@ -39,7 +39,7 @@ interface FeedsDao {
     fun addToFeedUnreadCount(feedId: String, addend: Int)
 
     @Query(
-        "UPDATE Feed SET unreadCount =+ (unreadCount + :addend) WHERE url IN " +
+        "UPDATE Feed SET unreadCount = (unreadCount + :addend) WHERE url IN " +
             "(SELECT url FROM FeedEntryCrossRef AS _junction " +
             "INNER JOIN Feed ON (_junction.feedUrl = Feed.url) " +
             "WHERE _junction.entryUrl = (:entryId))"

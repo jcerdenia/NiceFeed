@@ -119,11 +119,7 @@ class ManageFeedsFragment: VisibleFragment(),
             progressBar.visibility = View.GONE
             adapter.submitList(feeds)
             selectAllCheckBox.visibility = if (feeds.size > 1) View.VISIBLE else View.GONE
-
-            if (feeds.isEmpty()) {
-                emptyMessageTextView.visibility = View.VISIBLE
-                NiceFeedPreferences.isEmpty(requireContext(), true)
-            }
+            if (feeds.isEmpty()) emptyMessageTextView.visibility = View.VISIBLE
         })
     }
 

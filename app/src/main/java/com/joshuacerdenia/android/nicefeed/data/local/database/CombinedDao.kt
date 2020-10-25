@@ -62,10 +62,8 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
     @Transaction
     fun updateEntryIsReadAndFeedUnreadCount(vararg entryId: String, isRead: Boolean) {
         updateEntryIsRead(*entryId, isRead = isRead)
-        (if (isRead) -1 else 1).also { addend ->
-            for (id in entryId) {
-                addToFeedUnreadCountByEntry(id, addend)
-            }
+        (if (isRead) -1 else 1).let { addend ->
+            for (id in entryId) addToFeedUnreadCountByEntry(id, addend)
         }
     }
 

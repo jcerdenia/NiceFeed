@@ -37,9 +37,7 @@ class FeedListViewModel: ViewModel() {
     fun toggleCategoryDropDown(category: String) {
         if (minimizedCategories.contains(category)) {
             minimizedCategories.remove(category)
-        } else {
-            minimizedCategories.add(category)
-        }
+        } else minimizedCategories.add(category)
         arrangeMenu()
     }
 

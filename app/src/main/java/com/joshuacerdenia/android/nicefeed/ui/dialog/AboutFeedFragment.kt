@@ -50,11 +50,8 @@ class AboutFeedFragment: BottomSheetDialogFragment() {
 
         titleTextView.text = feed.title
         categoryTextView.text = getString(R.string.category_, feed.category)
-        descriptionTextView.text = if (!feed.description.isNullOrEmpty()) {
-            feed.description
-        } else {
-            feed.website.pathified()
-        }
+        descriptionTextView.text = if (!feed.description.isNullOrEmpty())
+            feed.description else feed.website.pathified()
 
         editCategoryButton.apply {
             text = getString(R.string.edit_category)
@@ -69,13 +66,8 @@ class AboutFeedFragment: BottomSheetDialogFragment() {
         private const val ARG_FEED = "ARG_FEED"
 
         fun newInstance(feed: Feed): AboutFeedFragment {
-            val args = Bundle().apply {
-                putSerializable(ARG_FEED, feed)
-            }
-
-            return AboutFeedFragment().apply {
-                arguments = args
-            }
+            val args = Bundle().apply { putSerializable(ARG_FEED, feed) }
+            return AboutFeedFragment().apply { arguments = args }
         }
     }
 }
