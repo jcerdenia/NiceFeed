@@ -8,7 +8,7 @@ import java.io.Serializable
 data class Feed(
     @PrimaryKey val url: String, // Feed ID
     var title: String,
-    var website: String,
+    val website: String,
     val description: String? = null,
     val imageUrl: String? = null,
     var category: String = "Uncategorized",

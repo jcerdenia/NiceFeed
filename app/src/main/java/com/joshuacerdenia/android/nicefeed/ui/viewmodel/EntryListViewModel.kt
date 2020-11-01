@@ -57,15 +57,10 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
         }
 
         entriesLightLiveData.addSource(entriesLiveData) { entries ->
-            val list = entries.map { entry -> EntryLight(
-                    url = entry.url,
-                    title = entry.title,
-                    website = entry.website,
-                    date = entry.date,
-                    image = entry.image,
-                    isRead = entry.isRead,
-                    isStarred = entry.isStarred,
-            ) }
+            val list = entries.map { entry ->
+                EntryLight(url = entry.url, title = entry.title, website = entry.website, date = entry.date,
+                image = entry.image, isRead = entry.isRead, isStarred = entry.isStarred)
+            }
             entriesLightLiveData.value = sortEntries(list, currentOrder)
         }
     }
@@ -187,6 +182,10 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
         repo.updateFeedUnreadCount(feedId, unreadCount)
     }
 
+    fun updateFeed(feed: Feed) {
+        updateManager.forceUpdateFeed(feed)
+    }
+
     override fun onFeedNeedsUpdate(feed: Feed) {
         repo.updateFeed(feed)
     }
@@ -202,12 +201,6 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
             updateValues.added = entriesToAdd.size
             updateValues.updated = entriesToUpdate.size
         } else updateValues.clear()
-    }
-
-    fun updateCategory(category: String) {
-        updateManager.currentFeed.apply {
-            this?.category = category
-        }?.let { feed -> repo.updateFeedCategory(feed.url, category = category) }
     }
 
     fun getCurrentFeed() = updateManager.currentFeed

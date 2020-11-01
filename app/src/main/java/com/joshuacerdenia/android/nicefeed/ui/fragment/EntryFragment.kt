@@ -256,9 +256,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     private fun handleCopyLink(): Boolean {
         viewModel.entry?.let { entry ->
-            val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            ClipData.newPlainText("link", entry.url).run { clipboard.setPrimaryClip(this) }
-            Snackbar.make(webView, getString(R.string.copied_link), Snackbar.LENGTH_SHORT).show()
+            Utils.copyLinkToClipboard(requireContext(), entry.url, webView)
             return true
         } ?: return false
     }

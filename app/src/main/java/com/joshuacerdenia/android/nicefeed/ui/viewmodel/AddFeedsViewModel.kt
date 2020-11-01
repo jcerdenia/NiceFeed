@@ -1,6 +1,7 @@
 package com.joshuacerdenia.android.nicefeed.ui.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
@@ -29,6 +30,10 @@ open class AddFeedsViewModel: ViewModel() {
         viewModelScope.launch {
             parser.requestFeed(url, backup)
         }
+    }
+
+    fun cancelRequest() {
+        parser.cancelRequest()
     }
 
     fun addFeedWithEntries(feedWithEntries: FeedWithEntries) {

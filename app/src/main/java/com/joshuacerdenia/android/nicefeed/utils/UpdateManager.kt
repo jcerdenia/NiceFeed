@@ -34,14 +34,9 @@ class UpdateManager(private val receiver: UpdateReceiver) {
         currentEntries = entries
         var unreadCount = 0
         for (entry in entries) {
-            if (!entry.isRead) {
-                unreadCount += 1
-            }
+            if (!entry.isRead) unreadCount += 1
         }
-
-        currentFeed?.let { feed ->
-            receiver.onUnreadEntriesCounted(feed.url, unreadCount)
-        }
+        currentFeed?.let { receiver.onUnreadEntriesCounted(it.url, unreadCount) }
     }
 
     fun submitUpdates(feedWithEntries: FeedWithEntries) {
@@ -49,10 +44,14 @@ class UpdateManager(private val receiver: UpdateReceiver) {
         handleNewEntries(feedWithEntries.entries)
     }
 
+    fun forceUpdateFeed(feed: Feed) {
+        currentFeed = feed
+        receiver.onFeedNeedsUpdate(feed)
+    }
+
     private fun handleNewEntries(newEntries: List<Entry>) {
         val newEntryIds = getEntryIds(newEntries)
         val currentEntryIds = getEntryIds(currentEntries)
-
         val entriesToAdd = mutableListOf<Entry>()
         val entriesToUpdate = mutableListOf<Entry>()
         val entriesToDelete = mutableListOf<Entry>()
@@ -73,9 +72,7 @@ class UpdateManager(private val receiver: UpdateReceiver) {
 
         for (entry in currentEntries) {
             if (!newEntryIds.contains(entry.url)) {
-                if (!entry.isStarred && entry.isRead) {
-                    entriesToDelete.add(entry)
-                }
+                if (!entry.isStarred && entry.isRead) entriesToDelete.add(entry)
             }
         }
 
@@ -105,13 +102,12 @@ class UpdateManager(private val receiver: UpdateReceiver) {
     }
 
     private fun getEntryIds(entries: List<Entry>): List<String> {
-        return entries.map { entry ->
-            entry.url
-        }
+        return entries.map { it.url }
     }
 
     private fun handleFeedUpdate(newFeed: Feed) {
         currentFeed?.let { oldFeed ->
+            newFeed.title = oldFeed.title
             newFeed.category = oldFeed.category
             newFeed.unreadCount = oldFeed.unreadCount
             if (newFeed != oldFeed) receiver.onFeedNeedsUpdate(newFeed)

@@ -44,6 +44,10 @@ object BackupUrlManager {
         }
     }
 
+    fun reset() {
+        setBase(null)
+    }
+
     private fun resetValues() {
         urlPlusFeed = null
         urlPlusRss = null

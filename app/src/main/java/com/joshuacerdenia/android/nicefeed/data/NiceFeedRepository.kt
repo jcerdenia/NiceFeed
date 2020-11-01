@@ -22,7 +22,7 @@ class NiceFeedRepository private constructor(
 
     fun getFeedUrlsSynchronously(): List<String> = dao.getFeedUrlsSynchronously()
 
-    fun getFeedsMinimal(): LiveData<List<FeedMinimal>> = dao.getFeedsMinimal()
+    fun getFeedsManageable(): LiveData<List<FeedManageable>> = dao.getFeedsManageable()
 
     fun getEntry(entryId: String): LiveData<Entry?> = dao.getEntry(entryId)
 
@@ -48,6 +48,10 @@ class NiceFeedRepository private constructor(
 
     fun updateFeed(feed: Feed) {
         executor.execute { dao.updateFeed(feed) }
+    }
+
+    fun updateFeedDetails(feedId: String, title: String, category: String) {
+        executor.execute { dao.updateFeedDetails(feedId, title, category) }
     }
 
     fun updateFeedCategory(vararg feedId: String, category: String) {

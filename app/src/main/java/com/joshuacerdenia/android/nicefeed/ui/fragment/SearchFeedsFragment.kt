@@ -10,11 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
+import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedSearchAdapter
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SubscribeFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.SearchFeedsViewModel
-import com.joshuacerdenia.android.nicefeed.utils.RssUrlTransformer
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 
 class SearchFeedsFragment : FeedAddingFragment(),
@@ -30,11 +30,12 @@ class SearchFeedsFragment : FeedAddingFragment(),
     private lateinit var adapter: FeedSearchAdapter
 
     private val fragment = this@SearchFeedsFragment
+    private var manager: RequestResultManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(SearchFeedsViewModel::class.java)
-        adapter = FeedSearchAdapter(this, viewModel.itemBeingLoaded, viewModel.itemSelectionEnabled)
+        adapter = FeedSearchAdapter(this)
         setHasOptionsMenu(true)
     }
 
@@ -58,7 +59,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val manager = RequestResultManager(viewModel, recyclerView, R.string.failed_to_connect)
+        manager = RequestResultManager(viewModel, recyclerView, R.string.failed_to_connect)
 
         viewModel.feedIdsLiveData.observe(viewLifecycleOwner, { feedIds ->
             viewModel.onFeedIdsObtained(feedIds)
@@ -68,13 +69,6 @@ class SearchFeedsFragment : FeedAddingFragment(),
             adapter.submitList(results)
             progressBar.visibility = View.GONE
             emptyMessageTextView.visibility = if (results.isEmpty()) View.VISIBLE else View.GONE
-        })
-
-        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { feedWithEntries ->
-            manager.submitData(feedWithEntries)
-            adapter.onFinishedLoading()
-            viewModel.itemBeingLoaded = null
-            viewModel.itemSelectionEnabled = true
         })
     }
 
@@ -94,7 +88,6 @@ class SearchFeedsFragment : FeedAddingFragment(),
                         progressBar.visibility = View.VISIBLE
                         viewModel.performSearch(queryText)
                     }
-
                     clearFocus()
                     Utils.hideSoftKeyBoard(requireActivity(), this@apply)
                     return true
@@ -118,22 +111,19 @@ class SearchFeedsFragment : FeedAddingFragment(),
         Utils.hideSoftKeyBoard(requireActivity(), searchView)
     }
 
-    override fun onAddConfirmed(searchResultItem: SearchResultItem) {
-        viewModel.itemBeingLoaded = searchResultItem
-        viewModel.itemSelectionEnabled = false
-        adapter.onLoadingItem(searchResultItem.id)
+    override fun onRequestCompleted(feedWithEntries: FeedWithEntries?) {
+        manager?.submitData(feedWithEntries)
+    }
 
-        val url = searchResultItem.id?.let { RssUrlTransformer.getUrl(it) }.toString()
-        val backup = searchResultItem.website?.let { RssUrlTransformer.getUrl(it) }
-        // "website" property is also a usable URL
-        viewModel.requestFeed(url, backup)
+    override fun onRequestCanceled() {
+        manager?.cancelRequest()
     }
 
     override fun onItemClicked(searchResultItem: SearchResultItem) {
         searchView.clearFocus()
         activity?.let { Utils.hideSoftKeyBoard(it, recyclerView) }
 
-        SubscribeFragment.newInstance(searchResultItem).apply {
+        SubscribeFragment.newInstance(searchResultItem, viewModel).apply {
             setTargetFragment(fragment, 0)
             show(fragment.parentFragmentManager, "subscribe")
         }

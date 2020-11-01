@@ -22,12 +22,13 @@ private const val TAG = "FeedParser"
 
 class FeedParser (private val networkMonitor: NetworkMonitor) {
 
-    private val rssParser = Parser.Builder().build()
+    private lateinit var rssParser: Parser
     private val _feedRequestLiveData = MutableLiveData<FeedWithEntries>()
     val feedRequestLiveData: LiveData<FeedWithEntries?>
         get() = _feedRequestLiveData
 
     suspend fun getFeedSynchronously(url: String): FeedWithEntries? {
+        rssParser = Parser.Builder().build()
         return if (networkMonitor.isOnline) {
             try {
                 val channel = rssParser.getChannel(url)
@@ -39,10 +40,16 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
     }
 
     suspend fun requestFeed(url: String, backup: String? = null) {
+        rssParser = Parser.Builder().build()
         if (networkMonitor.isOnline) {
             BackupUrlManager.setBase(backup)
             executeRequest(url)
         } else _feedRequestLiveData.postValue(null)
+    }
+
+    fun cancelRequest() {
+        rssParser.cancel()
+        BackupUrlManager.reset()
     }
 
     private suspend fun executeRequest(url: String) {
@@ -56,7 +63,10 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
         } catch (e: Exception) {
             // If the initial request fails, try backup URL in different variations
             BackupUrlManager.getNextUrl()?.let { executeRequest(it) }
-                ?: _feedRequestLiveData.postValue(null)
+                ?: let {
+                    _feedRequestLiveData.postValue(null)
+                    Log.d(TAG, "Request failed")
+                }
         }
     }
 

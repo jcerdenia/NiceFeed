@@ -44,7 +44,7 @@ class EntryPopupMenu(
             mPopup.javaClass
                 .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
                 .invoke(mPopup, true)
-        } catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 

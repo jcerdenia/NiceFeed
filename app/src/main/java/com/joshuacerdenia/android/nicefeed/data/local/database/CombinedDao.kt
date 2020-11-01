@@ -76,7 +76,7 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
 
     @Transaction
     fun deleteLeftoverItems() {
-        deleteFeedlessEntries()
         deleteLeftoverCrossRefs()
+        deleteLeftoverEntries()
     }
 }

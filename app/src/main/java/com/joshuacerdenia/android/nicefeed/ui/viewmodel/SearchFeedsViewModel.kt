@@ -12,8 +12,6 @@ class SearchFeedsViewModel: AddFeedsViewModel() {
 
     var newQuery: String = ""
     var initialQueryIsMade = false
-    var itemBeingLoaded: SearchResultItem? = null
-    var itemSelectionEnabled = true
 
     private val mutableQuery = MutableLiveData<String>()
     val searchResultLiveData: LiveData<List<SearchResultItem>> = Transformations.switchMap(mutableQuery) { query ->

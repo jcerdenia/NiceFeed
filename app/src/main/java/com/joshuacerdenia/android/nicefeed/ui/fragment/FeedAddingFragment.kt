@@ -50,6 +50,11 @@ abstract class FeedAddingFragment: VisibleFragment() {
             } ?: showRequestFailedNotice()
         }
 
+        fun cancelRequest() {
+            viewModel.cancelRequest()
+            Snackbar.make(view, getString(R.string.request_canceled), Snackbar.LENGTH_SHORT).show()
+        }
+
         private fun isAlreadyAdded(feedId: String): Boolean {
             return viewModel.currentFeedIds.contains(feedId)
         }

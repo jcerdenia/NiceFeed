@@ -41,17 +41,13 @@ class AboutFeedFragment: BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val feed = arguments?.getSerializable(ARG_FEED) as Feed
+        val feed = arguments?.getSerializable(ARG_FEED) as Feed?
+        Picasso.get().load(feed?.imageUrl).placeholder(R.drawable.feed_icon).into(imageView)
 
-        Picasso.get()
-            .load(feed.imageUrl)
-            .placeholder(R.drawable.feed_icon)
-            .into(imageView)
-
-        titleTextView.text = feed.title
-        categoryTextView.text = getString(R.string.category_, feed.category)
-        descriptionTextView.text = if (!feed.description.isNullOrEmpty())
-            feed.description else feed.website.pathified()
+        titleTextView.text = feed?.title
+        categoryTextView.text = getString(R.string.category_, feed?.category)
+        descriptionTextView.text = if (!feed?.description.isNullOrEmpty())
+            feed?.description else feed?.website?.pathified()
 
         editCategoryButton.apply {
             text = getString(R.string.edit_category)

@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -16,27 +15,10 @@ import com.squareup.picasso.Picasso
 
 class FeedSearchAdapter(
     private val listener: OnItemClickListener,
-    loadingItem: SearchResultItem?,
-    private var clickingIsEnabled: Boolean
 ) : ListAdapter<SearchResultItem, FeedSearchAdapter.FeedHolder>(DiffCallback()) {
 
     interface OnItemClickListener {
         fun onItemClicked(searchResultItem: SearchResultItem)
-    }
-
-    private var activeItemProgressBar: ProgressBar? = null
-    private var loadingItemId = loadingItem?.id
-
-    fun onLoadingItem(itemId: String?) {
-        clickingIsEnabled = false
-        loadingItemId = itemId
-        activeItemProgressBar?.visibility = View.VISIBLE
-    }
-
-    fun onFinishedLoading() {
-        clickingIsEnabled = true
-        loadingItemId = null
-        activeItemProgressBar?.visibility = View.INVISIBLE
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedHolder {
@@ -46,8 +28,7 @@ class FeedSearchAdapter(
     }
 
     override fun onBindViewHolder(holder: FeedHolder, position: Int) {
-        val isLoading = loadingItemId == getItem(position).id
-        holder.bind(getItem(position), isLoading)
+        holder.bind(getItem(position))
     }
 
     inner class FeedHolder(
@@ -59,28 +40,22 @@ class FeedSearchAdapter(
         private val titleTextView: TextView = itemView.findViewById(R.id.textView_title)
         private val infoTextView: TextView = itemView.findViewById(R.id.textView_info)
         private val imageView: ImageView = itemView.findViewById(R.id.imageView_image)
-        private val itemProgressBar: ProgressBar = itemView.findViewById(R.id.progressBar_item)
 
         init {
             itemView.setOnClickListener(this)
         }
 
-        fun bind(searchResultItem: SearchResultItem, isLoading: Boolean) {
+        fun bind(searchResultItem: SearchResultItem) {
             this.searchResultItem = searchResultItem
 
             titleTextView.text = searchResultItem.title
             infoTextView.text = searchResultItem.website?.simplified()
-            itemProgressBar.visibility = if (isLoading) View.VISIBLE else View.INVISIBLE
-
             Picasso.get().load(searchResultItem.imageUrl)
                 .placeholder(R.drawable.feed_icon).into(imageView)
         }
 
         override fun onClick(v: View) {
-            if (clickingIsEnabled) {
-                listener.onItemClicked(searchResultItem)
-                activeItemProgressBar = itemProgressBar
-            }
+            listener.onItemClicked(searchResultItem)
         }
     }
 

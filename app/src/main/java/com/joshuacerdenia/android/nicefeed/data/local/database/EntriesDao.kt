@@ -63,9 +63,9 @@ interface EntriesDao {
     )
     fun deleteEntriesByFeed(vararg feedId: String)
 
-    @Query("DELETE FROM Entry WHERE url IN (:entryIds) AND isRead = 1")
+    @Query("DELETE FROM Entry WHERE isRead = 1 AND url IN (:entryIds)")
     fun deleteEntriesIfRead(entryIds: List<String>)
 
     @Query("DELETE FROM Entry WHERE url NOT IN (SELECT entryUrl FROM FeedEntryCrossRef)")
-    fun deleteFeedlessEntries()
+    fun deleteLeftoverEntries()
 }

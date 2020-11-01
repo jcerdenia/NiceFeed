@@ -123,6 +123,12 @@
     <string name="sync_in_bg">Sync in background</string>
     <string name="sync_in_bg_description">Subscriptions will update daily when app is closed.</string>
     <string name="view_as_entry">View as Entry</string>
+    <string name="url">URL</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="undo_changes">Undo Changes</string>
+    <string name="saved_changes_to">Saved changes to %s.</string>
+    <string name="undo">Undo</string>
+    <string name="request_canceled">Request canceled.</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

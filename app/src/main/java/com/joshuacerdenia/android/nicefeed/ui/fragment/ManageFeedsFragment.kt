@@ -15,18 +15,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.data.model.FeedManageable
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMinimal
 import com.joshuacerdenia.android.nicefeed.ui.OnFinished
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedManagerAdapter
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
+import com.joshuacerdenia.android.nicefeed.ui.dialog.EditFeedFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.ManageFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.OpmlExporter
 
 class ManageFeedsFragment: VisibleFragment(),
     EditCategoryFragment.Callbacks,
+    EditFeedFragment.Callback,
     ConfirmRemoveFragment.Callbacks,
     SortFeedManagerFragment.Callbacks,
     FeedManagerAdapter.ItemCheckBoxListener,
@@ -71,7 +74,7 @@ class ManageFeedsFragment: VisibleFragment(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menuItem_edit -> handleEditCategory()
+            R.id.menuItem_edit -> handleEditFeeds()
             R.id.menuItem_remove -> handleRemoveSelected()
             R.id.menuItem_sort -> handleSortFeeds()
             R.id.menuItem_add_feeds -> {
@@ -83,7 +86,7 @@ class ManageFeedsFragment: VisibleFragment(),
         }
     }
 
-    private fun handleExportOPML(feeds: List<FeedMinimal>): Boolean {
+    private fun handleExportOPML(feeds: List<FeedManageable>): Boolean {
         if (feeds.isNotEmpty()) {
             opmlExporter?.submitFeeds(feeds)
             callbacks?.onExportOpmlSelected()
@@ -115,7 +118,7 @@ class ManageFeedsFragment: VisibleFragment(),
         updateToolbar(toolbar, viewModel.selectedItems.size)
         progressBar.visibility = View.VISIBLE
 
-        viewModel.feedsMinimalLiveData.observe(viewLifecycleOwner, { feeds ->
+        viewModel.feedsManageableLiveData.observe(viewLifecycleOwner, { feeds ->
             progressBar.visibility = View.GONE
             adapter.submitList(feeds)
             selectAllCheckBox.visibility = if (feeds.size > 1) View.VISIBLE else View.GONE
@@ -126,12 +129,10 @@ class ManageFeedsFragment: VisibleFragment(),
     override fun onStart() {
         super.onStart()
         toolbar.setOnClickListener { recyclerView.smoothScrollToPosition(0) }
-
         selectAllCheckBox.setOnClickListener { (it as CheckBox)
             if (it.isChecked) {
                 viewModel.selectedItems = adapter.currentList.toMutableList()
             } else viewModel.selectedItems.clear()
-
             adapter.toggleCheckBoxes(it.isChecked)
             updateToolbar(toolbar, viewModel.selectedItems.size)
         }
@@ -166,7 +167,6 @@ class ManageFeedsFragment: VisibleFragment(),
                 setTargetFragment(fragment, 0)
                 show(fragment.parentFragmentManager,"unsubscribe")
             }
-
             return true
         } else {
             showNothingSelectedNotice(ACTION_REMOVE)
@@ -199,6 +199,26 @@ class ManageFeedsFragment: VisibleFragment(),
             .setAction(R.string.done) { callbacks?.onFinished() }.show()
     }
 
+    private fun handleEditFeeds(): Boolean {
+        val count = viewModel.selectedItems.size
+        when {
+            (count > 1) -> {
+                EditCategoryFragment.newInstance(viewModel.getCategories(), null, count).apply {
+                    setTargetFragment(fragment, 0)
+                    show(fragment.parentFragmentManager, "edit categories")
+                }
+            }
+            (count == 1) -> {
+                EditFeedFragment.newInstance(viewModel.selectedItems[0], viewModel.getCategories()).apply {
+                    setTargetFragment(fragment, 0)
+                    show(fragment.parentFragmentManager, "edit feed")
+                }
+            }
+            (count < 1) -> showNothingSelectedNotice(ACTION_EDIT)
+        }
+        return true
+    }
+
     private fun handleEditCategory(): Boolean {
         if (anyItemIsSelected()) {
             val count = viewModel.selectedItems.size
@@ -214,6 +234,14 @@ class ManageFeedsFragment: VisibleFragment(),
         return true
     }
 
+    override fun onFeedInfoChanged(title: String, category: String) {
+        viewModel.updateFeedDetails(viewModel.selectedItems[0].url, title, category)
+        Handler().postDelayed({
+            Snackbar.make(recyclerView, getString(R.string.saved_changes_to, title), Snackbar.LENGTH_SHORT)
+                .show()
+        }, 250)
+    }
+
     override fun onEditCategoryConfirmed(category: String) {
         val ids = mutableListOf<String>()
         for (feed in viewModel.selectedItems) ids.add(feed.url)
@@ -221,7 +249,6 @@ class ManageFeedsFragment: VisibleFragment(),
         viewModel.updateCategoryByFeedIds(ids, category)
         adapter.notifyDataSetChanged()
         resetSelection()
-
         // Crude solution to Snackbar jumping: wait until keyboard is fully hidden
         handler.postDelayed({ showFeedsCategorizedNotice(category, ids.size) }, 400)
     }
@@ -246,12 +273,8 @@ class ManageFeedsFragment: VisibleFragment(),
             ACTION_EXPORT -> R.string.export
             else -> throw IllegalArgumentException()
         }.run { getString(this) }
-
-        Snackbar.make(
-            recyclerView,
-            getString(R.string.select_feeds_to, actionString),
-            Snackbar.LENGTH_SHORT
-        ).show()
+        Snackbar.make(recyclerView, getString(R.string.select_feeds_to, actionString), Snackbar.LENGTH_SHORT)
+            .show()
     }
 
     fun writeOpml(uri: Uri) {
@@ -273,7 +296,7 @@ class ManageFeedsFragment: VisibleFragment(),
         adapter.toggleCheckBoxes(false)
     }
 
-    override fun onItemClicked(feed: FeedMinimal, isChecked: Boolean) {
+    override fun onItemClicked(feed: FeedManageable, isChecked: Boolean) {
         if (isChecked) {
             viewModel.selectedItems.add(feed)
             selectAllCheckBox.isChecked = allItemsAreSelected()

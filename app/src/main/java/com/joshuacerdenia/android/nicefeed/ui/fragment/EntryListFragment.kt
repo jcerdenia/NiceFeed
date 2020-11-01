@@ -19,12 +19,12 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.EntryLight
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.FeedManageable
 import com.joshuacerdenia.android.nicefeed.ui.OnHomePressed
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.adapter.EntryListAdapter
-import com.joshuacerdenia.android.nicefeed.ui.dialog.AboutFeedFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
-import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
+import com.joshuacerdenia.android.nicefeed.ui.dialog.EditFeedFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.menu.EntryPopupMenu
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryListViewModel
@@ -34,8 +34,7 @@ class EntryListFragment : VisibleFragment(),
     EntryListAdapter.OnEntrySelected,
     EntryPopupMenu.OnPopupMenuItemClicked,
     FilterEntriesFragment.Callbacks,
-    AboutFeedFragment.Callbacks,
-    EditCategoryFragment.Callbacks,
+    EditFeedFragment.Callback,
     ConfirmRemoveFragment.Callbacks
 {
 
@@ -113,9 +112,7 @@ class EntryListFragment : VisibleFragment(),
             if (feed != null) {
                 viewModel.onFeedLoaded()
                 callbacks?.onFeedLoaded(feed.url)
-            } else feedId?.let { feedId ->
-                if (!feedId.startsWith(FOLDER)) callbacks?.onFeedRemoved()
-            }
+            } else feedId?.let { if (!it.startsWith(FOLDER)) callbacks?.onFeedRemoved() }
             // Check if not currently updating
             if (toolbar.title != getString(R.string.updating)) {
                 toolbar.title = when (feedId) {
@@ -224,7 +221,7 @@ class EntryListFragment : VisibleFragment(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.update_item -> handleCheckForUpdates(feedId)
+            R.id.update_item -> handleCheckForUpdates(viewModel.getCurrentFeed()?.url)
             R.id.about_feed_item -> handleShowFeedInfo(viewModel.getCurrentFeed())
             R.id.filter_item -> handleFilter()
             R.id.mark_all_item -> handleMarkAll()
@@ -281,7 +278,10 @@ class EntryListFragment : VisibleFragment(),
 
     private fun handleShowFeedInfo(feed: Feed?): Boolean {
         return if (feed != null) {
-            AboutFeedFragment.newInstance(feed).apply {
+            val mFeed = FeedManageable(url = feed.url, title = feed.title, website = feed.website,
+                imageUrl = feed.imageUrl, description = feed.description, category = feed.category)
+            val categories = callbacks?.onCategoriesNeeded() ?: emptyArray()
+            EditFeedFragment.newInstance(mFeed, categories).apply {
                 setTargetFragment(fragment, 0)
                 show(fragment.parentFragmentManager, "about")
             }
@@ -289,24 +289,18 @@ class EntryListFragment : VisibleFragment(),
         } else false
     }
 
-    override fun onEditCategoryClicked() {
-        val categories = callbacks?.onCategoriesNeeded() ?: emptyArray()
-        val title = viewModel.getCurrentFeed()?.title
-        EditCategoryFragment.newInstance(categories, title).apply {
-            setTargetFragment(fragment, 0)
-            show(fragment.parentFragmentManager, "edit")
+    override fun onFeedInfoChanged(title: String, category: String) {
+        viewModel.getCurrentFeed()?.let { currentFeed ->
+            val editedFeed = currentFeed.apply {
+                this.title = title
+                this.category = category
+            }
+            viewModel.updateFeed(editedFeed)
+            Handler().postDelayed({
+                Snackbar.make(recyclerView, getString(R.string.saved_changes_to, title), Snackbar.LENGTH_SHORT)
+                    .show()
+            }, 250)
         }
-    }
-
-    override fun onEditCategoryConfirmed(category: String) {
-        viewModel.updateCategory(category)
-        Handler().postDelayed({
-            Snackbar.make(
-                recyclerView,
-                getString(R.string.category_assigned, category, viewModel.getCurrentFeed()?.title),
-                Snackbar.LENGTH_SHORT
-            ).show()
-        }, 250)
     }
 
     private fun handleFilter(): Boolean {

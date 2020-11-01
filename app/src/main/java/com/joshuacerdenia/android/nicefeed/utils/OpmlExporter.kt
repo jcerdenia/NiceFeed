@@ -3,7 +3,7 @@ package com.joshuacerdenia.android.nicefeed.utils
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
-import com.joshuacerdenia.android.nicefeed.data.model.FeedMinimal
+import com.joshuacerdenia.android.nicefeed.data.model.FeedManageable
 import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByCategory
 import com.rometools.opml.feed.opml.Opml
 import com.rometools.opml.feed.opml.Outline
@@ -21,7 +21,7 @@ class OpmlExporter(
 
     private val contentResolver = context.contentResolver
     private val executor = Executors.newSingleThreadExecutor()
-    private var feeds = listOf<FeedMinimal>()
+    private var feeds = listOf<FeedManageable>()
         get() = field.sortedByCategory()
     private var categories = arrayOf<String>()
 
@@ -29,7 +29,7 @@ class OpmlExporter(
         fun onExportAttempted(isSuccessful: Boolean, fileName: String?)
     }
 
-    fun submitFeeds(feeds: List<FeedMinimal>) {
+    fun submitFeeds(feeds: List<FeedManageable>) {
         this.feeds = feeds
         categories = feeds.map { feed -> feed.category }.toSet().toTypedArray()
     }

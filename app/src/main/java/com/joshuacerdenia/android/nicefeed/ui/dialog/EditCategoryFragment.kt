@@ -56,20 +56,12 @@ class EditCategoryFragment : BottomSheetDialogFragment() {
 
         val whatToEdit = title ?: resources.getQuantityString(R.plurals.numberOfFeeds, count, count)
         dialogMessage.text = getString(R.string.edit_category_dialog_message, whatToEdit)
-
         categoryTextView.apply {
             setAdapter(adapter)
             this.threshold = 1
-
             addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    // Left blank on purpose
-                }
-
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    // This one too
-                }
-
+                override fun afterTextChanged(s: Editable?) {} // Empty on purpose
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     confirmButton.isEnabled = s?.length in 1..50
                 }
@@ -78,7 +70,6 @@ class EditCategoryFragment : BottomSheetDialogFragment() {
 
         confirmButton.apply {
             isEnabled = false
-
             setOnClickListener {
                 val category = categoryTextView.text.toString().trim()
                 targetFragment?.let { (it as Callbacks).onEditCategoryConfirmed(category) }
@@ -97,10 +88,7 @@ class EditCategoryFragment : BottomSheetDialogFragment() {
                 putString(ARG_TITLE, title)
                 putStringArray(ARG_CATEGORIES, categories)
             }
-            return EditCategoryFragment()
-                .apply {
-                    arguments = args
-                }
+            return EditCategoryFragment().apply { arguments = args }
         }
     }
 }

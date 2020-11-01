@@ -1,6 +1,8 @@
 package com.joshuacerdenia.android.nicefeed.utils
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -31,9 +33,13 @@ object Utils {
         )
         if (resolvedActivity != null) {
             startActivity(context, intent, null)
-        } else {
-           showErrorMessage(view, context.resources)
-        }
+        } else showErrorMessage(view, context.resources)
+    }
+
+    fun copyLinkToClipboard(context: Context, stringUrl: String, view: View? = null) {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        ClipData.newPlainText("link", stringUrl).run { clipboard.setPrimaryClip(this) }
+        view?.let { Snackbar.make(it, context.getString(R.string.copied_link), Snackbar.LENGTH_SHORT).show() }
     }
 
     fun hideSoftKeyBoard(context: Context, view: View) {
@@ -50,9 +56,7 @@ object Utils {
             NiceFeedPreferences.THEME_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
             NiceFeedPreferences.THEME_DARK -> AppCompatDelegate.MODE_NIGHT_YES
             else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        }.let { mode ->
-            AppCompatDelegate.setDefaultNightMode(mode)
-        }
+        }.let { AppCompatDelegate.setDefaultNightMode(it) }
     }
 
     fun setStatusBarMode(activity: Activity) {
@@ -74,10 +78,6 @@ object Utils {
     }
 
     fun showErrorMessage(view: View, resources: Resources) {
-        Snackbar.make(
-            view,
-            resources.getString(R.string.error_message),
-            Snackbar.LENGTH_SHORT
-        ).show()
+        Snackbar.make(view, resources.getString(R.string.error_message), Snackbar.LENGTH_SHORT).show()
     }
 }
