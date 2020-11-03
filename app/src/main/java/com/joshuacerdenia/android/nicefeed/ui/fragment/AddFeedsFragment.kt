@@ -142,7 +142,7 @@ class AddFeedsFragment: FeedAddingFragment(),
         viewModel.feedsToImport = emptyList()
         Snackbar.make(linearLayout, getString(R.string.import_successful), Snackbar.LENGTH_SHORT)
             .setAction(R.string.update_all) {
-                BackgroundSyncWorker.startOnce(requireContext().applicationContext)
+                BackgroundSyncWorker.runOnce(requireContext().applicationContext)
                 callbacks?.onFinished()
             }.show()
     }

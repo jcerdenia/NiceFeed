@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.ui.OnBackgroundWorkSettingChanged
 import com.joshuacerdenia.android.nicefeed.ui.fragment.*
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 
@@ -17,12 +16,9 @@ class ManagingActivity : AppCompatActivity(),
     FeedAddingFragment.Callbacks,
     SettingsFragment.Callbacks {
 
-    private lateinit var callback: OnBackgroundWorkSettingChanged
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_managing)
-        callback = applicationContext as OnBackgroundWorkSettingChanged
         Utils.setStatusBarMode(this)
 
         if (getCurrentFragment() == null) {
@@ -100,10 +96,6 @@ class ManagingActivity : AppCompatActivity(),
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
-    }
-
-    override fun onBackgroundWorkSettingChanged(isOn: Boolean) {
-        callback.onBackgroundWorkSettingChanged(isOn)
     }
 
     override fun onToolbarInflated(toolbar: Toolbar, isNavigableUp: Boolean) {

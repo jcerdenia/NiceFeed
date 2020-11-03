@@ -20,7 +20,7 @@ class SweeperWorker(
     companion object {
         private const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.utils.work.SweeperWorker"
 
-        fun setup(context: Context) {
+        fun start(context: Context) {
             val request = PeriodicWorkRequest.Builder(
                 SweeperWorker::class.java, 3, TimeUnit.DAYS
             ).build()

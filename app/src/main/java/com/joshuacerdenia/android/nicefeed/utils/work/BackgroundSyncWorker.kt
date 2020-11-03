@@ -56,13 +56,7 @@ open class BackgroundSyncWorker(
             .setRequiresStorageNotLow(true)
             .build()
 
-        fun startOnce(context: Context) {
-            val request = OneTimeWorkRequest.Builder(BackgroundSyncWorker::class.java)
-                .setConstraints(constraints).build()
-            WorkManager.getInstance(context).enqueue(request)
-        }
-
-        fun startRecurring(context: Context) {
+        fun start(context: Context) {
             val request = PeriodicWorkRequest.Builder(
                 BackgroundSyncWorker::class.java, 24, TimeUnit.HOURS
             ).setConstraints(constraints).build()
@@ -72,6 +66,12 @@ open class BackgroundSyncWorker(
                 ExistingPeriodicWorkPolicy.KEEP,
                 request
             )
+        }
+
+        fun runOnce(context: Context) {
+            val request = OneTimeWorkRequest.Builder(BackgroundSyncWorker::class.java)
+                .setConstraints(constraints).build()
+            WorkManager.getInstance(context).enqueue(request)
         }
 
         fun cancel(context: Context) {

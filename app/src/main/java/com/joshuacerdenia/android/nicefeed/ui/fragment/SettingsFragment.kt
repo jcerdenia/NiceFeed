@@ -12,14 +12,15 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
-import com.joshuacerdenia.android.nicefeed.ui.OnBackgroundWorkSettingChanged
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.dialog.AboutFragment
 import com.joshuacerdenia.android.nicefeed.utils.Utils
+import com.joshuacerdenia.android.nicefeed.utils.work.BackgroundSyncWorker
+import com.joshuacerdenia.android.nicefeed.utils.work.NewEntriesWorker
 
 class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
 
-    interface Callbacks: OnToolbarInflated, OnBackgroundWorkSettingChanged
+    interface Callbacks: OnToolbarInflated
 
     private lateinit var toolbar: Toolbar
     private lateinit var scrollView: ScrollView
@@ -115,6 +116,7 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
             isChecked = NiceFeedPreferences.syncInBackground(context)
             setOnCheckedChangeListener { _, isOn ->
                 NiceFeedPreferences.setSyncInBackground(context, isOn)
+                if (isOn) BackgroundSyncWorker.start(context) else BackgroundSyncWorker.cancel(context)
             }
         }
 
@@ -137,7 +139,7 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
             isChecked = NiceFeedPreferences.getPollingSetting(context)
             setOnCheckedChangeListener { _, isOn ->
                 NiceFeedPreferences.savePollingSetting(context, isOn)
-                callbacks?.onBackgroundWorkSettingChanged(isOn)
+                if (isOn) NewEntriesWorker.start(context) else NewEntriesWorker.cancel(context)
             }
         }
     }
