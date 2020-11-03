@@ -24,7 +24,7 @@
             <item
                 android:id="@+id/about_feed_item"
                 android:icon="@drawable/ic_edit"
-                android:title="@string/view_edit_feed_info"
+                android:title="@string/feed_info"
                 app:showAsAction="ifRoom"/>
 
             <item

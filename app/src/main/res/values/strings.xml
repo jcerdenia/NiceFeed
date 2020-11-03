@@ -70,10 +70,9 @@
     <string name="confirm_import_message">This will not overwrite existing subscriptions.</string>
     <string name="import_opml">Import OPML</string>
     <string name="about_nicefeed_detail">
-        NiceFeed is developed and maintained by Joshua Cerdenia.
+        NiceFeed is an open-source app originally developed by Joshua Cerdenia.
         Please visit github.com/joshuacerdenia/nicefeed for information.
     </string>
-    <string name="view_edit_feed_info">View/Edit Feed Info</string>
     <string name="check_for_updates">Check for Updates</string>
     <string name="share_entry">Share Entry</string>
     <string name="copy_link">Copy Link</string>
@@ -135,6 +134,7 @@
     <string name="culture">Culture</string>
     <string name="books">Books</string>
     <string name="entertainment">Entertainment</string>
+    <string name="feed_info">Feed Info</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>
