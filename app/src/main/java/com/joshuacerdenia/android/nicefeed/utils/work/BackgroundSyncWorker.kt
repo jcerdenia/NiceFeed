@@ -26,9 +26,9 @@ open class BackgroundSyncWorker(
             val storedEntryIds: List<String> = storedEntries.map { it.url }
             val feedWithEntries: FeedWithEntries? = parser.getFeedSynchronously(url)
 
-            feedWithEntries?.entries?.let { entries ->
-                val newEntries = entries.filterNot { storedEntryIds.contains(it.url) }
-                handleRetrievedData(url, storedEntries, entries, newEntries)
+            feedWithEntries?.let { fwe ->
+                val newEntries = fwe.entries.filterNot { storedEntryIds.contains(it.url) }
+                handleRetrievedData(fwe, storedEntries, newEntries)
             }
         }
 
@@ -36,15 +36,14 @@ open class BackgroundSyncWorker(
     }
 
     fun handleRetrievedData(
-        url: String,
+        fwe: FeedWithEntries,
         storedEntries: List<EntryUsed>,
-        retrievedEntries: List<Entry>,
         newEntries: List<Entry>
     ) {
-        val entryIds = retrievedEntries.map { it.url }
+        val entryIds = fwe.entries.map { it.url }
         val oldEntries = storedEntries.filterNot { entryIds.contains(it.url) }
         val entryIdsToDelete = oldEntries.filter { it.isRead && !it.isStarred }.map { it.url }
-        repo.handleBackgroundUpdate(url, newEntries, entryIdsToDelete)
+        repo.handleBackgroundUpdate(fwe.feed.url, newEntries, entryIdsToDelete, fwe.feed.imageUrl)
     }
 
     companion object {

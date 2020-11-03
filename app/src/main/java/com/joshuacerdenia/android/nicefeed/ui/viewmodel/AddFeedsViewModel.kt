@@ -16,6 +16,7 @@ class AddFeedsViewModel: FeedAddingViewModel() {
 
     var feedsToImport = listOf<Feed>()
     var categories = listOf<String>()
+    private var isFirstTimeLoading = true
 
     private val defaultTopics: MutableList<String> = mutableListOf()
     val defaultTopicsResId: List<Int> = listOf(
@@ -34,9 +35,10 @@ class AddFeedsViewModel: FeedAddingViewModel() {
     fun onFeedDataRetrieved(data: List<FeedIdWithCategory>) {
         currentFeedIds = data.map { it.url }
         val categories = data.map { it.category }.distinct().filterNot { it == "Uncategorized"}
-        if (categories.sorted() != this.categories.sorted()) {
-            _topicBlocksLiveData.value = getTopicBlocks(categories)
+        if (categories.sorted() != this.categories.sorted() || categories.isEmpty()) {
+            if (isFirstTimeLoading) _topicBlocksLiveData.value = getTopicBlocks(categories)
             this.categories = categories
+            isFirstTimeLoading = false
         }
     }
 

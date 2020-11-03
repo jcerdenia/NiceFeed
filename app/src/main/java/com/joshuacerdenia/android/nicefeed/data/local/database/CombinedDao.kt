@@ -50,12 +50,14 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
         newEntries: List<Entry>,
         newCrossRefs: List<FeedEntryCrossRef>,
         oldEntryIds: List<String>,
+        feedImage: String?
     ) {
         addEntries(newEntries)
         addFeedEntryCrossRefs(newCrossRefs)
         deleteEntriesById(oldEntryIds)
         deleteFeedEntryCrossRefs(feedId, oldEntryIds)
         addToFeedUnreadCount(feedId, newEntries.size)
+        feedImage?.let { updateFeedImage(feedId, it) }
     }
 
     @Transaction

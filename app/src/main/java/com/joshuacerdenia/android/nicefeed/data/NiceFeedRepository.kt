@@ -106,11 +106,12 @@ class NiceFeedRepository private constructor(
     fun handleBackgroundUpdate(
         feedId: String,
         newEntries: List<Entry>,
-        oldEntryIds: List<String>
+        oldEntryIds: List<String>,
+        feedImage: String?,
     ) {
         executor.execute {
             getCrossRefs(feedId, newEntries).also { crossRefs ->
-                dao.handleBackgroundUpdate(feedId, newEntries, crossRefs, oldEntryIds)
+                dao.handleBackgroundUpdate(feedId, newEntries, crossRefs, oldEntryIds, feedImage)
             }
         }
     }

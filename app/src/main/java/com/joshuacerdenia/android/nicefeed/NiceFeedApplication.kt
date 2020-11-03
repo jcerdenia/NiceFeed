@@ -47,13 +47,9 @@ class NiceFeedApplication : Application() {
         val isSyncing = NiceFeedPreferences.syncInBackground(this)
 
         applicationScope.launch {
-            SweeperWorker.start(applicationContext)
             if (isPolling) NewEntriesWorker.start(applicationContext)
-            if (isSyncing) {
-                BackgroundSyncWorker.start(applicationContext)
-            } else {
-                BackgroundSyncWorker.cancel(applicationContext)
-            }
+            if (isSyncing) BackgroundSyncWorker.start(applicationContext)
+            SweeperWorker.start(applicationContext)
         }
     }
 }

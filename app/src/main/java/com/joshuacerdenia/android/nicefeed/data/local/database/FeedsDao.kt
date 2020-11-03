@@ -48,6 +48,9 @@ interface FeedsDao {
     @Query("UPDATE Feed SET category = :category WHERE url IN (:feedId)")
     fun updateFeedCategory(vararg feedId: String, category: String)
 
+    @Query("UPDATE Feed SET imageUrl = :feedImage WHERE url = :feedId")
+    fun updateFeedImage(feedId: String, feedImage: String)
+
     @Query("UPDATE Feed SET unreadCount = :count WHERE url = :feedId")
     fun updateFeedUnreadCount(feedId: String, count: Int)
 

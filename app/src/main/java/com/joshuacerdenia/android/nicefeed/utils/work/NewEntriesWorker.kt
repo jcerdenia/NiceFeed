@@ -40,7 +40,7 @@ open class NewEntriesWorker(
 
         feedWithEntries?.let { fwe ->
             val newEntries = fwe.entries.filterNot { storedEntryIds.contains(it.url) }
-            handleRetrievedData(url, storedEntries, fwe.entries, newEntries)
+            handleRetrievedData(fwe, storedEntries, newEntries)
 
             if (newEntries.isNotEmpty()) {
                 val notification = createNotification(url, title, newEntries)
