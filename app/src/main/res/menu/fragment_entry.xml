@@ -34,12 +34,6 @@
                 app:showAsAction="ifRoom"/>
 
             <item
-                android:id="@+id/item_view_as_web_page"
-                android:icon="@drawable/ic_web"
-                android:title="@string/view_as_web_page"
-                app:showAsAction="ifRoom"/>
-
-            <item
                 android:id="@+id/item_text_size"
                 android:icon="@drawable/ic_text_size"
                 android:title="@string/change_text_size"

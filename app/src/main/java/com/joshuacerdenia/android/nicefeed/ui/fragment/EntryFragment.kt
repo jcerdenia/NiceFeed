@@ -43,7 +43,6 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     private var callbacks: Callbacks? = null
     private var starItem: MenuItem? = null
-    private var viewAsWebPageItem: MenuItem? = null
     private var textSizeItem: MenuItem? = null
     private val fragment = this@EntryFragment
 
@@ -59,7 +58,6 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
             setTextSize(NiceFeedPreferences.getTextSize(requireContext()))
             font = NiceFeedPreferences.getFont(requireContext())
             bannerIsEnabled = NiceFeedPreferences.bannerIsEnabled(requireContext())
-            viewAsWebPage = NiceFeedPreferences.viewAsWebPage(requireContext())
         }
 
         arguments?.getString(ARG_ENTRY_ID)?.let { entryId -> viewModel.getEntryById(entryId) }
@@ -123,25 +121,17 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        toggleBannerViews(viewModel.bannerIsEnabled)
-
         viewModel.htmlLiveData.observe(viewLifecycleOwner, { data ->
             if (data != null) {
-                if (data.startsWith("http")) {
-                    webView.loadUrl(data)
-                    toggleBannerViews(false)
-                } else {
-                    webView.loadData(data, MIME_TYPE, ENCODING)
-                    toggleBannerViews(viewModel.bannerIsEnabled)
-                }
-
+                webView.loadData(data, MIME_TYPE, ENCODING)
+                toggleBannerViews(viewModel.bannerIsEnabled)
+                setHasOptionsMenu(true)
                 toolbar.title = viewModel.entry?.website?.shortened()
                 if (viewModel.bannerIsEnabled) viewModel.entry?.let { entry ->
                     updateBanner(entry.title, entry.date, entry.author)
                     Picasso.get().load(entry.image).fit().centerCrop()
                         .placeholder(R.drawable.vintage_newspaper).into(imageView)
                 }
-                setHasOptionsMenu(true)
             } else {
                 toggleBannerViews(false)
                 progressBar.visibility = View.GONE
@@ -149,6 +139,12 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
                 Utils.showErrorMessage(nestedScrollView, resources)
             }
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        toolbar.setOnClickListener { nestedScrollView.smoothScrollTo(0, 0) }
+        imageView.setOnClickListener { handleViewInBrowser() }
     }
 
     private fun toggleBannerViews(isEnabled: Boolean) {
@@ -175,20 +171,12 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        toolbar.setOnClickListener { nestedScrollView.smoothScrollTo(0, 0) }
-        imageView.setOnClickListener { handleViewInBrowser() }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_entry, menu)
         starItem = menu.findItem(R.id.item_star)
-        viewAsWebPageItem = menu.findItem(R.id.item_view_as_web_page)
         textSizeItem = menu.findItem(R.id.item_text_size)
         viewModel.entry?.let { entry -> toggleStarOptionItem(entry.isStarred) }
-        toggleViewAsWebPageItem(viewModel.viewAsWebPage)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -197,7 +185,6 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
             R.id.item_share -> handleShare()
             R.id.item_copy_link -> handleCopyLink()
             R.id.item_view_in_browser -> handleViewInBrowser()
-            R.id.item_view_as_web_page -> handleViewAsWebPage()
             R.id.item_text_size -> handleChangeTextSize()
             else -> super.onOptionsItemSelected(item)
         }
@@ -219,20 +206,6 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
             } else {
                 setIcon(R.drawable.ic_star_border)
                 getString(R.string.star)
-            }
-        }
-    }
-
-    private fun toggleViewAsWebPageItem(isViewingAsWebPage: Boolean) {
-        viewAsWebPageItem?.apply {
-            if (isViewingAsWebPage) {
-                textSizeItem?.isEnabled = false
-                title = getString(R.string.view_as_entry)
-                setIcon(R.drawable.ic_notes)
-            } else {
-                textSizeItem?.isEnabled = true
-                title = getString(R.string.view_as_web_page)
-                setIcon(R.drawable.ic_web)
             }
         }
     }
@@ -263,13 +236,6 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         return true
     }
 
-    private fun handleViewAsWebPage(): Boolean {
-        progressBar.visibility = View.VISIBLE
-        viewModel.toggleLoadAsWebPage()
-        toggleViewAsWebPageItem(viewModel.viewAsWebPage)
-        return true
-    }
-
     private fun handleChangeTextSize(): Boolean {
         saveScrollPosition()
         TextSizeFragment.newInstance(viewModel.textSize).apply {
@@ -292,10 +258,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         saveScrollPosition()
         viewModel.isInitialLoading = false
         viewModel.saveChanges()
-        context?.let { context ->
-            NiceFeedPreferences.saveTextSize(context, viewModel.textSize)
-            NiceFeedPreferences.setViewAsWebPage(context, viewModel.viewAsWebPage)
-        }
+        context?.let { NiceFeedPreferences.saveTextSize(it, viewModel.textSize) }
     }
 
     override fun onDetach() {

@@ -20,7 +20,6 @@ object NiceFeedPreferences {
     private const val KEY_THEME = "KEY_THEME"
     private const val KEY_VIEW_IN_BROWSER = "KEY_VIEW_IN_BROWSER"
     private const val KEY_BANNER = "KEY_BANNER"
-    private const val KEY_VIEW_AS_WEB_PAGE = "KEY_VIEW_AS_WEB_PAGE"
     private const val KEY_SYNC_IN_BG = "KEY_SYNC_IN_BG"
 
     const val TEXT_SIZE_NORMAL = 0
@@ -150,13 +149,5 @@ object NiceFeedPreferences {
 
     fun setSyncInBackground(context: Context, isOn: Boolean) {
         getPrefs(context).edit().putBoolean(KEY_SYNC_IN_BG, isOn).apply()
-    }
-
-    fun viewAsWebPage(context: Context): Boolean {
-        return getPrefs(context).getBoolean(KEY_VIEW_AS_WEB_PAGE, false)
-    }
-
-    fun setViewAsWebPage(context: Context, viewAsWebPage: Boolean) {
-        getPrefs(context).edit().putBoolean(KEY_VIEW_AS_WEB_PAGE, viewAsWebPage).apply()
     }
 }

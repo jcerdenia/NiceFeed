@@ -16,8 +16,6 @@ import com.joshuacerdenia.android.nicefeed.ui.activity.MainActivity
 import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByDate
 import java.util.concurrent.TimeUnit
 
-private const val TAG = "NewEntriesWorker"
-
 open class NewEntriesWorker(
     private val context: Context,
     workerParams: WorkerParameters

@@ -25,14 +25,11 @@ class EntryViewModel : ViewModel() {
         private set
     var font = 0
     var bannerIsEnabled = true
-    var viewAsWebPage = true
     var isInitialLoading = true
 
     var entry: Entry? = null
         private set
-    // As of now, unused:
-    var isExcerpt = false
-        private set
+    private var isExcerpt = false // As of now, unused
 
     init {
         htmlLiveData.addSource(entryLiveData) { source ->
@@ -54,25 +51,11 @@ class EntryViewModel : ViewModel() {
     }
 
     private fun drawHtml(entry: Entry) {
-        if (!viewAsWebPage) {
-            EntryMinimal(
-                title = entry.title,
-                date = entry.date,
-                author = entry.author,
-                content = entry.content?.removePrefix(FeedParser.FLAG_EXCERPT) ?: ""
-            ).let { entryData ->
-                htmlLiveData.value = EntryToHtmlFormatter(
-                    textSize,
-                    font,
-                    !bannerIsEnabled
-                ).getHtml(entryData)
-            }
-        } else htmlLiveData.value = entry.url
-    }
-
-    fun toggleLoadAsWebPage() {
-        viewAsWebPage = !viewAsWebPage
-        entry?.let { drawHtml(it) }
+        EntryMinimal(
+            title = entry.title, date = entry.date, author = entry.author,
+            content = entry.content?.removePrefix(FeedParser.FLAG_EXCERPT) ?: ""
+        ).let { htmlLiveData.value = EntryToHtmlFormatter(textSize, font, !bannerIsEnabled).getHtml(it)
+        }
     }
 
     fun saveChanges() {
