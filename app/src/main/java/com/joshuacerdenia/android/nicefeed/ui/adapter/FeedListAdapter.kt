@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.CategoryHeader
-import com.joshuacerdenia.android.nicefeed.data.model.FeedLight
+import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMenuItem
 import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
 import com.squareup.picasso.Picasso

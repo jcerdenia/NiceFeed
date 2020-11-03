@@ -3,7 +3,7 @@ package com.joshuacerdenia.android.nicefeed.utils
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
-import com.joshuacerdenia.android.nicefeed.data.model.FeedManageable
+import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
 import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByCategory
 import com.rometools.opml.feed.opml.Opml
 import com.rometools.opml.feed.opml.Outline

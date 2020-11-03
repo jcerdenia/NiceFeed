@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
-import com.joshuacerdenia.android.nicefeed.data.model.Entry
-import com.joshuacerdenia.android.nicefeed.data.model.EntryMinimal
+import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
+import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryMinimal
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import com.joshuacerdenia.android.nicefeed.utils.EntryToHtmlFormatter
 

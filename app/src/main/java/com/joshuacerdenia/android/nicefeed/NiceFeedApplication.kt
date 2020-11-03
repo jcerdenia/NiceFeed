@@ -12,7 +12,7 @@ import com.joshuacerdenia.android.nicefeed.utils.NetworkMonitor
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.work.NewEntriesWorker
 import com.joshuacerdenia.android.nicefeed.utils.work.SweeperWorker
-import com.joshuacerdenia.android.nicefeed.utils.work.UpdateAllWorker
+import com.joshuacerdenia.android.nicefeed.utils.work.BackgroundSyncWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,8 +50,8 @@ class NiceFeedApplication : Application(), OnBackgroundWorkSettingChanged {
         applicationScope.launch {
             if (shouldPoll) NewEntriesWorker.start(applicationContext)
             if (shouldSyncInBackground) {
-                UpdateAllWorker.startRecurring(applicationContext)
-            } else UpdateAllWorker.cancel(applicationContext)
+                BackgroundSyncWorker.startRecurring(applicationContext)
+            } else BackgroundSyncWorker.cancel(applicationContext)
             SweeperWorker.setup(applicationContext)
         }
     }

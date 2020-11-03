@@ -3,39 +3,52 @@ package com.joshuacerdenia.android.nicefeed.utils.work
 import android.content.Context
 import androidx.work.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
-import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
+import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
+import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
+import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryUsed
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import java.util.concurrent.TimeUnit
 
-class UpdateAllWorker(
+open class BackgroundSyncWorker(
     context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
-    private val repo = NiceFeedRepository.get()
-    private val feedParser = FeedParser(repo.networkMonitor)
-
+    val repo = NiceFeedRepository.get()
+    val parser = FeedParser(repo.networkMonitor)
+    
     override suspend fun doWork(): Result {
         val feedUrls = repo.getFeedUrlsSynchronously()
         if (feedUrls.isEmpty()) return Result.success()
 
         for (url in feedUrls) {
-            val currentEntryIds: List<String> = repo.getEntryIdsByFeedSynchronously(url)
-            val feedWithEntries: FeedWithEntries? = feedParser.getFeedSynchronously(url)
+            val storedEntries = repo.getEntriesUsedByFeedSynchronously(url)
+            val storedEntryIds: List<String> = storedEntries.map { it.url }
+            val feedWithEntries: FeedWithEntries? = parser.getFeedSynchronously(url)
 
             feedWithEntries?.entries?.let { entries ->
-                val entryIds = entries.map { it.url }
-                val newEntries = entries.filterNot { currentEntryIds.contains(it.url) }
-                val oldEntryIds = currentEntryIds.filterNot { entryIds.contains(it) }
-                repo.handleBackgroundUpdate(url, newEntries, oldEntryIds)
+                val newEntries = entries.filterNot { storedEntryIds.contains(it.url) }
+                handleRetrievedData(url, storedEntries, entries, newEntries)
             }
         }
 
         return Result.success()
     }
 
+    fun handleRetrievedData(
+        url: String,
+        storedEntries: List<EntryUsed>,
+        retrievedEntries: List<Entry>,
+        newEntries: List<Entry>
+    ) {
+        val entryIds = retrievedEntries.map { it.url }
+        val oldEntries = storedEntries.filterNot { entryIds.contains(it.url) }
+        val entryIdsToDelete = oldEntries.filter { it.isRead && !it.isStarred }.map { it.url }
+        repo.handleBackgroundUpdate(url, newEntries, entryIdsToDelete)
+    }
+
     companion object {
-        private const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.utils.work.UpdateAllWorker"
+        private const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.utils.work.BackgroundSyncWorker"
 
         private val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.UNMETERED)
@@ -43,15 +56,15 @@ class UpdateAllWorker(
             .setRequiresStorageNotLow(true)
             .build()
 
-        fun start(context: Context) {
-            val request = OneTimeWorkRequest.Builder(UpdateAllWorker::class.java)
+        fun startOnce(context: Context) {
+            val request = OneTimeWorkRequest.Builder(BackgroundSyncWorker::class.java)
                 .setConstraints(constraints).build()
             WorkManager.getInstance(context).enqueue(request)
         }
 
         fun startRecurring(context: Context) {
             val request = PeriodicWorkRequest.Builder(
-                UpdateAllWorker::class.java, 24, TimeUnit.HOURS
+                BackgroundSyncWorker::class.java, 24, TimeUnit.HOURS
             ).setConstraints(constraints).build()
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(

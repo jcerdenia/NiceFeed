@@ -4,6 +4,10 @@ import androidx.lifecycle.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.*
+import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
+import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
+import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryLight
+import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment

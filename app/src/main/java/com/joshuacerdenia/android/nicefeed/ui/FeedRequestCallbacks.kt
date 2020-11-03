@@ -1,6 +1,6 @@
 package com.joshuacerdenia.android.nicefeed.ui
 
-import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
+import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 
 interface FeedRequestCallbacks {
 

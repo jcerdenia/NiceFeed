@@ -2,7 +2,15 @@ package com.joshuacerdenia.android.nicefeed.data
 
 import androidx.lifecycle.LiveData
 import com.joshuacerdenia.android.nicefeed.data.local.database.NiceFeedDatabase
-import com.joshuacerdenia.android.nicefeed.data.model.*
+import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedEntryCrossRef
+import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedTitleWithEntryInfo
+import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
+import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
+import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryUsed
+import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedIdWithCategory
+import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedLight
+import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
 import com.joshuacerdenia.android.nicefeed.utils.NetworkMonitor
 import java.util.concurrent.Executors
 
@@ -24,6 +32,10 @@ class NiceFeedRepository private constructor(
 
     fun getFeedUrlsSynchronously(): List<String> = dao.getFeedUrlsSynchronously()
 
+    fun getFeedTitleWithEntriesInfoSynchronously(feedId: String): FeedTitleWithEntryInfo {
+        return dao.getFeedTitleAndEntriesInfoSynchronously(feedId)
+    }
+
     fun getFeedsManageable(): LiveData<List<FeedManageable>> = dao.getFeedsManageable()
 
     fun getEntry(entryId: String): LiveData<Entry?> = dao.getEntry(entryId)
@@ -34,7 +46,9 @@ class NiceFeedRepository private constructor(
 
     fun getStarredEntries(): LiveData<List<Entry>> = dao.getStarredEntries()
 
-    fun getEntryIdsByFeedSynchronously(feedId: String): List<String> = dao.getEntryIdsByFeedSynchronously(feedId)
+    fun getEntriesUsedByFeedSynchronously(feedId: String): List<EntryUsed> {
+        return dao.getEntriesUsedByFeedSynchronously(feedId)
+    }
 
     fun addFeeds(vararg feed: Feed) {
         executor.execute { dao.addFeeds(*feed) }

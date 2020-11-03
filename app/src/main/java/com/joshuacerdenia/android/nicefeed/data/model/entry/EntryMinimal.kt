@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.data.model
+package com.joshuacerdenia.android.nicefeed.data.model.entry
 
 import java.util.*
 

@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.data.model
+package com.joshuacerdenia.android.nicefeed.data.model.feed
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

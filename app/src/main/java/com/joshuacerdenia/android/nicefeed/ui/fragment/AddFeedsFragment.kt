@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
+import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.ui.FeedRequestCallbacks
 import com.joshuacerdenia.android.nicefeed.ui.adapter.TopicAdapter
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmImportFragment
@@ -24,7 +24,7 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.InputUrlFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.OpmlImporter
 import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.utils.work.UpdateAllWorker
+import com.joshuacerdenia.android.nicefeed.utils.work.BackgroundSyncWorker
 
 class AddFeedsFragment: FeedAddingFragment(),
     OpmlImporter.OnOpmlParsedListener,
@@ -142,7 +142,7 @@ class AddFeedsFragment: FeedAddingFragment(),
         viewModel.feedsToImport = emptyList()
         Snackbar.make(linearLayout, getString(R.string.import_successful), Snackbar.LENGTH_SHORT)
             .setAction(R.string.update_all) {
-                UpdateAllWorker.start(requireContext().applicationContext)
+                BackgroundSyncWorker.startOnce(requireContext().applicationContext)
                 callbacks?.onFinished()
             }.show()
     }

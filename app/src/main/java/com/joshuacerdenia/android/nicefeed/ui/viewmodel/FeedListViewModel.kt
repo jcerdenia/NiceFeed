@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.CategoryHeader
-import com.joshuacerdenia.android.nicefeed.data.model.FeedLight
+import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMenuItem
 import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByTitle
 import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByUnreadCount

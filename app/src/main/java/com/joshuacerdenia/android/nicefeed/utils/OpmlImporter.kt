@@ -2,7 +2,7 @@ package com.joshuacerdenia.android.nicefeed.utils
 
 import android.content.Context
 import android.net.Uri
-import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
 import com.rometools.opml.feed.opml.Opml
 import com.rometools.rome.io.WireFeedInput
 import java.io.BufferedInputStream

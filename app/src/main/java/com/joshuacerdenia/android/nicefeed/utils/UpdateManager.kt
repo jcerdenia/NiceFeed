@@ -1,8 +1,8 @@
 package com.joshuacerdenia.android.nicefeed.utils
 
-import com.joshuacerdenia.android.nicefeed.data.model.Entry
-import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
+import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
+import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByDate
 
 /*  This class compares recently requested data from the web with current data saved locally.

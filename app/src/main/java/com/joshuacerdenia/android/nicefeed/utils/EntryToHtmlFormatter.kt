@@ -5,7 +5,7 @@ import android.util.Base64.encodeToString
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.FONT_SERIF
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_SIZE_LARGE
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_SIZE_LARGER
-import com.joshuacerdenia.android.nicefeed.data.model.EntryMinimal
+import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryMinimal
 import java.text.DateFormat
 
 // Prepares the contents of an Entry to be loaded into a WebView

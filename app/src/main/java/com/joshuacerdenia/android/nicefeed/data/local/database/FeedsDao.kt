@@ -2,10 +2,10 @@ package com.joshuacerdenia.android.nicefeed.data.local.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.data.model.FeedIdWithCategory
-import com.joshuacerdenia.android.nicefeed.data.model.FeedLight
-import com.joshuacerdenia.android.nicefeed.data.model.FeedManageable
+import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedIdWithCategory
+import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedLight
+import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
 
 interface FeedsDao {
 
@@ -29,6 +29,9 @@ interface FeedsDao {
 
     @Query("SELECT url FROM Feed")
     fun getFeedUrlsSynchronously(): List<String>
+
+    @Query("SELECT title FROM Feed WHERE url = :feedId")
+    fun getFeedTitleSynchronously(feedId: String): String
 
     @Update
     fun updateFeed(feed: Feed)

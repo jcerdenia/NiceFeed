@@ -1,7 +1,7 @@
 package com.joshuacerdenia.android.nicefeed.utils.extensions
 
-import com.joshuacerdenia.android.nicefeed.data.model.Entry
-import com.joshuacerdenia.android.nicefeed.data.model.EntryLight
+import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
+import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryLight
 
 fun List<Entry>.sortedByDate() = this.sortedByDescending { it.date }
 

@@ -4,30 +4,25 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.text.HtmlCompat
 import androidx.work.*
 import com.joshuacerdenia.android.nicefeed.NOTIFICATION_CHANNEL_ID
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
-import com.joshuacerdenia.android.nicefeed.data.model.Entry
-import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
-import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
+import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
+import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 import com.joshuacerdenia.android.nicefeed.ui.activity.MainActivity
 import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByDate
 import java.util.concurrent.TimeUnit
 
 private const val TAG = "NewEntriesWorker"
 
-class NewEntriesWorker(
+open class NewEntriesWorker(
     private val context: Context,
     workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams) {
+) : BackgroundSyncWorker(context, workerParams) {
 
-    private val repo = NiceFeedRepository.get()
-    private val feedParser = FeedParser(repo.networkMonitor)
     private val resources = context.resources
 
     override suspend fun doWork(): Result {
@@ -37,18 +32,18 @@ class NewEntriesWorker(
         val newIndex = if (lastIndex + 1 >= feedUrls.size) 0 else lastIndex + 1
         val url = feedUrls[newIndex]
 
-        val currentEntryIds: List<String> = repo.getEntryIdsByFeedSynchronously(url)
-        val feedWithEntries: FeedWithEntries? = feedParser.getFeedSynchronously(url)
+        val feedData = repo.getFeedTitleWithEntriesInfoSynchronously(url)
+        val title = feedData.feedTitle // Need user-set title saved in DB
+        val storedEntries = feedData.entriesUsed
+        val storedEntryIds: List<String> = storedEntries.map { it.url }
+        val feedWithEntries: FeedWithEntries? = parser.getFeedSynchronously(url)
 
         feedWithEntries?.let { fwe ->
-            val entryIds = fwe.entries.map { it.url }
-            val newEntries = fwe.entries.filterNot { currentEntryIds.contains(it.url) }
-            val oldEntryIds = currentEntryIds.filterNot { entryIds.contains(it) }
-            Log.d(TAG, "${newEntries.size} new entries")
-            repo.handleBackgroundUpdate(url, newEntries, oldEntryIds)
+            val newEntries = fwe.entries.filterNot { storedEntryIds.contains(it.url) }
+            handleRetrievedData(url, storedEntries, fwe.entries, newEntries)
 
             if (newEntries.isNotEmpty()) {
-                val notification = createNotification(fwe.feed.url, fwe.feed.title, newEntries)
+                val notification = createNotification(url, title, newEntries)
                 Intent(ACTION_SHOW_NOTIFICATION).apply {
                     putExtra(EXTRA_REQUEST_CODE, NOTIFICATION_ID)
                     putExtra(EXTRA_NOTIFICATION, notification)

@@ -2,9 +2,10 @@ package com.joshuacerdenia.android.nicefeed.data.local.database
 
 import androidx.room.Dao
 import androidx.room.Transaction
-import com.joshuacerdenia.android.nicefeed.data.model.Entry
-import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.data.model.FeedEntryCrossRef
+import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedEntryCrossRef
+import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedTitleWithEntryInfo
+import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
+import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
 
 @Dao
 interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
@@ -18,6 +19,14 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
         addFeeds(feed)
         addEntries(entries)
         addFeedEntryCrossRefs(crossRefs)
+    }
+
+    @Transaction
+    fun getFeedTitleAndEntriesInfoSynchronously(feedId: String): FeedTitleWithEntryInfo {
+        return FeedTitleWithEntryInfo(
+            getFeedTitleSynchronously(feedId),
+            getEntriesUsedByFeedSynchronously(feedId)
+        )
     }
 
     @Transaction
@@ -44,7 +53,7 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
     ) {
         addEntries(newEntries)
         addFeedEntryCrossRefs(newCrossRefs)
-        // deleteEntriesIfRead(oldEntryIds)
+        deleteEntriesById(oldEntryIds)
         deleteFeedEntryCrossRefs(feedId, oldEntryIds)
         addToFeedUnreadCount(feedId, newEntries.size)
     }

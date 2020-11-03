@@ -1,7 +1,7 @@
 package com.joshuacerdenia.android.nicefeed.data.local.database
 
 import androidx.room.*
-import com.joshuacerdenia.android.nicefeed.data.model.FeedEntryCrossRef
+import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedEntryCrossRef
 
 interface FeedEntryCrossRefsDao {
 

@@ -3,8 +3,8 @@ package com.joshuacerdenia.android.nicefeed.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.model.Feed
-import com.joshuacerdenia.android.nicefeed.data.model.FeedIdWithCategory
+import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedIdWithCategory
 import com.joshuacerdenia.android.nicefeed.data.model.TopicBlock
 
 class AddFeedsViewModel: FeedAddingViewModel() {

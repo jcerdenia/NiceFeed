@@ -2,7 +2,8 @@ package com.joshuacerdenia.android.nicefeed.data.local.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.joshuacerdenia.android.nicefeed.data.model.Entry
+import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
+import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryUsed
 
 interface EntriesDao {
 
@@ -36,12 +37,12 @@ interface EntriesDao {
     fun getEntriesByFeed(feedId: String): LiveData<List<Entry>>
 
     @Query(
-        "SELECT Entry.url " +
-            "FROM FeedEntryCrossRef AS _junction " +
-            "INNER JOIN Entry ON (_junction.entryUrl = Entry.url) " +
-            "WHERE _junction.feedUrl = :feedId"
+        "SELECT Entry.url, isStarred, isRead " +
+                "FROM FeedEntryCrossRef AS _junction " +
+                "INNER JOIN Entry ON (_junction.entryUrl = Entry.url) " +
+                "WHERE _junction.feedUrl = :feedId"
     )
-    fun getEntryIdsByFeedSynchronously(feedId: String): List<String>
+    fun getEntriesUsedByFeedSynchronously(feedId: String): List<EntryUsed>
 
     @Update
     fun updateEntries(entries: List<Entry>)
@@ -63,8 +64,8 @@ interface EntriesDao {
     )
     fun deleteEntriesByFeed(vararg feedId: String)
 
-    @Query("DELETE FROM Entry WHERE isRead = 1 AND url IN (:entryIds)")
-    fun deleteEntriesIfRead(entryIds: List<String>)
+    @Query("DELETE FROM Entry WHERE url IN (:entryIds)")
+    fun deleteEntriesById(entryIds: List<String>)
 
     @Query("DELETE FROM Entry WHERE url NOT IN (SELECT entryUrl FROM FeedEntryCrossRef)")
     fun deleteLeftoverEntries()

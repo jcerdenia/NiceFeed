@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.data.model
+package com.joshuacerdenia.android.nicefeed.data.model.feed
 
 // Light version of Feed – no website and description
 data class FeedLight(
