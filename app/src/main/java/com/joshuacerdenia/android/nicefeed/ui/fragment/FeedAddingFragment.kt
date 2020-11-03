@@ -2,13 +2,12 @@ package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.content.Context
 import android.view.View
-import android.widget.EditText
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.ui.OnFinished
-import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
+import com.joshuacerdenia.android.nicefeed.ui.viewmodel.FeedAddingViewModel
 
 // Gives ability to subscribe to new feeds, must be extended
 
@@ -21,6 +20,7 @@ abstract class FeedAddingFragment: VisibleFragment() {
     }
 
     var callbacks: Callbacks? = null
+    var manager: RequestResultManager? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -33,10 +33,9 @@ abstract class FeedAddingFragment: VisibleFragment() {
     }
 
     inner class RequestResultManager(
-        private val viewModel: AddFeedsViewModel,
+        private val viewModel: FeedAddingViewModel,
         private val view: View,
         private val negativeMessageResId: Int,
-        private val urlEditText: EditText? = null
     ) {
 
         fun submitData(feedWithEntries: FeedWithEntries?) {
@@ -46,6 +45,7 @@ abstract class FeedAddingFragment: VisibleFragment() {
                         viewModel.addFeedWithEntries(data)
                         showFeedAddedNotice(data.feed.url, data.feed.title)
                     } else showAlreadyAddedNotice()
+                    viewModel.lastAttemptedUrl = ""
                 } else showLimitReachedNotice()
             } ?: showRequestFailedNotice()
         }
@@ -62,16 +62,13 @@ abstract class FeedAddingFragment: VisibleFragment() {
         private fun showFeedAddedNotice(feedId: String, title: String) {
             Snackbar.make(view, getString(R.string.feed_added_message, title), Snackbar.LENGTH_LONG)
                 .setAction(R.string.view) { callbacks?.onNewFeedAdded(feedId) }.show()
-
             viewModel.alreadyAddedNoticeEnabled = false
-            urlEditText?.text = null
         }
 
         private fun showAlreadyAddedNotice() {
             if (viewModel.alreadyAddedNoticeEnabled) {
                 Snackbar.make(view, getString(R.string.feed_already_added), Snackbar.LENGTH_SHORT).show()
                 viewModel.alreadyAddedNoticeEnabled = false
-                urlEditText?.text = null
             }
         }
 

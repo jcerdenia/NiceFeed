@@ -12,14 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
+import com.joshuacerdenia.android.nicefeed.ui.FeedRequestCallbacks
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedSearchAdapter
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SubscribeFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.SearchFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 
 class SearchFeedsFragment : FeedAddingFragment(),
-    SubscribeFragment.Callbacks,
-    FeedSearchAdapter.OnItemClickListener {
+    FeedSearchAdapter.OnItemClickListener,
+    FeedRequestCallbacks {
 
     private lateinit var viewModel: SearchFeedsViewModel
     private lateinit var toolbar: Toolbar
@@ -30,7 +31,6 @@ class SearchFeedsFragment : FeedAddingFragment(),
     private lateinit var adapter: FeedSearchAdapter
 
     private val fragment = this@SearchFeedsFragment
-    private var manager: RequestResultManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +62,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
         manager = RequestResultManager(viewModel, recyclerView, R.string.failed_to_connect)
 
         viewModel.feedIdsLiveData.observe(viewLifecycleOwner, { feedIds ->
-            viewModel.onFeedIdsObtained(feedIds)
+            viewModel.onFeedIdsRetrieved(feedIds)
         })
 
         viewModel.searchResultLiveData.observe(viewLifecycleOwner, { results ->

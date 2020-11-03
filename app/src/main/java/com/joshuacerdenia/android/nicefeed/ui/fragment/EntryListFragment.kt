@@ -1,7 +1,7 @@
 package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.content.Context
-import android.content.res.Configuration.ORIENTATION_LANDSCAPE
+import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -95,9 +95,9 @@ class EntryListFragment : VisibleFragment(),
         progressBar = view.findViewById(R.id.progress_bar)
 
         recyclerView = view.findViewById(R.id.recycler_view)
-        recyclerView.layoutManager = if (resources.configuration.orientation == ORIENTATION_LANDSCAPE) {
-            GridLayoutManager(context, 2)
-        } else LinearLayoutManager(context)
+        recyclerView.layoutManager = if (resources.configuration.orientation == ORIENTATION_PORTRAIT) {
+            LinearLayoutManager(context)
+        } else GridLayoutManager(context, 2)
         recyclerView.adapter = adapter
 
         toolbar.title = getString(R.string.loading)
@@ -167,7 +167,7 @@ class EntryListFragment : VisibleFragment(),
             noItemsTextView.visibility = View.VISIBLE
             toolbar.title = getString(R.string.app_name)
         }
-        
+
         toolbar.apply {
             setNavigationIcon(R.drawable.ic_menu)
             setNavigationOnClickListener { callbacks?.onHomePressed() }

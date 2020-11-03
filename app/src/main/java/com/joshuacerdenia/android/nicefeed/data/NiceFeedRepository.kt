@@ -20,6 +20,8 @@ class NiceFeedRepository private constructor(
 
     fun getFeedIds(): LiveData<List<String>> = dao.getFeedIds()
 
+    fun getFeedIdsWithCategories(): LiveData<List<FeedIdWithCategory>> = dao.getFeedIdsWithCategories()
+
     fun getFeedUrlsSynchronously(): List<String> = dao.getFeedUrlsSynchronously()
 
     fun getFeedsManageable(): LiveData<List<FeedManageable>> = dao.getFeedsManageable()

@@ -16,7 +16,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.FeedManageable
-import com.joshuacerdenia.android.nicefeed.data.model.FeedMinimal
 import com.joshuacerdenia.android.nicefeed.ui.OnFinished
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedManagerAdapter
@@ -216,21 +215,6 @@ class ManageFeedsFragment: VisibleFragment(),
             }
             (count < 1) -> showNothingSelectedNotice(ACTION_EDIT)
         }
-        return true
-    }
-
-    private fun handleEditCategory(): Boolean {
-        if (anyItemIsSelected()) {
-            val count = viewModel.selectedItems.size
-            val title = if (count == 1) {
-                viewModel.selectedItems[0].title
-            } else null
-
-            EditCategoryFragment.newInstance(viewModel.getCategories(), title, count).apply {
-                setTargetFragment(fragment, 0)
-                show(fragment.parentFragmentManager, "edit category")
-            }
-        } else showNothingSelectedNotice(ACTION_EDIT)
         return true
     }
 

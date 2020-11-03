@@ -55,7 +55,7 @@ class EditFeedFragment : BottomSheetDialogFragment() {
         val categories = arguments?.getStringArray(ARG_CATEGORIES) ?: emptyArray()
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, categories)
 
-        Picasso.get().load(feed?.imageUrl).placeholder(R.drawable.vintage_newspaper).into(imageView)
+        Picasso.get().load(feed?.imageUrl).placeholder(R.drawable.feed_icon).into(imageView)
         fillEditables(feed?.title, feed?.category)
         categoryEditText.setAdapter(adapter)
         categoryEditText.threshold = 1
@@ -75,8 +75,8 @@ class EditFeedFragment : BottomSheetDialogFragment() {
 
         undoButton.setOnClickListener { fillEditables(feed?.title, feed?.category) }
         doneButton.setOnClickListener {
-            val newTitle = titleEditText.text.toString()
-            val newCategory = categoryEditText.text.toString()
+            val newTitle = titleEditText.text.toString().trim()
+            val newCategory = categoryEditText.text.toString().trim()
             if (newTitle.isNotEmpty() && newCategory.isNotEmpty()) {
                 if (feed?.title != newTitle || feed.category != newCategory) {
                     targetFragment?.let { (it as Callback).onFeedInfoChanged(newTitle, newCategory) }

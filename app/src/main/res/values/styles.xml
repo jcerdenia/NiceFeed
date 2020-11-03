@@ -57,7 +57,4 @@
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
-    <style name="BottomSheetDialogNoResize" parent="BottomSheetDialogNoFloating">
-        <item name="android:windowSoftInputMode">adjustNothing</item>
-    </style>
 </resources>

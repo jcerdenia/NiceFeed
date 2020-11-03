@@ -3,6 +3,7 @@ package com.joshuacerdenia.android.nicefeed.data.local.database
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.FeedIdWithCategory
 import com.joshuacerdenia.android.nicefeed.data.model.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.FeedManageable
 
@@ -22,6 +23,9 @@ interface FeedsDao {
 
     @Query("SELECT url FROM Feed")
     fun getFeedIds(): LiveData<List<String>>
+
+    @Query("SELECT url, category FROM Feed")
+    fun getFeedIdsWithCategories(): LiveData<List<FeedIdWithCategory>>
 
     @Query("SELECT url FROM Feed")
     fun getFeedUrlsSynchronously(): List<String>

@@ -4,4 +4,14 @@
     <color name="colorPrimaryDark">@android:color/transparent</color>
     <color name="colorAccent">#018786</color>
     <color name="colorSelect">#59FE621D</color>
+    <color name="topic1">#f94144</color>
+    <color name="topic2">#f3722c</color>
+    <color name="topic3">#f8961e</color>
+    <color name="topic4">#f9844a</color>
+    <color name="topic5">#f9c74f</color>
+    <color name="topic6">#90be6d</color>
+    <color name="topic7">#43aa8b</color>
+    <color name="topic8">#4d908e</color>
+    <color name="topic9">#577590</color>
+    <color name="topic10">#277da1</color>
 </resources>

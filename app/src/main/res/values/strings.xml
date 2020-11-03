@@ -58,7 +58,6 @@
     <string name="remove_feed">Remove Feed</string>
     <string name="mark_all_as_read">Mark All as Read</string>
     <string name="star_all">Star All</string>
-    <string name="category_">Category: %s</string>
     <string name="visit_website">Visit Website</string>
     <string name="mark_all_as_unread">Mark All as Unread</string>
     <string name="unstar_all">Unstar All</string>
@@ -69,8 +68,7 @@
     <string name="error_message">An error has occurred.</string>
     <string name="confirm_import_title">Import %s?</string>
     <string name="confirm_import_message">This will not overwrite existing subscriptions.</string>
-    <string name="select_file">Select file</string>
-    <string name="import_feeds_via_opml">Import feeds via OPML</string>
+    <string name="import_opml">Import OPML</string>
     <string name="about_nicefeed_detail">
         NiceFeed is developed and maintained by Joshua Cerdenia.
         Please visit github.com/joshuacerdenia/nicefeed for information.
@@ -117,18 +115,26 @@
     <string name="font">Font</string>
     <string name="sans_serif">Sans Serif</string>
     <string name="serif">Serif</string>
-    <string name="add_your_first_feed">Add your first feed.</string>
     <string name="view_as_web_page">View as Web Page</string>
     <string name="update_all">Update All</string>
     <string name="sync_in_bg">Sync in background</string>
     <string name="sync_in_bg_description">Subscriptions will update daily when app is closed.</string>
     <string name="view_as_entry">View as Entry</string>
     <string name="url">URL</string>
-    <string name="save_changes">Save Changes</string>
     <string name="undo_changes">Undo Changes</string>
     <string name="saved_changes_to">Saved changes to %s.</string>
-    <string name="undo">Undo</string>
     <string name="request_canceled">Request canceled.</string>
+    <string name="hashtag">#%s</string>
+    <string name="news">News</string>
+    <string name="politics">Politics</string>
+    <string name="world">World</string>
+    <string name="science">Science</string>
+    <string name="tech">Tech</string>
+    <string name="business">Business</string>
+    <string name="art">Art</string>
+    <string name="culture">Culture</string>
+    <string name="books">Books</string>
+    <string name="entertainment">Entertainment</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

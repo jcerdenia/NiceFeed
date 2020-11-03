@@ -44,7 +44,7 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
     ) {
         addEntries(newEntries)
         addFeedEntryCrossRefs(newCrossRefs)
-        deleteEntriesIfRead(oldEntryIds)
+        // deleteEntriesIfRead(oldEntryIds)
         deleteFeedEntryCrossRefs(feedId, oldEntryIds)
         addToFeedUnreadCount(feedId, newEntries.size)
     }

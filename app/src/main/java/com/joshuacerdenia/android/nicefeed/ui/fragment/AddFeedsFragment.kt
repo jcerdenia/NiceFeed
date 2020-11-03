@@ -1,41 +1,46 @@
 package com.joshuacerdenia.android.nicefeed.ui.fragment
 
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
+import com.joshuacerdenia.android.nicefeed.ui.FeedRequestCallbacks
+import com.joshuacerdenia.android.nicefeed.ui.adapter.TopicAdapter
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmImportFragment
+import com.joshuacerdenia.android.nicefeed.ui.dialog.InputUrlFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.OpmlImporter
 import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.utils.work.NewEntriesWorker
 import com.joshuacerdenia.android.nicefeed.utils.work.UpdateAllWorker
-import java.util.*
 
 class AddFeedsFragment: FeedAddingFragment(),
     OpmlImporter.OnOpmlParsedListener,
-    ConfirmImportFragment.Callbacks
+    ConfirmImportFragment.Callbacks,
+    TopicAdapter.OnItemClickListener,
+    FeedRequestCallbacks
 {
 
     private lateinit var viewModel: AddFeedsViewModel
     private lateinit var toolbar: Toolbar
     private lateinit var linearLayout: LinearLayout
-    private lateinit var urlEditText: EditText
-    private lateinit var subscribeButton: Button
-    private lateinit var importOpmlButton: Button
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: TopicAdapter
+    private lateinit var addUrlTextView: TextView
+    private lateinit var importOpmlTextView: TextView
     private lateinit var searchView: SearchView
-    private lateinit var progressBar: ProgressBar
 
     private val fragment = this@AddFeedsFragment
     private var opmlImporter: OpmlImporter? = null
@@ -43,7 +48,9 @@ class AddFeedsFragment: FeedAddingFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(AddFeedsViewModel::class.java)
-        context?.let { context -> opmlImporter = OpmlImporter(context, this) }
+        viewModel.initDefaultTopics(viewModel.defaultTopicsResId.map { getString(it) })
+        opmlImporter = OpmlImporter(requireContext(), this)
+        adapter = TopicAdapter(requireContext(), this)
     }
     
     override fun onCreateView(
@@ -54,11 +61,14 @@ class AddFeedsFragment: FeedAddingFragment(),
         val view = inflater.inflate(R.layout.fragment_add_feeds, container, false)
         toolbar = view.findViewById(R.id.toolbar)
         linearLayout = view.findViewById(R.id.linearLayout)
-        urlEditText = view.findViewById(R.id.editText_url)
-        subscribeButton = view.findViewById(R.id.button_subscribe)
-        importOpmlButton = view.findViewById(R.id.button_import_opml)
         searchView = view.findViewById(R.id.searchView)
-        progressBar = view.findViewById(R.id.progressBar_add_feed)
+        recyclerView = view.findViewById(R.id.recycler_view)
+        addUrlTextView = view.findViewById(R.id.add_url_text_view)
+        importOpmlTextView = view.findViewById(R.id.import_opml_text_view)
+
+        val span = if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 3 else 5
+        recyclerView.layoutManager = GridLayoutManager(context, span)
+        recyclerView.adapter = adapter.apply { numOfItems = if (span == 3) 9 else 10 }
 
         toolbar.title = getString(R.string.add_feeds)
         callbacks?.onToolbarInflated(toolbar)
@@ -67,26 +77,19 @@ class AddFeedsFragment: FeedAddingFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val resultManager = RequestResultManager(
-            viewModel,
-            linearLayout,
-            R.string.failed_to_get_feed,
-            urlEditText
-        )
+        manager = RequestResultManager(viewModel, linearLayout, R.string.failed_to_get_feed)
 
-        viewModel.feedIdsLiveData.observe(viewLifecycleOwner, { feedIds ->
-            viewModel.onFeedIdsObtained(feedIds)
+        viewModel.feedIdsWithCategoriesLiveData.observe(viewLifecycleOwner, { data ->
+            viewModel.onFeedDataRetrieved(data)
         })
 
-        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { feedWithEntries ->
-            progressBar.visibility = View.INVISIBLE
-            resultManager.submitData(feedWithEntries)
-            subscribeButton.apply {
-                isEnabled = true
-                text = getString(R.string.subscribe)
-            }
+        viewModel.topicBlocksLiveData.observe(viewLifecycleOwner, { topics ->
+            adapter.submitList(topics.toMutableList())
         })
+    }
 
+    override fun onStart() {
+        super.onStart()
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(queryText: String): Boolean {
                 if (queryText.isNotBlank()) callbacks?.onQuerySubmitted(queryText)
@@ -98,21 +101,24 @@ class AddFeedsFragment: FeedAddingFragment(),
             }
         })
 
-        subscribeButton.setOnClickListener {
-            val url = urlEditText.text.toString().toLowerCase(Locale.ROOT).trim()
-            if (url.contains("://")) {
-                viewModel.requestFeed(url) // If scheme is provided, use as is
-            } else viewModel.requestFeed("https://$url", "http://$url")
-
-            Utils.hideSoftKeyBoard(requireActivity(), linearLayout)
-            progressBar.visibility = View.VISIBLE
-            subscribeButton.apply {
-                isEnabled = false
-                text = getString(R.string.loading)
+        addUrlTextView.setOnClickListener {
+            InputUrlFragment.newInstance(viewModel).apply {
+                setTargetFragment(fragment, 0)
+                show(fragment.parentFragmentManager, "TAG")
             }
         }
 
-        importOpmlButton.setOnClickListener { callbacks?.onImportOpmlSelected() }
+        importOpmlTextView.setOnClickListener {
+            callbacks?.onImportOpmlSelected()
+        }
+    }
+
+    override fun onRequestCompleted(feedWithEntries: FeedWithEntries?) {
+        manager?.submitData(feedWithEntries)
+    }
+
+    override fun onRequestCanceled() {
+        manager?.cancelRequest()
     }
 
     fun submitUriForImport(uri: Uri) {
@@ -134,12 +140,15 @@ class AddFeedsFragment: FeedAddingFragment(),
     override fun onImportConfirmed() {
         viewModel.feedsToImport.toTypedArray().run { viewModel.addFeeds(*this) }
         viewModel.feedsToImport = emptyList()
-
         Snackbar.make(linearLayout, getString(R.string.import_successful), Snackbar.LENGTH_SHORT)
             .setAction(R.string.update_all) {
                 UpdateAllWorker.start(requireContext().applicationContext)
                 callbacks?.onFinished()
             }.show()
+    }
+
+    override fun onTopicSelected(topic: String) {
+        callbacks?.onQuerySubmitted(topic)
     }
 
     companion object {

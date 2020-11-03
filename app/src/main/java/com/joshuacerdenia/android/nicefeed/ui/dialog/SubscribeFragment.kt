@@ -12,21 +12,18 @@ import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.model.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
-import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
+import com.joshuacerdenia.android.nicefeed.ui.FeedRequestCallbacks
+import com.joshuacerdenia.android.nicefeed.ui.viewmodel.SearchFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.RssUrlTransformer
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
 import com.squareup.picasso.Picasso
 import java.text.DateFormat
 
-class SubscribeFragment(private val viewModel: AddFeedsViewModel): BottomSheetDialogFragment() {
-
-    interface Callbacks {
-        fun onRequestCompleted(feedWithEntries: FeedWithEntries?)
-        fun onRequestCanceled()
-    }
+class SubscribeFragment(
+    private val viewModel: SearchFeedsViewModel
+): BottomSheetDialogFragment() {
 
     private lateinit var titleTextView: TextView
     private lateinit var urlTextView: TextView
@@ -37,6 +34,7 @@ class SubscribeFragment(private val viewModel: AddFeedsViewModel): BottomSheetDi
     private lateinit var progressBar: ProgressBar
 
     private var isRequested = false
+    private var callbacks: FeedRequestCallbacks? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,8 +52,23 @@ class SubscribeFragment(private val viewModel: AddFeedsViewModel): BottomSheetDi
         return view
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        callbacks = targetFragment as? FeedRequestCallbacks
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { result ->
+            if (isRequested) {
+                callbacks?.onRequestCompleted(result)
+                dismiss()
+            }
+        })
+    }
+
+    override fun onStart() {
+        super.onStart()
         val searchResultItem = arguments?.getSerializable(ARG_SEARCH_RESULT_ITEM) as SearchResultItem
         val lastUpdated = formatDate(searchResultItem.updated?.toLong())
         Picasso.get().load(searchResultItem.imageUrl).placeholder(R.drawable.feed_icon).into(imageView)
@@ -93,21 +106,9 @@ class SubscribeFragment(private val viewModel: AddFeedsViewModel): BottomSheetDi
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { result ->
-            if (isRequested) {
-                targetFragment?.let { (it as Callbacks).onRequestCompleted(result) }
-                dismiss()
-            }
-        })
-    }
-
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
-        if (progressBar.visibility == View.VISIBLE) {
-            targetFragment?.let { (it as Callbacks).onRequestCanceled() }
-        }
+        if (progressBar.visibility == View.VISIBLE) callbacks?.onRequestCanceled()
         dismiss()
     }
 
@@ -122,7 +123,7 @@ class SubscribeFragment(private val viewModel: AddFeedsViewModel): BottomSheetDi
 
         fun newInstance(
             searchResultItem: SearchResultItem,
-            viewModel: AddFeedsViewModel
+            viewModel: SearchFeedsViewModel
         ): SubscribeFragment {
             val args = Bundle().apply { putSerializable(ARG_SEARCH_RESULT_ITEM, searchResultItem) }
             return SubscribeFragment(viewModel).apply { arguments = args }

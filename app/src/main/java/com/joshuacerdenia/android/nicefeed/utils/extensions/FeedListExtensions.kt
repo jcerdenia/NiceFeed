@@ -2,7 +2,6 @@ package com.joshuacerdenia.android.nicefeed.utils.extensions
 
 import com.joshuacerdenia.android.nicefeed.data.model.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.FeedManageable
-import com.joshuacerdenia.android.nicefeed.data.model.FeedMinimal
 
 @JvmName("sortedByTitleFeedLight")
 fun List<FeedLight>.sortedByTitle() = this.sortedBy { it.title }

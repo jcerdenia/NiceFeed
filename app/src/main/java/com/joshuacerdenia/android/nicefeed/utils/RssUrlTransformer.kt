@@ -8,8 +8,7 @@ object RssUrlTransformer {
     private const val ATOM_XML = "atom.xml"
 
     fun getUrl(link: String): String {
-        val url = link.removePrefix("feed/")
-            .removeSuffix("/")
+        val url = link.removePrefix("feed/").removeSuffix("/")
             // This is possibly not ideal, but it results in too many failed requests otherwise:
             .replace("http://", "https://")
             .toLowerCase(Locale.ROOT)
