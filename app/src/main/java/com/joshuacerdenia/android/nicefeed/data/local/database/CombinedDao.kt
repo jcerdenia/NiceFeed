@@ -3,7 +3,7 @@ package com.joshuacerdenia.android.nicefeed.data.local.database
 import androidx.room.Dao
 import androidx.room.Transaction
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedEntryCrossRef
-import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedTitleWithEntryInfo
+import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedTitleWithEntriesToggleable
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
 
@@ -22,10 +22,12 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
     }
 
     @Transaction
-    fun getFeedTitleAndEntriesInfoSynchronously(feedId: String): FeedTitleWithEntryInfo {
-        return FeedTitleWithEntryInfo(
+    fun getFeedTitleAndEntriesToggleableSynchronously(
+        feedId: String
+    ): FeedTitleWithEntriesToggleable {
+        return FeedTitleWithEntriesToggleable(
             getFeedTitleSynchronously(feedId),
-            getEntriesUsedByFeedSynchronously(feedId)
+            getEntriesToggleableByFeedSynchronously(feedId)
         )
     }
 

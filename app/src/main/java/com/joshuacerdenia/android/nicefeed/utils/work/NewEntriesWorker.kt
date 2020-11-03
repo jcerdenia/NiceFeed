@@ -32,9 +32,9 @@ open class NewEntriesWorker(
         val newIndex = if (lastIndex + 1 >= feedUrls.size) 0 else lastIndex + 1
         val url = feedUrls[newIndex]
 
-        val feedData = repo.getFeedTitleWithEntriesInfoSynchronously(url)
+        val feedData = repo.getFeedTitleWithEntriesToggleableSynchronously(url)
         val title = feedData.feedTitle // Need user-set title saved in DB
-        val storedEntries = feedData.entriesUsed
+        val storedEntries = feedData.entriesToggleable
         val storedEntryIds: List<String> = storedEntries.map { it.url }
         val feedWithEntries: FeedWithEntries? = parser.getFeedSynchronously(url)
 

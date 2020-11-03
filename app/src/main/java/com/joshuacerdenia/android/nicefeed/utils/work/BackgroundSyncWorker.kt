@@ -5,7 +5,7 @@ import androidx.work.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
-import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryUsed
+import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryToggleable
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import java.util.concurrent.TimeUnit
 
@@ -22,7 +22,7 @@ open class BackgroundSyncWorker(
         if (feedUrls.isEmpty()) return Result.success()
 
         for (url in feedUrls) {
-            val storedEntries = repo.getEntriesUsedByFeedSynchronously(url)
+            val storedEntries = repo.getEntriesToggleableByFeedSynchronously(url)
             val storedEntryIds: List<String> = storedEntries.map { it.url }
             val feedWithEntries: FeedWithEntries? = parser.getFeedSynchronously(url)
 
@@ -37,7 +37,7 @@ open class BackgroundSyncWorker(
 
     fun handleRetrievedData(
         fwe: FeedWithEntries,
-        storedEntries: List<EntryUsed>,
+        storedEntries: List<EntryToggleable>,
         newEntries: List<Entry>
     ) {
         val entryIds = fwe.entries.map { it.url }

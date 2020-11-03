@@ -3,7 +3,7 @@ package com.joshuacerdenia.android.nicefeed.data.local.database
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
-import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryUsed
+import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryToggleable
 
 interface EntriesDao {
 
@@ -42,7 +42,7 @@ interface EntriesDao {
                 "INNER JOIN Entry ON (_junction.entryUrl = Entry.url) " +
                 "WHERE _junction.feedUrl = :feedId"
     )
-    fun getEntriesUsedByFeedSynchronously(feedId: String): List<EntryUsed>
+    fun getEntriesToggleableByFeedSynchronously(feedId: String): List<EntryToggleable>
 
     @Update
     fun updateEntries(entries: List<Entry>)
