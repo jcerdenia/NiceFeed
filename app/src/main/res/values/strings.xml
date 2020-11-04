@@ -28,17 +28,14 @@
     <string name="number_selected">%d selected</string>
     <string name="edit_category_dialog_message">Change will be applied to %s.</string>
     <string name="category">Category</string>
-    <string name="select_feeds_to">Select feeds to %s.</string>
-    <string name="edit">edit</string>
     <string name="category_assigned">Assigned category \'%1$s\' to %2$s.</string>
     <string name="done">Done</string>
     <string name="confirm_remove">Remove %s?</string>
     <string name="confirm_remove_dialog_message">
         This will remove all associated entries. You can subscribe again later if you change your mind.
     </string>
+    <string name="confirm_export">Export %s to OPML?</string>
     <string name="feed">feed</string>
-    <string name="remove">remove</string>
-    <string name="remove_selected">Remove selected</string>
     <string name="sort_by">Sort by</string>
     <string name="recently_added">Recently added</string>
     <string name="title">Title</string>
@@ -77,8 +74,7 @@
     <string name="share_entry">Share Entry</string>
     <string name="copy_link">Copy Link</string>
     <string name="copied_link">Copied link to clipboard.</string>
-    <string name="export_opml">Export OPML</string>
-    <string name="exported_opml_message">Exported subscriptions to %s.</string>
+    <string name="exported_message">Exported %s.</string>
     <string name="notification_channel_name">New Entries</string>
     <string name="new_entries_notification_title">New in %s</string>
     <string name="and_more">%s… and more</string>
@@ -95,7 +91,6 @@
     <string name="notification_switch_description">Check for new entries</string>
     <string name="sort_feeds_by">Sort feeds by</string>
     <string name="unread_items">Unread items</string>
-    <string name="export">export</string>
     <string name="starred_entries">Starred Entries</string>
     <string name="new_entries">New Entries</string>
     <string name="appearance">Appearance</string>
@@ -114,11 +109,9 @@
     <string name="font">Font</string>
     <string name="sans_serif">Sans Serif</string>
     <string name="serif">Serif</string>
-    <string name="view_as_web_page">View as Web Page</string>
     <string name="update_all">Update All</string>
     <string name="sync_in_bg">Sync in background</string>
     <string name="sync_in_bg_description">Subscriptions will update daily when app is closed.</string>
-    <string name="view_as_entry">View as Entry</string>
     <string name="url">URL</string>
     <string name="undo_changes">Undo Changes</string>
     <string name="saved_changes_to">Saved changes to %s.</string>

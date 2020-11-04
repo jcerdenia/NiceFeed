@@ -28,9 +28,12 @@ class EditFeedFragment : BottomSheetDialogFragment() {
     private lateinit var undoButton: Button
     private lateinit var doneButton: Button
 
+    private var callback: Callback? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogNoFloating)
+        callback = targetFragment as? Callback
     }
 
     override fun onCreateView(
@@ -79,7 +82,7 @@ class EditFeedFragment : BottomSheetDialogFragment() {
             val newCategory = categoryEditText.text.toString().trim()
             if (newTitle.isNotEmpty() && newCategory.isNotEmpty()) {
                 if (feed?.title != newTitle || feed.category != newCategory) {
-                    targetFragment?.let { (it as Callback).onFeedInfoChanged(newTitle, newCategory) }
+                    callback?.onFeedInfoChanged(newTitle, newCategory)
                 }
             }
             dismiss()

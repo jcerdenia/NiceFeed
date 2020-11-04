@@ -23,7 +23,8 @@ import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
 import com.joshuacerdenia.android.nicefeed.ui.OnHomePressed
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.adapter.EntryListAdapter
-import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmRemoveFragment
+import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmActionFragment.Companion.REMOVE
+import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmActionFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditFeedFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.menu.EntryPopupMenu
@@ -35,7 +36,7 @@ class EntryListFragment : VisibleFragment(),
     EntryPopupMenu.OnPopupMenuItemClicked,
     FilterEntriesFragment.Callbacks,
     EditFeedFragment.Callback,
-    ConfirmRemoveFragment.Callbacks
+    ConfirmActionFragment.Callbacks
 {
 
     interface Callbacks: OnHomePressed, OnToolbarInflated {
@@ -333,7 +334,7 @@ class EntryListFragment : VisibleFragment(),
     private fun handleRemoveFeed(): Boolean {
         val feed = viewModel.getCurrentFeed()
         return if (feed != null) {
-            ConfirmRemoveFragment.newInstance(feed.title).apply {
+            ConfirmActionFragment.newInstance(REMOVE, feed.title).apply {
                 setTargetFragment(fragment, 0)
                 show(fragment.parentFragmentManager,"unsubscribe")
             }
@@ -341,7 +342,8 @@ class EntryListFragment : VisibleFragment(),
         } else false
     }
 
-    override fun onRemoveConfirmed() {
+    override fun onActionConfirmed(action: Int) {
+        // We are sure that action here is REMOVE
         val title = viewModel.getCurrentFeed()?.title
         Snackbar.make(recyclerView, getString(R.string.unsubscribed_message, title), Snackbar.LENGTH_SHORT).show()
         viewModel.deleteFeedAndEntries()

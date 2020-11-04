@@ -2,6 +2,7 @@ package com.joshuacerdenia.android.nicefeed.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
@@ -16,7 +17,14 @@ class ManageFeedsViewModel: ViewModel() {
     private val sourceFeedsLiveData: LiveData<List<FeedManageable>> = repo.getFeedsManageable()
     val feedsManageableLiveData = MediatorLiveData<List<FeedManageable>>()
 
-    var selectedItems = mutableListOf<FeedManageable>()
+    private var _anyIsSelected: MutableLiveData<Boolean> = MutableLiveData(false)
+    val anyIsSelected: LiveData<Boolean>
+        get() = _anyIsSelected
+
+    private val _selectedItems = mutableListOf<FeedManageable>()
+    val selectedItems: List<FeedManageable>
+        get() = _selectedItems
+
     var currentOrder = 0
         private set
 
@@ -24,6 +32,22 @@ class ManageFeedsViewModel: ViewModel() {
         feedsManageableLiveData.addSource(sourceFeedsLiveData) { feeds ->
             feedsManageableLiveData.value = sortFeeds(feeds, currentOrder)
         }
+    }
+
+    fun addSelection(feed: FeedManageable) {
+        _selectedItems.add(feed)
+        _anyIsSelected.value = true
+    }
+
+    fun resetSelection(feeds: List<FeedManageable>? = null) {
+        _selectedItems.clear()
+        feeds?.forEach { _selectedItems.add(it) }
+        _anyIsSelected.value = _selectedItems.isNotEmpty()
+    }
+
+    fun removeSelection(feed: FeedManageable) {
+        _selectedItems.remove(feed)
+        _anyIsSelected.value = _selectedItems.isNotEmpty()
     }
 
     fun setOrder(order: Int) {
@@ -58,6 +82,6 @@ class ManageFeedsViewModel: ViewModel() {
     }
 
     fun updateFeedDetails(feedId: String, title: String, category: String) {
-        repo.updateFeedDetails(feedId, title, category)
+        repo.updateFeedTitleAndCategory(feedId, title, category)
     }
 }

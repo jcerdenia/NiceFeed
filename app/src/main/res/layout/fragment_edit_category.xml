@@ -19,7 +19,7 @@
         android:layout_gravity="center"
         android:drawablePadding="16dp"
         android:text="@string/edit_category"
-        app:drawableStartCompat="@drawable/ic_edit_light" />
+        app:drawableStartCompat="@drawable/ic_edit" />
 
     <TextView
         android:id="@+id/dialog_message"

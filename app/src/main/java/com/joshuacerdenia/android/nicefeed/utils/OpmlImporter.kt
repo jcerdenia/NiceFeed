@@ -9,7 +9,6 @@ import java.io.BufferedInputStream
 import java.io.InputStreamReader
 import java.io.Reader
 import java.io.StringReader
-import java.util.concurrent.Executors
 
 class OpmlImporter(
     context: Context,
@@ -17,7 +16,6 @@ class OpmlImporter(
 ) {
 
     private val contentResolver = context.contentResolver
-    private val executor = Executors.newSingleThreadExecutor()
 
     interface OnOpmlParsedListener {
         fun onOpmlParsed(feeds: List<Feed>)
@@ -27,24 +25,18 @@ class OpmlImporter(
     fun submitUri(uri: Uri) {
         val inputStream = contentResolver.openInputStream(uri)
         if (inputStream != null) {
-            executor.execute {
+            try {
+                InputStreamReader(inputStream).use { reader -> parseOpml(reader) }
+            } catch (e: Exception) {
                 try {
-                    InputStreamReader(inputStream).use { reader ->
-                        parseOpml(reader)
-                    }
+                    val content = BufferedInputStream(inputStream).bufferedReader().readText()
+                    val fixedReader = StringReader(content.replace(
+                        "<opml version=['\"][0-9]\\.[0-9]['\"]>".toRegex(),
+                        "<opml>"
+                    ))
+                    parseOpml(fixedReader)
                 } catch (e: Exception) {
-                    try {
-                        val content = BufferedInputStream(inputStream).bufferedReader().readText()
-                        val fixedReader = StringReader(content.replace(
-                            "<opml version=['\"][0-9]\\.[0-9]['\"]>".toRegex(),
-                            "<opml>"
-                        ))
-
-                        parseOpml(fixedReader)
-
-                    } catch (e: Exception) {
-                        listener.onParseOpmlFailed()
-                    }
+                    listener.onParseOpmlFailed()
                 }
             }
         } else {
@@ -65,7 +57,6 @@ class OpmlImporter(
                     unreadCount = 0
                 )
                 feeds.add(feed)
-
             } else {
                 val category = outline.title
                 if (outline.children.isNotEmpty()) {

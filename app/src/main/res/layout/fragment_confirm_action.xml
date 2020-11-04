@@ -13,23 +13,22 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/dialog_title"
+            android:id="@+id/title_text_view"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawablePadding="16dp"
-            tools:text="@string/confirm_remove"
-            app:drawableStartCompat="@drawable/ic_delete_light" />
+            tools:text="@string/confirm_remove" />
 
         <TextView
-            android:id="@+id/dialog_message"
+            android:id="@+id/message_text_view"
             android:textAppearance="@style/TextAppearance.AppCompat.Menu"
             android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/confirm_remove_dialog_message"/>
+            tools:text="Message here."/>
 
     </LinearLayout>
 

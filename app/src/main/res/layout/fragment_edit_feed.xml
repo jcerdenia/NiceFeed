@@ -29,7 +29,8 @@
             android:maxLines="2"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             android:hint="@string/title"
-            tools:text="Feed Title" />
+            tools:text="Feed Title"
+            android:importantForAutofill="no" />
     </LinearLayout>
 
     <AutoCompleteTextView

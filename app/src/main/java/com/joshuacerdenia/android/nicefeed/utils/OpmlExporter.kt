@@ -12,7 +12,6 @@ import com.rometools.rome.io.WireFeedOutput
 import java.io.OutputStreamWriter
 import java.net.URL
 import java.util.*
-import java.util.concurrent.Executors
 
 class OpmlExporter(
     context: Context,
@@ -20,7 +19,6 @@ class OpmlExporter(
 ) {
 
     private val contentResolver = context.contentResolver
-    private val executor = Executors.newSingleThreadExecutor()
     private var feeds = listOf<FeedManageable>()
         get() = field.sortedByCategory()
     private var categories = arrayOf<String>()
@@ -34,31 +32,29 @@ class OpmlExporter(
         categories = feeds.map { feed -> feed.category }.toSet().toTypedArray()
     }
 
-    fun submitUri(uri: Uri) {
+    fun executeExport(uri: Uri) {
         val outputStream = contentResolver.openOutputStream(uri)
         if (outputStream != null) {
-            executor.execute {
-                try {
-                    OutputStreamWriter(outputStream, Charsets.UTF_8).use { writer ->
-                        if (feeds.isNotEmpty()) exportOpml(writer)
-                    }
-
-                    contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-                        if (cursor.moveToFirst()) {
-                            val fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                            listener.onExportAttempted(true, fileName)
-                        }
-                    }
-                } catch (e: Exception) {
-                    listener.onExportAttempted(false, null)
+            try {
+                OutputStreamWriter(outputStream, Charsets.UTF_8).use { writer ->
+                    if (feeds.isNotEmpty()) writeOpml(writer)
                 }
+
+                contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                    if (cursor.moveToFirst()) {
+                        val fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                        listener.onExportAttempted(true, fileName)
+                    }
+                }
+            } catch (e: Exception) {
+                listener.onExportAttempted(false, null)
             }
         } else {
             listener.onExportAttempted(false, null)
         }
     }
 
-    private fun exportOpml(writer: OutputStreamWriter) {
+    private fun writeOpml(writer: OutputStreamWriter) {
         val opml = Opml().apply {
             feedType = OPML20Generator().type
             encoding = "utf-8"

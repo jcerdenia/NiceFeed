@@ -77,7 +77,7 @@ class FeedManagerAdapter(
         }
 
         override fun areContentsTheSame(oldItem: FeedManageable, newItem: FeedManageable): Boolean {
-            return oldItem.category == newItem.category
+            return oldItem == newItem
         }
     }
 }

@@ -2,6 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!--
     <item
         android:id="@+id/menuItem_edit"
         android:title="@string/edit_category"
@@ -13,11 +14,12 @@
         android:title="@string/remove_selected"
         android:icon="@drawable/ic_delete"
         app:showAsAction="ifRoom"/>
+        -->
 
     <item
         android:title="@string/more_options"
         android:icon="@drawable/ic_more_vert"
-        app:showAsAction="always">
+        app:showAsAction="ifRoom">
         <menu>
             <item
                 android:id="@+id/menuItem_sort"
@@ -31,11 +33,13 @@
                 android:title="@string/add_feeds"
                 app:showAsAction="never"/>
 
+            <!--
             <item
                 android:id="@+id/menuItem_export_opml"
                 android:icon="@drawable/ic_export"
                 android:title="@string/export_opml"
                 app:showAsAction="never"/>
+                -->
         </menu>
     </item>
 </menu>

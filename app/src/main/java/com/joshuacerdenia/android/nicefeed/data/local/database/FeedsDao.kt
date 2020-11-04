@@ -37,7 +37,7 @@ interface FeedsDao {
     fun updateFeed(feed: Feed)
 
     @Transaction
-    fun updateFeedDetails(feedId: String, title: String, category: String) {
+    fun updateFeedTitleAndCategory(feedId: String, title: String, category: String) {
         updateFeedTitle(feedId, title)
         updateFeedCategory(feedId, category = category)
     }

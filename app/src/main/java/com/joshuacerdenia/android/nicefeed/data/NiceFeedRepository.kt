@@ -66,8 +66,8 @@ class NiceFeedRepository private constructor(
         executor.execute { dao.updateFeed(feed) }
     }
 
-    fun updateFeedDetails(feedId: String, title: String, category: String) {
-        executor.execute { dao.updateFeedDetails(feedId, title, category) }
+    fun updateFeedTitleAndCategory(feedId: String, title: String, category: String) {
+        executor.execute { dao.updateFeedTitleAndCategory(feedId, title, category) }
     }
 
     fun updateFeedCategory(vararg feedId: String, category: String) {

@@ -35,7 +35,6 @@ class ConfirmImportFragment: BottomSheetDialogFragment() {
         val whatToRemove = resources.getQuantityString(R.plurals.numberOfFeeds, count, count)
 
         titleTextView.text = getString(R.string.confirm_import_title, whatToRemove)
-
         confirmButton.setOnClickListener {
             targetFragment?.let { fragment ->
                 (fragment as Callbacks).onImportConfirmed()
