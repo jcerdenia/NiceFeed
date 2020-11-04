@@ -44,7 +44,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
 
     var currentQuery = ""
         private set
-    var currentOrder = 0
+    private var currentOrder = 0
         private set
     var currentFilter = 0
         private set

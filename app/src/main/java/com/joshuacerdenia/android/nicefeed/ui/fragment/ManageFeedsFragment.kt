@@ -8,6 +8,7 @@ import android.view.*
 import android.widget.CheckBox
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -28,6 +29,8 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.EditFeedFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.ManageFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.OpmlExporter
+import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
+import com.joshuacerdenia.android.nicefeed.utils.extensions.show
 import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.leinardi.android.speeddial.SpeedDialView
 
@@ -48,10 +51,12 @@ class ManageFeedsFragment: VisibleFragment(),
     private lateinit var toolbar: Toolbar
     private lateinit var progressBar: ProgressBar
     private lateinit var selectAllCheckBox: CheckBox
+    private lateinit var counterTextView: TextView
     private lateinit var emptyMessageTextView: TextView
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: FeedManagerAdapter
     private lateinit var speedDial: SpeedDialView
+    private lateinit var searchItem: MenuItem
 
     private var opmlExporter: OpmlExporter? = null
     private var callbacks: Callbacks? = null
@@ -81,6 +86,7 @@ class ManageFeedsFragment: VisibleFragment(),
         toolbar = view.findViewById(R.id.toolbar)
         progressBar = view.findViewById(R.id.progress_bar)
         selectAllCheckBox = view.findViewById(R.id.select_all_checkbox)
+        counterTextView = view.findViewById(R.id.counter_text_view)
         emptyMessageTextView = view.findViewById(R.id.empty_message_text_view)
         speedDial = view.findViewById(R.id.speed_dial)
 
@@ -88,31 +94,26 @@ class ManageFeedsFragment: VisibleFragment(),
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
-        toolbar.title = getString(R.string.loading)
+        toolbar.title = getString(R.string.manage_feeds)
         callbacks?.onToolbarInflated(toolbar)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        progressBar.visibility = View.VISIBLE
-        updateToolbar(toolbar, viewModel.selectedItems.size)
+        progressBar.show()
         setupSpeedDial()
 
         viewModel.feedsManageableLiveData.observe(viewLifecycleOwner, { feeds ->
-            progressBar.visibility = View.GONE
+            progressBar.hide()
             adapter.submitList(feeds)
-            selectAllCheckBox.visibility = if (feeds.size > 1) View.VISIBLE else View.GONE
-            if (feeds.isEmpty()) emptyMessageTextView.visibility = View.VISIBLE
+            if (feeds.size > 1) selectAllCheckBox.show() else selectAllCheckBox.hide()
+            if (feeds.isEmpty()) emptyMessageTextView.show() else emptyMessageTextView.hide()
         })
 
         viewModel.anyIsSelected.observe(viewLifecycleOwner, { anyIsSelected ->
-            speedDial.visibility = if (anyIsSelected) {
-                View.VISIBLE
-            } else {
-                speedDial.close()
-                View.GONE
-            }
+            if (anyIsSelected) speedDial.show() else speedDial.hide()
+            updateCounter()
         })
     }
 
@@ -122,13 +123,39 @@ class ManageFeedsFragment: VisibleFragment(),
         selectAllCheckBox.setOnClickListener { (it as CheckBox)
             if (it.isChecked) viewModel.resetSelection(adapter.currentList) else viewModel.resetSelection()
             adapter.toggleCheckBoxes(it.isChecked)
-            updateToolbar(toolbar, viewModel.selectedItems.size)
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_manage_feeds, menu)
+        searchItem = menu.findItem(R.id.menu_item_search)
+
+        searchItem.setOnActionExpandListener(object: MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                viewModel.submitQuery("")
+                resetSelection()
+                return true
+            }
+        })
+
+        (searchItem.actionView as SearchView).apply {
+            if (viewModel.currentQuery.isNotEmpty()) {
+                searchItem.expandActionView()
+                setQuery(viewModel.currentQuery, false)
+                clearFocus()
+            }
+
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(queryText: String): Boolean = true
+                override fun onQueryTextSubmit(queryText: String): Boolean {
+                    viewModel.submitQuery(queryText)
+                    clearFocus()
+                    return true
+                }
+            })
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -165,10 +192,14 @@ class ManageFeedsFragment: VisibleFragment(),
             .create()
     }
 
-    private fun updateToolbar(toolbar: Toolbar, selectedItemCount: Int) {
-        toolbar.title = if (selectedItemCount > 0) {
-            getString(R.string.number_selected, selectedItemCount)
-        } else getString(R.string.manage_feeds)
+    private fun updateCounter() {
+        val count = viewModel.selectedItems.size
+        if (count > 0) {
+            counterTextView.show()
+            counterTextView.text = getString(R.string.number_selected, count)
+        } else {
+            counterTextView.hide()
+        }
     }
 
     private fun handleEditSelected(): Boolean {
@@ -252,7 +283,8 @@ class ManageFeedsFragment: VisibleFragment(),
 
     private fun showFeedsRemovedNotice(count: Int = 1, title: String? = null) {
         val feedsRemoved = title ?: resources.getQuantityString(R.plurals.numberOfFeeds, count, count)
-        Snackbar.make(recyclerView, getString(R.string.unsubscribed_message, feedsRemoved), Snackbar.LENGTH_LONG)
+        Snackbar.make(
+            recyclerView, getString(R.string.unsubscribed_message, feedsRemoved), Snackbar.LENGTH_LONG)
             .setAction(R.string.done) { callbacks?.onFinished() }.show()
     }
 
@@ -303,7 +335,6 @@ class ManageFeedsFragment: VisibleFragment(),
 
     private fun resetSelection() {
         viewModel.resetSelection()
-        updateToolbar(toolbar, viewModel.selectedItems.size)
         selectAllCheckBox.isChecked = false
         adapter.toggleCheckBoxes(false)
         adapter.notifyDataSetChanged()
@@ -317,23 +348,21 @@ class ManageFeedsFragment: VisibleFragment(),
             viewModel.removeSelection(feed)
             selectAllCheckBox.isChecked = false
         }
-
         adapter.selectedItems = viewModel.selectedItems
-        updateToolbar(toolbar, viewModel.selectedItems.size)
     }
 
     override fun onAllItemsChecked(isChecked: Boolean) {
         selectAllCheckBox.isChecked = isChecked
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
-    }
-
     override fun onStop() {
         super.onStop()
         context?.let { NiceFeedPreferences.saveFeedManagerOrder(it, viewModel.currentOrder) }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
     companion object {
