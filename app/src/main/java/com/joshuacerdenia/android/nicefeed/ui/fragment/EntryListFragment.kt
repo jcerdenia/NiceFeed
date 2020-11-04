@@ -30,6 +30,8 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.menu.EntryPopupMenu
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryListViewModel
 import com.joshuacerdenia.android.nicefeed.utils.Utils
+import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
+import com.joshuacerdenia.android.nicefeed.utils.extensions.show
 
 class EntryListFragment : VisibleFragment(),
     EntryListAdapter.OnEntrySelected,
@@ -60,6 +62,7 @@ class EntryListFragment : VisibleFragment(),
     private var autoUpdateIsEnabled = true
     private var feedId: String? = null
     private var callbacks: Callbacks? = null
+    private val handler = Handler()
     private val fragment = this@EntryListFragment
 
     override fun onAttach(context: Context) {
@@ -78,7 +81,7 @@ class EntryListFragment : VisibleFragment(),
         viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(requireContext()))
         autoUpdateIsEnabled = NiceFeedPreferences.getAutoUpdateSetting(requireContext())
         adapter = EntryListAdapter(this)
-        
+
         feedId = arguments?.getString(ARG_FEED_ID)
         val blockAutoUpdate = arguments?.getBoolean(ARG_BLOCK_AUTOUPDATE) ?: false
         if (blockAutoUpdate || !autoUpdateIsEnabled) viewModel.isAutoUpdating = false
@@ -94,7 +97,6 @@ class EntryListFragment : VisibleFragment(),
         noItemsTextView = view.findViewById(R.id.empty_message_text_view)
         masterProgressBar = view.findViewById(R.id.master_progress_bar)
         progressBar = view.findViewById(R.id.progress_bar)
-
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = if (resources.configuration.orientation == ORIENTATION_PORTRAIT) {
             LinearLayoutManager(context)
@@ -125,13 +127,13 @@ class EntryListFragment : VisibleFragment(),
         })
 
         viewModel.entriesLightLiveData.observe(viewLifecycleOwner, { entries ->
-            noItemsTextView.visibility = if (entries.isNullOrEmpty()) View.VISIBLE else View.GONE
-            masterProgressBar.visibility = View.GONE
+            if (entries.isNullOrEmpty()) noItemsTextView.show() else noItemsTextView.hide()
+            masterProgressBar.hide()
             adapter.submitList(entries)
             toggleOptionsItems()
 
             if (adapter.latestClickedPosition == 0) {
-                Handler().postDelayed({ recyclerView.scrollToPosition(0) }, 250)
+                handler.postDelayed({ recyclerView.scrollToPosition(0) }, 250)
             }
             // Show update notice, if any
             if (viewModel.updateValues.isNotEmpty()) viewModel.updateValues.let { values ->
@@ -141,11 +143,9 @@ class EntryListFragment : VisibleFragment(),
         })
 
         viewModel.updateResultLiveData.observe(viewLifecycleOwner, { results ->
-            progressBar.visibility = View.GONE
-            if (results != null) {
-                viewModel.onUpdatesDownloaded(results)
-                toolbar.title = results.feed.title
-            } else toolbar.title = viewModel.getCurrentFeed()?.title
+            progressBar.hide()
+            results?.let { viewModel.onUpdatesDownloaded(it) }
+            toolbar.title = viewModel.getCurrentFeed()?.title
         })
     }
 
@@ -158,14 +158,14 @@ class EntryListFragment : VisibleFragment(),
                 callbacks?.onFeedLoaded(feedId)
             }
             // Auto-update on launch
-            if (viewModel.isAutoUpdating) Handler().postDelayed({
+            if (viewModel.isAutoUpdating) handler.postDelayed({
                 viewModel.requestUpdate(feedId)
                 toolbar.title = context?.getString(R.string.updating)
-                progressBar.visibility = View.VISIBLE
+                progressBar.show()
             }, 750)
         } ?: let {
-            masterProgressBar.visibility = View.GONE
-            noItemsTextView.visibility = View.VISIBLE
+            masterProgressBar.hide()
+            noItemsTextView.show()
             toolbar.title = getString(R.string.app_name)
         }
 
@@ -196,6 +196,14 @@ class EntryListFragment : VisibleFragment(),
             menu.findItem(R.id.remove_feed_item).isVisible = false
         }
 
+        searchItem.setOnActionExpandListener(object: MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                viewModel.submitQuery("")
+                return true
+            }
+        })
+
         (searchItem.actionView as SearchView).apply {
             if (viewModel.currentQuery.isNotEmpty()) {
                 searchItem.expandActionView()
@@ -204,17 +212,11 @@ class EntryListFragment : VisibleFragment(),
             }
 
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(queryText: String): Boolean = true
                 override fun onQueryTextSubmit(queryText: String): Boolean {
                     viewModel.submitQuery(queryText)
                     clearFocus()
                     return true
-                }
-
-                override fun onQueryTextChange(queryText: String): Boolean {
-                    return if (queryText.isEmpty()) {
-                        viewModel.submitQuery(queryText)
-                        true
-                    } else false
                 }
             })
         }
@@ -257,7 +259,7 @@ class EntryListFragment : VisibleFragment(),
 
     private fun handleCheckForUpdates(url: String?): Boolean {
         return if (url != null) {
-            progressBar.visibility = View.VISIBLE
+            progressBar.show()
             viewModel.submitQuery("")
             viewModel.requestUpdate(url)
             toolbar.title = getString(R.string.updating)
@@ -297,7 +299,7 @@ class EntryListFragment : VisibleFragment(),
                 this.category = category
             }
             viewModel.updateFeed(editedFeed)
-            Handler().postDelayed({
+            handler.postDelayed({
                 Snackbar.make(recyclerView, getString(R.string.saved_changes_to, title), Snackbar.LENGTH_SHORT)
                     .show()
             }, 250)

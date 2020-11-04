@@ -38,6 +38,13 @@ class ManageFeedsViewModel: ViewModel() {
         }
     }
 
+    private fun setFeedList() {
+        sourceFeedsLiveData.value?.let { feeds ->
+            val filteredFeeds = queryFeeds(feeds, currentQuery)
+            feedsManageableLiveData.value = sortFeeds(filteredFeeds, currentOrder)
+        }
+    }
+
     fun addSelection(feed: FeedManageable) {
         _selectedItems.add(feed)
         _anyIsSelected.value = true
@@ -56,17 +63,19 @@ class ManageFeedsViewModel: ViewModel() {
 
     fun setOrder(order: Int) {
         currentOrder = order
-        sourceFeedsLiveData.value?.let { feeds ->
-            val filteredFeeds = queryFeeds(feeds, currentQuery)
-            feedsManageableLiveData.value = sortFeeds(filteredFeeds, currentOrder)
-        }
+        setFeedList()
     }
 
     fun submitQuery(query: String) {
-        currentQuery = query.toLowerCase(Locale.ROOT)
-        sourceFeedsLiveData.value?.let { feeds ->
-            val filteredFeeds = queryFeeds(feeds, currentQuery)
-            feedsManageableLiveData.value = sortFeeds(filteredFeeds, currentOrder)
+        currentQuery = query.toLowerCase(Locale.ROOT).trim()
+        setFeedList()
+    }
+
+    private fun sortFeeds(feeds: List<FeedManageable>, order: Int): List<FeedManageable> {
+        return when (order) {
+            SortFeedManagerFragment.SORT_BY_CATEGORY -> feeds.sortedByCategory()
+            SortFeedManagerFragment.SORT_BY_TITLE -> feeds.sortedByTitle()
+            else -> feeds.reversed() // Default
         }
     }
 
@@ -86,14 +95,6 @@ class ManageFeedsViewModel: ViewModel() {
             for (feed in feeds) categories.add(feed.category)
         }
         return categories.toTypedArray()
-    }
-
-    private fun sortFeeds(feeds: List<FeedManageable>, order: Int): List<FeedManageable> {
-        return when (order) {
-            SortFeedManagerFragment.SORT_BY_CATEGORY -> feeds.sortedByCategory()
-            SortFeedManagerFragment.SORT_BY_TITLE -> feeds.sortedByTitle()
-            else -> feeds.reversed() // Default
-        }
     }
 
     fun deleteItems(vararg feedId: String) {
