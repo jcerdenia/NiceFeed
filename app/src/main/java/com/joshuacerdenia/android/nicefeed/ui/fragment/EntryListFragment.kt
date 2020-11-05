@@ -5,6 +5,7 @@ import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -32,6 +33,8 @@ import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryListViewModel
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
 import com.joshuacerdenia.android.nicefeed.utils.extensions.show
+
+private const val TAG = "EntryListFragment"
 
 class EntryListFragment : VisibleFragment(),
     EntryListAdapter.OnEntrySelected,
@@ -76,6 +79,7 @@ class EntryListFragment : VisibleFragment(),
         viewModel = ViewModelProvider(this).get(EntryListViewModel::class.java)
         viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(requireContext()))
         autoUpdateOnLaunch = NiceFeedPreferences.getAutoUpdateSetting(requireContext())
+        adapter = EntryListAdapter(this)
 
         feedId = arguments?.getString(ARG_FEED_ID)
         val blockAutoUpdate = arguments?.getBoolean(ARG_BLOCK_AUTO_UPDATE) ?: false
@@ -108,7 +112,6 @@ class EntryListFragment : VisibleFragment(),
     }
 
     private fun setupRecyclerView() {
-        adapter = EntryListAdapter(this)
         val isPortrait = resources.configuration.orientation == ORIENTATION_PORTRAIT
         val layoutManager = if (isPortrait) LinearLayoutManager(context) else GridLayoutManager(context, 2)
         recyclerView.layoutManager = layoutManager
@@ -142,8 +145,9 @@ class EntryListFragment : VisibleFragment(),
             showUpdateNotice()
             toggleOptionsItems()
             if (entries.isNullOrEmpty()) noItemsTextView.show() else noItemsTextView.hide()
-            if (adapter.lastClickedPosition == 0) handler.postDelayed({
-                recyclerView.scrollToPosition(0) }, 250)
+            if (adapter.lastClickedPosition == 0) {
+                handler.postDelayed({ recyclerView.scrollToPosition(0) }, 250)
+            }
         })
 
         viewModel.updateResultLiveData.observe(viewLifecycleOwner, { results ->
@@ -168,7 +172,7 @@ class EntryListFragment : VisibleFragment(),
             viewModel.getFeedWithEntries(feedId)
             if (feedId.startsWith(FOLDER)) callbacks?.onFeedLoaded(feedId)
             if (viewModel.isAutoUpdating) { // Auto-update on launch:
-                handler.postDelayed({ viewModel.requestUpdate(feedId) }, 750)
+                handler.postDelayed({ viewModel.requestUpdate(feedId) }, 500)
             }
         } ?: run { // If there is no feed to load:
             masterProgressBar.hide()
@@ -209,7 +213,7 @@ class EntryListFragment : VisibleFragment(),
         searchItem.setOnActionExpandListener(object: MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                viewModel.submitQuery("")
+                viewModel.clearQuery()
                 return true
             }
         })
@@ -269,7 +273,7 @@ class EntryListFragment : VisibleFragment(),
 
     private fun handleCheckForUpdates(url: String?): Boolean {
         return if (url != null) {
-            viewModel.submitQuery("")
+            viewModel.clearQuery()
             viewModel.requestUpdate(url)
             searchItem.collapseActionView()
             true
@@ -367,7 +371,9 @@ class EntryListFragment : VisibleFragment(),
         if (NiceFeedPreferences.getBrowserSetting(requireContext())) {
             Utils.openLink(requireContext(), recyclerView, Uri.parse(entryId))
             viewModel.updateEntryIsRead(entryId, true)
-        } else callbacks?.onEntrySelected(entryId)
+        } else {
+            callbacks?.onEntrySelected(entryId)
+        }
     }
 
     override fun onEntryLongClicked(entry: EntryLight, view: View?) {

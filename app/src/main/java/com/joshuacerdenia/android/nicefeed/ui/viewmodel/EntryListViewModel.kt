@@ -19,8 +19,6 @@ import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedUnreadOnTop
 import kotlinx.coroutines.launch
 import java.util.*
 
-private const val MAX_NEW_ENTRIES = 50 // Maybe this can be changed dynamically
-
 class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
 
     private val repo = NiceFeedRepository.get()
@@ -111,7 +109,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     }
 
     fun setOrder(order: Int) {
-        if (order != order) {
+        if (this.order != order) {
             this.order = order
             entriesLightLiveData.value?.let { entries ->
                 entriesLightLiveData.value = sortEntries(entries, order)
@@ -127,6 +125,10 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
                 queryEntries(filteredEntries, query)
             } else filteredEntries
         }
+    }
+
+    fun clearQuery() {
+        submitQuery("")
     }
 
     fun starAllCurrentEntries() {
@@ -189,7 +191,9 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     private fun sortEntries(entries: List<EntryLight>, order: Int): List<EntryLight> {
         return if (order == NiceFeedPreferences.ENTRY_ORDER_UNREAD) {
             entries.sortedUnreadOnTop()
-        } else entries.sortedByDate()
+        } else {
+            entries.sortedByDate()
+        }
     }
 
     override fun onUnreadEntriesCounted(feedId: String, unreadCount: Int) {
@@ -231,5 +235,10 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
 
     fun deleteFeedAndEntries() {
         getCurrentFeed()?.url?.let { feedId -> repo.deleteFeedAndEntriesById(feedId) }
+    }
+
+    companion object {
+
+        private const val MAX_NEW_ENTRIES = 50
     }
 }

@@ -51,16 +51,14 @@ class SearchFeedsFragment : FeedAddingFragment(),
         toolbar = view.findViewById(R.id.toolbar)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
-
         toolbar.title = getString(R.string.search_feeds)
         callbacks?.onToolbarInflated(toolbar)
+        manager = RequestResultManager(viewModel, recyclerView, R.string.failed_to_connect)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        manager = RequestResultManager(viewModel, recyclerView, R.string.failed_to_connect)
-
         viewModel.feedIdsLiveData.observe(viewLifecycleOwner, { feedIds ->
             viewModel.onFeedIdsRetrieved(feedIds)
         })
@@ -130,6 +128,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
     }
 
     companion object {
+
         private const val ARG_INITIAL_QUERY = "ARG_INITIAL_QUERY"
 
         fun newInstance(initialQuery: String?): SearchFeedsFragment {

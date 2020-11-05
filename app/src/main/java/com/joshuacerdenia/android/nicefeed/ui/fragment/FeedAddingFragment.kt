@@ -35,7 +35,7 @@ abstract class FeedAddingFragment: VisibleFragment() {
     inner class RequestResultManager(
         private val viewModel: FeedAddingViewModel,
         private val view: View,
-        private val negativeMessageResId: Int,
+        private val negativeMessageRes: Int,
     ) {
 
         fun submitData(feedWithEntries: FeedWithEntries?) {
@@ -44,9 +44,13 @@ abstract class FeedAddingFragment: VisibleFragment() {
                     if (!isAlreadyAdded(data.feed.url)) {
                         viewModel.addFeedWithEntries(data)
                         showFeedAddedNotice(data.feed.url, data.feed.title)
-                    } else showAlreadyAddedNotice()
+                    } else {
+                        showAlreadyAddedNotice()
+                    }
                     viewModel.lastAttemptedUrl = ""
-                } else showLimitReachedNotice()
+                } else {
+                    showLimitReachedNotice()
+                }
             } ?: showRequestFailedNotice()
         }
 
@@ -74,7 +78,7 @@ abstract class FeedAddingFragment: VisibleFragment() {
 
         private fun showRequestFailedNotice() {
             if (viewModel.requestFailedNoticeEnabled) {
-                Snackbar.make(view, getString(negativeMessageResId), Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(view, getString(negativeMessageRes), Snackbar.LENGTH_SHORT).show()
                 viewModel.requestFailedNoticeEnabled = false
             }
         }
@@ -88,6 +92,6 @@ abstract class FeedAddingFragment: VisibleFragment() {
     }
 
     companion object {
-        private const val SUBSCRIPTION_LIMIT = 500 // For now
+        private const val SUBSCRIPTION_LIMIT = 1000 // Arbitrary
     }
 }

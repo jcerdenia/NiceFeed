@@ -89,11 +89,9 @@ class ManageFeedsFragment: VisibleFragment(),
         counterTextView = view.findViewById(R.id.counter_text_view)
         emptyMessageTextView = view.findViewById(R.id.empty_message_text_view)
         speedDial = view.findViewById(R.id.speed_dial)
-
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
-
         toolbar.title = getString(R.string.manage_feeds)
         callbacks?.onToolbarInflated(toolbar)
         return view
