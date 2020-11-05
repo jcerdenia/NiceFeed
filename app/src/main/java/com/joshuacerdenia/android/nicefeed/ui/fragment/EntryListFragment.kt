@@ -5,6 +5,7 @@ import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -130,6 +131,8 @@ class EntryListFragment : VisibleFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.feedLiveData.observe(viewLifecycleOwner, { feed ->
+            progressBar.hide()
+            masterProgressBar.hide()
             viewModel.onFeedRetrieved(feed)
             feed?.let { callbacks?.onFeedLoaded(it.url) } ?: run {
                 if (feedId?.startsWith(FOLDER) == false) {
@@ -139,8 +142,9 @@ class EntryListFragment : VisibleFragment(),
         })
 
         viewModel.entriesLightLiveData.observe(viewLifecycleOwner, { entries ->
-            viewModel.onEntriesRetrieved()
+            progressBar.hide()
             adapter.submitList(entries)
+            restoreToolbar()
             showUpdateNotice()
             toggleOptionsItems()
             if (entries.isNullOrEmpty()) noItemsTextView.show() else noItemsTextView.hide()
@@ -150,18 +154,9 @@ class EntryListFragment : VisibleFragment(),
         })
 
         viewModel.updateResultLiveData.observe(viewLifecycleOwner, { results ->
+            progressBar.hide()
             results?.let { viewModel.onUpdatesDownloaded(results) }
-        })
-
-        viewModel.isWaitingLiveData.observe(viewLifecycleOwner, { isWaiting ->
-            if (isWaiting) {
-                progressBar.show()
-                toolbar.title = getString(R.string.updating)
-            } else {
-                masterProgressBar.hide()
-                progressBar.hide()
-                restoreToolbar()
-            }
+            restoreToolbar()
         })
     }
 
@@ -171,7 +166,7 @@ class EntryListFragment : VisibleFragment(),
             viewModel.getFeedWithEntries(feedId)
             if (feedId.startsWith(FOLDER)) callbacks?.onFeedLoaded(feedId)
             if (viewModel.isAutoUpdating) { // Auto-update on launch:
-                handler.postDelayed({ viewModel.requestUpdate(feedId) }, 500)
+                handler.postDelayed({ handleCheckForUpdates(feedId) }, 750)
             }
         } ?: run { // If there is no feed to load:
             masterProgressBar.hide()
@@ -237,7 +232,7 @@ class EntryListFragment : VisibleFragment(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.update_item -> handleCheckForUpdates(viewModel.getCurrentFeed()?.url)
+            R.id.update_item -> handleCheckForUpdates()
             R.id.about_feed_item -> handleShowFeedInfo(viewModel.getCurrentFeed())
             R.id.filter_item -> handleFilter()
             R.id.mark_all_item -> handleMarkAll()
@@ -270,11 +265,15 @@ class EntryListFragment : VisibleFragment(),
         }
     }
 
-    private fun handleCheckForUpdates(url: String?): Boolean {
+    private fun handleCheckForUpdates(
+        url: String? = viewModel.getCurrentFeed()?.url
+    ): Boolean {
         return if (url != null) {
-            viewModel.clearQuery()
-            viewModel.requestUpdate(url)
             searchItem.collapseActionView()
+            viewModel.clearQuery()
+            toolbar.title = getString(R.string.updating)
+            progressBar.show()
+            viewModel.requestUpdate(url)
             true
         } else false
     }

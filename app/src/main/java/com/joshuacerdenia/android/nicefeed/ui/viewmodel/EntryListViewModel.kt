@@ -40,10 +40,6 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     private val entriesLiveData = MediatorLiveData<List<Entry>>()
     val entriesLightLiveData = MediatorLiveData<List<EntryLight>>()
     val updateResultLiveData = parser.feedRequestLiveData
-    
-    private val _isWaitingLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    val isWaitingLiveData: LiveData<Boolean>
-        get() = _isWaitingLiveData
 
     var query = ""
         private set
@@ -77,23 +73,16 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     }
 
     fun requestUpdate(url: String) {
-        _isWaitingLiveData.value = true
         isAutoUpdating = false
         updateWasRequested = true
         viewModelScope.launch { parser.requestFeed(url) }
     }
 
     fun onFeedRetrieved(feed: Feed?) {
-        _isWaitingLiveData.value = false
         feed?.let { updateManager.setInitialFeed(feed) }
     }
 
-    fun onEntriesRetrieved() {
-        _isWaitingLiveData.value = false
-    }
-
     fun onUpdatesDownloaded(feedWithEntries: FeedWithEntries) {
-        _isWaitingLiveData.value = false
         if (updateWasRequested) {
             updateManager.submitUpdates(feedWithEntries)
             updateWasRequested = false
