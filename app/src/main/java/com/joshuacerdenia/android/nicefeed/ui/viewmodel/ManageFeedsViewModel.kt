@@ -27,22 +27,20 @@ class ManageFeedsViewModel: ViewModel() {
     val selectedItems: List<FeedManageable>
         get() = _selectedItems
 
-    var currentOrder = 0
+    var order = 0
         private set
-    var currentQuery = ""
+    var query = ""
         private set
 
     init {
         feedsManageableLiveData.addSource(sourceFeedsLiveData) { feeds ->
-            feedsManageableLiveData.value = sortFeeds(feeds, currentOrder)
+            feedsManageableLiveData.value = sortFeeds(feeds, order)
         }
     }
 
-    private fun setFeedList() {
-        sourceFeedsLiveData.value?.let { feeds ->
-            val filteredFeeds = queryFeeds(feeds, currentQuery)
-            feedsManageableLiveData.value = sortFeeds(filteredFeeds, currentOrder)
-        }
+    private fun setObservableFeeds(feeds: List<FeedManageable>) {
+        val feedsQueried = queryFeeds(feeds, query)
+        feedsManageableLiveData.value = sortFeeds(feedsQueried, order)
     }
 
     fun addSelection(feed: FeedManageable) {
@@ -62,13 +60,17 @@ class ManageFeedsViewModel: ViewModel() {
     }
 
     fun setOrder(order: Int) {
-        currentOrder = order
-        setFeedList()
+        this.order = order
+        sourceFeedsLiveData.value?.let { setObservableFeeds(it) }
     }
 
     fun submitQuery(query: String) {
-        currentQuery = query.toLowerCase(Locale.ROOT).trim()
-        setFeedList()
+        this.query = query.toLowerCase(Locale.ROOT).trim()
+        sourceFeedsLiveData.value?.let { setObservableFeeds(it) }
+    }
+
+    fun clearQuery() {
+        submitQuery("")
     }
 
     private fun sortFeeds(feeds: List<FeedManageable>, order: Int): List<FeedManageable> {
@@ -80,13 +82,14 @@ class ManageFeedsViewModel: ViewModel() {
     }
 
     private fun queryFeeds(feeds: List<FeedManageable>, query: String): List<FeedManageable> {
-        val filteredFeeds = feeds.filter { feed ->
+        val results = feeds.filter { feed ->
             feed.title.toLowerCase(Locale.ROOT).contains(query)
                     || feed.category.toLowerCase(Locale.ROOT).contains(query)
                     || feed.url.pathified().contains(query)
         }
-        _selectedItems.filter { (!filteredFeeds.contains(it)) }.toTypedArray().run (::removeSelection)
-        return filteredFeeds
+        // If current selected items contains items not returned by the query, remove them:
+        _selectedItems.filter { !results.contains(it) }.toTypedArray().run (::removeSelection)
+        return results
     }
 
     fun getCategories(): Array<String> {

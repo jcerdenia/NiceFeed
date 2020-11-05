@@ -11,6 +11,7 @@ import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
+import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment.Companion.FOLDER
 import com.joshuacerdenia.android.nicefeed.utils.UpdateManager
 import com.joshuacerdenia.android.nicefeed.utils.extensions.shortened
 import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByDate
@@ -41,12 +42,15 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     private val entriesLiveData = MediatorLiveData<List<Entry>>()
     val entriesLightLiveData = MediatorLiveData<List<EntryLight>>()
     val updateResultLiveData = parser.feedRequestLiveData
+    
+    private val _isWaitingLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    val isWaitingLiveData: LiveData<Boolean>
+        get() = _isWaitingLiveData
 
-    var currentQuery = ""
+    var query = ""
         private set
-    private var currentOrder = 0
-        private set
-    var currentFilter = 0
+    private var order = 0
+    var filter = 0
         private set
     val updateValues = UpdateValues()
 
@@ -55,8 +59,8 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
 
     init {
         entriesLiveData.addSource(sourceEntriesLiveData) { source ->
-            val filteredEntries = filterEntries(source, currentFilter)
-            entriesLiveData.value = queryEntries(filteredEntries, currentQuery)
+            val filteredEntries = filterEntries(source, filter)
+            entriesLiveData.value = queryEntries(filteredEntries, query)
             updateManager.setInitialEntries(source)
         }
 
@@ -65,27 +69,33 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
                 EntryLight(url = entry.url, title = entry.title, website = entry.website, date = entry.date,
                 image = entry.image, isRead = entry.isRead, isStarred = entry.isStarred)
             }
-            entriesLightLiveData.value = sortEntries(list, currentOrder)
+            entriesLightLiveData.value = sortEntries(list, order)
         }
     }
 
     fun getFeedWithEntries(feedId: String) {
+        if (feedId.startsWith(FOLDER)) isAutoUpdating = false
         feedIdLiveData.value = feedId
     }
 
     fun requestUpdate(url: String) {
+        _isWaitingLiveData.value = true
         isAutoUpdating = false
         updateWasRequested = true
         viewModelScope.launch { parser.requestFeed(url) }
     }
 
-    fun onFeedLoaded() {
-        feedLiveData.value?.let { feed ->
-            updateManager.setInitialFeed(feed)
-        }
+    fun onFeedRetrieved(feed: Feed?) {
+        _isWaitingLiveData.value = false
+        feed?.let { updateManager.setInitialFeed(feed) }
+    }
+
+    fun onEntriesRetrieved() {
+        _isWaitingLiveData.value = false
     }
 
     fun onUpdatesDownloaded(feedWithEntries: FeedWithEntries) {
+        _isWaitingLiveData.value = false
         if (updateWasRequested) {
             updateManager.submitUpdates(feedWithEntries)
             updateWasRequested = false
@@ -93,16 +103,16 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     }
 
     fun setFilter(filter: Int) {
-        currentFilter = filter
+        this.filter = filter
         sourceEntriesLiveData.value?.let { entries ->
             val filteredEntries = filterEntries(entries, filter)
-            entriesLiveData.value = queryEntries(filteredEntries, currentQuery)
+            entriesLiveData.value = queryEntries(filteredEntries, query)
         }
     }
 
     fun setOrder(order: Int) {
-        if (currentOrder != order) {
-            currentOrder = order
+        if (order != order) {
+            this.order = order
             entriesLightLiveData.value?.let { entries ->
                 entriesLightLiveData.value = sortEntries(entries, order)
             }
@@ -110,10 +120,10 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     }
 
     fun submitQuery(query: String) {
-        currentQuery = query
+        this.query = query
         sourceEntriesLiveData.value?.let { source ->
-            val filteredEntries = filterEntries(source, currentFilter)
-            entriesLiveData.value = if (currentQuery.isNotEmpty()) {
+            val filteredEntries = filterEntries(source, filter)
+            entriesLiveData.value = if (query.isNotEmpty()) {
                 queryEntries(filteredEntries, query)
             } else filteredEntries
         }
@@ -204,7 +214,9 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
         if (entriesToAdd.size + entriesToUpdate.size > 0) {
             updateValues.added = entriesToAdd.size
             updateValues.updated = entriesToUpdate.size
-        } else updateValues.clear()
+        } else {
+            updateValues.clear()
+        }
     }
 
     fun getCurrentFeed() = updateManager.currentFeed

@@ -5,9 +5,9 @@ data class UpdateValues(
     var updated: Int = 0
 ) {
 
-    fun isNotEmpty(): Boolean {
-       return added + updated > 0
-   }
+    fun isEmpty(): Boolean {
+        return added + updated == 0
+    }
 
     fun clear() {
         added = 0

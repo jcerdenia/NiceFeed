@@ -11,3 +11,5 @@ fun View.addRipple() = with(TypedValue()) {
 fun View.hide() = this.apply { visibility = View.GONE }
 
 fun View.show() = this.apply { visibility = View.VISIBLE }
+
+fun View.isVisible() = this.visibility == View.VISIBLE

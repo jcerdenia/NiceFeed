@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -11,6 +12,7 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
+import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
 import com.joshuacerdenia.android.nicefeed.utils.extensions.toEditable
 import com.squareup.picasso.Picasso
 
@@ -60,12 +62,20 @@ class EditFeedFragment : BottomSheetDialogFragment() {
 
         Picasso.get().load(feed?.imageUrl).placeholder(R.drawable.feed_icon).into(imageView)
         fillEditables(feed?.title, feed?.category)
-        categoryEditText.setAdapter(adapter)
-        categoryEditText.threshold = 1
-
         if (!feed?.description.isNullOrEmpty()) {
             descriptionTextView.text = feed?.description
-        } else descriptionTextView.visibility = View.GONE
+        } else {
+            descriptionTextView.hide()
+        }
+
+        categoryEditText.apply {
+            setAdapter(adapter)
+            threshold = 1
+            setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) submit(feed)
+                true
+            }
+        }
 
         urlTextView.apply {
             text = feed?.url
@@ -77,21 +87,23 @@ class EditFeedFragment : BottomSheetDialogFragment() {
         }
 
         undoButton.setOnClickListener { fillEditables(feed?.title, feed?.category) }
-        doneButton.setOnClickListener {
-            val newTitle = titleEditText.text.toString().trim()
-            val newCategory = categoryEditText.text.toString().trim()
-            if (newTitle.isNotEmpty() && newCategory.isNotEmpty()) {
-                if (feed?.title != newTitle || feed.category != newCategory) {
-                    callback?.onFeedInfoChanged(newTitle, newCategory)
-                }
-            }
-            dismiss()
-        }
+        doneButton.setOnClickListener { submit(feed) }
     }
 
     private fun fillEditables(title: String?, category: String?) {
         titleEditText.text = title.toEditable()
         categoryEditText.text = category.toEditable()
+    }
+
+    private fun submit(feed: FeedManageable?) {
+        val newTitle = titleEditText.text.toString().trim()
+        val newCategory = categoryEditText.text.toString().trim()
+        if (newTitle.isNotEmpty() && newCategory.isNotEmpty()) {
+            if (feed?.title != newTitle || feed.category != newCategory) {
+                callback?.onFeedInfoChanged(newTitle, newCategory)
+            }
+        }
+        dismiss()
     }
 
     companion object {

@@ -18,6 +18,9 @@ import com.joshuacerdenia.android.nicefeed.ui.viewmodel.SearchFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.RssUrlTransformer
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
+import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
+import com.joshuacerdenia.android.nicefeed.utils.extensions.isVisible
+import com.joshuacerdenia.android.nicefeed.utils.extensions.show
 import com.squareup.picasso.Picasso
 import java.text.DateFormat
 
@@ -86,9 +89,9 @@ class SubscribeFragment(
 
         descriptionTextView.apply {
             if (!searchResultItem.description.isNullOrEmpty()) {
-                visibility = View.VISIBLE
+                this.show()
                 text = HtmlCompat.fromHtml(searchResultItem.description, 0)
-            } else visibility = View.GONE
+            } else this.hide()
         }
 
         subscribeButton.apply {
@@ -99,7 +102,7 @@ class SubscribeFragment(
                 val backup = searchResultItem.website?.let { RssUrlTransformer.getUrl(it) }
                 // "website" property is also a usable URL
                 viewModel.requestFeed(url, backup)
-                progressBar.visibility = View.VISIBLE
+                progressBar.show()
                 this.text = getString(R.string.loading)
                 this.isEnabled = false
             }
@@ -108,7 +111,7 @@ class SubscribeFragment(
 
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
-        if (progressBar.visibility == View.VISIBLE) callbacks?.onRequestCanceled()
+        if (progressBar.isVisible()) callbacks?.onRequestCanceled()
         dismiss()
     }
 

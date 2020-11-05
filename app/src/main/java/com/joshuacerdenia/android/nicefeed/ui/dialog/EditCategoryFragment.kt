@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -13,10 +14,6 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
-
-private const val ARG_COUNT = "ARG_COUNT"
-private const val ARG_TITLE = "ARG_TITLE"
-private const val ARG_CATEGORIES = "ARG_CATEGORIES"
 
 class EditCategoryFragment : BottomSheetDialogFragment() {
 
@@ -66,19 +63,30 @@ class EditCategoryFragment : BottomSheetDialogFragment() {
                     confirmButton.isEnabled = s?.length in 1..50
                 }
             })
+            setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE && confirmButton.isEnabled) submit()
+                true
+            }
         }
 
         confirmButton.apply {
             isEnabled = false
-            setOnClickListener {
-                val category = categoryTextView.text.toString().trim()
-                targetFragment?.let { (it as Callbacks).onEditCategoryConfirmed(category) }
-                dismiss()
-            }
+            setOnClickListener { submit() }
         }
     }
 
+    private fun submit() {
+        val category = categoryTextView.text.toString().trim()
+        targetFragment?.let { (it as Callbacks).onEditCategoryConfirmed(category) }
+        dismiss()
+    }
+
     companion object {
+
+        private const val ARG_COUNT = "ARG_COUNT"
+        private const val ARG_TITLE = "ARG_TITLE"
+        private const val ARG_CATEGORIES = "ARG_CATEGORIES"
+
         fun newInstance(categories: Array<String>,
                         title: String?,
                         count: Int = 1

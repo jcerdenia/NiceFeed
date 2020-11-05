@@ -23,7 +23,9 @@ import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.dialog.TextSizeFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryViewModel
 import com.joshuacerdenia.android.nicefeed.utils.Utils
+import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
 import com.joshuacerdenia.android.nicefeed.utils.extensions.shortened
+import com.joshuacerdenia.android.nicefeed.utils.extensions.show
 import com.squareup.picasso.Picasso
 import java.text.DateFormat
 import java.util.*
@@ -109,7 +111,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
                     super.onProgressChanged(view, newProgress)
                     progressBar.progress = newProgress
-                    if (newProgress == 100) progressBar.visibility = View.GONE
+                    if (newProgress == 100) progressBar.hide()
                 }
             }
         }
@@ -134,7 +136,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
                 }
             } else {
                 toggleBannerViews(false)
-                progressBar.visibility = View.GONE
+                progressBar.hide()
                 toolbar.title = getString(R.string.app_name)
                 Utils.showErrorMessage(nestedScrollView, resources)
             }
@@ -149,13 +151,13 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     private fun toggleBannerViews(isEnabled: Boolean) {
         if (isEnabled) {
-            imageView.visibility = View.VISIBLE
-            titleTextView.visibility = View.VISIBLE
-            subtitleTextView.visibility = View.VISIBLE
+            imageView.show()
+            titleTextView.show()
+            subtitleTextView.show()
         } else {
-            imageView.visibility = View.GONE
-            titleTextView.visibility = View.GONE
-            subtitleTextView.visibility = View.GONE
+            imageView.hide()
+            titleTextView.hide()
+            subtitleTextView.hide()
         }
     }
 

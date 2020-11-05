@@ -15,6 +15,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.ui.FeedRequestCallbacks
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
+import com.joshuacerdenia.android.nicefeed.utils.extensions.isVisible
+import com.joshuacerdenia.android.nicefeed.utils.extensions.show
 import com.joshuacerdenia.android.nicefeed.utils.extensions.toEditable
 import java.util.*
 
@@ -72,7 +74,7 @@ class InputUrlFragment(
 
     private fun submitFeedUrl(link: String) {
         isRequested = true
-        progressBar.visibility = View.VISIBLE
+        progressBar.show()
         val url = link.toLowerCase(Locale.ROOT).trim()
         if (url.contains("://")) {
             viewModel.requestFeed(url) // If scheme is provided, use as is
@@ -82,7 +84,7 @@ class InputUrlFragment(
 
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
-        if (progressBar.visibility == View.VISIBLE) callbacks?.onRequestCanceled()
+        if (progressBar.isVisible()) callbacks?.onRequestCanceled()
         dismiss()
     }
 

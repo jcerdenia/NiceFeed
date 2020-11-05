@@ -107,13 +107,19 @@ class ManageFeedsFragment: VisibleFragment(),
         viewModel.feedsManageableLiveData.observe(viewLifecycleOwner, { feeds ->
             progressBar.hide()
             adapter.submitList(feeds)
+            selectAllCheckBox.isChecked = feeds.size == viewModel.selectedItems.size
             if (feeds.size > 1) selectAllCheckBox.show() else selectAllCheckBox.hide()
             if (feeds.isEmpty()) emptyMessageTextView.show() else emptyMessageTextView.hide()
         })
 
         viewModel.anyIsSelected.observe(viewLifecycleOwner, { anyIsSelected ->
-            if (anyIsSelected) speedDial.show() else speedDial.hide()
             updateCounter()
+            if (anyIsSelected) {
+                speedDial.show()
+                speedDial.open()
+            } else {
+                speedDial.hide()
+            }
         })
     }
 
@@ -134,16 +140,16 @@ class ManageFeedsFragment: VisibleFragment(),
         searchItem.setOnActionExpandListener(object: MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                viewModel.submitQuery("")
+                viewModel.clearQuery()
                 resetSelection()
                 return true
             }
         })
 
         (searchItem.actionView as SearchView).apply {
-            if (viewModel.currentQuery.isNotEmpty()) {
+            if (viewModel.query.isNotEmpty()) {
                 searchItem.expandActionView()
-                setQuery(viewModel.currentQuery, false)
+                setQuery(viewModel.query, false)
                 clearFocus()
             }
 
@@ -174,6 +180,14 @@ class ManageFeedsFragment: VisibleFragment(),
             addActionItem(defaultSpeedDialItem(R.id.fab_edit, R.drawable.ic_edit_light))
             addActionItem(defaultSpeedDialItem(R.id.fab_remove, R.drawable.ic_delete_light))
             addActionItem(defaultSpeedDialItem(R.id.fab_export, R.drawable.ic_export_light))
+
+            setOnChangeListener(object : SpeedDialView.OnChangeListener {
+                override fun onToggleChanged(isOpen: Boolean) { } // Blank on purpose
+                override fun onMainActionSelected(): Boolean {
+                    resetSelection()
+                    return true
+                }
+            })
 
             setOnActionSelectedListener { actionItem ->
                 when (actionItem.id) {
@@ -221,6 +235,7 @@ class ManageFeedsFragment: VisibleFragment(),
     override fun onFeedInfoChanged(title: String, category: String) {
         viewModel.updateFeedDetails(viewModel.selectedItems[0].url, title, category)
         resetSelection()
+        searchItem.collapseActionView()
         handler.postDelayed({ Snackbar.make(
             recyclerView,
             getString(R.string.saved_changes_to, title),
@@ -233,6 +248,7 @@ class ManageFeedsFragment: VisibleFragment(),
         for (feed in viewModel.selectedItems) ids.add(feed.url)
         viewModel.updateCategoryByFeedIds(ids, category)
         resetSelection()
+        searchItem.collapseActionView()
         // Crude solution to Snackbar jumping: wait until keyboard is fully hidden
         handler.postDelayed({ showFeedsCategorizedNotice(category, ids.size) }, 400)
     }
@@ -322,7 +338,7 @@ class ManageFeedsFragment: VisibleFragment(),
     }
 
     private fun handleSortFeeds(): Boolean {
-        SortFeedManagerFragment.newInstance(viewModel.currentOrder).apply {
+        SortFeedManagerFragment.newInstance(viewModel.order).apply {
             setTargetFragment(fragment, 0)
             show(fragment.parentFragmentManager, "sort")
         }
@@ -337,7 +353,6 @@ class ManageFeedsFragment: VisibleFragment(),
         viewModel.resetSelection()
         selectAllCheckBox.isChecked = false
         adapter.toggleCheckBoxes(false)
-        adapter.notifyDataSetChanged()
     }
 
     override fun onItemClicked(feed: FeedManageable, isChecked: Boolean) {
@@ -357,7 +372,7 @@ class ManageFeedsFragment: VisibleFragment(),
 
     override fun onStop() {
         super.onStop()
-        context?.let { NiceFeedPreferences.saveFeedManagerOrder(it, viewModel.currentOrder) }
+        context?.let { NiceFeedPreferences.saveFeedManagerOrder(it, viewModel.order) }
     }
 
     override fun onDetach() {

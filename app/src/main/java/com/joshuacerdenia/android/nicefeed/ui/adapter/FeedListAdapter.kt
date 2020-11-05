@@ -16,6 +16,8 @@ import com.joshuacerdenia.android.nicefeed.data.model.CategoryHeader
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMenuItem
 import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
+import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
+import com.joshuacerdenia.android.nicefeed.utils.extensions.show
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.list_item_feed.view.*
 
@@ -84,7 +86,9 @@ class FeedListAdapter(
             this.feed = feed
             if (isHighlighted) {
                 context?.let { itemView.setBackgroundColor(getColor(it, R.color.colorSelect)) }
-            } else itemView.addRipple()
+            } else {
+                itemView.addRipple()
+            }
 
             titleTextView.text = feed.title
             countTextView.text = if (feed.unreadCount > 0) feed.unreadCount.toString() else null
@@ -116,12 +120,14 @@ class FeedListAdapter(
             if (categoryHeader.isMinimized) {
                 drawableResId = R.drawable.ic_drop_down
                 if (categoryHeader.unreadCount > 0) {
-                    countTextView.visibility = View.VISIBLE
+                    countTextView.show()
                     countTextView.text = categoryHeader.unreadCount.toString()
-                } else countTextView.visibility = View.GONE
+                } else {
+                    countTextView.hide()
+                }
             } else {
                 drawableResId = R.drawable.ic_drop_up
-                countTextView.visibility = View.GONE
+                countTextView.hide()
             }
 
             context?.let { context ->

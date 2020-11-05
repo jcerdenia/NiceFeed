@@ -44,9 +44,7 @@ class EntryPopupMenu(
             mPopup.javaClass
                 .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
                 .invoke(mPopup, true)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        } catch (e: Exception) { } // Do nothing
 
         setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
@@ -57,9 +55,7 @@ class EntryPopupMenu(
             true
         }
 
-        setOnDismissListener {
-            view.addRipple()
-        }
+        setOnDismissListener { view.addRipple() }
     }
 
     companion object {

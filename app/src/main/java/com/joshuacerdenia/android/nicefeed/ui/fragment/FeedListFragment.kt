@@ -16,6 +16,8 @@ import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedListAdapter
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.FeedListViewModel
 import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
+import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
+import com.joshuacerdenia.android.nicefeed.utils.extensions.show
 
 class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
@@ -73,15 +75,15 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         viewModel.feedListLiveData.observe(viewLifecycleOwner, { list ->
             adapter.submitList(list)
             if (list.isNotEmpty()) {
-                newEntriesButton.visibility = View.VISIBLE
-                starredEntriesButton.visibility = View.VISIBLE
-                manageButton.visibility = View.VISIBLE
-                bottomDivider.visibility = View.VISIBLE
+                newEntriesButton.show()
+                starredEntriesButton.show()
+                manageButton.show()
+                bottomDivider.show()
             } else {
-                newEntriesButton.visibility = View.GONE
-                starredEntriesButton.visibility = View.GONE
-                manageButton.visibility = View.GONE
-                bottomDivider.visibility = View.GONE
+                newEntriesButton.hide()
+                starredEntriesButton.hide()
+                manageButton.hide()
+                bottomDivider.hide()
                 updateActiveFeedId(null)
             }
         })

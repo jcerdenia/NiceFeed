@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryLight
+import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
 import com.joshuacerdenia.android.nicefeed.utils.extensions.shortened
+import com.joshuacerdenia.android.nicefeed.utils.extensions.show
 import com.squareup.picasso.Picasso
 import java.text.DateFormat.*
 import java.util.*
@@ -28,7 +30,8 @@ class EntryListAdapter(
         fun onEntryLongClicked(entry: EntryLight, view: View?)
     }
 
-    var latestClickedPosition = 0
+    var lastClickedPosition = 0
+        private set
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EntryHolder {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -76,19 +79,19 @@ class EntryListAdapter(
             }
 
             infoTextView.text = "$date – ${entry.website.shortened()}"
-            starView.visibility = if (entry.isStarred) View.VISIBLE else View.GONE
+            if (entry.isStarred) starView.show() else starView.hide()
 
             Picasso.get().load(entry.image).fit().centerCrop()
                 .placeholder(R.drawable.vintage_newspaper).into(imageView)
         }
 
         override fun onClick(v: View) {
-            latestClickedPosition = adapterPosition
+            lastClickedPosition = adapterPosition
             listener.onEntryClicked(entry.url)
         }
 
         override fun onLongClick(v: View?): Boolean {
-            latestClickedPosition = adapterPosition
+            lastClickedPosition = adapterPosition
             listener.onEntryLongClicked(entry, v)
             return true
         }

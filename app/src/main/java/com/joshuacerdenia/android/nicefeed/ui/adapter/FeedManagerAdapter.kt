@@ -31,7 +31,7 @@ class FeedManagerAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.list_item_feed_manager, parent, false)
+            .inflate(R.layout.list_item_feed_manageable, parent, false)
         return FeedHolder(view)
     }
 
@@ -43,9 +43,10 @@ class FeedManagerAdapter(
     inner class FeedHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private lateinit var feed: FeedManageable
-        private val titleCheckBox: CheckBox = itemView.findViewById(R.id.feed_title_checkbox)
-        private val websiteTextView: TextView = itemView.findViewById(R.id.feed_website)
-        private val categoryTextView: TextView = itemView.findViewById(R.id.feed_category)
+        private val checkBox: CheckBox = itemView.findViewById(R.id.check_box)
+        private val titleTextView: TextView = itemView.findViewById(R.id.title_text_view)
+        private val urlTextView: TextView = itemView.findViewById(R.id.url_text_view)
+        private val categoryTextView: TextView = itemView.findViewById(R.id.category_text_view)
 
         init {
             itemView.setOnClickListener(this)
@@ -53,11 +54,11 @@ class FeedManagerAdapter(
 
         fun bind(feed: FeedManageable, isChecked: Boolean) {
             this.feed = feed
-            websiteTextView.text = feed.url.pathified()
+            titleTextView.text = feed.title
+            urlTextView.text = feed.url.pathified()
             categoryTextView.text = feed.category
 
-            titleCheckBox.apply {
-                text = feed.title
+            checkBox.apply {
                 this.isChecked = isChecked
                 checkBoxes.add(this)
                 setOnClickListener { listener.onItemClicked(feed, this.isChecked) }
@@ -65,8 +66,8 @@ class FeedManagerAdapter(
         }
 
         override fun onClick(v: View?) {
-            titleCheckBox.isChecked = !titleCheckBox.isChecked
-            listener.onItemClicked(feed, titleCheckBox.isChecked)
+            checkBox.isChecked = !checkBox.isChecked
+            listener.onItemClicked(feed, checkBox.isChecked)
         }
     }
 
