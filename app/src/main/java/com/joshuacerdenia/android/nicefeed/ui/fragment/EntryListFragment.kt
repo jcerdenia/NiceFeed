@@ -5,7 +5,6 @@ import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -102,7 +101,7 @@ class EntryListFragment : VisibleFragment(),
     ): View? {
         val view = inflater.inflate(R.layout.fragment_entry_list, container, false)
         toolbar = view.findViewById(R.id.toolbar)
-        noItemsTextView = view.findViewById(R.id.empty_message_text_view)
+        noItemsTextView = view.findViewById(R.id.no_items_text_view)
         masterProgressBar = view.findViewById(R.id.master_progress_bar)
         progressBar = view.findViewById(R.id.progress_bar)
         recyclerView = view.findViewById(R.id.recycler_view)

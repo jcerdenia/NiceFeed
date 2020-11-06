@@ -39,7 +39,7 @@
             app:layout_constraintTop_toBottomOf="@+id/progress_bar"/>
 
         <TextView
-            android:id="@+id/empty_message_text_view"
+            android:id="@+id/no_items_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="16dp"

@@ -128,6 +128,7 @@
     <string name="books">Books</string>
     <string name="entertainment">Entertainment</string>
     <string name="feed_info">Feed Info</string>
+    <string name="export_opml">Export OPML</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

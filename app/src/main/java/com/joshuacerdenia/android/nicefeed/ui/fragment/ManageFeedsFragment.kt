@@ -137,6 +137,7 @@ class ManageFeedsFragment: VisibleFragment(),
 
         searchItem.setOnActionExpandListener(object: MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
+
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 viewModel.clearQuery()
                 resetSelection()
@@ -153,6 +154,7 @@ class ManageFeedsFragment: VisibleFragment(),
 
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(queryText: String): Boolean = true
+
                 override fun onQueryTextSubmit(queryText: String): Boolean {
                     viewModel.submitQuery(queryText)
                     clearFocus()
@@ -164,8 +166,9 @@ class ManageFeedsFragment: VisibleFragment(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menuItem_sort -> handleSortFeeds()
-            R.id.menuItem_add_feeds -> {
+            R.id.menu_item_sort -> handleSortFeeds()
+            R.id.menu_item_export -> handleExportAll()
+            R.id.menu_item_add_feeds -> {
                 callbacks?.onAddFeedsSelected()
                 true
             }
@@ -300,6 +303,13 @@ class ManageFeedsFragment: VisibleFragment(),
         Snackbar.make(
             recyclerView, getString(R.string.unsubscribed_message, feedsRemoved), Snackbar.LENGTH_LONG)
             .setAction(R.string.done) { callbacks?.onFinished() }.show()
+    }
+
+    private fun handleExportAll(): Boolean {
+        selectAllCheckBox.isChecked = true
+        viewModel.resetSelection(adapter.currentList)
+        adapter.toggleCheckBoxes(true)
+        return handleExportSelected()
     }
 
     private fun handleExportSelected(): Boolean {

@@ -15,13 +15,19 @@
         app:showAsAction="ifRoom">
         <menu>
             <item
-                android:id="@+id/menuItem_sort"
+                android:id="@+id/menu_item_sort"
                 android:title="@string/sort"
                 android:icon="@drawable/ic_sort"
                 app:showAsAction="never"/>
 
             <item
-                android:id="@+id/menuItem_add_feeds"
+                android:id="@+id/menu_item_export"
+                android:title="@string/export_opml"
+                android:icon="@drawable/ic_export"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/menu_item_add_feeds"
                 android:icon="@drawable/ic_add"
                 android:title="@string/add_feeds"
                 app:showAsAction="never"/>
