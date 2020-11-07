@@ -8,6 +8,7 @@ import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.ui.OnFinished
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.FeedAddingViewModel
+import com.joshuacerdenia.android.nicefeed.utils.extensions.clear
 
 // Gives ability to subscribe to new feeds, must be extended
 
@@ -48,11 +49,17 @@ abstract class FeedAddingFragment: VisibleFragment() {
                     } else {
                         showAlreadyAddedNotice()
                     }
-                    viewModel.lastAttemptedUrl = ""
+                    viewModel.lastInputUrl.clear()
                 } else {
                     showLimitReachedNotice()
                 }
             } ?: showRequestFailedNotice()
+        }
+
+        fun onRequestDismissed() {
+            viewModel.requestFailedNoticeEnabled = false
+            viewModel.cancelRequest()
+            Snackbar.make(view, R.string.request_canceled, Snackbar.LENGTH_SHORT).show()
         }
 
         private fun isAlreadyAdded(feedId: String): Boolean {

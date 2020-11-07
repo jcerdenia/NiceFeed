@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +25,7 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.InputUrlFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.OpmlImporter
 import com.joshuacerdenia.android.nicefeed.utils.Utils
+import com.joshuacerdenia.android.nicefeed.utils.extensions.clear
 import com.joshuacerdenia.android.nicefeed.utils.work.BackgroundSyncWorker
 import java.util.*
 
@@ -97,7 +99,13 @@ class AddFeedsFragment: FeedAddingFragment(),
         viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { feedWithEntries ->
             // A little delay to prevent resulting snackbar from jumping:
             Handler().postDelayed({ manager?.submitData(feedWithEntries) }, 250)
-            InputUrlFragment.dismissInstance()
+            if (viewModel.isActiveRequest) {
+                parentFragmentManager.findFragmentByTag(InputUrlFragment.TAG).let { fragment ->
+                    (fragment as? DialogFragment)?.dismiss()
+                    viewModel.isActiveRequest = false
+                    viewModel.lastInputUrl.clear()
+                }
+            }
         })
     }
 
@@ -115,9 +123,9 @@ class AddFeedsFragment: FeedAddingFragment(),
         })
 
         addUrlTextView.setOnClickListener {
-            InputUrlFragment.newInstance(viewModel.lastAttemptedUrl).apply {
+            InputUrlFragment.newInstance(viewModel.lastInputUrl).apply {
                 setTargetFragment(fragment, 0)
-                show(fragment.parentFragmentManager, "TAG")
+                show(fragment.parentFragmentManager, InputUrlFragment.TAG)
             }
         }
 
@@ -127,7 +135,7 @@ class AddFeedsFragment: FeedAddingFragment(),
     }
 
     override fun onRequestSubmitted(url: String, backup: String?) {
-        viewModel.lastAttemptedUrl = url
+        viewModel.lastInputUrl = url
         val link = url.toLowerCase(Locale.ROOT).trim()
         if (link.contains("://")) {
             viewModel.requestFeed(url) // If scheme is provided, use as is
@@ -137,7 +145,7 @@ class AddFeedsFragment: FeedAddingFragment(),
     }
 
     override fun onRequestDismissed() {
-        viewModel.cancelRequest()
+        manager?.onRequestDismissed()
     }
 
     fun submitUriForImport(uri: Uri) {

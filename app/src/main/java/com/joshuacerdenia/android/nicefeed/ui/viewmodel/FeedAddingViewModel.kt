@@ -14,10 +14,11 @@ abstract class FeedAddingViewModel: ViewModel() {
     val feedRequestLiveData = parser.feedRequestLiveData
     var currentFeedIds = listOf<String>()
 
+    var isActiveRequest = false
     var requestFailedNoticeEnabled = false
     var alreadyAddedNoticeEnabled = false
     var subscriptionLimitNoticeEnabled = false
-    var lastAttemptedUrl = ""
+    var lastInputUrl = ""
 
     fun requestFeed(url: String, backup: String? = null) {
         onFeedRequested()
@@ -27,6 +28,7 @@ abstract class FeedAddingViewModel: ViewModel() {
     }
 
     private fun onFeedRequested() {
+        isActiveRequest = true
         requestFailedNoticeEnabled = true
         alreadyAddedNoticeEnabled = true
         subscriptionLimitNoticeEnabled = true

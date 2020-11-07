@@ -6,6 +6,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,7 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.ui.FeedRequestCallbacks
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedSearchAdapter
+import com.joshuacerdenia.android.nicefeed.ui.dialog.InputUrlFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SubscribeFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.SearchFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.Utils
@@ -81,7 +83,12 @@ class SearchFeedsFragment : FeedAddingFragment(),
 
         viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { feedWithEntries ->
             manager?.submitData(feedWithEntries)
-            SubscribeFragment.dismissInstance()
+            if (viewModel.isActiveRequest) {
+                parentFragmentManager.findFragmentByTag(SubscribeFragment.TAG).let { fragment ->
+                    (fragment as? DialogFragment)?.dismiss()
+                    viewModel.isActiveRequest = false
+                }
+            }
         })
     }
 
@@ -138,7 +145,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
 
         SubscribeFragment.newInstance(searchResultItem).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.parentFragmentManager, "subscribe")
+            show(fragment.parentFragmentManager, SubscribeFragment.TAG)
         }
     }
 

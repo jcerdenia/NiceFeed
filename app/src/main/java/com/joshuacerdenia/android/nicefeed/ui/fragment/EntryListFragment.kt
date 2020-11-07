@@ -322,7 +322,7 @@ class EntryListFragment : VisibleFragment(),
     private fun handleFilter(): Boolean {
         FilterEntriesFragment.newInstance(viewModel.filter).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.parentFragmentManager, "filter")
+            show(fragment.parentFragmentManager, "TAG")
         }
         return true
     }

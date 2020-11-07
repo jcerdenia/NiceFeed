@@ -106,17 +106,13 @@ class SubscribeFragment: BottomSheetDialogFragment() {
     }
 
     companion object {
+
+        const val TAG = "SubscribeFragment"
         private const val ARG_SEARCH_RESULT_ITEM = "ARG_SEARCH_RESULT_ITEM"
-        private var INSTANCE: SubscribeFragment? = null
 
         fun newInstance(searchResultItem: SearchResultItem): SubscribeFragment {
             val args = Bundle().apply { putSerializable(ARG_SEARCH_RESULT_ITEM, searchResultItem) }
-            INSTANCE = SubscribeFragment().apply { arguments = args }
-            return INSTANCE!!
-        }
-
-        fun dismissInstance() {
-            INSTANCE?.dismiss()
+            return SubscribeFragment().apply { arguments = args }
         }
     }
 }
