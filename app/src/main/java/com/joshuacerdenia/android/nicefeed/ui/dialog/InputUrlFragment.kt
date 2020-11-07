@@ -88,12 +88,10 @@ class InputUrlFragment : BottomSheetDialogFragment() {
 
         const val TAG = "InputUrlFragment"
         private const val ARG_LAST_URL = "ARG_LAST_URL"
-        private var INSTANCE: InputUrlFragment? = null
 
         fun newInstance(lastAttemptedUrl: String): InputUrlFragment {
             val args = Bundle().apply { putString(ARG_LAST_URL, lastAttemptedUrl) }
-            INSTANCE = InputUrlFragment().apply { arguments = args }
-            return INSTANCE!!
+            return InputUrlFragment().apply { arguments = args }
         }
     }
 }

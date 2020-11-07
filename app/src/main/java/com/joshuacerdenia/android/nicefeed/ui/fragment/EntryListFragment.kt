@@ -133,6 +133,7 @@ class EntryListFragment : VisibleFragment(),
             progressBar.hide()
             masterProgressBar.hide()
             viewModel.onFeedRetrieved(feed)
+            restoreToolbar()
             feed?.let { callbacks?.onFeedLoaded(it.url) } ?: run {
                 if (feedId?.startsWith(FOLDER) == false) {
                     callbacks?.onFeedRemoved()
@@ -143,7 +144,6 @@ class EntryListFragment : VisibleFragment(),
         viewModel.entriesLightLiveData.observe(viewLifecycleOwner, { entries ->
             progressBar.hide()
             adapter.submitList(entries)
-            restoreToolbar()
             showUpdateNotice()
             toggleOptionsItems()
             if (entries.isNullOrEmpty()) noItemsTextView.show() else noItemsTextView.hide()
