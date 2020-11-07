@@ -3,6 +3,7 @@ package com.joshuacerdenia.android.nicefeed.ui.fragment
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
 import com.joshuacerdenia.android.nicefeed.ui.FeedRequestCallbacks
 import com.joshuacerdenia.android.nicefeed.ui.adapter.TopicAdapter
@@ -25,6 +25,7 @@ import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.OpmlImporter
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.work.BackgroundSyncWorker
+import java.util.*
 
 class AddFeedsFragment: FeedAddingFragment(),
     OpmlImporter.OnOpmlParsedListener,
@@ -65,14 +66,20 @@ class AddFeedsFragment: FeedAddingFragment(),
         recyclerView = view.findViewById(R.id.recycler_view)
         addUrlTextView = view.findViewById(R.id.add_url_text_view)
         importOpmlTextView = view.findViewById(R.id.import_opml_text_view)
-
+        setupRecyclerView()
+        setupToolbar()
+        return view
+    }
+    
+    private fun setupRecyclerView() {
         val span = if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 3 else 5
         recyclerView.layoutManager = GridLayoutManager(context, span)
         recyclerView.adapter = adapter.apply { numOfItems = if (span == 3) 9 else 10 }
-
+    }
+    
+    private fun setupToolbar() {
         toolbar.title = getString(R.string.add_feeds)
         callbacks?.onToolbarInflated(toolbar)
-        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -85,6 +92,12 @@ class AddFeedsFragment: FeedAddingFragment(),
 
         viewModel.topicBlocksLiveData.observe(viewLifecycleOwner, { topics ->
             adapter.submitList(topics.toMutableList())
+        })
+
+        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { feedWithEntries ->
+            // A little delay to prevent resulting snackbar from jumping:
+            Handler().postDelayed({ manager?.submitData(feedWithEntries) }, 250)
+            InputUrlFragment.dismissInstance()
         })
     }
 
@@ -102,7 +115,7 @@ class AddFeedsFragment: FeedAddingFragment(),
         })
 
         addUrlTextView.setOnClickListener {
-            InputUrlFragment.newInstance(viewModel).apply {
+            InputUrlFragment.newInstance(viewModel.lastAttemptedUrl).apply {
                 setTargetFragment(fragment, 0)
                 show(fragment.parentFragmentManager, "TAG")
             }
@@ -113,12 +126,18 @@ class AddFeedsFragment: FeedAddingFragment(),
         }
     }
 
-    override fun onRequestCompleted(feedWithEntries: FeedWithEntries?) {
-        manager?.submitData(feedWithEntries)
+    override fun onRequestSubmitted(url: String, backup: String?) {
+        viewModel.lastAttemptedUrl = url
+        val link = url.toLowerCase(Locale.ROOT).trim()
+        if (link.contains("://")) {
+            viewModel.requestFeed(url) // If scheme is provided, use as is
+        } else {
+            viewModel.requestFeed("https://$link", "http://$link")
+        }
     }
 
-    override fun onRequestCanceled() {
-        manager?.cancelRequest()
+    override fun onRequestDismissed() {
+        viewModel.cancelRequest()
     }
 
     fun submitUriForImport(uri: Uri) {

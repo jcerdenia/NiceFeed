@@ -32,6 +32,7 @@ abstract class FeedAddingFragment: VisibleFragment() {
         callbacks = null
     }
 
+    // Data retrieved should be fed to this class
     inner class RequestResultManager(
         private val viewModel: FeedAddingViewModel,
         private val view: View,
@@ -52,11 +53,6 @@ abstract class FeedAddingFragment: VisibleFragment() {
                     showLimitReachedNotice()
                 }
             } ?: showRequestFailedNotice()
-        }
-
-        fun cancelRequest() {
-            viewModel.cancelRequest()
-            Snackbar.make(view, getString(R.string.request_canceled), Snackbar.LENGTH_SHORT).show()
         }
 
         private fun isAlreadyAdded(feedId: String): Boolean {
@@ -92,6 +88,7 @@ abstract class FeedAddingFragment: VisibleFragment() {
     }
 
     companion object {
+
         private const val SUBSCRIPTION_LIMIT = 1000 // Arbitrary
     }
 }

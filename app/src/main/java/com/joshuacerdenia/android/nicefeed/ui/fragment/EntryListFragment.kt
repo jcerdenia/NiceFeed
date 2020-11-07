@@ -205,6 +205,7 @@ class EntryListFragment : VisibleFragment(),
 
         searchItem.setOnActionExpandListener(object: MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
+
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 viewModel.clearQuery()
                 return true
@@ -220,6 +221,7 @@ class EntryListFragment : VisibleFragment(),
 
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(queryText: String): Boolean = true
+
                 override fun onQueryTextSubmit(queryText: String): Boolean {
                     viewModel.submitQuery(queryText)
                     this@apply.clearFocus()
@@ -287,7 +289,7 @@ class EntryListFragment : VisibleFragment(),
             count.added == 0 && count.updated > 0 -> getString(R.string.updated, itemsUpdatedString)
             else -> getString(R.string.added_and_updated, itemsAddedString, count.updated)
         }
-        Snackbar.make(recyclerView, message as CharSequence, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(recyclerView, message, Snackbar.LENGTH_SHORT).show()
         viewModel.updateValues.clear()
     }
 
@@ -312,8 +314,7 @@ class EntryListFragment : VisibleFragment(),
             }
             viewModel.updateFeed(editedFeed)
             handler.postDelayed({
-                Snackbar.make(recyclerView, getString(R.string.saved_changes_to, title), Snackbar.LENGTH_SHORT)
-                    .show()
+                Snackbar.make(recyclerView, getString(R.string.saved_changes_to, title), Snackbar.LENGTH_SHORT).show()
             }, 250)
         }
     }

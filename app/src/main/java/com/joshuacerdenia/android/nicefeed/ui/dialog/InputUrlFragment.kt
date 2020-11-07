@@ -2,7 +2,8 @@ package com.joshuacerdenia.android.nicefeed.ui.dialog
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,21 +15,16 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.ui.FeedRequestCallbacks
-import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.extensions.isVisible
 import com.joshuacerdenia.android.nicefeed.utils.extensions.show
 import com.joshuacerdenia.android.nicefeed.utils.extensions.toEditable
-import java.util.*
 
-class InputUrlFragment(
-    private val viewModel: AddFeedsViewModel
-): BottomSheetDialogFragment() {
+class InputUrlFragment : BottomSheetDialogFragment() {
 
     private lateinit var urlEditText: EditText
     private lateinit var subscribeButton: Button
     private lateinit var progressBar: ProgressBar
 
-    private var isRequested = false
     private var callbacks: FeedRequestCallbacks? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,47 +47,56 @@ class InputUrlFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { result ->
-            if (isRequested) {
-                Handler().postDelayed({ callbacks?.onRequestCompleted(result) }, 250)
-                dismiss()
-            }
-        })
-
         urlEditText.apply {
-            text = viewModel.lastAttemptedUrl.toEditable()
+            text = arguments?.getString(ARG_LAST_URL).toEditable()
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    subscribeButton.isEnabled = s?.isNotEmpty() == true
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
+
             setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) submitFeedUrl(urlEditText.text.toString())
                 true
             }
         }
 
-        subscribeButton.setOnClickListener {
-            submitFeedUrl(urlEditText.text.toString())
-            it.isEnabled = false
+        subscribeButton.apply{
+            isEnabled = false
+            setOnClickListener {
+                submitFeedUrl(urlEditText.text.toString())
+                it.isEnabled = false
+            }
         }
     }
 
-    private fun submitFeedUrl(link: String) {
-        isRequested = true
+    private fun submitFeedUrl(url: String) {
+        callbacks?.onRequestSubmitted(url)
         progressBar.show()
-        val url = link.toLowerCase(Locale.ROOT).trim()
-        if (url.contains("://")) {
-            viewModel.requestFeed(url) // If scheme is provided, use as is
-        } else viewModel.requestFeed("https://$url", "http://$url")
-        viewModel.lastAttemptedUrl = url
     }
 
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
-        if (progressBar.isVisible()) callbacks?.onRequestCanceled()
-        dismiss()
+        if (progressBar.isVisible()) callbacks?.onRequestDismissed()
     }
 
     companion object {
 
-        fun newInstance(viewModel: AddFeedsViewModel): InputUrlFragment {
-            return InputUrlFragment(viewModel)
+        private const val ARG_LAST_URL = "ARG_LAST_URL"
+        private var INSTANCE: InputUrlFragment? = null
+
+        fun newInstance(lastAttemptedUrl: String): InputUrlFragment {
+            val args = Bundle().apply { putString(ARG_LAST_URL, lastAttemptedUrl) }
+            INSTANCE = InputUrlFragment().apply { arguments = args }
+            return INSTANCE!!
+        }
+
+        fun dismissInstance() {
+            INSTANCE?.dismiss()
         }
     }
 }

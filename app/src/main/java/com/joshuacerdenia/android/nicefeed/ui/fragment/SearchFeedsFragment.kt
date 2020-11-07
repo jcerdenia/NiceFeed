@@ -10,13 +10,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.ui.FeedRequestCallbacks
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedSearchAdapter
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SubscribeFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.SearchFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.Utils
+import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
+import com.joshuacerdenia.android.nicefeed.utils.extensions.show
 
 class SearchFeedsFragment : FeedAddingFragment(),
     FeedSearchAdapter.OnItemClickListener,
@@ -26,7 +27,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
     private lateinit var toolbar: Toolbar
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
-    private lateinit var emptyMessageTextView: TextView
+    private lateinit var noItemsTextView: TextView
     private lateinit var searchView: SearchView
     private lateinit var adapter: FeedSearchAdapter
 
@@ -46,27 +47,41 @@ class SearchFeedsFragment : FeedAddingFragment(),
     ): View? {
         val view = inflater.inflate(R.layout.fragment_search_feeds, container, false)
         progressBar = view.findViewById(R.id.search_progress_bar)
-        emptyMessageTextView = view.findViewById(R.id.empty_message_text_view)
+        noItemsTextView = view.findViewById(R.id.empty_message_text_view)
         recyclerView = view.findViewById(R.id.recycler_view)
         toolbar = view.findViewById(R.id.toolbar)
+        setupRecyclerView()
+        setupToolbar()
+        return view
+    }
+    
+    private fun setupRecyclerView() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
+    }
+    
+    private fun setupToolbar() {
         toolbar.title = getString(R.string.search_feeds)
         callbacks?.onToolbarInflated(toolbar)
-        manager = RequestResultManager(viewModel, recyclerView, R.string.failed_to_connect)
-        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        manager = RequestResultManager(viewModel, recyclerView, R.string.failed_to_connect)
+        
         viewModel.feedIdsLiveData.observe(viewLifecycleOwner, { feedIds ->
             viewModel.onFeedIdsRetrieved(feedIds)
         })
 
         viewModel.searchResultLiveData.observe(viewLifecycleOwner, { results ->
             adapter.submitList(results)
-            progressBar.visibility = View.GONE
-            emptyMessageTextView.visibility = if (results.isEmpty()) View.VISIBLE else View.GONE
+            progressBar.hide()
+            if (results.isEmpty()) noItemsTextView.show() else noItemsTextView.hide()
+        })
+
+        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { feedWithEntries ->
+            manager?.submitData(feedWithEntries)
+            SubscribeFragment.dismissInstance()
         })
     }
 
@@ -83,7 +98,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(queryText: String): Boolean {
                     if (queryText.isNotEmpty()) {
-                        progressBar.visibility = View.VISIBLE
+                        progressBar.show()
                         viewModel.performSearch(queryText)
                     }
                     clearFocus()
@@ -109,19 +124,19 @@ class SearchFeedsFragment : FeedAddingFragment(),
         Utils.hideSoftKeyBoard(requireActivity(), searchView)
     }
 
-    override fun onRequestCompleted(feedWithEntries: FeedWithEntries?) {
-        manager?.submitData(feedWithEntries)
+    override fun onRequestSubmitted(url: String, backup: String?) {
+        viewModel.requestFeed(url, backup)
     }
 
-    override fun onRequestCanceled() {
-        manager?.cancelRequest()
+    override fun onRequestDismissed() {
+        viewModel.cancelRequest()
     }
 
     override fun onItemClicked(searchResultItem: SearchResultItem) {
         searchView.clearFocus()
         activity?.let { Utils.hideSoftKeyBoard(it, recyclerView) }
 
-        SubscribeFragment.newInstance(searchResultItem, viewModel).apply {
+        SubscribeFragment.newInstance(searchResultItem).apply {
             setTargetFragment(fragment, 0)
             show(fragment.parentFragmentManager, "subscribe")
         }

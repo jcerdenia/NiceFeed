@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
 
-class ConfirmActionFragment(private val action: Int) : BottomSheetDialogFragment() {
+class ConfirmActionFragment : BottomSheetDialogFragment() {
 
     interface Callbacks {
         fun onActionConfirmed(action: Int)
@@ -42,6 +42,7 @@ class ConfirmActionFragment(private val action: Int) : BottomSheetDialogFragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val action = arguments?.getInt(ARG_ACTION)
         val count = arguments?.getInt(ARG_COUNT) ?: 1
         val title = arguments?.getString(ARG_TITLE)
         val itemString = title ?: if (count == 1) {
@@ -78,16 +79,18 @@ class ConfirmActionFragment(private val action: Int) : BottomSheetDialogFragment
     companion object {
         private const val ARG_TITLE = "ARG_TITLE"
         private const val ARG_COUNT = "ARG_COUNT"
+        private const val ARG_ACTION = "ARG_ACTION"
 
         const val REMOVE = 0
         const val EXPORT = 1
 
         fun newInstance(action: Int, title: String?, count: Int = 1): ConfirmActionFragment {
             val args = Bundle().apply {
+                putInt(ARG_ACTION, action)
                 putString(ARG_TITLE, title)
                 putInt(ARG_COUNT, count)
             }
-            return ConfirmActionFragment(action).apply {
+            return ConfirmActionFragment().apply {
                 arguments = args
             }
         }

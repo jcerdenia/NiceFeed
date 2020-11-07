@@ -14,7 +14,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.ui.FeedRequestCallbacks
-import com.joshuacerdenia.android.nicefeed.ui.viewmodel.SearchFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.utils.RssUrlTransformer
 import com.joshuacerdenia.android.nicefeed.utils.Utils
 import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
@@ -24,9 +23,7 @@ import com.joshuacerdenia.android.nicefeed.utils.extensions.show
 import com.squareup.picasso.Picasso
 import java.text.DateFormat
 
-class SubscribeFragment(
-    private val viewModel: SearchFeedsViewModel
-): BottomSheetDialogFragment() {
+class SubscribeFragment: BottomSheetDialogFragment() {
 
     private lateinit var titleTextView: TextView
     private lateinit var urlTextView: TextView
@@ -36,7 +33,6 @@ class SubscribeFragment(
     private lateinit var subscribeButton: Button
     private lateinit var progressBar: ProgressBar
 
-    private var isRequested = false
     private var callbacks: FeedRequestCallbacks? = null
 
     override fun onCreateView(
@@ -58,16 +54,6 @@ class SubscribeFragment(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         callbacks = targetFragment as? FeedRequestCallbacks
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { result ->
-            if (isRequested) {
-                callbacks?.onRequestCompleted(result)
-                dismiss()
-            }
-        })
     }
 
     override fun onStart() {
@@ -97,11 +83,10 @@ class SubscribeFragment(
         subscribeButton.apply {
             text = getString(R.string.subscribe)
             setOnClickListener {
-                isRequested = true
                 val url = searchResultItem.id?.let { RssUrlTransformer.getUrl(it) }.toString()
                 val backup = searchResultItem.website?.let { RssUrlTransformer.getUrl(it) }
                 // "website" property is also a usable URL
-                viewModel.requestFeed(url, backup)
+                callbacks?.onRequestSubmitted(url, backup)
                 progressBar.show()
                 this.text = getString(R.string.loading)
                 this.isEnabled = false
@@ -111,8 +96,7 @@ class SubscribeFragment(
 
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
-        if (progressBar.isVisible()) callbacks?.onRequestCanceled()
-        dismiss()
+        if (progressBar.isVisible()) callbacks?.onRequestDismissed()
     }
 
     private fun formatDate(epoch: Long?): String? {
@@ -123,13 +107,16 @@ class SubscribeFragment(
 
     companion object {
         private const val ARG_SEARCH_RESULT_ITEM = "ARG_SEARCH_RESULT_ITEM"
+        private var INSTANCE: SubscribeFragment? = null
 
-        fun newInstance(
-            searchResultItem: SearchResultItem,
-            viewModel: SearchFeedsViewModel
-        ): SubscribeFragment {
+        fun newInstance(searchResultItem: SearchResultItem): SubscribeFragment {
             val args = Bundle().apply { putSerializable(ARG_SEARCH_RESULT_ITEM, searchResultItem) }
-            return SubscribeFragment(viewModel).apply { arguments = args }
+            INSTANCE = SubscribeFragment().apply { arguments = args }
+            return INSTANCE!!
+        }
+
+        fun dismissInstance() {
+            INSTANCE?.dismiss()
         }
     }
 }
