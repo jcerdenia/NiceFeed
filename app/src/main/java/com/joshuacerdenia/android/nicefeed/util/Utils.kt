@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.utils
+package com.joshuacerdenia.android.nicefeed.util
 
 import android.app.Activity
 import android.content.ClipData
@@ -42,15 +42,6 @@ object Utils {
         view?.let { Snackbar.make(it, context.getString(R.string.copied_link), Snackbar.LENGTH_SHORT).show() }
     }
 
-    fun hideSoftKeyBoard(context: Context, view: View) {
-        try {
-            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
     fun setTheme(theme: Int) {
         when (theme) {
             NiceFeedPreferences.THEME_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
@@ -74,6 +65,15 @@ object Utils {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
                 statusBarColor = Color.GRAY
             }
+        }
+    }
+
+    fun hideSoftKeyBoard(context: Context, view: View) {
+        try {
+            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

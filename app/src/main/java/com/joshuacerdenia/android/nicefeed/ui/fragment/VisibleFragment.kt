@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.fragment.app.Fragment
-import com.joshuacerdenia.android.nicefeed.utils.work.NewEntriesWorker
+import com.joshuacerdenia.android.nicefeed.util.work.NewEntriesWorker
 
 // To be extended by all fragments
 

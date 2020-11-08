@@ -14,12 +14,11 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.ui.FeedRequestCallbacks
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedSearchAdapter
-import com.joshuacerdenia.android.nicefeed.ui.dialog.InputUrlFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SubscribeFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.SearchFeedsViewModel
-import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
-import com.joshuacerdenia.android.nicefeed.utils.extensions.show
+import com.joshuacerdenia.android.nicefeed.util.Utils
+import com.joshuacerdenia.android.nicefeed.util.extensions.hide
+import com.joshuacerdenia.android.nicefeed.util.extensions.show
 
 class SearchFeedsFragment : FeedAddingFragment(),
     FeedSearchAdapter.OnItemClickListener,

@@ -28,9 +28,9 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.EditCategoryFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.EditFeedFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.ManageFeedsViewModel
-import com.joshuacerdenia.android.nicefeed.utils.OpmlExporter
-import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
-import com.joshuacerdenia.android.nicefeed.utils.extensions.show
+import com.joshuacerdenia.android.nicefeed.util.OpmlExporter
+import com.joshuacerdenia.android.nicefeed.util.extensions.hide
+import com.joshuacerdenia.android.nicefeed.util.extensions.show
 import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.leinardi.android.speeddial.SpeedDialView
 

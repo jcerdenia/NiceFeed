@@ -6,7 +6,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryLight
-import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
+import com.joshuacerdenia.android.nicefeed.util.extensions.addRipple
 
 class EntryPopupMenu(
     context: Context,
@@ -59,6 +59,7 @@ class EntryPopupMenu(
     }
 
     companion object {
+
         const val ACTION_MARK_AS = 0
         const val ACTION_STAR = 1
         const val ACTION_OPEN = 2

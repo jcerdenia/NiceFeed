@@ -7,16 +7,14 @@ import android.os.Build
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.local.database.NiceFeedDatabase
-import com.joshuacerdenia.android.nicefeed.utils.NetworkMonitor
-import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.utils.work.BackgroundSyncWorker
-import com.joshuacerdenia.android.nicefeed.utils.work.NewEntriesWorker
-import com.joshuacerdenia.android.nicefeed.utils.work.SweeperWorker
+import com.joshuacerdenia.android.nicefeed.util.NetworkMonitor
+import com.joshuacerdenia.android.nicefeed.util.Utils
+import com.joshuacerdenia.android.nicefeed.util.work.BackgroundSyncWorker
+import com.joshuacerdenia.android.nicefeed.util.work.NewEntriesWorker
+import com.joshuacerdenia.android.nicefeed.util.work.SweeperWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
-const val NOTIFICATION_CHANNEL_ID = "nicefeed_new_entries"
 
 class NiceFeedApplication : Application() {
 
@@ -51,5 +49,10 @@ class NiceFeedApplication : Application() {
             if (isSyncing) BackgroundSyncWorker.start(applicationContext)
             SweeperWorker.start(applicationContext)
         }
+    }
+
+    companion object {
+
+        const val NOTIFICATION_CHANNEL_ID = "nicefeed_new_entries"
     }
 }

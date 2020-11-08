@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.utils
+package com.joshuacerdenia.android.nicefeed.util
 
 import android.app.Activity
 import android.app.Notification
@@ -6,7 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationManagerCompat
-import com.joshuacerdenia.android.nicefeed.utils.work.NewEntriesWorker
+import com.joshuacerdenia.android.nicefeed.util.work.NewEntriesWorker
 
 class NotificationReceiver : BroadcastReceiver() {
 

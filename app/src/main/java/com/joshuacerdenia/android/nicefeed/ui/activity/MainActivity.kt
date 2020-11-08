@@ -16,7 +16,7 @@ import com.joshuacerdenia.android.nicefeed.ui.OnHomePressed
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.FeedListFragment
-import com.joshuacerdenia.android.nicefeed.utils.Utils
+import com.joshuacerdenia.android.nicefeed.util.Utils
 
 class MainActivity : AppCompatActivity(),
     FeedListFragment.Callbacks,
@@ -144,6 +144,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     companion object {
+
         private const val REQUEST_CODE_ADD_FEED = 0
         private const val FRAGMENT_MAIN = 0
         private const val FRAGMENT_NAVIGATION = 1

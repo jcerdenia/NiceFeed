@@ -1,10 +1,10 @@
-package com.joshuacerdenia.android.nicefeed.utils
+package com.joshuacerdenia.android.nicefeed.util
 
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
-import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByCategory
+import com.joshuacerdenia.android.nicefeed.util.extensions.sortedByCategory
 import com.rometools.opml.feed.opml.Opml
 import com.rometools.opml.feed.opml.Outline
 import com.rometools.opml.io.impl.OPML20Generator

@@ -15,9 +15,9 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedListAdapter
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.FeedListViewModel
-import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
-import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
-import com.joshuacerdenia.android.nicefeed.utils.extensions.show
+import com.joshuacerdenia.android.nicefeed.util.extensions.addRipple
+import com.joshuacerdenia.android.nicefeed.util.extensions.hide
+import com.joshuacerdenia.android.nicefeed.util.extensions.show
 
 class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 

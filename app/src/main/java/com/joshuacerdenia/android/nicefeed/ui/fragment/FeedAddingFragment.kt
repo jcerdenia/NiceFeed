@@ -8,7 +8,7 @@ import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.ui.OnFinished
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.FeedAddingViewModel
-import com.joshuacerdenia.android.nicefeed.utils.extensions.clear
+import com.joshuacerdenia.android.nicefeed.util.extensions.clear
 
 // Gives ability to subscribe to new feeds, must be extended
 

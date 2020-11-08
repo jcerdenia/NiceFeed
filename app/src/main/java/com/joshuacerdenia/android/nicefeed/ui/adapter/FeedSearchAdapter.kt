@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
-import com.joshuacerdenia.android.nicefeed.utils.extensions.simplified
+import com.joshuacerdenia.android.nicefeed.util.extensions.simplified
 import com.squareup.picasso.Picasso
 
 class FeedSearchAdapter(

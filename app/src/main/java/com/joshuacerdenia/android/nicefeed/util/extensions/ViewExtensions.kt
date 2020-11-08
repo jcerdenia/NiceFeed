@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.utils.extensions
+package com.joshuacerdenia.android.nicefeed.util.extensions
 
 import android.util.TypedValue
 import android.view.View

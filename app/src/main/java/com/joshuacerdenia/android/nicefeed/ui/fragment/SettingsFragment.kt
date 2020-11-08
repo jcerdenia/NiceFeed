@@ -14,9 +14,9 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.dialog.AboutFragment
-import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.utils.work.BackgroundSyncWorker
-import com.joshuacerdenia.android.nicefeed.utils.work.NewEntriesWorker
+import com.joshuacerdenia.android.nicefeed.util.Utils
+import com.joshuacerdenia.android.nicefeed.util.work.BackgroundSyncWorker
+import com.joshuacerdenia.android.nicefeed.util.work.NewEntriesWorker
 
 class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
 

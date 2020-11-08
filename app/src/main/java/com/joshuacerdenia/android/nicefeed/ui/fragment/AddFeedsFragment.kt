@@ -23,10 +23,10 @@ import com.joshuacerdenia.android.nicefeed.ui.adapter.TopicAdapter
 import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmImportFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.InputUrlFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
-import com.joshuacerdenia.android.nicefeed.utils.OpmlImporter
-import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.utils.extensions.clear
-import com.joshuacerdenia.android.nicefeed.utils.work.BackgroundSyncWorker
+import com.joshuacerdenia.android.nicefeed.util.OpmlImporter
+import com.joshuacerdenia.android.nicefeed.util.Utils
+import com.joshuacerdenia.android.nicefeed.util.extensions.clear
+import com.joshuacerdenia.android.nicefeed.util.work.BackgroundSyncWorker
 import java.util.*
 
 class AddFeedsFragment: FeedAddingFragment(),

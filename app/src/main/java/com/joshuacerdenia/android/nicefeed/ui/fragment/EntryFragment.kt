@@ -22,10 +22,10 @@ import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.dialog.TextSizeFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryViewModel
-import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
-import com.joshuacerdenia.android.nicefeed.utils.extensions.shortened
-import com.joshuacerdenia.android.nicefeed.utils.extensions.show
+import com.joshuacerdenia.android.nicefeed.util.Utils
+import com.joshuacerdenia.android.nicefeed.util.extensions.hide
+import com.joshuacerdenia.android.nicefeed.util.extensions.shortened
+import com.joshuacerdenia.android.nicefeed.util.extensions.show
 import com.squareup.picasso.Picasso
 import java.text.DateFormat
 import java.util.*

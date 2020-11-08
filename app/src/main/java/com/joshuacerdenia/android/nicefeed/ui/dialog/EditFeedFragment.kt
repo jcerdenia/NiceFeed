@@ -10,10 +10,10 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
-import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
-import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
-import com.joshuacerdenia.android.nicefeed.utils.extensions.toEditable
+import com.joshuacerdenia.android.nicefeed.util.Utils
+import com.joshuacerdenia.android.nicefeed.util.extensions.addRipple
+import com.joshuacerdenia.android.nicefeed.util.extensions.hide
+import com.joshuacerdenia.android.nicefeed.util.extensions.toEditable
 import com.squareup.picasso.Picasso
 
 class EditFeedFragment : BottomSheetDialogFragment() {
@@ -107,6 +107,7 @@ class EditFeedFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
+
         private const val ARG_FEED = "ARG_FEED"
         private const val ARG_CATEGORIES = "ARG_CATEGORIES"
 

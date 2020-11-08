@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.utils
+package com.joshuacerdenia.android.nicefeed.util
 
 import java.util.*
 

@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.utils.extensions
+package com.joshuacerdenia.android.nicefeed.util.extensions
 
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryLight

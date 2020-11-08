@@ -9,7 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.ui.fragment.*
-import com.joshuacerdenia.android.nicefeed.utils.Utils
+import com.joshuacerdenia.android.nicefeed.util.Utils
 
 class ManagingActivity : AppCompatActivity(),
     ManageFeedsFragment.Callbacks,
@@ -125,6 +125,7 @@ class ManagingActivity : AppCompatActivity(),
     }
 
     companion object {
+
         private const val EXTRA_MANAGING = "com.joshuacerdenia.android.nicefeed.managing"
         private const val REQUEST_CODE_READ_OPML = 0
         private const val REQUEST_CODE_WRITE_OPML = 1

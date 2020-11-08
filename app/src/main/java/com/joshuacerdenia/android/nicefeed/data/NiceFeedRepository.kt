@@ -11,7 +11,7 @@ import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedIdWithCategory
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
-import com.joshuacerdenia.android.nicefeed.utils.NetworkMonitor
+import com.joshuacerdenia.android.nicefeed.util.NetworkMonitor
 import java.util.concurrent.Executors
 
 class NiceFeedRepository private constructor(

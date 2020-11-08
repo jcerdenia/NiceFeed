@@ -15,9 +15,9 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.ui.FeedRequestCallbacks
-import com.joshuacerdenia.android.nicefeed.utils.extensions.isVisible
-import com.joshuacerdenia.android.nicefeed.utils.extensions.show
-import com.joshuacerdenia.android.nicefeed.utils.extensions.toEditable
+import com.joshuacerdenia.android.nicefeed.util.extensions.isVisible
+import com.joshuacerdenia.android.nicefeed.util.extensions.show
+import com.joshuacerdenia.android.nicefeed.util.extensions.toEditable
 
 class InputUrlFragment : BottomSheetDialogFragment() {
 

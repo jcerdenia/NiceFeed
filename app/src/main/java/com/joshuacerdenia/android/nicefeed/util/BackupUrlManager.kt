@@ -1,8 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.utils
-
-import android.util.Log
-
-private const val TAG = "FeedParser"
+package com.joshuacerdenia.android.nicefeed.util
 
 /*  This object generates variations of a base URL to be used for requesting a feed,
     in case the original URL doesn't work the first time.
@@ -30,7 +26,6 @@ object BackupUrlManager {
     }
 
     fun getNextUrl(): String? {
-        Log.d(TAG, "Backup URL tried, count: $attemptCount")
         attemptCount += 1
         return when (attemptCount - 1) {
             0 -> url

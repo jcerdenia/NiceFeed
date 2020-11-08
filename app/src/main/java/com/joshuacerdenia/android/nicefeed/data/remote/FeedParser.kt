@@ -6,19 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
-import com.joshuacerdenia.android.nicefeed.utils.BackupUrlManager
-import com.joshuacerdenia.android.nicefeed.utils.NetworkMonitor
-import com.joshuacerdenia.android.nicefeed.utils.extensions.shortened
+import com.joshuacerdenia.android.nicefeed.util.BackupUrlManager
+import com.joshuacerdenia.android.nicefeed.util.NetworkMonitor
+import com.joshuacerdenia.android.nicefeed.util.extensions.shortened
 import com.prof.rssparser.Channel
 import com.prof.rssparser.Parser
 import java.text.SimpleDateFormat
 import java.util.*
 
-private fun String?.flagAsExcerpt() = FeedParser.FLAG_EXCERPT + this
-
 // Responsible for retrieving and parsing RSS feeds
-
-private const val TAG = "FeedParser"
 
 class FeedParser (private val networkMonitor: NetworkMonitor) {
 
@@ -114,9 +110,13 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
                 SimpleDateFormat(DATE_PATTERN, Locale.ENGLISH).parse(stringDate)
             } else null
         }
+
+        private fun String?.flagAsExcerpt() = FLAG_EXCERPT + this
     }
 
     companion object {
+
+        private const val TAG = "FeedParser"
         private const val UNTITLED = "Untitled"
         const val FLAG_EXCERPT = "com.joshuacerdenia.android.nicefeed.excerpt "
     }

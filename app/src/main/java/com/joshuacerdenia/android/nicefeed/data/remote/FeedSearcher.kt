@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.data.remote.api.FeedlyApi
 import com.joshuacerdenia.android.nicefeed.data.remote.api.SearchResult
-import com.joshuacerdenia.android.nicefeed.utils.NetworkMonitor
+import com.joshuacerdenia.android.nicefeed.util.NetworkMonitor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
-import com.joshuacerdenia.android.nicefeed.utils.extensions.pathified
+import com.joshuacerdenia.android.nicefeed.util.extensions.pathified
 
 class FeedManagerAdapter(
     private val listener: ItemCheckBoxListener,

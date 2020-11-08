@@ -8,7 +8,7 @@ import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryMinimal
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
-import com.joshuacerdenia.android.nicefeed.utils.EntryToHtmlFormatter
+import com.joshuacerdenia.android.nicefeed.util.EntryToHtmlFormatter
 
 class EntryViewModel : ViewModel() {
 

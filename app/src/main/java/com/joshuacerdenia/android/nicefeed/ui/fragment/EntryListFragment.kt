@@ -29,11 +29,9 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.EditFeedFragment
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.menu.EntryPopupMenu
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryListViewModel
-import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
-import com.joshuacerdenia.android.nicefeed.utils.extensions.show
-
-private const val TAG = "EntryListFragment"
+import com.joshuacerdenia.android.nicefeed.util.Utils
+import com.joshuacerdenia.android.nicefeed.util.extensions.hide
+import com.joshuacerdenia.android.nicefeed.util.extensions.show
 
 class EntryListFragment : VisibleFragment(),
     EntryListAdapter.OnEntrySelected,
@@ -300,7 +298,7 @@ class EntryListFragment : VisibleFragment(),
             val categories = callbacks?.onCategoriesNeeded() ?: emptyArray()
             EditFeedFragment.newInstance(mFeed, categories).apply {
                 setTargetFragment(fragment, 0)
-                show(fragment.parentFragmentManager, "about")
+                show(fragment.parentFragmentManager, null)
             }
             true
         } else false
@@ -322,7 +320,7 @@ class EntryListFragment : VisibleFragment(),
     private fun handleFilter(): Boolean {
         FilterEntriesFragment.newInstance(viewModel.filter).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.parentFragmentManager, "TAG")
+            show(fragment.parentFragmentManager, null)
         }
         return true
     }
@@ -351,7 +349,7 @@ class EntryListFragment : VisibleFragment(),
         return if (feed != null) {
             ConfirmActionFragment.newInstance(REMOVE, feed.title).apply {
                 setTargetFragment(fragment, 0)
-                show(fragment.parentFragmentManager,"unsubscribe")
+                show(fragment.parentFragmentManager,null)
             }
             true
         } else false
@@ -406,13 +404,14 @@ class EntryListFragment : VisibleFragment(),
     }
 
     companion object {
-        
-        const val FOLDER = "FOLDER"
-        const val FOLDER_NEW = "FOLDER_NEW"
-        const val FOLDER_STARRED = "FOLDER_STARRED"
+
+        private const val TAG = "EntryListFragment"
         private const val ARG_FEED_ID = "ARG_FEED_ID"
         private const val ARG_ENTRY_ID = "ARG_ENTRY_ID"
         private const val ARG_BLOCK_AUTO_UPDATE = "ARG_BLOCK_AUTO_UPDATE"
+        const val FOLDER = "FOLDER"
+        const val FOLDER_NEW = "FOLDER_NEW"
+        const val FOLDER_STARRED = "FOLDER_STARRED"
 
         fun newInstance(
             feedId: String?,

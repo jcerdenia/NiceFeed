@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.utils.work
+package com.joshuacerdenia.android.nicefeed.util.work
 
 import android.app.Notification
 import android.app.PendingIntent
@@ -13,7 +13,7 @@ import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 import com.joshuacerdenia.android.nicefeed.ui.activity.MainActivity
-import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByDate
+import com.joshuacerdenia.android.nicefeed.util.extensions.sortedByDate
 import java.util.concurrent.TimeUnit
 
 open class NewEntriesWorker(

@@ -7,8 +7,8 @@ import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.CategoryHeader
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMenuItem
-import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByTitle
-import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByUnreadCount
+import com.joshuacerdenia.android.nicefeed.util.extensions.sortedByTitle
+import com.joshuacerdenia.android.nicefeed.util.extensions.sortedByUnreadCount
 
 class FeedListViewModel: ViewModel() {
 

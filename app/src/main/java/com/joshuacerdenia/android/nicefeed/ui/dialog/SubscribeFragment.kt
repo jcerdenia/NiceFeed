@@ -14,12 +14,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.SearchResultItem
 import com.joshuacerdenia.android.nicefeed.ui.FeedRequestCallbacks
-import com.joshuacerdenia.android.nicefeed.utils.RssUrlTransformer
-import com.joshuacerdenia.android.nicefeed.utils.Utils
-import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
-import com.joshuacerdenia.android.nicefeed.utils.extensions.hide
-import com.joshuacerdenia.android.nicefeed.utils.extensions.isVisible
-import com.joshuacerdenia.android.nicefeed.utils.extensions.show
+import com.joshuacerdenia.android.nicefeed.util.RssUrlTransformer
+import com.joshuacerdenia.android.nicefeed.util.Utils
+import com.joshuacerdenia.android.nicefeed.util.extensions.addRipple
+import com.joshuacerdenia.android.nicefeed.util.extensions.hide
+import com.joshuacerdenia.android.nicefeed.util.extensions.isVisible
+import com.joshuacerdenia.android.nicefeed.util.extensions.show
 import com.squareup.picasso.Picasso
 import java.text.DateFormat
 

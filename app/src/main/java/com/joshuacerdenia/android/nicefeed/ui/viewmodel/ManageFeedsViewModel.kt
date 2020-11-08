@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment
-import com.joshuacerdenia.android.nicefeed.utils.extensions.pathified
-import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByCategory
-import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByTitle
+import com.joshuacerdenia.android.nicefeed.util.extensions.pathified
+import com.joshuacerdenia.android.nicefeed.util.extensions.sortedByCategory
+import com.joshuacerdenia.android.nicefeed.util.extensions.sortedByTitle
 import java.util.*
 
 class ManageFeedsViewModel: ViewModel() {

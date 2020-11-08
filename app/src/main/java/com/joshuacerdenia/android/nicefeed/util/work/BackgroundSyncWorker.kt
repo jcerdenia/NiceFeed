@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.utils.work
+package com.joshuacerdenia.android.nicefeed.util.work
 
 import android.content.Context
 import androidx.work.*

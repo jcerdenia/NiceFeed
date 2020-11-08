@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.utils.extensions.addRipple
+import com.joshuacerdenia.android.nicefeed.util.extensions.addRipple
 
 class AboutFragment: BottomSheetDialogFragment() {
 

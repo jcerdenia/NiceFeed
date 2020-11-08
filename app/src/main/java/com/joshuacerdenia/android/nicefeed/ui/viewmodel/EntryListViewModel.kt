@@ -12,10 +12,10 @@ import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment.Companion.FOLDER
-import com.joshuacerdenia.android.nicefeed.utils.UpdateManager
-import com.joshuacerdenia.android.nicefeed.utils.extensions.shortened
-import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedByDate
-import com.joshuacerdenia.android.nicefeed.utils.extensions.sortedUnreadOnTop
+import com.joshuacerdenia.android.nicefeed.util.UpdateManager
+import com.joshuacerdenia.android.nicefeed.util.extensions.shortened
+import com.joshuacerdenia.android.nicefeed.util.extensions.sortedByDate
+import com.joshuacerdenia.android.nicefeed.util.extensions.sortedUnreadOnTop
 import kotlinx.coroutines.launch
 import java.util.*
 
