@@ -222,21 +222,21 @@ class ManageFeedsFragment: VisibleFragment(),
         if (count > 1) {
             EditCategoryFragment.newInstance(viewModel.getCategories(), null, count).apply {
                 setTargetFragment(fragment, 0)
-                show(fragment.parentFragmentManager, "TAG")
+                show(fragment.parentFragmentManager, "EditCategoryFragment")
             }
         } else {
-            EditFeedFragment.newInstance(viewModel.selectedItems[0], viewModel.getCategories()).apply {
+            EditFeedFragment.newInstance(viewModel.selectedItems.first(), viewModel.getCategories()).apply {
                 setTargetFragment(fragment, 0)
-                show(fragment.parentFragmentManager, "TAG")
+                show(fragment.parentFragmentManager, "EditFeedFragment")
             }
         }
         return true
     }
 
     override fun onFeedInfoChanged(title: String, category: String) {
-        viewModel.updateFeedDetails(viewModel.selectedItems[0].url, title, category)
-        resetSelection()
+        viewModel.updateFeedDetails(viewModel.selectedItems.first().url, title, category)
         searchItem.collapseActionView()
+        resetSelection()
         handler.postDelayed({ Snackbar.make(
             recyclerView,
             getString(R.string.saved_changes_to, title),
@@ -265,10 +265,10 @@ class ManageFeedsFragment: VisibleFragment(),
 
     private fun handleRemoveSelected(): Boolean {
         val count = viewModel.selectedItems.size
-        val title = if (count == 1) viewModel.selectedItems[0].title else null
+        val title = if (count == 1) viewModel.selectedItems.first().title else null
         ConfirmActionFragment.newInstance(REMOVE, title, count).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.parentFragmentManager,"TAG")
+            show(fragment.parentFragmentManager,"ConfirmActionFragment")
         }
         return true
     }
@@ -314,10 +314,10 @@ class ManageFeedsFragment: VisibleFragment(),
 
     private fun handleExportSelected(): Boolean {
         val count = viewModel.selectedItems.size
-        val title = if (count == 1) viewModel.selectedItems[0].title else null
+        val title = if (count == 1) viewModel.selectedItems.first().title else null
         ConfirmActionFragment.newInstance(EXPORT, title, count).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.parentFragmentManager,"TAG")
+            show(fragment.parentFragmentManager,"ConfirmActionFragment")
         }
         return true
     }
@@ -348,7 +348,7 @@ class ManageFeedsFragment: VisibleFragment(),
     private fun handleSortFeeds(): Boolean {
         SortFeedManagerFragment.newInstance(viewModel.order).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.parentFragmentManager, "sort")
+            show(fragment.parentFragmentManager, "SortFeedManagerFragment")
         }
         return true
     }

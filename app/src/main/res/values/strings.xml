@@ -88,7 +88,7 @@
     <string name="auto_update_on_launch_description">Each feed will automatically check for updates when opened.</string>
     <string name="sort_entries_by">Sort entries by</string>
     <string name="notifications">Notifications</string>
-    <string name="notification_switch_description">Check for new entries</string>
+    <string name="notification_switch_description">New entries</string>
     <string name="sort_feeds_by">Sort feeds by</string>
     <string name="unread_items">Unread items</string>
     <string name="starred_entries">Starred Entries</string>
@@ -129,6 +129,9 @@
     <string name="entertainment">Entertainment</string>
     <string name="feed_info">Feed Info</string>
     <string name="export_opml">Export OPML</string>
+    <string name="delete_on_update">Delete on update</string>
+    <string name="keep_old_unread">Keep old unread entries on update</string>
+    <string name="keep_old_unread_description">Otherwise, delete all old entries unless starred.</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

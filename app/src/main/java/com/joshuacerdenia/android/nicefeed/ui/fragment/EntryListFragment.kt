@@ -75,6 +75,7 @@ class EntryListFragment : VisibleFragment(),
         loadEntryOnStart()
         viewModel = ViewModelProvider(this).get(EntryListViewModel::class.java)
         viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(requireContext()))
+        viewModel.keepOldUnreadEntries(NiceFeedPreferences.keepOldUnreadEntries(requireContext()))
         autoUpdateOnLaunch = NiceFeedPreferences.getAutoUpdateSetting(requireContext())
         adapter = EntryListAdapter(this)
 
@@ -87,7 +88,7 @@ class EntryListFragment : VisibleFragment(),
     private fun loadEntryOnStart() {
         // If there is an entryID argument, load immediately and only once
         arguments?.getString(ARG_ENTRY_ID)?.let { entryId ->
-            arguments?.remove(ARG_ENTRY_ID) // So it doesn't load again after config change
+            arguments?.remove(ARG_ENTRY_ID)
             callbacks?.onEntrySelected(entryId)
         }
     }
@@ -183,7 +184,10 @@ class EntryListFragment : VisibleFragment(),
 
     override fun onResume() {
         super.onResume()
-        context?.let { viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(it)) }
+        context?.let {  context ->
+            viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(context))
+            viewModel.keepOldUnreadEntries(NiceFeedPreferences.keepOldUnreadEntries(context))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

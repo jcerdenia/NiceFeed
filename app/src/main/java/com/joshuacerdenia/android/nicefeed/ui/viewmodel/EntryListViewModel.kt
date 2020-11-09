@@ -134,6 +134,10 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
         repo.updateEntryIsRead(*entryIds, isRead = isRead)
     }
 
+    fun keepOldUnreadEntries(isKeeping: Boolean) {
+        updateManager.keepOldUnreadEntries = isKeeping
+    }
+
     fun allIsStarred(
         entries: List<EntryLight> = entriesLightLiveData.value ?: emptyList()
     ): Boolean {

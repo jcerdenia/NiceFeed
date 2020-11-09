@@ -7,7 +7,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.text.HtmlCompat
 import androidx.work.*
-import com.joshuacerdenia.android.nicefeed.NOTIFICATION_CHANNEL_ID
+import com.joshuacerdenia.android.nicefeed.NiceFeedApplication.Companion.NOTIFICATION_CHANNEL_ID
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries

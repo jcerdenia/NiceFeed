@@ -29,12 +29,11 @@ class NiceFeedApplication : Application() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = getSystemService(NotificationManager::class.java)
-            val channel = NotificationChannel(
+            NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
                 getString(R.string.notification_channel_name),
                 NotificationManager.IMPORTANCE_DEFAULT
-            )
-            notificationManager?.createNotificationChannel(channel)
+            ).let { notificationManager?.createNotificationChannel(it) }
         }
 
         delayedInit()

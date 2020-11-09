@@ -3,6 +3,7 @@ package com.joshuacerdenia.android.nicefeed.util.work
 import android.content.Context
 import androidx.work.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
+import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryToggleable
@@ -10,7 +11,7 @@ import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import java.util.concurrent.TimeUnit
 
 open class BackgroundSyncWorker(
-    context: Context,
+    private val context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
@@ -42,7 +43,12 @@ open class BackgroundSyncWorker(
     ) {
         val entryIds = fwe.entries.map { it.url }
         val oldEntries = storedEntries.filterNot { entryIds.contains(it.url) }
-        val entryIdsToDelete = oldEntries.filter { it.isRead && !it.isStarred }.map { it.url }
+        val entryIdsToDelete = if (NiceFeedPreferences.keepOldUnreadEntries(context)) {
+            oldEntries.filter { !it.isStarred && it.isRead }.map { it.url }
+        } else {
+            oldEntries.filterNot { it.isStarred }.map { it.url }
+        }
+
         repo.handleBackgroundUpdate(fwe.feed.url, newEntries, entryIdsToDelete, fwe.feed.imageUrl)
     }
 

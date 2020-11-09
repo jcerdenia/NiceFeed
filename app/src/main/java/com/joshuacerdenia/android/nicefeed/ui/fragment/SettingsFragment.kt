@@ -29,6 +29,7 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
     private lateinit var notificationSwitch: SwitchCompat
     private lateinit var bannerSwitch: SwitchCompat
     private lateinit var syncSwitch: SwitchCompat
+    private lateinit var keepEntriesSwitch: SwitchCompat
     private lateinit var themeSpinner: Spinner
     private lateinit var sortFeedsSpinner: Spinner
     private lateinit var sortEntriesSpinner: Spinner
@@ -55,15 +56,19 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
         notificationSwitch = view.findViewById(R.id.notification_switch)
         bannerSwitch = view.findViewById(R.id.banner_switch)
         syncSwitch = view.findViewById(R.id.sync_switch)
+        keepEntriesSwitch = view.findViewById(R.id.keep_entries_switch)
         themeSpinner = view.findViewById(R.id.theme_spinner)
         sortFeedsSpinner = view.findViewById(R.id.sort_feeds_spinner)
         sortEntriesSpinner = view.findViewById(R.id.sort_entries_spinner)
         fontSpinner = view.findViewById(R.id.font_spinner)
-
-        toolbar.title = getString(R.string.settings)
-        callbacks?.onToolbarInflated(toolbar)
+        setupToolbar()
         setHasOptionsMenu(true)
         return view
+    }
+
+    private fun setupToolbar() {
+        toolbar.title = getString(R.string.settings)
+        callbacks?.onToolbarInflated(toolbar)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -109,6 +114,13 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
             isChecked = NiceFeedPreferences.getAutoUpdateSetting(context)
             setOnCheckedChangeListener { _, isOn ->
                 NiceFeedPreferences.saveAutoUpdateSetting(context, isOn)
+            }
+        }
+
+        keepEntriesSwitch.apply {
+            isChecked = NiceFeedPreferences.keepOldUnreadEntries(context)
+            setOnCheckedChangeListener { _, isOn ->
+                NiceFeedPreferences.setKeepOldUnreadEntries(context, isOn)
             }
         }
 
@@ -190,12 +202,17 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
         }
     }
 
+    override fun onGoToRepoClicked() {
+        Utils.openLink(requireActivity(), scrollView, Uri.parse(GITHUB_REPO))
+    }
+
     override fun onDetach() {
         super.onDetach()
         callbacks = null
     }
 
     companion object {
+
         private const val GITHUB_REPO = "https://www.github.com/joshuacerdenia/nicefeed"
         private const val ACTION_SAVE_THEME = 0
         private const val ACTION_SAVE_FEEDS_ORDER = 1
@@ -205,9 +222,5 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
         fun newInstance(): SettingsFragment {
             return SettingsFragment()
         }
-    }
-
-    override fun onGoToRepoClicked() {
-        Utils.openLink(requireActivity(), scrollView, Uri.parse(GITHUB_REPO))
     }
 }

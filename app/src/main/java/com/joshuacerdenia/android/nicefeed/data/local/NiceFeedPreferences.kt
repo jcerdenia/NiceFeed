@@ -21,6 +21,7 @@ object NiceFeedPreferences {
     private const val KEY_VIEW_IN_BROWSER = "KEY_VIEW_IN_BROWSER"
     private const val KEY_BANNER = "KEY_BANNER"
     private const val KEY_SYNC_IN_BG = "KEY_SYNC_IN_BG"
+    private const val KEY_KEEP_ENTRIES = "KEY_KEEP_ENTRIES"
 
     const val TEXT_SIZE_NORMAL = 0
     const val TEXT_SIZE_LARGE = 1
@@ -149,5 +150,13 @@ object NiceFeedPreferences {
 
     fun setSyncInBackground(context: Context, isOn: Boolean) {
         getPrefs(context).edit().putBoolean(KEY_SYNC_IN_BG, isOn).apply()
+    }
+
+    fun keepOldUnreadEntries(context: Context): Boolean {
+        return getPrefs(context).getBoolean(KEY_KEEP_ENTRIES, true)
+    }
+
+    fun setKeepOldUnreadEntries(context: Context, isOn: Boolean) {
+        getPrefs(context).edit().putBoolean(KEY_KEEP_ENTRIES, isOn).apply()
     }
 }
