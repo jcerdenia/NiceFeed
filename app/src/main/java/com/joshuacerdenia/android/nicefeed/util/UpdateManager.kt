@@ -8,7 +8,7 @@ import com.joshuacerdenia.android.nicefeed.util.extensions.sortedByDate
 /*  This class compares recently requested data from the web with current data saved locally.
     It outputs which entries to add, update, and delete, as well as updated feed data, if any.
 */
-class UpdateManager(private val receiver: UpdateReceiver, ) {
+class UpdateManager(private val receiver: UpdateReceiver) {
 
     interface UpdateReceiver {
         fun onUnreadEntriesCounted(feedId: String, unreadCount: Int)
