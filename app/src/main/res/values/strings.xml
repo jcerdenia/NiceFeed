@@ -131,7 +131,7 @@
     <string name="export_opml">Export OPML</string>
     <string name="delete_on_update">Delete on update</string>
     <string name="keep_old_unread">Keep old unread entries on update</string>
-    <string name="keep_old_unread_description">Otherwise, delete all old entries unless starred.</string>
+    <string name="keep_old_unread_description">Otherwise, all old entries will be deleted unless starred.</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>
