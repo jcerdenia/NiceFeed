@@ -2,23 +2,19 @@ package com.joshuacerdenia.android.nicefeed.data.local.database
 
 import androidx.room.Dao
 import androidx.room.Transaction
-import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedEntryCrossRef
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedTitleWithEntriesToggleable
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
+import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryToggleable
 import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
 
 @Dao
 interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
 
     @Transaction
-    fun addFeedAndEntries(
-        feed: Feed,
-        entries: List<Entry>,
-        crossRefs: List<FeedEntryCrossRef>
-    ) {
+    fun addFeedAndEntries(feed: Feed, entries: List<Entry>) {
         addFeeds(feed)
         addEntries(entries)
-        addFeedEntryCrossRefs(crossRefs)
+        addFeedEntryCrossRefs(feed.url, entries)
     }
 
     @Transaction
@@ -33,16 +29,15 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
 
     @Transaction
     fun handleEntryUpdates(
+        feedId: String,
         entriesToAdd: List<Entry>,
         entriesToUpdate: List<Entry>,
         entriesToDelete: List<Entry>,
-        crossRefsToAdd: List<FeedEntryCrossRef>,
-        crossRefsToDelete: List<FeedEntryCrossRef>
     ) {
         addEntries(entriesToAdd)
-        addFeedEntryCrossRefs(crossRefsToAdd)
+        addFeedEntryCrossRefs(feedId, entriesToAdd)
         updateEntries(entriesToUpdate)
-        deleteFeedEntryCrossRefs(crossRefsToDelete)
+        deleteFeedEntryCrossRefs(feedId, entriesToDelete.map { it.url })
         deleteEntries(entriesToDelete)
     }
 
@@ -50,15 +45,16 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
     fun handleBackgroundUpdate(
         feedId: String,
         newEntries: List<Entry>,
-        newCrossRefs: List<FeedEntryCrossRef>,
-        oldEntryIds: List<String>,
+        oldEntries: List<EntryToggleable>,
         feedImage: String?
     ) {
         addEntries(newEntries)
-        addFeedEntryCrossRefs(newCrossRefs)
-        deleteEntriesById(oldEntryIds)
-        deleteFeedEntryCrossRefs(feedId, oldEntryIds)
-        addToFeedUnreadCount(feedId, newEntries.size)
+        addFeedEntryCrossRefs(feedId, newEntries)
+        oldEntries.map { it.url }.let { entryIds ->
+            deleteEntriesById(entryIds)
+            deleteFeedEntryCrossRefs(feedId, entryIds)
+        }
+        addToFeedUnreadCount(feedId, (newEntries.size - oldEntries.filter { !it.isRead }.size))
         feedImage?.let { updateFeedImage(feedId, it) }
     }
 
@@ -76,7 +72,7 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
     fun updateEntryIsReadAndFeedUnreadCount(vararg entryId: String, isRead: Boolean) {
         updateEntryIsRead(*entryId, isRead = isRead)
         (if (isRead) -1 else 1).let { addend ->
-            for (id in entryId) addToFeedUnreadCountByEntry(id, addend)
+            entryId.forEach { addToFeedUnreadCountByEntry(it, addend) }
         }
     }
 

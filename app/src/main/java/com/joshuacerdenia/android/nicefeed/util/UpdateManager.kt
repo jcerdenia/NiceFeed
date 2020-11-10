@@ -14,10 +14,10 @@ class UpdateManager(private val receiver: UpdateReceiver) {
         fun onUnreadEntriesCounted(feedId: String, unreadCount: Int)
         fun onFeedNeedsUpdate(feed: Feed)
         fun onOldAndNewEntriesCompared(
+            feedId: String,
             entriesToAdd: List<Entry>,
             entriesToUpdate: List<Entry>,
             entriesToDelete: List<Entry>,
-            feedId: String
         )
     }
 
@@ -71,13 +71,11 @@ class UpdateManager(private val receiver: UpdateReceiver) {
             }
         }
 
-        for (entry in currentEntries) {
-            if (!newEntryIds.contains(entry.url)) {
-                if (keepOldUnreadEntries) {
-                    if (!entry.isStarred && entry.isRead) entriesToDelete.add(entry)
-                } else {
-                    if (!entry.isStarred) entriesToDelete.add(entry)
-                }
+        currentEntries.filterNot { newEntryIds.contains(it.url) }.forEach { entry ->
+            if (keepOldUnreadEntries) {
+                if (!entry.isStarred && entry.isRead) entriesToDelete.add(entry)
+            } else {
+                if (!entry.isStarred) entriesToDelete.add(entry)
             }
         }
 
@@ -85,10 +83,10 @@ class UpdateManager(private val receiver: UpdateReceiver) {
         if (entriesToAdd.size + entriesToUpdate.size + entriesToDelete.size > 0) {
             currentFeed?.let { feed->
                 receiver.onOldAndNewEntriesCompared(
+                    feed.url,
                     entriesToAdd,
                     entriesToUpdate,
                     entriesToDelete,
-                    feed.url
                 )
             }
         }

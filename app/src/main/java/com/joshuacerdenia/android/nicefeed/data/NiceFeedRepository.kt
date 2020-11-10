@@ -2,7 +2,6 @@ package com.joshuacerdenia.android.nicefeed.data
 
 import androidx.lifecycle.LiveData
 import com.joshuacerdenia.android.nicefeed.data.local.database.NiceFeedDatabase
-import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedEntryCrossRef
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedTitleWithEntriesToggleable
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
@@ -54,11 +53,9 @@ class NiceFeedRepository private constructor(
         executor.execute { dao.addFeeds(*feed) }
     }
 
-    fun addFeedWithEntries(data: FeedWithEntries) {
+    fun addFeedWithEntries(feedWithEntries: FeedWithEntries) {
         executor.execute {
-            getCrossRefs(data.feed.url, data.entries).also { crossRefs ->
-                dao.addFeedAndEntries(data.feed, data.entries, crossRefs)
-            }
+            dao.addFeedAndEntries(feedWithEntries.feed, feedWithEntries.entries)
         }
     }
 
@@ -91,28 +88,24 @@ class NiceFeedRepository private constructor(
     }
 
     fun handleEntryUpdates(
-        toAdd: List<Entry>,
-        toUpdate: List<Entry>,
-        toDelete: List<Entry>,
-        feedId: String
+        feedId: String,
+        entriesToAdd: List<Entry>,
+        entriesToUpdate: List<Entry>,
+        entriesToDelete: List<Entry>,
     ) {
         executor.execute {
-            val crossRefsToAdd = getCrossRefs(feedId, toAdd)
-            val crossRefsToDelete = getCrossRefs(feedId, toDelete)
-            dao.handleEntryUpdates(toAdd, toUpdate, toDelete, crossRefsToAdd, crossRefsToDelete)
+            dao.handleEntryUpdates(feedId, entriesToAdd, entriesToUpdate, entriesToDelete)
         }
     }
 
     fun handleBackgroundUpdate(
         feedId: String,
         newEntries: List<Entry>,
-        oldEntryIds: List<String>,
+        oldEntries: List<EntryToggleable>,
         feedImage: String?,
     ) {
         executor.execute {
-            getCrossRefs(feedId, newEntries).also { crossRefs ->
-                dao.handleBackgroundUpdate(feedId, newEntries, crossRefs, oldEntryIds, feedImage)
-            }
+            dao.handleBackgroundUpdate(feedId, newEntries, oldEntries, feedImage)
         }
     }
 
@@ -122,10 +115,6 @@ class NiceFeedRepository private constructor(
 
     fun deleteLeftoverItems() {
         executor.execute { dao.deleteLeftoverItems() }
-    }
-
-    private fun getCrossRefs(feedId: String, entries: List<Entry>): List<FeedEntryCrossRef> {
-        return entries.map { entry -> FeedEntryCrossRef(feedId, entry.url) }
     }
 
     companion object {

@@ -202,12 +202,12 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     }
 
     override fun onOldAndNewEntriesCompared(
+        feedId: String,
         entriesToAdd: List<Entry>,
         entriesToUpdate: List<Entry>,
         entriesToDelete: List<Entry>,
-        feedId: String
     ) {
-        repo.handleEntryUpdates(entriesToAdd, entriesToUpdate, entriesToDelete, feedId)
+        repo.handleEntryUpdates(feedId, entriesToAdd, entriesToUpdate, entriesToDelete)
         if (entriesToAdd.size + entriesToUpdate.size > 0) {
             updateValues.added = entriesToAdd.size
             updateValues.updated = entriesToUpdate.size

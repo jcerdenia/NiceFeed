@@ -43,16 +43,17 @@ open class BackgroundSyncWorker(
     ) {
         val entryIds = fwe.entries.map { it.url }
         val oldEntries = storedEntries.filterNot { entryIds.contains(it.url) }
-        val entryIdsToDelete = if (NiceFeedPreferences.keepOldUnreadEntries(context)) {
-            oldEntries.filter { !it.isStarred && it.isRead }.map { it.url }
+        val entriesToDelete = if (NiceFeedPreferences.keepOldUnreadEntries(context)) {
+            oldEntries.filter { !it.isStarred && it.isRead }
         } else {
-            oldEntries.filterNot { it.isStarred }.map { it.url }
+            oldEntries.filter { !it.isStarred }
         }
 
-        repo.handleBackgroundUpdate(fwe.feed.url, newEntries, entryIdsToDelete, fwe.feed.imageUrl)
+        repo.handleBackgroundUpdate(fwe.feed.url, newEntries, entriesToDelete, fwe.feed.imageUrl)
     }
 
     companion object {
+
         private const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.utils.work.BackgroundSyncWorker"
 
         private val constraints = Constraints.Builder()

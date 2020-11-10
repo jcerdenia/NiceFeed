@@ -2,14 +2,17 @@ package com.joshuacerdenia.android.nicefeed.data.local.database
 
 import androidx.room.*
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedEntryCrossRef
+import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 
 interface FeedEntryCrossRefsDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun addFeedEntryCrossRefs(crossRefs: List<FeedEntryCrossRef>)
 
-    @Delete
-    fun deleteFeedEntryCrossRefs(crossRefs: List<FeedEntryCrossRef>)
+    @Transaction
+    fun addFeedEntryCrossRefs(feedId: String, entries: List<Entry>) {
+        addFeedEntryCrossRefs(entries.map { FeedEntryCrossRef(feedId, it.url) })
+    }
 
     @Query("DELETE FROM FeedEntryCrossRef WHERE feedUrl = :feedId AND entryUrl IN (:entryIds)")
     fun deleteFeedEntryCrossRefs(feedId: String, entryIds: List<String>)

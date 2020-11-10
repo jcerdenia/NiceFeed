@@ -81,6 +81,7 @@ open class NewEntriesWorker(
     }
 
     companion object {
+
         private const val WORK_NAME = "com.joshuacerdenia.android.nicefeed.utils.work.NewEntriesWorker"
         const val ACTION_SHOW_NOTIFICATION = "com.joshuacerdenia.android.nicefeed.utils.work.SHOW_NOTIFICATION"
         const val NOTIFICATION_ID = 1
