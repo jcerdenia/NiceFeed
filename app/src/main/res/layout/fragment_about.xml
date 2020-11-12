@@ -47,23 +47,10 @@
             android:ellipsize="end"
             android:maxLines="15"
             android:textColor="@android:color/primary_text_light"
-            app:layout_constraintBottom_toTopOf="@+id/textView_additional_info"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView_feed"
             tools:text="Feed description" />
-
-        <TextView
-            android:id="@+id/textView_additional_info"
-            style="@style/DrawerMenuHeaderText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_description"
-            tools:text="Additional Info" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

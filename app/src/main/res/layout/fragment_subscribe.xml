@@ -53,9 +53,8 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="10"
-        android:layout_marginTop="8dp"
+        android:layout_marginVertical="8dp"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="16dp"
         android:textColor="@android:color/primary_text_light"
         tools:text="Feed description goes here." />
 
@@ -66,6 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"/>
 
     <LinearLayout

@@ -20,7 +20,6 @@ class AboutFragment: BottomSheetDialogFragment() {
 
     private lateinit var titleTextView: TextView
     private lateinit var descriptionTextView: TextView
-    private lateinit var addInfoTextView: TextView
     private lateinit var imageView: ImageView
     private lateinit var goButton: Button
 
@@ -29,10 +28,9 @@ class AboutFragment: BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_about_feed, container, false)
+        val view = inflater.inflate(R.layout.fragment_about, container, false)
         titleTextView = view.findViewById(R.id.textView_title)
         descriptionTextView = view.findViewById(R.id.textView_description)
-        addInfoTextView = view.findViewById(R.id.textView_additional_info)
         imageView = view.findViewById(R.id.imageView_feed)
         goButton = view.findViewById(R.id.button_positive)
         return view
@@ -43,24 +41,19 @@ class AboutFragment: BottomSheetDialogFragment() {
         titleTextView.text = getString(R.string.about_nicefeed)
         descriptionTextView.text = getString(R.string.about_nicefeed_detail)
         descriptionTextView.addRipple()
-        imageView.setImageDrawable(ResourcesCompat.getDrawable(
-            resources,
-            R.mipmap.ic_launcher_round,
-            null
-        ))
-        addInfoTextView.visibility = View.GONE
+        imageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.mipmap.ic_launcher_round, null))
+
         goButton.apply {
             text = getString(R.string.go)
             setOnClickListener {
-                targetFragment?.let { fragment ->
-                    (fragment as Callback).onGoToRepoClicked()
-                }
+                targetFragment?.let { (it as Callback).onGoToRepoClicked() }
                 dismiss()
             }
         }
     }
 
     companion object {
+
         fun newInstance(): AboutFragment {
             return AboutFragment()
         }
