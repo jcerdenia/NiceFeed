@@ -38,7 +38,7 @@ class EntryListFragment : VisibleFragment(),
     EntryPopupMenu.OnPopupMenuItemClicked,
     FilterEntriesFragment.Callbacks,
     EditFeedFragment.Callback,
-    ConfirmActionFragment.Callbacks
+    ConfirmActionFragment.OnRemoveConfirmed
 {
 
     interface Callbacks: OnHomePressed, OnToolbarInflated {
@@ -359,8 +359,7 @@ class EntryListFragment : VisibleFragment(),
         } else false
     }
 
-    override fun onActionConfirmed(action: Int) {
-        // We are always sure that action here is REMOVE
+    override fun onRemoveConfirmed() {
         val title = viewModel.getCurrentFeed()?.title
         Snackbar.make(recyclerView, getString(R.string.unsubscribed_message, title), Snackbar.LENGTH_SHORT).show()
         viewModel.deleteFeedAndEntries()

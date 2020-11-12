@@ -166,6 +166,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     }
 
     companion object {
+
         const val ITEM_MANAGE_FEEDS = 0
         const val ITEM_ADD_FEEDS = 1
         const val ITEM_SETTINGS = 2

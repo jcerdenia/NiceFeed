@@ -118,6 +118,7 @@ class NiceFeedRepository private constructor(
     }
 
     companion object {
+
         private var INSTANCE: NiceFeedRepository? = null
 
         fun initialize(database: NiceFeedDatabase, networkMonitor: NetworkMonitor) {

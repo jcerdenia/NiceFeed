@@ -12,5 +12,3 @@ fun String.simplified() = this.pathified().substringBefore("?")
 fun String.shortened() = this.simplified().substringBefore("/")
 
 fun String?.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
-
-fun String.clear() = ""

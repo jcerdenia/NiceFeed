@@ -66,7 +66,7 @@ class InputUrlFragment : BottomSheetDialogFragment() {
         }
 
         subscribeButton.apply{
-            isEnabled = false
+            isEnabled = urlEditText.text.isNotEmpty()
             setOnClickListener {
                 submitFeedUrl(urlEditText.text.toString())
                 it.isEnabled = false

@@ -16,7 +16,7 @@ import com.joshuacerdenia.android.nicefeed.ui.activity.MainActivity
 import com.joshuacerdenia.android.nicefeed.util.extensions.sortedByDate
 import java.util.concurrent.TimeUnit
 
-open class NewEntriesWorker(
+class NewEntriesWorker(
     private val context: Context,
     workerParams: WorkerParameters
 ) : BackgroundSyncWorker(context, workerParams) {

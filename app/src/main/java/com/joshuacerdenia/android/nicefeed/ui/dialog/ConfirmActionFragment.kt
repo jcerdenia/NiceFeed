@@ -8,25 +8,28 @@ import android.widget.Button
 import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
+import com.joshuacerdenia.android.nicefeed.util.extensions.hide
 
 class ConfirmActionFragment : BottomSheetDialogFragment() {
 
-    interface Callbacks {
-        fun onActionConfirmed(action: Int)
+    interface OnRemoveConfirmed {
+        fun onRemoveConfirmed()
+    }
+
+    interface OnExportConfirmed {
+        fun onExportConfirmed()
+    }
+
+    interface OnImportConfirmed {
+        fun onImportConfirmed()
     }
 
     private lateinit var titleTextView: TextView
     private lateinit var messageTextView: TextView
     private lateinit var confirmButton: Button
 
-    private var callbacks: Callbacks? = null
     private var titleStringRes: Int = 0
     private var drawableRes: Int = 0
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        callbacks = targetFragment as? Callbacks
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,9 +63,14 @@ class ConfirmActionFragment : BottomSheetDialogFragment() {
             EXPORT -> {
                 drawableRes = R.drawable.ic_export
                 titleStringRes = R.string.confirm_export
-                messageTextView.visibility = View.GONE
+                messageTextView.hide()
             }
-            else -> throw IllegalArgumentException()
+            IMPORT -> {
+                drawableRes = R.drawable.ic_import
+                titleStringRes = R.string.confirm_import_title
+                messageTextView.text = getString(R.string.confirm_import_message)
+            }
+            else -> throw throw IllegalArgumentException("Action not found!")
         }
 
         titleTextView.apply {
@@ -71,7 +79,11 @@ class ConfirmActionFragment : BottomSheetDialogFragment() {
         }
 
         confirmButton.setOnClickListener {
-            callbacks?.onActionConfirmed(action)
+            when (action) {
+                REMOVE -> (targetFragment as? OnRemoveConfirmed)?.onRemoveConfirmed()
+                EXPORT -> (targetFragment as? OnExportConfirmed)?.onExportConfirmed()
+                IMPORT -> (targetFragment as? OnImportConfirmed)?.onImportConfirmed()
+            }
             dismiss()
         }
     }
@@ -83,6 +95,7 @@ class ConfirmActionFragment : BottomSheetDialogFragment() {
 
         const val REMOVE = 0
         const val EXPORT = 1
+        const val IMPORT = 2
 
         fun newInstance(action: Int, title: String?, count: Int = 1): ConfirmActionFragment {
             val args = Bundle().apply {
@@ -90,9 +103,15 @@ class ConfirmActionFragment : BottomSheetDialogFragment() {
                 putString(ARG_TITLE, title)
                 putInt(ARG_COUNT, count)
             }
-            return ConfirmActionFragment().apply {
-                arguments = args
+            return ConfirmActionFragment().apply { arguments = args }
+        }
+
+        fun newInstance(action: Int, count: Int): ConfirmActionFragment {
+            val args = Bundle().apply {
+                putInt(ARG_ACTION, action)
+                putInt(ARG_COUNT, count)
             }
+            return ConfirmActionFragment().apply { arguments = args }
         }
     }
 }

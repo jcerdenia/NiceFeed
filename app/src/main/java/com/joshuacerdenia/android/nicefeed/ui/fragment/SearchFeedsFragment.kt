@@ -1,6 +1,7 @@
 package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -68,7 +69,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        manager = RequestResultManager(viewModel, recyclerView, R.string.failed_to_connect)
+        resultManager = RequestResultManager(viewModel, recyclerView, R.string.failed_to_connect)
         
         viewModel.feedIdsLiveData.observe(viewLifecycleOwner, { feedIds ->
             viewModel.onFeedIdsRetrieved(feedIds)
@@ -81,7 +82,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
         })
 
         viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { feedWithEntries ->
-            manager?.submitData(feedWithEntries)
+            resultManager?.submitData(feedWithEntries)
             if (viewModel.isActiveRequest) {
                 parentFragmentManager.findFragmentByTag(SubscribeFragment.TAG).let { fragment ->
                     (fragment as? DialogFragment)?.dismiss()
@@ -135,7 +136,7 @@ class SearchFeedsFragment : FeedAddingFragment(),
     }
 
     override fun onRequestDismissed() {
-        viewModel.cancelRequest()
+        Handler().postDelayed({ resultManager?.onRequestDismissed() }, 250)
     }
 
     override fun onItemClicked(searchResultItem: SearchResultItem) {

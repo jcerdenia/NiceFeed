@@ -8,10 +8,8 @@ import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.ui.OnFinished
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.FeedAddingViewModel
-import com.joshuacerdenia.android.nicefeed.util.extensions.clear
 
-// Gives ability to subscribe to new feeds, must be extended
-
+/*  Gives ability to subscribe to new feeds, must be extended. */
 abstract class FeedAddingFragment: VisibleFragment() {
 
     interface Callbacks: OnToolbarInflated, OnFinished {
@@ -21,7 +19,7 @@ abstract class FeedAddingFragment: VisibleFragment() {
     }
 
     var callbacks: Callbacks? = null
-    var manager: RequestResultManager? = null
+    var resultManager: RequestResultManager? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -33,7 +31,8 @@ abstract class FeedAddingFragment: VisibleFragment() {
         callbacks = null
     }
 
-    // Data retrieved should be fed to this class
+    /*  Retrieved data should be fed to this class; handles Snackbars and directing data to DB.
+        Must be initialized by extending class. */
     inner class RequestResultManager(
         private val viewModel: FeedAddingViewModel,
         private val view: View,
@@ -49,7 +48,7 @@ abstract class FeedAddingFragment: VisibleFragment() {
                     } else {
                         showAlreadyAddedNotice()
                     }
-                    viewModel.lastInputUrl.clear()
+                    viewModel.lastInputUrl = ""
                 } else {
                     showLimitReachedNotice()
                 }

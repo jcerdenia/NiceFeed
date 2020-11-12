@@ -20,18 +20,18 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
 import com.joshuacerdenia.android.nicefeed.ui.FeedRequestCallbacks
 import com.joshuacerdenia.android.nicefeed.ui.adapter.TopicAdapter
-import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmImportFragment
+import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmActionFragment
+import com.joshuacerdenia.android.nicefeed.ui.dialog.ConfirmActionFragment.Companion.IMPORT
 import com.joshuacerdenia.android.nicefeed.ui.dialog.InputUrlFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.AddFeedsViewModel
 import com.joshuacerdenia.android.nicefeed.util.OpmlImporter
 import com.joshuacerdenia.android.nicefeed.util.Utils
-import com.joshuacerdenia.android.nicefeed.util.extensions.clear
 import com.joshuacerdenia.android.nicefeed.util.work.BackgroundSyncWorker
 import java.util.*
 
 class AddFeedsFragment: FeedAddingFragment(),
     OpmlImporter.OnOpmlParsedListener,
-    ConfirmImportFragment.Callbacks,
+    ConfirmActionFragment.OnImportConfirmed,
     TopicAdapter.OnItemClickListener,
     FeedRequestCallbacks
 {
@@ -86,7 +86,7 @@ class AddFeedsFragment: FeedAddingFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        manager = RequestResultManager(viewModel, linearLayout, R.string.failed_to_get_feed)
+        resultManager = RequestResultManager(viewModel, linearLayout, R.string.failed_to_get_feed)
 
         viewModel.feedIdsWithCategoriesLiveData.observe(viewLifecycleOwner, { data ->
             viewModel.onFeedDataRetrieved(data)
@@ -98,12 +98,11 @@ class AddFeedsFragment: FeedAddingFragment(),
 
         viewModel.feedRequestLiveData.observe(viewLifecycleOwner, { feedWithEntries ->
             // A little delay to prevent resulting snackbar from jumping:
-            Handler().postDelayed({ manager?.submitData(feedWithEntries) }, 250)
+            Handler().postDelayed({ resultManager?.submitData(feedWithEntries) }, 250)
             if (viewModel.isActiveRequest) {
                 parentFragmentManager.findFragmentByTag(InputUrlFragment.TAG).let { fragment ->
                     (fragment as? DialogFragment)?.dismiss()
                     viewModel.isActiveRequest = false
-                    viewModel.lastInputUrl.clear()
                 }
             }
         })
@@ -145,7 +144,8 @@ class AddFeedsFragment: FeedAddingFragment(),
     }
 
     override fun onRequestDismissed() {
-        manager?.onRequestDismissed()
+        // Wait for dialog to close fully to prevent snackbar from jumping
+        Handler().postDelayed({ resultManager?.onRequestDismissed() }, 250)
     }
 
     fun submitUriForImport(uri: Uri) {
@@ -154,9 +154,9 @@ class AddFeedsFragment: FeedAddingFragment(),
 
     override fun onOpmlParsed(feeds: List<Feed>) {
         viewModel.feedsToImport = feeds.filterNot { viewModel.currentFeedIds.contains(it.url) }
-        ConfirmImportFragment.newInstance(feeds.size).apply {
+        ConfirmActionFragment.newInstance(IMPORT, feeds.size).apply {
             setTargetFragment(fragment, 0)
-            show(fragment.parentFragmentManager, "confirm import")
+            show(fragment.parentFragmentManager, "ConfirmImportFragment")
         }
     }
 

@@ -37,7 +37,8 @@ import com.leinardi.android.speeddial.SpeedDialView
 class ManageFeedsFragment: VisibleFragment(),
     EditCategoryFragment.Callbacks,
     EditFeedFragment.Callback,
-    ConfirmActionFragment.Callbacks,
+    ConfirmActionFragment.OnRemoveConfirmed,
+    ConfirmActionFragment.OnExportConfirmed,
     SortFeedManagerFragment.Callbacks,
     FeedManagerAdapter.ItemCheckBoxListener,
     OpmlExporter.ExportResultListener {
@@ -273,15 +274,7 @@ class ManageFeedsFragment: VisibleFragment(),
         return true
     }
 
-    override fun onActionConfirmed(action: Int) {
-        when (action) {
-            REMOVE -> onRemoveConfirmed()
-            EXPORT -> onExportConfirmed()
-            else -> throw IllegalArgumentException()
-        }
-    }
-
-    private fun onRemoveConfirmed() {
+    override fun onRemoveConfirmed() {
         val feedIds = viewModel.selectedItems.map { feed -> feed.url }.toTypedArray()
         viewModel.deleteItems(*feedIds)
 
@@ -322,7 +315,7 @@ class ManageFeedsFragment: VisibleFragment(),
         return true
     }
 
-    private fun onExportConfirmed() {
+    override fun onExportConfirmed() {
         val feeds = viewModel.selectedItems
         opmlExporter?.submitFeeds(feeds)
         callbacks?.onExportOpmlSelected()
