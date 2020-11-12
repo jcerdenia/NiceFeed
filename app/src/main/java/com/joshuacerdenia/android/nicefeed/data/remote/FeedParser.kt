@@ -14,8 +14,7 @@ import com.prof.rssparser.Parser
 import java.text.SimpleDateFormat
 import java.util.*
 
-// Responsible for retrieving and parsing RSS feeds
-
+/*  Responsible for retrieving and parsing RSS feeds */
 class FeedParser (private val networkMonitor: NetworkMonitor) {
 
     private lateinit var rssParser: Parser
@@ -66,8 +65,9 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
         }
     }
 
-    // Maps "Channel" data to my own model objects
+    /*  Maps 'Channel' data into 'Feed' and 'Entry' objects */
     private object ChannelMapper {
+
         private const val MAX_ENTRIES = 300 // Arbitrary
         private const val DATE_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z"
 

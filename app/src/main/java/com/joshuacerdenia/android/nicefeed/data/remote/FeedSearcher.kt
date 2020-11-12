@@ -14,8 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.URLEncoder
 
-// This class generates a search query and returns a list of results from Feedly
-
+/*  Generates a search query and returns a list of results from Feedly */
 class FeedSearcher(private val networkMonitor: NetworkMonitor) {
 
     private val retrofit = Retrofit.Builder()
@@ -27,8 +26,8 @@ class FeedSearcher(private val networkMonitor: NetworkMonitor) {
     fun getFeedList(query: String): LiveData<List<SearchResultItem>> {
         return if (networkMonitor.isOnline) {
             val path = generatePath(query)
-            val searchRequest: Call<SearchResult> = feedlyApi.fetchSearchResult(path)
-            fetchSearchResult(searchRequest)
+            val request: Call<SearchResult> = feedlyApi.fetchSearchResult(path)
+            fetchSearchResult(request)
         } else {
             MutableLiveData(emptyList())
         }
@@ -44,13 +43,11 @@ class FeedSearcher(private val networkMonitor: NetworkMonitor) {
     }
 
     private fun fetchSearchResult(
-        searchRequest: Call<SearchResult>
+        request: Call<SearchResult>
     ): MutableLiveData<List<SearchResultItem>> {
         val searchResultLiveData = MutableLiveData<List<SearchResultItem>>()
         val callback = object : Callback<SearchResult> {
-            override fun onFailure(call: Call<SearchResult>, t: Throwable) {
-                // Do nothing
-            }
+            override fun onFailure(call: Call<SearchResult>, t: Throwable) {} // Do nothing
 
             override fun onResponse(
                 call: Call<SearchResult>,
@@ -61,7 +58,7 @@ class FeedSearcher(private val networkMonitor: NetworkMonitor) {
             }
         }
 
-        searchRequest.enqueue(callback)
+        request.enqueue(callback)
         return searchResultLiveData
     }
 
