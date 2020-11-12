@@ -234,7 +234,8 @@ class ManageFeedsFragment: VisibleFragment(),
         return true
     }
 
-    override fun onFeedInfoChanged(title: String, category: String) {
+    override fun onFeedInfoSubmitted(title: String, category: String, isChanged: Boolean) {
+        if (!isChanged) return
         viewModel.updateFeedDetails(viewModel.selectedItems.first().url, title, category)
         searchItem.collapseActionView()
         resetSelection()

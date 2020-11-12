@@ -19,7 +19,7 @@ import com.squareup.picasso.Picasso
 class EditFeedFragment : BottomSheetDialogFragment() {
 
     interface Callback {
-        fun onFeedInfoChanged(title: String, category: String)
+        fun onFeedInfoSubmitted(title: String, category: String, isChanged: Boolean)
     }
 
     private lateinit var imageView: ImageView
@@ -96,13 +96,12 @@ class EditFeedFragment : BottomSheetDialogFragment() {
     }
 
     private fun submit(feed: FeedManageable?) {
-        val newTitle = titleEditText.text.toString().trim()
-        val newCategory = categoryEditText.text.toString().trim()
-        if (newTitle.isNotEmpty() && newCategory.isNotEmpty()) {
-            if (feed?.title != newTitle || feed.category != newCategory) {
-                callback?.onFeedInfoChanged(newTitle, newCategory)
-            }
-        }
+        val inputTitle = titleEditText.text.toString().trim()
+        val newTitle = if (inputTitle.isNotEmpty()) inputTitle else feed?.title.toString()
+        val inputCategory = categoryEditText.text.toString().trim()
+        val newCategory = if (inputCategory.isNotEmpty()) inputCategory else "Uncategorized"
+        val isChanged = feed?.title != newTitle || feed.category != newCategory
+        callback?.onFeedInfoSubmitted(newTitle, newCategory, isChanged)
         dismiss()
     }
 

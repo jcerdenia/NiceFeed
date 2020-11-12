@@ -308,7 +308,8 @@ class EntryListFragment : VisibleFragment(),
         } else false
     }
 
-    override fun onFeedInfoChanged(title: String, category: String) {
+    override fun onFeedInfoSubmitted(title: String, category: String, isChanged: Boolean) {
+        if (!isChanged) return
         viewModel.getCurrentFeed()?.let { currentFeed ->
             val editedFeed = currentFeed.apply {
                 this.title = title
