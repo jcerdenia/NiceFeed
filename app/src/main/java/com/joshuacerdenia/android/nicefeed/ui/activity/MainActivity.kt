@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity(),
             val feedId = intent?.getStringExtra(EXTRA_FEED_ID)
                 ?: NiceFeedPreferences.getLastViewedFeedId(this)
             val entryId = intent?.getStringExtra(EXTRA_ENTRY_ID)
-            val mainFragment = EntryListFragment.newInstance(feedId, entryId)
+            val mainFragment = EntryListFragment.newInstance(feedId, entryId, entryId != null)
             loadFragments(mainFragment, FeedListFragment.newInstance())
         }
     }

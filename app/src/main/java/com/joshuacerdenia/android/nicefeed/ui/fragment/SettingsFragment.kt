@@ -196,9 +196,7 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Do nothing
-            }
+            override fun onNothingSelected(parent: AdapterView<*>?) { } // Do nothing
         }
     }
 

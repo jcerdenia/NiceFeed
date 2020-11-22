@@ -185,6 +185,7 @@ class ManageFeedsFragment: VisibleFragment(),
 
             setOnChangeListener(object : SpeedDialView.OnChangeListener {
                 override fun onToggleChanged(isOpen: Boolean) { } // Blank on purpose
+
                 override fun onMainActionSelected(): Boolean {
                     resetSelection()
                     return true

@@ -39,7 +39,7 @@ class ManageFeedsViewModel: ViewModel() {
     }
 
     private fun setObservableFeeds(feeds: List<FeedManageable>) {
-        val feedsQueried = queryFeeds(feeds, query)
+        val feedsQueried = queryFeeds(feeds, query.toLowerCase(Locale.ROOT))
         feedsManageableLiveData.value = sortFeeds(feedsQueried, order)
     }
 
@@ -65,7 +65,7 @@ class ManageFeedsViewModel: ViewModel() {
     }
 
     fun submitQuery(query: String) {
-        this.query = query.toLowerCase(Locale.ROOT).trim()
+        this.query = query.trim()
         sourceFeedsLiveData.value?.let { setObservableFeeds(it) }
     }
 

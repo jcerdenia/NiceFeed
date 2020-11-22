@@ -24,6 +24,6 @@ class SearchFeedsViewModel: FeedAddingViewModel() {
     }
 
     fun performSearch(query: String) {
-        mutableQuery.value = query
+        mutableQuery.value = query.trim()
     }
 }

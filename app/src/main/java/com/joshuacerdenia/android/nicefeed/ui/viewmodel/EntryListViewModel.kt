@@ -107,11 +107,11 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     }
 
     fun submitQuery(query: String) {
-        this.query = query
+        this.query = query.trim()
         sourceEntriesLiveData.value?.let { source ->
             val filteredEntries = filterEntries(source, filter)
-            entriesLiveData.value = if (query.isNotEmpty()) {
-                queryEntries(filteredEntries, query)
+            entriesLiveData.value = if (this.query.isNotEmpty()) {
+                queryEntries(filteredEntries, this.query)
             } else filteredEntries
         }
     }
