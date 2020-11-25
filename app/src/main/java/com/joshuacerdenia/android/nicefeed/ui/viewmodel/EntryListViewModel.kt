@@ -143,9 +143,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     ): Boolean {
         var count = 0
         for (entry in entries) {
-            if (entry.isStarred) {
-                count += 1
-            } else break
+            if (entry.isStarred) count += 1 else break
         }
         return count == entries.size
     }
@@ -155,9 +153,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     ): Boolean {
         var count = 0
         for (entry in entries) {
-            if (entry.isRead) {
-                count += 1
-            } else break
+            if (entry.isRead) count += 1 else break
         }
         return count == entries.size
     }
