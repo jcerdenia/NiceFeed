@@ -1,6 +1,10 @@
 # NiceFeed
 NiceFeed is an RSS Reader for Android. This started out as a personal project while getting the hang of Kotlin. RSS is an old technology and there are already many readers out there, but I find many of them hard to navigate and jam-packed with features I don't need. The aim is an attractive and intuitive app, leightweight but fully functional with not too many frills.
 
+
+<h3>Update – Jan 2021/h3>
+Currently taking time off from this app to focus on work and other projects. Hopefully will be able to get back to it after March. Thanks for your continued feedback!
+
 <h3>Early Access</h3>
 NiceFeed is now in Beta and available on Google Play. It is also now available on IzzyOnDroid for non-Play Store users. Please note that until a stable release, some functionality may still be limited. I'm constantly updating this app and trying to make it better. I would truly appreciate any and all feedback, especially if you find any issues or bugs, or have ideas for new features (please open an issue). I also welcome contributions.<br>
 
