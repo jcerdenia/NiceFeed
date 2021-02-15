@@ -89,7 +89,7 @@ class EntryListFragment : VisibleFragment(),
         // If there is an entryID argument, load immediately and only once
         arguments?.getString(ARG_ENTRY_ID)?.let { entryId ->
             arguments?.remove(ARG_ENTRY_ID)
-            callbacks?.onEntrySelected(entryId)
+            onEntryClicked(entryId)
         }
     }
 
