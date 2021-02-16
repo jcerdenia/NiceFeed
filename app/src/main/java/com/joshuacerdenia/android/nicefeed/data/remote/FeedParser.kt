@@ -18,7 +18,7 @@ import java.util.*
 class FeedParser (private val networkMonitor: NetworkMonitor) {
 
     private lateinit var rssParser: Parser
-    private val _feedRequestLiveData = MutableLiveData<FeedWithEntries>()
+    private val _feedRequestLiveData = MutableLiveData<FeedWithEntries?>()
     val feedRequestLiveData: LiveData<FeedWithEntries?>
         get() = _feedRequestLiveData
 
@@ -39,7 +39,9 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
         if (networkMonitor.isOnline) {
             BackupUrlManager.setBase(backup)
             executeRequest(url)
-        } else _feedRequestLiveData.postValue(null)
+        } else {
+            _feedRequestLiveData.postValue(null)
+        }
     }
 
     fun cancelRequest() {

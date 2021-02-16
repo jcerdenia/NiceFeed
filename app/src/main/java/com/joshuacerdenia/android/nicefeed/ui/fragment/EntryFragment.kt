@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import com.joshuacerdenia.android.nicefeed.R
@@ -162,7 +163,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     }
 
     private fun updateBanner(title: String, date: Date?, author: String?) {
-        titleTextView.text = title
+        titleTextView.text = HtmlCompat.fromHtml(title, 0)
         val formattedDate = date?.let {
             DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(it)
         }
