@@ -72,24 +72,25 @@ class EntryListFragment : VisibleFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loadEntryOnStart()
         viewModel = ViewModelProvider(this).get(EntryListViewModel::class.java)
+        loadEntryOnStart()
+
         viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(requireContext()))
         viewModel.keepOldUnreadEntries(NiceFeedPreferences.keepOldUnreadEntries(requireContext()))
         autoUpdateOnLaunch = NiceFeedPreferences.getAutoUpdateSetting(requireContext())
         adapter = EntryListAdapter(this)
-
         feedId = arguments?.getString(ARG_FEED_ID)
+        setHasOptionsMenu(feedId != null)
+
         val blockAutoUpdate = arguments?.getBoolean(ARG_BLOCK_AUTO_UPDATE) ?: false
         if (blockAutoUpdate || !autoUpdateOnLaunch) viewModel.isAutoUpdating = false
-        setHasOptionsMenu(feedId != null)
     }
 
     private fun loadEntryOnStart() {
         // If there is an entryID argument, load immediately and only once
         arguments?.getString(ARG_ENTRY_ID)?.let { entryId ->
             arguments?.remove(ARG_ENTRY_ID)
-            onEntryClicked(entryId)
+            onEntryClicked(entryId, null)
         }
     }
 
@@ -367,9 +368,9 @@ class EntryListFragment : VisibleFragment(),
         callbacks?.onFeedRemoved()
     }
 
-    override fun onEntryClicked(entryId: String) {
+    override fun onEntryClicked(entryId: String, view: View?) {
         if (NiceFeedPreferences.getBrowserSetting(requireContext())) {
-            Utils.openLink(requireContext(), recyclerView, Uri.parse(entryId))
+            Utils.openLink(requireContext(), view, Uri.parse(entryId))
             viewModel.updateEntryIsRead(entryId, true)
         } else {
             callbacks?.onEntrySelected(entryId)
@@ -386,7 +387,7 @@ class EntryListFragment : VisibleFragment(),
             EntryPopupMenu.ACTION_STAR -> viewModel.updateEntryIsStarred(url, !entry.isStarred)
             EntryPopupMenu.ACTION_MARK_AS -> viewModel.updateEntryIsRead(url, !entry.isRead)
             else -> {
-                onEntryClicked(entry.url)
+                onEntryClicked(entry.url, recyclerView)
                 return
             }
         }

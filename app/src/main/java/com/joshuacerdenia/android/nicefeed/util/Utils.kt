@@ -24,16 +24,16 @@ import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 
 object Utils {
 
-    fun openLink(context: Context, view: View, url: Uri) {
+    fun openLink(context: Context, view: View?, url: Uri) {
         val intent = Intent(Intent.ACTION_VIEW, url)
         // Check if activity is available to handle intent
-        val resolvedActivity = context.packageManager.resolveActivity(
-            intent,
-            PackageManager.MATCH_DEFAULT_ONLY
-        )
+        val resolvedActivity = context.packageManager
+            .resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
         if (resolvedActivity != null) {
             startActivity(context, intent, null)
-        } else showErrorMessage(view, context.resources)
+        } else {
+            view?.let { showErrorMessage(it, context.resources) }
+        }
     }
 
     fun copyLinkToClipboard(context: Context, stringUrl: String, view: View? = null) {

@@ -26,7 +26,7 @@ class EntryListAdapter(
 ) : ListAdapter<EntryLight, EntryListAdapter.EntryHolder>(DiffCallback()) {
 
     interface OnEntrySelected {
-        fun onEntryClicked(entryId: String)
+        fun onEntryClicked(entryId: String, view: View? = null)
         fun onEntryLongClicked(entry: EntryLight, view: View?)
     }
 
