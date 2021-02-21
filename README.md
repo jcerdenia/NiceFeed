@@ -27,4 +27,4 @@ Some older screenshots that need to be updated:<br><br>
 </ul>
 
 <h3>Support</h3>
-This app is intended to be always free. I'm happy to accept any contributions toward further development if you're so inclined: <a href="https://www.paypal.com/paypalme/joshuacerdenia">https://www.paypal.com/paypalme/joshuacerdenia)</a>
+This app is intended to be always free. I'm happy to accept any contributions toward further development if you're so inclined: <a href="https://www.paypal.com/paypalme/joshuacerdenia">https://www.paypal.com/paypalme/joshuacerdenia</a>
