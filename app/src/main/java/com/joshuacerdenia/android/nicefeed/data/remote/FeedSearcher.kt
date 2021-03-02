@@ -25,15 +25,15 @@ class FeedSearcher(private val networkMonitor: NetworkMonitor) {
 
     fun getFeedList(query: String): LiveData<List<SearchResultItem>> {
         return if (networkMonitor.isOnline) {
-            val path = generatePath(query)
-            val request: Call<SearchResult> = feedlyApi.fetchSearchResult(path)
+            val queryString = createQueryString(query)
+            val request: Call<SearchResult> = feedlyApi.fetchSearchResult(queryString)
             fetchSearchResult(request)
         } else {
             MutableLiveData(emptyList())
         }
     }
 
-    private fun generatePath(query: String): String {
+    private fun createQueryString(query: String): String {
         return Uri.Builder()
             .path("v3/search/feeds")
             .appendQueryParameter("count", RESULTS_COUNT.toString())
