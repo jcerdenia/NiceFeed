@@ -1,0 +1,974 @@
+[
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/menu_fragment_manage_feeds.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/menu/fragment_manage_feeds.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_update.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_update.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_text_size.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_text_size.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_check_circle_outline.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_check_circle_outline.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_manage_feeds.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_manage_feeds.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout-night_fragment_about.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout-night/fragment_about.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_info.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_info.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_drop_down.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_drop_down.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_more_vert.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_more_vert.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_edit.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_edit.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-night_ic_folder_starred.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-night/ic_folder_starred.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_browser.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_browser.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_about.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_about.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_star_border.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_star_border.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_text_size.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_text_size.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_export.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_export.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_green_check.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_green_check.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_info.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_info.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_update.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_update.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_info.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_info.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout-v23_fragment_entry.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout-v23/fragment_entry.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_star_border.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_star_border.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_menu.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_menu.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_check_circle.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_check_circle.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_folder_starred.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_folder_starred.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-night_ic_settings.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-night/ic_settings.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_green_check.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_green_check.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_star_yellow.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_star_yellow.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_star_yellow.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_star_yellow.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_list_item_feed.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/list_item_feed.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_more_vert.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_more_vert.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/menu_fragment_entry_list.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/menu/fragment_entry_list.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_check_circle_outline.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_check_circle_outline.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_info.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_info.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_import.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_import.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_confirm_action.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_confirm_action.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_export_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_export_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_folder_starred.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_folder_starred.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-night_ic_manage_feeds.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-night/ic_manage_feeds.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_search.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_search.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_menu.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_menu.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable_feed_icon_small.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable/feed_icon_small.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_browser.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_browser.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_list_item_search_result.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/list_item_search_result.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_delete.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_delete.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_share.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_share.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/font_lato.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/font/lato.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_filter.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_filter.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_check_circle.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_check_circle.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_close_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_close_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/menu_fragment_settings.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/menu/fragment_settings.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_search.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_search.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_delete.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_delete.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_export_light.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_export_light.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_folder_starred.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_folder_starred.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_filter.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_filter.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_toolbar.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/toolbar.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_text_size.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_text_size.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_star.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_star.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-night_ic_info.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-night/ic_info.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_edit_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_edit_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_add.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_add.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_import.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_import.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_edit_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_edit_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_filter.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_filter.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_search.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_search.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_delete.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_delete.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/menu_fragment_feed_search.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/menu/fragment_feed_search.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout-night_fragment_confirm_action.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout-night/fragment_confirm_action.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_delete_light.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_delete_light.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_info.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_info.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_star.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_star.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_green_check.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_green_check.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_delete_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_delete_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_close_light.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_close_light.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_folder_starred.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_folder_starred.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_browser.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_browser.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_export.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_export.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_star_yellow.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_star_yellow.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_star_border.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_star_border.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_sort.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_sort.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-hdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_drop_up.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_drop_up.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_read.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_read.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_drop_up.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_drop_up.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_star_border.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_star_border.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_check_circle_outline.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_check_circle_outline.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_star_yellow.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_star_yellow.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_drop_down.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_drop_down.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_share.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_share.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_activity_managing.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/activity_managing.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_list_item_feed_manageable.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/list_item_feed_manageable.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_export.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_export.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_export_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_export_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_green_check.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_green_check.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_delete_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_delete_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_export_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_export_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_drop_up.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_drop_up.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_settings.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_settings.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_drop_up.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_drop_up.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_manage_feeds.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_manage_feeds.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_drop_down.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_drop_down.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/menu_popup_menu_entry.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/menu/popup_menu_entry.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_share.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_share.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_folder.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_folder.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_import.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_import.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_add.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_add.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_more_vert.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_more_vert.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-night_ic_import.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-night/ic_import.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_launcher_foreground.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_text_size.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_text_size.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_activity_main.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/activity_main.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-mdpi_ic_launcher_foreground.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_edit_category.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_edit_category.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_settings.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_settings.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-night_ic_edit.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-night/ic_edit.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-night_ic_drop_down.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-night/ic_drop_down.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_folder.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_folder.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_export.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_export.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_browser.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_browser.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_edit.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_edit.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_link.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_link.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_manage_feeds.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_manage_feeds.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_drop_down.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_drop_down.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_nicefeed_notif.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_nicefeed_notif.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_link.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_link.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/font_lato_bold.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/font/lato_bold.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_check_circle_outline.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_check_circle_outline.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_read.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_read.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_close_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_close_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_browser.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_browser.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_close_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_close_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-night_ic_link.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-night/ic_link.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_nicefeed_notif.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_nicefeed_notif.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher_foreground.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_nicefeed_notif.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_nicefeed_notif.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_add.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_add.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_sort.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_sort.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/menu_fragment_entry.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/menu/fragment_entry.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_settings.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_settings.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_manage_feeds.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_manage_feeds.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_subscribe.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_subscribe.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_folder.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_folder.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-night_ic_delete.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-night/ic_delete.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_folder.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_folder.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_nicefeed_notif.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_nicefeed_notif.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-night_ic_folder.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-night/ic_folder.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_star.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_star.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-night_ic_menu.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-night/ic_menu.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_text_size.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_text_size.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_add.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_add.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_import.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_import.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-mdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_feed_list.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_feed_list.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_edit.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_edit.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_link.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_link.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_update.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_update.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_edit_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_edit_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_read.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_read.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_star.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_star.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_more_vert.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_more_vert.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout-night_fragment_edit_feed.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout-night/fragment_edit_feed.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_add.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_add.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_link.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_link.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_edit.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_edit.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_update.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_update.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_check_circle.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_check_circle.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_settings.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_settings.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_search_feeds.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_search_feeds.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_share.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_share.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_sort_feeds.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_sort_feeds.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_menu.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_menu.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_close_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_close_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout-night_fragment_input_url.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout-night/fragment_input_url.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable_vintage_newspaper.jpg.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable/vintage_newspaper.jpg"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_list_item_entry.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/list_item_entry.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_list_item_category.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/list_item_category.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_sort.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_sort.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable_feed_icon.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable/feed_icon.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout-night_fragment_subscribe.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout-night/fragment_subscribe.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-night_ic_export.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-night/ic_export.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_settings.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_settings.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_delete_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_delete_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_ic_launcher_foreground.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_edit.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_edit.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_share.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_share.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_check_circle_outline.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_check_circle_outline.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_edit_light.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_edit_light.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_check_circle.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_check_circle.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_filter.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_filter.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_green_check.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_green_check.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_add_feeds.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_add_feeds.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_read.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_read.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_star.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_star.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_delete.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_delete.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_import.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_import.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_star_yellow.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_star_yellow.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_settings.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_settings.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-night_ic_add.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-night/ic_add.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_sort.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_sort.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_drop_down.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_drop_down.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_menu.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_menu.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_manage_feeds.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_manage_feeds.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_filter.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_filter.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_input_url.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_input_url.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_entry.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_entry.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_delete_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_delete_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_star_border.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_star_border.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_menu.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_menu.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_search.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_search.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_delete.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_delete.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-night_ic_drop_up.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-night/ic_drop_up.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxxhdpi_ic_nicefeed_notif.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxxhdpi/ic_nicefeed_notif.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_entry_list.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_entry_list.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_link.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_link.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_update.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_update.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_drop_up.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_drop_up.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_search.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_search.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_check_circle.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_check_circle.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_edit_feed.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_edit_feed.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_read.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_read.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_folder.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_folder.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_export.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_export.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_fragment_filter_entries.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/fragment_filter_entries.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/layout_grid_item_topic.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/layout/grid_item_topic.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_edit_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xxhdpi/ic_edit_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_export_light.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_export_light.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_more_vert.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_more_vert.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_text_size.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-mdpi/ic_text_size.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_manage_feeds.xml.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-anydpi/ic_manage_feeds.xml"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_folder_starred.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-xhdpi/ic_folder_starred.png"
+    },
+    {
+        "merged": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_sort.png.flat",
+        "source": "/home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/res/drawable-hdpi/ic_sort.png"
+    }
+]

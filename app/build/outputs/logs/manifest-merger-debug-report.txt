@@ -1,0 +1,537 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:2:1-49:12
+INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:2:1-49:12
+INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:2:1-49:12
+INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:2:1-49:12
+MERGED from [androidx.core:core-ktx:1.3.2] /home/nonoru/.gradle/caches/transforms-2/files-2.1/ffda11d33e99ab644b91f92ae2105e26/jetified-core-ktx-1.3.2/AndroidManifest.xml:2:1-9:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/699735dbf528f11163baf9712a7fe812/jetified-lifecycle-viewmodel-ktx-2.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-ktx:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/3ce30183e8c86d139143088d9af5b5d4/jetified-lifecycle-livedata-ktx-2.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.work:work-runtime-ktx:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2167b24495f59b90c71e7292b98df4c1/work-runtime-ktx-2.5.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/87fb59ee1414f46b6cca26470b75727d/jetified-lifecycle-livedata-core-ktx-2.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.prof.rssparser:rssparser:3.1.3] /home/nonoru/.gradle/caches/transforms-2/files-2.1/68e5a718185abb7c73b6d44bf202a277/jetified-rssparser-3.1.3/AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.room:room-ktx:2.2.6] /home/nonoru/.gradle/caches/transforms-2/files-2.1/9cea9bc843b0798e5f4c1940407b346b/jetified-room-ktx-2.2.6/AndroidManifest.xml:17:1-24:12
+MERGED from [com.leinardi.android:speed-dial:3.1.1] /home/nonoru/.gradle/caches/transforms-2/files-2.1/9a61c9178673cbf937be3cece3e04c4f/jetified-speed-dial-3.1.1/AndroidManifest.xml:17:1-26:12
+MERGED from [com.google.android.material:material:1.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/4efa8805394355b71e7f476528d4ad1a/material-1.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.4] /home/nonoru/.gradle/caches/transforms-2/files-2.1/5f9c4bc2e6e086041afdfe1ba895f413/constraintlayout-2.0.4/AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.appcompat:appcompat:1.2.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/c8718b225cd4ce95b4dd18f64b2b949c/appcompat-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/ea094fb7cef764eadc12deb841254b2b/jetified-viewpager2-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/44964015b4c917945c6256461b163d7b/recyclerview-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.cardview:cardview:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/5031f6cbe96cdf5c91d3a03bfc186afc/cardview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03] /home/nonoru/.gradle/caches/transforms-2/files-2.1/81c28fecbedcdae226470667a1c9af89/jetified-hilt-lifecycle-viewmodel-1.0.0-alpha03/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.dagger:hilt-android:2.31-alpha] /home/nonoru/.gradle/caches/transforms-2/files-2.1/005c3cf98e04c38bb402f7affbc5ab3a/jetified-hilt-android-2.31-alpha/AndroidManifest.xml:16:1-19:12
+MERGED from [androidx.fragment:fragment:1.2.5] /home/nonoru/.gradle/caches/transforms-2/files-2.1/f383bbae7f926149d1e7fa5b125bbf30/fragment-1.2.5/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.activity:activity:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/effa354e16d2d8e87331e0462741e71c/jetified-activity-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/c690d3ecb031f6986905eb4c711e518c/jetified-lifecycle-viewmodel-savedstate-2.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.squareup.picasso:picasso:2.71828] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2f11e8ef2a5cc485721326ad4ab07d9d/jetified-picasso-2.71828/AndroidManifest.xml:2:1-14:12
+MERGED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:17:1-143:12
+MERGED from [androidx.room:room-runtime:2.2.6] /home/nonoru/.gradle/caches/transforms-2/files-2.1/d60129535763c4dd48c30febfaa1ca7e/room-runtime-2.2.6/AndroidManifest.xml:17:1-31:12
+MERGED from [androidx.appcompat:appcompat-resources:1.2.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/f88f07e98289bb133eaa368e961aad83/jetified-appcompat-resources-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/7f2b34aa4cbf2606fbfcd5e10c213d50/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/995541b4a228531b698c98fe55c6c74c/coordinatorlayout-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/9479172283214c8d11e9f904e0005006/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/3d5c930a85291b4fcd4985173f47fe33/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/c734355e87ef7f133eb4a49a73955ea8/dynamicanimation-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.transition:transition:1.2.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/fd7d15a9ce708802593eab74780a9913/transition-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b42eae08a40dda1e714465a79607f447/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/1aa3d6797957aac8a1bc0e462163446d/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/75f36d62637fe628a2fcdac034b82565/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/370847008477157f2e2ae6d73079db05/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.3.2] /home/nonoru/.gradle/caches/transforms-2/files-2.1/6cd6aa89b9255d6f3871af811db082d3/core-1.3.2/AndroidManifest.xml:17:1-26:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/05f42b88de11abf4f3e159da9196bc2d/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/42b1b167495bd902c8bdcc7d90fa779a/lifecycle-viewmodel-2.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.savedstate:savedstate:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/d073c0a26611a96096f51b16c5822140/jetified-savedstate-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.exifinterface:exifinterface:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/73f5475d711df911131bd5d0066045e1/exifinterface-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/ad1cccee964c2508d93e7f885a7c3726/versionedparcelable-1.1.0/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/112200fbba2a90f46586a54a2c8a84a6/lifecycle-livedata-2.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/c3bec3465b1062734f22d916f808179e/lifecycle-livedata-core-2.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/ce2385da8447ac9ae0b765fc6f163a64/core-runtime-2.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-service:2.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/df6f5f6a24e40940b01ec9f6b4990cbb/jetified-lifecycle-service-2.1.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2b3ead8d056ecb32515c32acd1f58ee2/lifecycle-runtime-2.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.sqlite:sqlite-framework:2.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/38523356c1f79a8bbbca5bbf89304753/sqlite-framework-2.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.sqlite:sqlite:2.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/48606204562bd7a3b6ad35c5a81f0b4e/sqlite-2.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/366d52461d72e59e0a8cbb6e4e86985a/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/184fbae048e137f7fcca38c76537f29f/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/90e021d1c9b27b88431a40f8119525a9/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/739e4cc5c439381217ed0da38f568405/print-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.annotation:annotation-experimental:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/4d74b66a5ee05b38bafb711f0ba0a214/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.dagger:dagger-lint-aar:2.31] /home/nonoru/.gradle/caches/transforms-2/files-2.1/3db6df553120e90c3b3c07c81695e2eb/jetified-dagger-lint-aar-2.31/AndroidManifest.xml:16:1-19:12
+INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:2:1-49:12
+INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:2:1-49:12
+INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:2:1-49:12
+	package
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:4:5-50
+		INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+		INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:2:1-49:12
+		INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+	xmlns:tools
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:3:5-51
+	android:versionCode
+		INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:2:1-49:12
+		INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:2:11-69
+permission#com.joshuacerdenia.android.nicefeed.PRIVATE
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:6:5-8:46
+	android:protectionLevel
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:8:9-44
+	android:name
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:7:9-67
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:10:5-79
+MERGED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:26:5-79
+MERGED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:26:5-79
+	android:name
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:10:22-76
+uses-permission#android.permission.INTERNET
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:11:5-67
+	android:name
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:11:22-64
+uses-permission#com.joshuacerdenia.android.nicefeed.PRIVATE
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:12:5-82
+	android:name
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:12:22-80
+uses-permission#android.permission.READ_PHONE_STATE
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:13:5-14:31
+	tools:node
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:14:9-28
+	android:name
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:13:22-72
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:15:5-16:31
+	tools:node
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:16:9-28
+	android:name
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:15:22-78
+application
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:18:5-47:19
+MERGED from [com.google.android.material:material:1.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/4efa8805394355b71e7f476528d4ad1a/material-1.3.0/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.material:material:1.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/4efa8805394355b71e7f476528d4ad1a/material-1.3.0/AndroidManifest.xml:22:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.4] /home/nonoru/.gradle/caches/transforms-2/files-2.1/5f9c4bc2e6e086041afdfe1ba895f413/constraintlayout-2.0.4/AndroidManifest.xml:9:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.4] /home/nonoru/.gradle/caches/transforms-2/files-2.1/5f9c4bc2e6e086041afdfe1ba895f413/constraintlayout-2.0.4/AndroidManifest.xml:9:5-20
+MERGED from [com.squareup.picasso:picasso:2.71828] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2f11e8ef2a5cc485721326ad4ab07d9d/jetified-picasso-2.71828/AndroidManifest.xml:7:5-12:19
+MERGED from [com.squareup.picasso:picasso:2.71828] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2f11e8ef2a5cc485721326ad4ab07d9d/jetified-picasso-2.71828/AndroidManifest.xml:7:5-12:19
+MERGED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:30:5-141:19
+MERGED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:30:5-141:19
+MERGED from [androidx.room:room-runtime:2.2.6] /home/nonoru/.gradle/caches/transforms-2/files-2.1/d60129535763c4dd48c30febfaa1ca7e/room-runtime-2.2.6/AndroidManifest.xml:24:5-29:19
+MERGED from [androidx.room:room-runtime:2.2.6] /home/nonoru/.gradle/caches/transforms-2/files-2.1/d60129535763c4dd48c30febfaa1ca7e/room-runtime-2.2.6/AndroidManifest.xml:24:5-29:19
+MERGED from [androidx.core:core:1.3.2] /home/nonoru/.gradle/caches/transforms-2/files-2.1/6cd6aa89b9255d6f3871af811db082d3/core-1.3.2/AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.3.2] /home/nonoru/.gradle/caches/transforms-2/files-2.1/6cd6aa89b9255d6f3871af811db082d3/core-1.3.2/AndroidManifest.xml:24:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/ad1cccee964c2508d93e7f885a7c3726/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/ad1cccee964c2508d93e7f885a7c3726/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.3.2] /home/nonoru/.gradle/caches/transforms-2/files-2.1/6cd6aa89b9255d6f3871af811db082d3/core-1.3.2/AndroidManifest.xml:24:18-86
+	android:supportsRtl
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:23:9-35
+	android:label
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:21:9-41
+	android:roundIcon
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:22:9-54
+	android:icon
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:20:9-43
+	android:theme
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:24:9-40
+	android:name
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:19:9-44
+activity#com.joshuacerdenia.android.nicefeed.ui.activity.MainActivity
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:26:9-31:20
+	android:name
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:26:19-59
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:27:13-30:29
+action#android.intent.action.MAIN
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:28:17-69
+	android:name
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:28:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:29:17-77
+	android:name
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:29:27-74
+activity#com.joshuacerdenia.android.nicefeed.ui.activity.ManagingActivity
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:33:9-66
+	android:name
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:33:19-63
+receiver#com.joshuacerdenia.android.nicefeed.util.NotificationReceiver
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:35:9-42:20
+	android:exported
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:38:13-37
+	android:permission
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:37:13-77
+	android:name
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:36:13-54
+intent-filter#action:name:com.joshuacerdenia.android.nicefeed.utils.work.SHOW_NOTIFICATION
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:39:13-41:29
+	android:priority
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:39:28-51
+action#com.joshuacerdenia.android.nicefeed.utils.work.SHOW_NOTIFICATION
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:40:17-106
+	android:name
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:40:25-104
+meta-data#preloaded_fonts
+ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:44:9-46:57
+	android:resource
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:46:13-54
+	android:name
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml:45:13-43
+uses-sdk
+INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+MERGED from [androidx.core:core-ktx:1.3.2] /home/nonoru/.gradle/caches/transforms-2/files-2.1/ffda11d33e99ab644b91f92ae2105e26/jetified-core-ktx-1.3.2/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.core:core-ktx:1.3.2] /home/nonoru/.gradle/caches/transforms-2/files-2.1/ffda11d33e99ab644b91f92ae2105e26/jetified-core-ktx-1.3.2/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/699735dbf528f11163baf9712a7fe812/jetified-lifecycle-viewmodel-ktx-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/699735dbf528f11163baf9712a7fe812/jetified-lifecycle-viewmodel-ktx-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-ktx:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/3ce30183e8c86d139143088d9af5b5d4/jetified-lifecycle-livedata-ktx-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-ktx:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/3ce30183e8c86d139143088d9af5b5d4/jetified-lifecycle-livedata-ktx-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.work:work-runtime-ktx:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2167b24495f59b90c71e7292b98df4c1/work-runtime-ktx-2.5.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.work:work-runtime-ktx:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2167b24495f59b90c71e7292b98df4c1/work-runtime-ktx-2.5.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/87fb59ee1414f46b6cca26470b75727d/jetified-lifecycle-livedata-core-ktx-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/87fb59ee1414f46b6cca26470b75727d/jetified-lifecycle-livedata-core-ktx-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.prof.rssparser:rssparser:3.1.3] /home/nonoru/.gradle/caches/transforms-2/files-2.1/68e5a718185abb7c73b6d44bf202a277/jetified-rssparser-3.1.3/AndroidManifest.xml:7:5-9:41
+MERGED from [com.prof.rssparser:rssparser:3.1.3] /home/nonoru/.gradle/caches/transforms-2/files-2.1/68e5a718185abb7c73b6d44bf202a277/jetified-rssparser-3.1.3/AndroidManifest.xml:7:5-9:41
+MERGED from [androidx.room:room-ktx:2.2.6] /home/nonoru/.gradle/caches/transforms-2/files-2.1/9cea9bc843b0798e5f4c1940407b346b/jetified-room-ktx-2.2.6/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.room:room-ktx:2.2.6] /home/nonoru/.gradle/caches/transforms-2/files-2.1/9cea9bc843b0798e5f4c1940407b346b/jetified-room-ktx-2.2.6/AndroidManifest.xml:20:5-22:41
+MERGED from [com.leinardi.android:speed-dial:3.1.1] /home/nonoru/.gradle/caches/transforms-2/files-2.1/9a61c9178673cbf937be3cece3e04c4f/jetified-speed-dial-3.1.1/AndroidManifest.xml:22:5-24:41
+MERGED from [com.leinardi.android:speed-dial:3.1.1] /home/nonoru/.gradle/caches/transforms-2/files-2.1/9a61c9178673cbf937be3cece3e04c4f/jetified-speed-dial-3.1.1/AndroidManifest.xml:22:5-24:41
+MERGED from [com.google.android.material:material:1.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/4efa8805394355b71e7f476528d4ad1a/material-1.3.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.material:material:1.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/4efa8805394355b71e7f476528d4ad1a/material-1.3.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.4] /home/nonoru/.gradle/caches/transforms-2/files-2.1/5f9c4bc2e6e086041afdfe1ba895f413/constraintlayout-2.0.4/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.4] /home/nonoru/.gradle/caches/transforms-2/files-2.1/5f9c4bc2e6e086041afdfe1ba895f413/constraintlayout-2.0.4/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.appcompat:appcompat:1.2.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/c8718b225cd4ce95b4dd18f64b2b949c/appcompat-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat:1.2.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/c8718b225cd4ce95b4dd18f64b2b949c/appcompat-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/ea094fb7cef764eadc12deb841254b2b/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/ea094fb7cef764eadc12deb841254b2b/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/44964015b4c917945c6256461b163d7b/recyclerview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/44964015b4c917945c6256461b163d7b/recyclerview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cardview:cardview:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/5031f6cbe96cdf5c91d3a03bfc186afc/cardview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cardview:cardview:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/5031f6cbe96cdf5c91d3a03bfc186afc/cardview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03] /home/nonoru/.gradle/caches/transforms-2/files-2.1/81c28fecbedcdae226470667a1c9af89/jetified-hilt-lifecycle-viewmodel-1.0.0-alpha03/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03] /home/nonoru/.gradle/caches/transforms-2/files-2.1/81c28fecbedcdae226470667a1c9af89/jetified-hilt-lifecycle-viewmodel-1.0.0-alpha03/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.dagger:hilt-android:2.31-alpha] /home/nonoru/.gradle/caches/transforms-2/files-2.1/005c3cf98e04c38bb402f7affbc5ab3a/jetified-hilt-android-2.31-alpha/AndroidManifest.xml:18:3-42
+MERGED from [com.google.dagger:hilt-android:2.31-alpha] /home/nonoru/.gradle/caches/transforms-2/files-2.1/005c3cf98e04c38bb402f7affbc5ab3a/jetified-hilt-android-2.31-alpha/AndroidManifest.xml:18:3-42
+MERGED from [androidx.fragment:fragment:1.2.5] /home/nonoru/.gradle/caches/transforms-2/files-2.1/f383bbae7f926149d1e7fa5b125bbf30/fragment-1.2.5/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.2.5] /home/nonoru/.gradle/caches/transforms-2/files-2.1/f383bbae7f926149d1e7fa5b125bbf30/fragment-1.2.5/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/effa354e16d2d8e87331e0462741e71c/jetified-activity-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/effa354e16d2d8e87331e0462741e71c/jetified-activity-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/c690d3ecb031f6986905eb4c711e518c/jetified-lifecycle-viewmodel-savedstate-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/c690d3ecb031f6986905eb4c711e518c/jetified-lifecycle-viewmodel-savedstate-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.squareup.picasso:picasso:2.71828] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2f11e8ef2a5cc485721326ad4ab07d9d/jetified-picasso-2.71828/AndroidManifest.xml:5:5-44
+MERGED from [com.squareup.picasso:picasso:2.71828] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2f11e8ef2a5cc485721326ad4ab07d9d/jetified-picasso-2.71828/AndroidManifest.xml:5:5-44
+MERGED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.room:room-runtime:2.2.6] /home/nonoru/.gradle/caches/transforms-2/files-2.1/d60129535763c4dd48c30febfaa1ca7e/room-runtime-2.2.6/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.room:room-runtime:2.2.6] /home/nonoru/.gradle/caches/transforms-2/files-2.1/d60129535763c4dd48c30febfaa1ca7e/room-runtime-2.2.6/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.2.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/f88f07e98289bb133eaa368e961aad83/jetified-appcompat-resources-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.2.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/f88f07e98289bb133eaa368e961aad83/jetified-appcompat-resources-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/7f2b34aa4cbf2606fbfcd5e10c213d50/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/7f2b34aa4cbf2606fbfcd5e10c213d50/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/995541b4a228531b698c98fe55c6c74c/coordinatorlayout-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/995541b4a228531b698c98fe55c6c74c/coordinatorlayout-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/9479172283214c8d11e9f904e0005006/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/9479172283214c8d11e9f904e0005006/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/3d5c930a85291b4fcd4985173f47fe33/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/3d5c930a85291b4fcd4985173f47fe33/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/c734355e87ef7f133eb4a49a73955ea8/dynamicanimation-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/c734355e87ef7f133eb4a49a73955ea8/dynamicanimation-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.transition:transition:1.2.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/fd7d15a9ce708802593eab74780a9913/transition-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.2.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/fd7d15a9ce708802593eab74780a9913/transition-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b42eae08a40dda1e714465a79607f447/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b42eae08a40dda1e714465a79607f447/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/1aa3d6797957aac8a1bc0e462163446d/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/1aa3d6797957aac8a1bc0e462163446d/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/75f36d62637fe628a2fcdac034b82565/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/75f36d62637fe628a2fcdac034b82565/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/370847008477157f2e2ae6d73079db05/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/370847008477157f2e2ae6d73079db05/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.3.2] /home/nonoru/.gradle/caches/transforms-2/files-2.1/6cd6aa89b9255d6f3871af811db082d3/core-1.3.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.3.2] /home/nonoru/.gradle/caches/transforms-2/files-2.1/6cd6aa89b9255d6f3871af811db082d3/core-1.3.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/05f42b88de11abf4f3e159da9196bc2d/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/05f42b88de11abf4f3e159da9196bc2d/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/42b1b167495bd902c8bdcc7d90fa779a/lifecycle-viewmodel-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/42b1b167495bd902c8bdcc7d90fa779a/lifecycle-viewmodel-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/d073c0a26611a96096f51b16c5822140/jetified-savedstate-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/d073c0a26611a96096f51b16c5822140/jetified-savedstate-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.exifinterface:exifinterface:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/73f5475d711df911131bd5d0066045e1/exifinterface-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.exifinterface:exifinterface:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/73f5475d711df911131bd5d0066045e1/exifinterface-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/ad1cccee964c2508d93e7f885a7c3726/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/ad1cccee964c2508d93e7f885a7c3726/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/112200fbba2a90f46586a54a2c8a84a6/lifecycle-livedata-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/112200fbba2a90f46586a54a2c8a84a6/lifecycle-livedata-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/c3bec3465b1062734f22d916f808179e/lifecycle-livedata-core-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.3.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/c3bec3465b1062734f22d916f808179e/lifecycle-livedata-core-2.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/ce2385da8447ac9ae0b765fc6f163a64/core-runtime-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/ce2385da8447ac9ae0b765fc6f163a64/core-runtime-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-service:2.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/df6f5f6a24e40940b01ec9f6b4990cbb/jetified-lifecycle-service-2.1.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-service:2.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/df6f5f6a24e40940b01ec9f6b4990cbb/jetified-lifecycle-service-2.1.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2b3ead8d056ecb32515c32acd1f58ee2/lifecycle-runtime-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.2.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2b3ead8d056ecb32515c32acd1f58ee2/lifecycle-runtime-2.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.sqlite:sqlite-framework:2.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/38523356c1f79a8bbbca5bbf89304753/sqlite-framework-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.sqlite:sqlite-framework:2.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/38523356c1f79a8bbbca5bbf89304753/sqlite-framework-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.sqlite:sqlite:2.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/48606204562bd7a3b6ad35c5a81f0b4e/sqlite-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.sqlite:sqlite:2.1.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/48606204562bd7a3b6ad35c5a81f0b4e/sqlite-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/366d52461d72e59e0a8cbb6e4e86985a/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/366d52461d72e59e0a8cbb6e4e86985a/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/184fbae048e137f7fcca38c76537f29f/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/184fbae048e137f7fcca38c76537f29f/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/90e021d1c9b27b88431a40f8119525a9/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/90e021d1c9b27b88431a40f8119525a9/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/739e4cc5c439381217ed0da38f568405/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/739e4cc5c439381217ed0da38f568405/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/4d74b66a5ee05b38bafb711f0ba0a214/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.annotation:annotation-experimental:1.0.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/4d74b66a5ee05b38bafb711f0ba0a214/jetified-annotation-experimental-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.dagger:dagger-lint-aar:2.31] /home/nonoru/.gradle/caches/transforms-2/files-2.1/3db6df553120e90c3b3c07c81695e2eb/jetified-dagger-lint-aar-2.31/AndroidManifest.xml:18:3-42
+MERGED from [com.google.dagger:dagger-lint-aar:2.31] /home/nonoru/.gradle/caches/transforms-2/files-2.1/3db6df553120e90c3b3c07c81695e2eb/jetified-dagger-lint-aar-2.31/AndroidManifest.xml:18:3-42
+INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+		INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+		ADDED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+		INJECTED from /home/nonoru/Documents/M1/S2/Logiciel_libre/NiceFeed/app/src/main/AndroidManifest.xml
+provider#com.squareup.picasso.PicassoProvider
+ADDED from [com.squareup.picasso:picasso:2.71828] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2f11e8ef2a5cc485721326ad4ab07d9d/jetified-picasso-2.71828/AndroidManifest.xml:8:9-11:40
+	android:authorities
+		ADDED from [com.squareup.picasso:picasso:2.71828] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2f11e8ef2a5cc485721326ad4ab07d9d/jetified-picasso-2.71828/AndroidManifest.xml:10:13-72
+	android:exported
+		ADDED from [com.squareup.picasso:picasso:2.71828] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2f11e8ef2a5cc485721326ad4ab07d9d/jetified-picasso-2.71828/AndroidManifest.xml:11:13-37
+	android:name
+		ADDED from [com.squareup.picasso:picasso:2.71828] /home/nonoru/.gradle/caches/transforms-2/files-2.1/2f11e8ef2a5cc485721326ad4ab07d9d/jetified-picasso-2.71828/AndroidManifest.xml:9:13-64
+uses-permission#android.permission.WAKE_LOCK
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:25:5-68
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:25:22-65
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:27:5-81
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:27:22-78
+uses-permission#android.permission.FOREGROUND_SERVICE
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:28:5-77
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:28:22-74
+provider#androidx.work.impl.WorkManagerInitializer
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:31:9-37:35
+	android:authorities
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:33:13-68
+	android:multiprocess
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:36:13-40
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:35:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:37:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:34:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:32:13-69
+service#androidx.work.impl.background.systemalarm.SystemAlarmService
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:39:9-44:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:42:13-72
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:43:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:44:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:41:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:40:13-88
+service#androidx.work.impl.background.systemjob.SystemJobService
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:45:9-51:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:48:13-70
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:49:13-36
+	android:permission
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:50:13-69
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:51:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:47:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:46:13-84
+service#androidx.work.impl.foreground.SystemForegroundService
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:52:9-57:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:55:13-77
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:56:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:57:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:54:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:53:13-81
+receiver#androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:59:9-64:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:62:13-35
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:63:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:64:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:61:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:60:13-88
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:65:9-75:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:68:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:69:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:70:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:67:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:66:13-106
+intent-filter#action:name:android.intent.action.ACTION_POWER_CONNECTED+action:name:android.intent.action.ACTION_POWER_DISCONNECTED
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:71:13-74:29
+action#android.intent.action.ACTION_POWER_CONNECTED
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:72:17-87
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:72:25-84
+action#android.intent.action.ACTION_POWER_DISCONNECTED
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:73:17-90
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:73:25-87
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:76:9-86:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:79:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:80:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:81:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:78:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:77:13-104
+intent-filter#action:name:android.intent.action.BATTERY_LOW+action:name:android.intent.action.BATTERY_OKAY
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:82:13-85:29
+action#android.intent.action.BATTERY_OKAY
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:83:17-77
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:83:25-74
+action#android.intent.action.BATTERY_LOW
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:84:17-76
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:84:25-73
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:87:9-97:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:90:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:91:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:92:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:89:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:88:13-104
+intent-filter#action:name:android.intent.action.DEVICE_STORAGE_LOW+action:name:android.intent.action.DEVICE_STORAGE_OK
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:93:13-96:29
+action#android.intent.action.DEVICE_STORAGE_LOW
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:94:17-83
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:94:25-80
+action#android.intent.action.DEVICE_STORAGE_OK
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:95:17-82
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:95:25-79
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:98:9-107:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:101:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:102:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:103:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:100:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:99:13-103
+intent-filter#action:name:android.net.conn.CONNECTIVITY_CHANGE
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:104:13-106:29
+action#android.net.conn.CONNECTIVITY_CHANGE
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:105:17-79
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:105:25-76
+receiver#androidx.work.impl.background.systemalarm.RescheduleReceiver
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:108:9-119:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:111:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:112:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:113:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:110:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:109:13-88
+intent-filter#action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.TIMEZONE_CHANGED+action:name:android.intent.action.TIME_SET
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:114:13-118:29
+action#android.intent.action.BOOT_COMPLETED
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:115:17-79
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:115:25-76
+action#android.intent.action.TIME_SET
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:116:17-73
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:116:25-70
+action#android.intent.action.TIMEZONE_CHANGED
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:117:17-81
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:117:25-78
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:120:9-129:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:123:13-72
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:124:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:125:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:122:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:121:13-99
+intent-filter#action:name:androidx.work.impl.background.systemalarm.UpdateProxies
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:126:13-128:29
+action#androidx.work.impl.background.systemalarm.UpdateProxies
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:127:17-98
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:127:25-95
+receiver#androidx.work.impl.diagnostics.DiagnosticsReceiver
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:130:9-140:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:133:13-35
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:134:13-36
+	android:permission
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:135:13-57
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:136:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:132:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:131:13-78
+intent-filter#action:name:androidx.work.diagnostics.REQUEST_DIAGNOSTICS
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:137:13-139:29
+action#androidx.work.diagnostics.REQUEST_DIAGNOSTICS
+ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:138:17-88
+	android:name
+		ADDED from [androidx.work:work-runtime:2.5.0] /home/nonoru/.gradle/caches/transforms-2/files-2.1/b40d363bbd2ddee02d2421a23adec3cc/work-runtime-2.5.0/AndroidManifest.xml:138:25-85
+service#androidx.room.MultiInstanceInvalidationService
+ADDED from [androidx.room:room-runtime:2.2.6] /home/nonoru/.gradle/caches/transforms-2/files-2.1/d60129535763c4dd48c30febfaa1ca7e/room-runtime-2.2.6/AndroidManifest.xml:25:9-28:40
+	android:exported
+		ADDED from [androidx.room:room-runtime:2.2.6] /home/nonoru/.gradle/caches/transforms-2/files-2.1/d60129535763c4dd48c30febfaa1ca7e/room-runtime-2.2.6/AndroidManifest.xml:28:13-37
+	android:directBootAware
+		ADDED from [androidx.room:room-runtime:2.2.6] /home/nonoru/.gradle/caches/transforms-2/files-2.1/d60129535763c4dd48c30febfaa1ca7e/room-runtime-2.2.6/AndroidManifest.xml:27:13-43
+	android:name
+		ADDED from [androidx.room:room-runtime:2.2.6] /home/nonoru/.gradle/caches/transforms-2/files-2.1/d60129535763c4dd48c30febfaa1ca7e/room-runtime-2.2.6/AndroidManifest.xml:26:13-74

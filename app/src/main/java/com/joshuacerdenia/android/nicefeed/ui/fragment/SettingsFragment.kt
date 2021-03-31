@@ -2,12 +2,14 @@ package com.joshuacerdenia.android.nicefeed.ui.fragment
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ScrollView
 import android.widget.Spinner
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
 import com.joshuacerdenia.android.nicefeed.R
@@ -187,8 +189,24 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
             ) {
                 when (action) {
                     ACTION_SAVE_THEME -> {
-                        NiceFeedPreferences.saveTheme(context, position)
-                        Utils.setTheme(position)
+                        if(Build.VERSION.SDK_INT<29){
+                            if(position == 0) {
+                                NiceFeedPreferences.saveTheme(context, position)
+                                setDarkMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                            }
+                            if (position == 2) {
+                                NiceFeedPreferences.saveTheme(context, position)
+                                setDarkMode(AppCompatDelegate.MODE_NIGHT_YES)
+                            }
+                            else{
+                                NiceFeedPreferences.saveTheme(context, position)
+                                Utils.setTheme(position)
+                            }
+                        }
+                        else {
+                            NiceFeedPreferences.saveTheme(context, position)
+                            Utils.setTheme(position)
+                        }
                     }
                     ACTION_SAVE_FEEDS_ORDER -> NiceFeedPreferences.saveFeedsOrder(context, position)
                     ACTION_SAVE_ENTRIES_ORDER -> NiceFeedPreferences.saveEntriesOrder(context, position)
@@ -220,5 +238,10 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
         fun newInstance(): SettingsFragment {
             return SettingsFragment()
         }
+    }
+
+    private fun setDarkMode(@AppCompatDelegate.NightMode darkMode: Int) {
+        AppCompatDelegate.setDefaultNightMode(darkMode)
+
     }
 }
