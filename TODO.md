@@ -28,12 +28,12 @@ Modifier drawable et layout activité par activité
 
 * [x] Settings
 * [x] About
-* [ ] Menu
+* [x] Menu
     * [x] Manage Feed
     * [x] Add Feed
     * [x] New Entries
     * [x] Starred Entries
-    * [ ] UNCATEGORIZED
+    * [x] UNCATEGORIZED
     * [x] Settings
 * [x] Manage Feed
     * [x] Export
@@ -45,23 +45,35 @@ Modifier drawable et layout activité par activité
     * [x] Add deef by URL
 * [ ] New Entries
     * [ ] Webview
-    * [ ] Search
+    * [x] Search
     * [ ] ???( trois points)
-        * [ ] Filter
-        * [ ] Mark as Read(unread)
-        * [ ] (un)Star all
+        * [x] Filter
+        * [x] Mark as Read(unread)
+        * [x] (un)Star all
 
 * [ ] Starred Entries
 * [ ] FEED
-    * [ ] Search
+    * [x] Search
     * [ ] ??? (trois points)
-        * [ ] Check for Updates
-        * [ ] Feed Info
-        * [ ] Filter
-        * [ ] Mark as (un)read
-        * [ ] (un)star all
-        * [ ] Visit Website
-        * [ ] Remove Feed
+        * [x] Check for Updates
+        * [x] Feed Info
+        * [x] Filter
+        * [x] Mark as (un)read
+        * [x] (un)star all
+        * [x] Visit Website
+        * [x] Remove Feed
+    * [ ] Article
+        * [x] Star
+        * [x] Browser
+        * [ ] ???(trois points)
+            * [ ] Share
+            * [x] Copy link
+            * [x] Change Text size
+
+Reste à faire
+===
+
+Mettre les trois points en blanc + changer la couleur du text quand on clique sur une webview 
 
 
 
