@@ -131,6 +131,7 @@
     <string name="export_opml">Export OPML</string>
     <string name="keep_old_unread">Keep old unread entries on update</string>
     <string name="keep_old_unread_description">Otherwise, all old entries will be deleted unless starred.</string>
+    <string name="updating_all_feeds">Updating all feeds in the background.</string>
 
     <plurals name="numberOfEntries">
         <item quantity="one">%d entry</item>

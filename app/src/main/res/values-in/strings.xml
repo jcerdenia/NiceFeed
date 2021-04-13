@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">NiceFeed</string>
     <string name="sample_feed_url">www.example.com/feed</string>
     <string name="add_feed_by_url">Tambah URL umpan</string>
@@ -131,16 +131,17 @@
     <string name="export_opml">Ekspor OPML</string>
     <string name="keep_old_unread">Simpan entri lama yang belum dibaca saat pembaruan</string>
     <string name="keep_old_unread_description">Atau, semua entri lama akan dihapus kecuali entri favorit.</string>
+    <string name="updating_all_feeds">Memperbarui semua…</string>
 
-    <plurals name="numberOfEntries">
+    <plurals name="numberOfEntries" tools:ignore="UnusedQuantity">
         <item quantity="one">%d entri</item>
         <item quantity="other">%d entri</item>
     </plurals>
-    <plurals name="numberOfNewEntries">
+    <plurals name="numberOfNewEntries" tools:ignore="UnusedQuantity">
         <item quantity="one">%d entri baru</item>
         <item quantity="other">%d entri baru</item>
     </plurals>
-    <plurals name="numberOfFeeds">
+    <plurals name="numberOfFeeds" tools:ignore="UnusedQuantity">
         <item quantity="one">1 umpan</item>
         <item quantity="other">%d umpan</item>
     </plurals>

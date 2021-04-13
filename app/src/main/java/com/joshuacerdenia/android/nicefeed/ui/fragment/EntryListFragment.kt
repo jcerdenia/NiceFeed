@@ -32,6 +32,7 @@ import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryListViewModel
 import com.joshuacerdenia.android.nicefeed.util.Utils
 import com.joshuacerdenia.android.nicefeed.util.extensions.hide
 import com.joshuacerdenia.android.nicefeed.util.extensions.show
+import com.joshuacerdenia.android.nicefeed.util.work.BackgroundSyncWorker
 
 class EntryListFragment : VisibleFragment(),
     EntryListAdapter.OnEntrySelected,
@@ -200,11 +201,12 @@ class EntryListFragment : VisibleFragment(),
         toggleOptionsItems()
 
         if (feedId?.startsWith(FOLDER) == true) {
-            menu.findItem(R.id.update_item).isVisible = false
             menu.findItem(R.id.visit_website_item).isVisible = false
             menu.findItem(R.id.about_feed_item).isVisible = false
             menu.findItem(R.id.remove_feed_item).isVisible = false
         }
+
+        if (feedId == FOLDER_STARRED) menu.findItem(R.id.update_item).isVisible = false
 
         searchItem.setOnActionExpandListener(object: MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
@@ -272,14 +274,21 @@ class EntryListFragment : VisibleFragment(),
     private fun handleCheckForUpdates(
         url: String? = viewModel.getCurrentFeed()?.url
     ): Boolean {
-        return if (url != null) {
-            searchItem.collapseActionView()
-            viewModel.clearQuery()
+        searchItem.collapseActionView()
+        viewModel.clearQuery()
+
+        if (feedId == FOLDER_NEW) {
+            context?.let {
+                BackgroundSyncWorker.runOnce(it)
+                Snackbar.make(recyclerView, getString(R.string.updating_all_feeds), Snackbar.LENGTH_LONG).show()
+            }
+        } else {
+            if (url == null) return false
             toolbar.title = getString(R.string.updating)
             progressBar.show()
             viewModel.requestUpdate(url)
-            true
-        } else false
+        }
+        return true
     }
     
     private fun showUpdateNotice() {
@@ -414,6 +423,7 @@ class EntryListFragment : VisibleFragment(),
         private const val ARG_FEED_ID = "ARG_FEED_ID"
         private const val ARG_ENTRY_ID = "ARG_ENTRY_ID"
         private const val ARG_BLOCK_AUTO_UPDATE = "ARG_BLOCK_AUTO_UPDATE"
+
         const val FOLDER = "FOLDER"
         const val FOLDER_NEW = "FOLDER_NEW"
         const val FOLDER_STARRED = "FOLDER_STARRED"
