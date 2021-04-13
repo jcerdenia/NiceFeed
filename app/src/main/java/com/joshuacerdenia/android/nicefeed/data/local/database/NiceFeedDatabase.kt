@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.joshuacerdenia.android.nicefeed.data.local.database.dao.CombinedDao
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedEntryCrossRef

@@ -1,4 +1,4 @@
-package com.joshuacerdenia.android.nicefeed.data.local.database
+package com.joshuacerdenia.android.nicefeed.data.local.database.dao
 
 import androidx.room.*
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedEntryCrossRef
