@@ -11,6 +11,7 @@ import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedIdWithCategory
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
 import com.joshuacerdenia.android.nicefeed.util.NetworkMonitor
+import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class NiceFeedRepository private constructor(
@@ -19,7 +20,7 @@ class NiceFeedRepository private constructor(
 ) {
 
     private val dao = database.combinedDao()
-    private val executor = Executors.newSingleThreadExecutor()
+    val executor: Executor = Executors.newSingleThreadExecutor()
 
     fun getFeed(feedId: String): LiveData<Feed?> = dao.getFeed(feedId)
 

@@ -49,8 +49,8 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
         BackupUrlManager.reset()
     }
 
+    /* Automatically makes several requests with different possible URLs */
     private suspend fun executeRequest(url: String) {
-        // Automatically makes several requests with different possible URLs
         Log.d(TAG, "Requesting $url")
 
         try {
@@ -67,7 +67,7 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
         }
     }
 
-    /*  Maps 'Channel' data into 'Feed' and 'Entry' objects */
+    /* Maps 'Channel' data into 'Feed' and 'Entry' objects */
     private object ChannelMapper {
 
         private const val MAX_ENTRIES = 300 // Arbitrary
