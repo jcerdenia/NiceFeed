@@ -278,8 +278,8 @@ class EntryListFragment : VisibleFragment(),
         viewModel.clearQuery()
 
         if (feedId == FOLDER_NEW) {
-            context?.let {
-                BackgroundSyncWorker.runOnce(it)
+            context?.let { context ->
+                BackgroundSyncWorker.runOnce(context)
                 Snackbar.make(recyclerView, getString(R.string.updating_all_feeds), Snackbar.LENGTH_LONG).show()
             }
         } else {
