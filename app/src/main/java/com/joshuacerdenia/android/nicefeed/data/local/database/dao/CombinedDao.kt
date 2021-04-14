@@ -54,7 +54,7 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
             deleteEntriesById(entryIds)
             deleteFeedEntryCrossRefs(feedId, entryIds)
         }
-        addToFeedUnreadCount(feedId, (newEntries.size - oldEntries.filter { !it.isRead }.size))
+        incrementFeedUnreadCount(feedId, (newEntries.size - oldEntries.filter { !it.isRead }.size))
         feedImage?.let { updateFeedImage(feedId, it) }
     }
 
@@ -72,7 +72,7 @@ interface CombinedDao: FeedsDao, EntriesDao, FeedEntryCrossRefsDao {
     fun updateEntryIsReadAndFeedUnreadCount(vararg entryId: String, isRead: Boolean) {
         updateEntryIsRead(*entryId, isRead = isRead)
         (if (isRead) -1 else 1).let { addend ->
-            entryId.forEach { addToFeedUnreadCountByEntry(it, addend) }
+            entryId.forEach { incrementFeedUnreadCountByEntry(it, addend) }
         }
     }
 

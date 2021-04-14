@@ -51,11 +51,11 @@ interface FeedsDao {
     @Query("UPDATE Feed SET imageUrl = :feedImage WHERE url = :feedId")
     fun updateFeedImage(feedId: String, feedImage: String)
 
-    @Query("UPDATE Feed SET unreadCount = :count WHERE url = :feedId")
-    fun updateFeedUnreadCount(feedId: String, count: Int)
+    @Query("UPDATE Feed SET unreadCount = :newCount WHERE url = :feedId")
+    fun updateFeedUnreadCount(feedId: String, newCount: Int)
 
     @Query("UPDATE Feed SET unreadCount = (unreadCount + :addend) WHERE url = :feedId")
-    fun addToFeedUnreadCount(feedId: String, addend: Int)
+    fun incrementFeedUnreadCount(feedId: String, addend: Int)
 
     @Query(
         "UPDATE Feed SET unreadCount = (unreadCount + :addend) WHERE url IN " +
@@ -63,7 +63,7 @@ interface FeedsDao {
             "INNER JOIN Feed ON (_junction.feedUrl = Feed.url) " +
             "WHERE _junction.entryUrl = (:entryId))"
     )
-    fun addToFeedUnreadCountByEntry(entryId: String, addend: Int)
+    fun incrementFeedUnreadCountByEntry(entryId: String, addend: Int)
 
     @Query("DELETE FROM Feed WHERE url IN (:feedId)")
     fun deleteFeeds(vararg feedId: String)
