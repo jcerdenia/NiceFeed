@@ -46,15 +46,15 @@ Modifier drawable et layout activité par activité
 * [ ] New Entries
     * [ ] Webview
     * [x] Search
-    * [x] ???( trois points)
+    * [ ] ???( trois points)
         * [x] Filter
         * [x] Mark as Read(unread)
         * [x] (un)Star all
 
-* [x] Starred Entries
+* [ ] Starred Entries
 * [ ] FEED
     * [x] Search
-    * [x] ??? (trois points)
+    * [ ] ??? (trois points)
         * [x] Check for Updates
         * [x] Feed Info
         * [x] Filter
@@ -65,8 +65,8 @@ Modifier drawable et layout activité par activité
     * [ ] Article
         * [x] Star
         * [x] Browser
-        * [x] ???(trois points)
-            * [x] Share
+        * [ ] ???(trois points)
+            * [ ] Share
             * [x] Copy link
             * [x] Change Text size
 

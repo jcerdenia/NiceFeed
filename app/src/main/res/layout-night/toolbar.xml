@@ -8,4 +8,5 @@
     android:minHeight="?attr/actionBarSize"
     android:background="?attr/colorPrimaryDark"
     android:title="@string/app_name"
-    local:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
+    android:theme="@style/Theme.AppCompat.Light"
+    local:popupTheme="@style/ThemeOverlay.AppCompat.DayNight" />
