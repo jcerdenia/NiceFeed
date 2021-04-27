@@ -43,8 +43,8 @@ Modifier drawable et layout activité par activité
     * [x] Search feeds
     * [x] Surscribe
     * [x] Add deef by URL
-* [ ] New Entries
-    * [ ] Webview
+* [x] New Entries
+    * [x] Webview
     * [x] Search
     * [x] ???( trois points)
         * [x] Filter
@@ -52,7 +52,7 @@ Modifier drawable et layout activité par activité
         * [x] (un)Star all
 
 * [x] Starred Entries
-* [ ] FEED
+* [x] FEED
     * [x] Search
     * [x] ??? (trois points)
         * [x] Check for Updates
@@ -62,7 +62,7 @@ Modifier drawable et layout activité par activité
         * [x] (un)star all
         * [x] Visit Website
         * [x] Remove Feed
-    * [ ] Article
+    * [x] Article
         * [x] Star
         * [x] Browser
         * [x] ???(trois points)
