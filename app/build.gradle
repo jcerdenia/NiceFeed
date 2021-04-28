@@ -12,8 +12,8 @@ android {
         applicationId "com.joshuacerdenia.android.nicefeed"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 16
-        versionName "1.0.0-beta05.6"
+        versionCode 17
+        versionName "1.0.0-beta06"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-    def room_version = "2.2.6"
+    def room_version = "2.3.0"
     def rome_version = "1.12.2"
     def lifecycle_version = "2.3.1"
     def hilt_version = "2.28-alpha"
