@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.webkit.WebChromeClient
@@ -14,6 +15,7 @@ import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
@@ -43,11 +45,13 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     private lateinit var imageView: ImageView
     private lateinit var titleTextView: TextView
     private lateinit var subtitleTextView: TextView
+    private  var themeApp = 0
 
     private var callbacks: Callbacks? = null
     private var starItem: MenuItem? = null
     private var textSizeItem: MenuItem? = null
     private val fragment = this@EntryFragment
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -79,8 +83,8 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         imageView = view.findViewById(R.id.image_view)
         titleTextView = view.findViewById(R.id.title_text_view)
         subtitleTextView = view.findViewById(R.id.subtitle_text_view)
-
         webView = view.findViewById(R.id.web_view)
+        themeApp= AppCompatDelegate.getDefaultNightMode();
         webView.apply {
             setBackgroundColor(Color.TRANSPARENT)
             settings.apply {
@@ -101,6 +105,26 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
+                    if(themeApp==AppCompatDelegate.MODE_NIGHT_YES && Build.VERSION.SDK_INT<29) {
+                        val code = """javascript:(function() {
+                        var node = document.createElement('style');
+                
+                        node.type = 'text/css';
+                        var link = document.links;
+                        l = link.length;
+                        for(i=0;i<l;i++){
+                            link[i].style.color = '#6666ff';
+                        }
+                        node.innerHTML = 'body {
+                            color: white;
+                            background-color: transparent;
+                        }';
+                        document.head.appendChild(node);
+                     
+                    })()""".trimIndent()
+
+                        loadUrl(code)
+                    }
                     if (!viewModel.isInitialLoading) {
                         val position = viewModel.lastPosition
                         nestedScrollView.smoothScrollTo(position.first, position.second)

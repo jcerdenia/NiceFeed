@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@color/colorPrimaryDark">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:text="@string/filter"
+        android:textColor="@color/white"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+    <RadioGroup
+        android:id="@+id/filter_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/all_entries_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/all_entries"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+            android:textColor="@color/white"
+            android:buttonTint="@color/white"/>
+
+        <RadioButton
+            android:id="@+id/unread_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/unread"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+            android:textColor="@color/white"
+            android:buttonTint="@color/white"/>
+
+        <RadioButton
+            android:id="@+id/starred_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/starred"
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+            android:textColor="@color/white"
+            android:buttonTint="@color/white"/>
+
+    </RadioGroup>
+</LinearLayout>
