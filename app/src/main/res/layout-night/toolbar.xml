@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?attr/actionBarSize"
-    android:background="?attr/colorPrimaryDark"
+    android:background="@android:color/transparent"
     android:title="@string/app_name"
-    android:theme="@style/Theme.AppCompat.Light"
+    android:theme="@style/Theme.AppCompat"
     local:popupTheme="@style/ThemeOverlay.AppCompat.DayNight" />
