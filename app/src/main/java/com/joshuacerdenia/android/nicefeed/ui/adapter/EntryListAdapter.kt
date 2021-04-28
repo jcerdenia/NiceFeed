@@ -88,12 +88,12 @@ class EntryListAdapter(
         }
 
         override fun onClick(v: View) {
-            lastClickedPosition = adapterPosition
+            lastClickedPosition = absoluteAdapterPosition
             listener.onEntryClicked(entry.url)
         }
 
         override fun onLongClick(v: View?): Boolean {
-            lastClickedPosition = adapterPosition
+            lastClickedPosition = absoluteAdapterPosition
             listener.onEntryLongClicked(entry, v)
             return true
         }
