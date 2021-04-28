@@ -20,7 +20,7 @@ class NiceFeedRepository private constructor(
 ) {
 
     private val dao = database.combinedDao()
-    val executor: Executor = Executors.newSingleThreadExecutor()
+    private val executor: Executor = Executors.newSingleThreadExecutor()
 
     fun getFeed(feedId: String): LiveData<Feed?> = dao.getFeed(feedId)
 

@@ -36,17 +36,17 @@ interface FeedsDao {
     @Update
     fun updateFeed(feed: Feed)
 
-    @Transaction
-    fun updateFeedTitleAndCategory(feedId: String, title: String, category: String) {
-        updateFeedTitle(feedId, title)
-        updateFeedCategory(feedId, category = category)
-    }
-
     @Query("UPDATE Feed SET title = :title WHERE url = :feedId")
     fun updateFeedTitle(feedId: String, title: String)
 
     @Query("UPDATE Feed SET category = :category WHERE url IN (:feedId)")
     fun updateFeedCategory(vararg feedId: String, category: String)
+
+    @Transaction
+    fun updateFeedTitleAndCategory(feedId: String, title: String, category: String) {
+        updateFeedTitle(feedId, title)
+        updateFeedCategory(feedId, category = category)
+    }
 
     @Query("UPDATE Feed SET imageUrl = :feedImage WHERE url = :feedId")
     fun updateFeedImage(feedId: String, feedImage: String)

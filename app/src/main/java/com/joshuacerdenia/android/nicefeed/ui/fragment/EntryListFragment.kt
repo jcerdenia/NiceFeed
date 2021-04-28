@@ -34,7 +34,7 @@ import com.joshuacerdenia.android.nicefeed.util.extensions.hide
 import com.joshuacerdenia.android.nicefeed.util.extensions.show
 import com.joshuacerdenia.android.nicefeed.util.work.BackgroundSyncWorker
 
-class EntryListFragment : VisibleFragment(),
+open class EntryListFragment : VisibleFragment(),
     EntryListAdapter.OnEntrySelected,
     EntryPopupMenu.OnPopupMenuItemClicked,
     FilterEntriesFragment.Callbacks,
@@ -64,7 +64,6 @@ class EntryListFragment : VisibleFragment(),
     private var feedId: String? = null
     private var callbacks: Callbacks? = null
     private val handler = Handler()
-    private val fragment = this@EntryListFragment
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -311,8 +310,8 @@ class EntryListFragment : VisibleFragment(),
                 imageUrl = feed.imageUrl, description = feed.description, category = feed.category)
             val categories = callbacks?.onCategoriesNeeded() ?: emptyArray()
             EditFeedFragment.newInstance(mFeed, categories).apply {
-                setTargetFragment(fragment, 0)
-                show(fragment.parentFragmentManager, null)
+                setTargetFragment(this@EntryListFragment, 0)
+                show(this@EntryListFragment.parentFragmentManager, null)
             }
             true
         } else false
@@ -334,8 +333,8 @@ class EntryListFragment : VisibleFragment(),
 
     private fun handleFilter(): Boolean {
         FilterEntriesFragment.newInstance(viewModel.filter).apply {
-            setTargetFragment(fragment, 0)
-            show(fragment.parentFragmentManager, null)
+            setTargetFragment(this@EntryListFragment, 0)
+            show(this@EntryListFragment.parentFragmentManager, null)
         }
         return true
     }
@@ -363,8 +362,8 @@ class EntryListFragment : VisibleFragment(),
         val feed = viewModel.getCurrentFeed()
         return if (feed != null) {
             ConfirmActionFragment.newInstance(REMOVE, feed.title).apply {
-                setTargetFragment(fragment, 0)
-                show(fragment.parentFragmentManager,null)
+                setTargetFragment(this@EntryListFragment, 0)
+                show(this@EntryListFragment.parentFragmentManager,null)
             }
             true
         } else false
