@@ -12,16 +12,13 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.Toolbar
 import androidx.core.text.HtmlCompat
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.databinding.FragmentEntryBinding
+import com.joshuacerdenia.android.nicefeed.databinding.ToolbarBinding
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.dialog.TextSizeFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryViewModel
@@ -37,14 +34,13 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     interface Callbacks: OnToolbarInflated
 
+    private var _binding : FragmentEntryBinding? = null
+    private val binding get() = _binding!!
+
+    private var _toolbarBinding: ToolbarBinding? = null
+    private val toolbarBinding get() = _toolbarBinding!!
+
     private lateinit var viewModel: EntryViewModel
-    private lateinit var nestedScrollView: NestedScrollView
-    private lateinit var toolbar: Toolbar
-    private lateinit var webView: WebView
-    private lateinit var progressBar: ProgressBar
-    private lateinit var imageView: ImageView
-    private lateinit var titleTextView: TextView
-    private lateinit var subtitleTextView: TextView
     private  var themeApp = 0
 
     private var callbacks: Callbacks? = null
@@ -76,17 +72,12 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_entry, container, false)
-        toolbar = view.findViewById(R.id.toolbar)
-        nestedScrollView = view.findViewById(R.id.nested_scroll_view)
-        progressBar = view.findViewById(R.id.progress_bar)
-        imageView = view.findViewById(R.id.image_view)
-        titleTextView = view.findViewById(R.id.title_text_view)
-        subtitleTextView = view.findViewById(R.id.subtitle_text_view)
-        webView = view.findViewById(R.id.web_view)
+        _binding = FragmentEntryBinding.inflate(inflater, container, false)
+        _toolbarBinding = binding.toolbar
+
         themeApp = AppCompatDelegate.getDefaultNightMode()
 
-        webView.apply {
+        binding.webView.apply {
             setBackgroundColor(Color.TRANSPARENT)
             settings.apply {
                 javaScriptEnabled = true
@@ -100,7 +91,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
                     request: WebResourceRequest?
                 ): Boolean {
                     // Open all links with default browser.
-                    request?.url?.let { url -> Utils.openLink(requireActivity(), webView, url) }
+                    request?.url?.let { url -> Utils.openLink(requireActivity(), binding.root, url) }
                     return true
                 }
 
@@ -128,7 +119,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
                     if (!viewModel.isInitialLoading) {
                         val position = viewModel.lastPosition
-                        nestedScrollView.smoothScrollTo(position.first, position.second)
+                        binding.nestedScrollView.smoothScrollTo(position.first, position.second)
                     }
                 }
             }
@@ -136,63 +127,63 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
             webChromeClient = object : WebChromeClient() {
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
                     super.onProgressChanged(view, newProgress)
-                    progressBar.progress = newProgress
-                    if (newProgress == 100) progressBar.hide()
+                    binding.progressBar.progress = newProgress
+                    if (newProgress == 100) binding.progressBar.hide()
                 }
             }
         }
 
-        toolbar.title = getString(R.string.loading)
-        callbacks?.onToolbarInflated(toolbar)
-        return view
+        toolbarBinding.toolbar.title = getString(R.string.loading)
+        callbacks?.onToolbarInflated(toolbarBinding.toolbar)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.htmlLiveData.observe(viewLifecycleOwner, { data ->
             if (data != null) {
-                webView.loadData(data, MIME_TYPE, ENCODING)
+                binding.webView.loadData(data, MIME_TYPE, ENCODING)
                 toggleBannerViews(viewModel.bannerIsEnabled)
                 setHasOptionsMenu(true)
-                toolbar.title = viewModel.entry?.website?.shortened()
+                toolbarBinding.toolbar.title = viewModel.entry?.website?.shortened()
                 if (viewModel.bannerIsEnabled) viewModel.entry?.let { entry ->
                     updateBanner(entry.title, entry.date, entry.author)
                     Picasso.get().load(entry.image).fit().centerCrop()
-                        .placeholder(R.drawable.vintage_newspaper).into(imageView)
+                        .placeholder(R.drawable.vintage_newspaper).into(binding.imageView)
                 }
             } else {
                 toggleBannerViews(false)
-                progressBar.hide()
-                toolbar.title = getString(R.string.app_name)
-                Utils.showErrorMessage(nestedScrollView, resources)
+                binding.progressBar.hide()
+                toolbarBinding.toolbar.title = getString(R.string.app_name)
+                Utils.showErrorMessage(binding.root, resources)
             }
         })
     }
 
     override fun onStart() {
         super.onStart()
-        toolbar.setOnClickListener { nestedScrollView.smoothScrollTo(0, 0) }
-        imageView.setOnClickListener { handleViewInBrowser() }
+        toolbarBinding.toolbar.setOnClickListener { binding.nestedScrollView.smoothScrollTo(0, 0) }
+        binding.imageView.setOnClickListener { handleViewInBrowser() }
     }
 
     private fun toggleBannerViews(isEnabled: Boolean) {
         if (isEnabled) {
-            imageView.show()
-            titleTextView.show()
-            subtitleTextView.show()
+            binding.imageView.show()
+            binding.titleTextView.show()
+            binding.subtitleTextView.show()
         } else {
-            imageView.hide()
-            titleTextView.hide()
-            subtitleTextView.hide()
+            binding.imageView.hide()
+            binding.titleTextView.hide()
+            binding.subtitleTextView.hide()
         }
     }
 
     private fun updateBanner(title: String, date: Date?, author: String?) {
-        titleTextView.text = HtmlCompat.fromHtml(title, 0)
+        binding.titleTextView.text = HtmlCompat.fromHtml(title, 0)
         val formattedDate = date?.let {
             DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(it)
         }
-        subtitleTextView.text = when {
+        binding.subtitleTextView.text = when {
             author.isNullOrEmpty() -> formattedDate
             formattedDate.isNullOrEmpty() -> author
             else -> "$formattedDate – $author"
@@ -254,13 +245,13 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     private fun handleCopyLink(): Boolean {
         viewModel.entry?.let { entry ->
-            Utils.copyLinkToClipboard(requireContext(), entry.url, webView)
+            Utils.copyLinkToClipboard(requireContext(), entry.url, binding.root)
             return true
         } ?: return false
     }
 
     private fun handleViewInBrowser(): Boolean {
-        Utils.openLink(requireActivity(), webView, Uri.parse(viewModel.entry?.url))
+        Utils.openLink(requireActivity(), binding.root, Uri.parse(viewModel.entry?.url))
         return true
     }
 
@@ -278,7 +269,10 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     }
 
     private fun saveScrollPosition() {
-        viewModel.lastPosition = Pair(nestedScrollView.scrollX, nestedScrollView.scrollY)
+        viewModel.lastPosition = Pair(
+            binding.nestedScrollView.scrollX,
+            binding.nestedScrollView.scrollY
+        )
     }
 
     override fun onStop() {
