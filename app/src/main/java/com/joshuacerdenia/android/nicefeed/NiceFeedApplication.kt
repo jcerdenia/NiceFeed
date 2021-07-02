@@ -7,6 +7,7 @@ import android.os.Build
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.local.database.NiceFeedDatabase
+import com.joshuacerdenia.android.nicefeed.data.remote.FeedFetcher
 import com.joshuacerdenia.android.nicefeed.util.NetworkMonitor
 import com.joshuacerdenia.android.nicefeed.util.Utils
 import com.joshuacerdenia.android.nicefeed.util.work.BackgroundSyncWorker
@@ -24,8 +25,9 @@ class NiceFeedApplication : Application() {
         super.onCreate()
         Utils.setTheme(NiceFeedPreferences.getTheme(this))
         val database = NiceFeedDatabase.build(this)
+        val feedFetcher = FeedFetcher()
         val connectionMonitor = NetworkMonitor(this)
-        NiceFeedRepository.initialize(database, connectionMonitor)
+        NiceFeedRepository.init(database, feedFetcher, connectionMonitor)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = getSystemService(NotificationManager::class.java)

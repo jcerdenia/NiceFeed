@@ -10,17 +10,19 @@ import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedIdWithCategory
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
+import com.joshuacerdenia.android.nicefeed.data.remote.FeedFetcher
 import com.joshuacerdenia.android.nicefeed.util.NetworkMonitor
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class NiceFeedRepository private constructor(
     database: NiceFeedDatabase,
+    private val feedFetcher: FeedFetcher,
     val networkMonitor: NetworkMonitor
 ) {
 
     private val dao = database.combinedDao()
-    private val executor: Executor = Executors.newSingleThreadExecutor()
+    val executor: Executor = Executors.newSingleThreadExecutor()
 
     fun getFeed(feedId: String): LiveData<Feed?> = dao.getFeed(feedId)
 
@@ -37,6 +39,12 @@ class NiceFeedRepository private constructor(
     }
 
     fun getFeedsManageable(): LiveData<List<FeedManageable>> = dao.getFeedsManageable()
+
+    fun requestFeedAndEntriesOnline(url: String) {
+        executor.execute {
+            feedFetcher.request(url)
+        }
+    }
 
     fun getEntry(entryId: String): LiveData<Entry?> = dao.getEntry(entryId)
 
@@ -122,8 +130,8 @@ class NiceFeedRepository private constructor(
 
         private var INSTANCE: NiceFeedRepository? = null
 
-        fun initialize(database: NiceFeedDatabase, networkMonitor: NetworkMonitor) {
-            if (INSTANCE == null) INSTANCE = NiceFeedRepository(database, networkMonitor)
+        fun init(database: NiceFeedDatabase, feedFetcher: FeedFetcher, networkMonitor: NetworkMonitor) {
+            if (INSTANCE == null) INSTANCE = NiceFeedRepository(database, feedFetcher, networkMonitor)
         }
 
         fun get(): NiceFeedRepository {

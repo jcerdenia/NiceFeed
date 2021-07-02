@@ -13,7 +13,7 @@ data class Entry(
     val author: String?,
     val date: Date?,
     val content: String?,
-    val image: String?,
+    var image: String?,
     var isStarred: Boolean = false,
     var isRead: Boolean = false
 ) : Serializable {

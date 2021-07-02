@@ -11,8 +11,11 @@ import com.joshuacerdenia.android.nicefeed.util.extensions.sortedByDate
 class UpdateManager(private val receiver: UpdateReceiver) {
 
     interface UpdateReceiver {
+
         fun onUnreadEntriesCounted(feedId: String, unreadCount: Int)
+
         fun onFeedNeedsUpdate(feed: Feed)
+
         fun onOldAndNewEntriesCompared(
             feedId: String,
             entriesToAdd: List<Entry>,
@@ -22,8 +25,10 @@ class UpdateManager(private val receiver: UpdateReceiver) {
     }
 
     var keepOldUnreadEntries: Boolean = true
+
     var currentFeed: Feed? = null
         private set
+
     private var currentEntries = listOf<Entry>()
         get() = field.sortedByDate()
 

@@ -18,12 +18,14 @@ import java.util.*
 class FeedParser (private val networkMonitor: NetworkMonitor) {
 
     private lateinit var rssParser: Parser
+
     private val _feedRequestLiveData = MutableLiveData<FeedWithEntries?>()
     val feedRequestLiveData: LiveData<FeedWithEntries?>
         get() = _feedRequestLiveData
 
     suspend fun getFeedSynchronously(url: String): FeedWithEntries? {
         rssParser = Parser.Builder().build()
+
         return if (networkMonitor.isOnline) {
             try {
                 val channel = rssParser.getChannel(url)
@@ -31,11 +33,14 @@ class FeedParser (private val networkMonitor: NetworkMonitor) {
             } catch(e: Exception) {
                 null
             }
-        } else null
+        } else {
+            null
+        }
     }
 
     suspend fun requestFeed(url: String, backup: String? = null) {
         rssParser = Parser.Builder().build()
+
         if (networkMonitor.isOnline) {
             BackupUrlManager.setBase(backup)
             executeRequest(url)

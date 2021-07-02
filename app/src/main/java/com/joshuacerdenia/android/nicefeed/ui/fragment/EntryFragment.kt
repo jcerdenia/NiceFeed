@@ -105,10 +105,9 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
-                    if(themeApp==AppCompatDelegate.MODE_NIGHT_YES && Build.VERSION.SDK_INT<29) {
+                    if (themeApp == AppCompatDelegate.MODE_NIGHT_YES && Build.VERSION.SDK_INT<29) {
                         val code = """javascript:(function() {
                         var node = document.createElement('style');
-                
                         node.type = 'text/css';
                         var link = document.links;
                         l = link.length;
@@ -125,6 +124,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
                         loadUrl(code)
                     }
+
                     if (!viewModel.isInitialLoading) {
                         val position = viewModel.lastPosition
                         nestedScrollView.smoothScrollTo(position.first, position.second)

@@ -11,6 +11,7 @@ abstract class FeedAddingViewModel: ViewModel() {
 
     val repo = NiceFeedRepository.get()
     private val parser = FeedParser(repo.networkMonitor)
+    // private val fetcher = FeedFetcher(repo.networkMonitor, repo.executor)
 
     val feedRequestLiveData = parser.feedRequestLiveData
     var currentFeedIds = listOf<String>()
