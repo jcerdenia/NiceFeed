@@ -57,6 +57,9 @@ class TextSizeFragment: BottomSheetDialogFragment() {
     }
 
     companion object {
+
+        const val TAG = "TextSizeFragment"
+        const val TEXT_SIZE = "TEXT_SIZE"
         private const val ARG_TEXT_SIZE = "ARG_TEXT_SIZE"
 
         fun newInstance(currentTextSize: Int): TextSizeFragment {

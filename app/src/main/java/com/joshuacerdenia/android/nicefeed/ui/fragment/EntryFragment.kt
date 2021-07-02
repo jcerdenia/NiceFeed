@@ -24,30 +24,26 @@ import com.joshuacerdenia.android.nicefeed.ui.dialog.TextSizeFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryViewModel
 import com.joshuacerdenia.android.nicefeed.util.Utils
 import com.joshuacerdenia.android.nicefeed.util.extensions.hide
+import com.joshuacerdenia.android.nicefeed.util.extensions.setSimpleVisibility
 import com.joshuacerdenia.android.nicefeed.util.extensions.shortened
-import com.joshuacerdenia.android.nicefeed.util.extensions.show
 import com.squareup.picasso.Picasso
 import java.text.DateFormat
 import java.util.*
 
-class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
+class EntryFragment: VisibleFragment() {
 
     interface Callbacks: OnToolbarInflated
 
     private var _binding : FragmentEntryBinding? = null
-    private val binding get() = _binding!!
-
     private var _toolbarBinding: ToolbarBinding? = null
+    private val binding get() = _binding!!
     private val toolbarBinding get() = _toolbarBinding!!
 
     private lateinit var viewModel: EntryViewModel
-    private  var themeApp = 0
 
     private var callbacks: Callbacks? = null
-    private var starItem: MenuItem? = null
-    private var textSizeItem: MenuItem? = null
-    private val fragment = this@EntryFragment
-
+    private var starMenuItem: MenuItem? = null
+    private var appTheme = 0
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -56,14 +52,17 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(EntryViewModel::class.java)
-        viewModel.apply {
+        appTheme = AppCompatDelegate.getDefaultNightMode()
+
+        viewModel = ViewModelProvider(this).get(EntryViewModel::class.java).apply {
             setTextSize(NiceFeedPreferences.getTextSize(requireContext()))
             font = NiceFeedPreferences.getFont(requireContext())
             bannerIsEnabled = NiceFeedPreferences.bannerIsEnabled(requireContext())
         }
 
-        arguments?.getString(ARG_ENTRY_ID)?.let { entryId -> viewModel.getEntryById(entryId) }
+        arguments?.getString(ARG_ENTRY_ID)?.let { entryId ->
+            viewModel.getEntryById(entryId)
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -71,65 +70,18 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentEntryBinding.inflate(inflater, container, false)
         _toolbarBinding = binding.toolbar
 
-        themeApp = AppCompatDelegate.getDefaultNightMode()
-
         binding.webView.apply {
             setBackgroundColor(Color.TRANSPARENT)
+            webViewClient = EntryWebViewClient()
+            webChromeClient = EntryWebChromeClient()
             settings.apply {
                 javaScriptEnabled = true
                 builtInZoomControls = false
                 displayZoomControls = false
-            }
-
-            webViewClient = object : WebViewClient() {
-                override fun shouldOverrideUrlLoading(
-                    view: WebView?,
-                    request: WebResourceRequest?
-                ): Boolean {
-                    // Open all links with default browser.
-                    request?.url?.let { url -> Utils.openLink(requireActivity(), binding.root, url) }
-                    return true
-                }
-
-                override fun onPageFinished(view: WebView?, url: String?) {
-                    super.onPageFinished(view, url)
-                    if (themeApp == AppCompatDelegate.MODE_NIGHT_YES && Build.VERSION.SDK_INT<29) {
-                        val code = """javascript:(function() {
-                        var node = document.createElement('style');
-                        node.type = 'text/css';
-                        var link = document.links;
-                        l = link.length;
-                        for(i=0;i<l;i++){
-                            link[i].style.color = '#6666ff';
-                        }
-                        node.innerHTML = 'body {
-                            color: white;
-                            background-color: transparent;
-                        }';
-                        document.head.appendChild(node);
-                     
-                    })()""".trimIndent()
-
-                        loadUrl(code)
-                    }
-
-                    if (!viewModel.isInitialLoading) {
-                        val position = viewModel.lastPosition
-                        binding.nestedScrollView.smoothScrollTo(position.first, position.second)
-                    }
-                }
-            }
-
-            webChromeClient = object : WebChromeClient() {
-                override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                    super.onProgressChanged(view, newProgress)
-                    binding.progressBar.progress = newProgress
-                    if (newProgress == 100) binding.progressBar.hide()
-                }
             }
         }
 
@@ -140,9 +92,18 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.htmlLiveData.observe(viewLifecycleOwner, { data ->
-            if (data != null) {
-                binding.webView.loadData(data, MIME_TYPE, ENCODING)
+
+        toolbarBinding.toolbar.setOnClickListener {
+            binding.nestedScrollView.smoothScrollTo(0, 0)
+        }
+
+        binding.imageView.setOnClickListener {
+            handleViewInBrowser()
+        }
+
+        viewModel.htmlLiveData.observe(viewLifecycleOwner, { html ->
+            if (html != null) {
+                binding.webView.loadData(html, MIME_TYPE, ENCODING)
                 toggleBannerViews(viewModel.bannerIsEnabled)
                 setHasOptionsMenu(true)
                 toolbarBinding.toolbar.title = viewModel.entry?.website?.shortened()
@@ -158,31 +119,29 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
                 Utils.showErrorMessage(binding.root, resources)
             }
         })
-    }
 
-    override fun onStart() {
-        super.onStart()
-        toolbarBinding.toolbar.setOnClickListener { binding.nestedScrollView.smoothScrollTo(0, 0) }
-        binding.imageView.setOnClickListener { handleViewInBrowser() }
+        parentFragmentManager.setFragmentResultListener(
+            TextSizeFragment.TEXT_SIZE,
+            viewLifecycleOwner,
+            { key, result ->
+                result.getInt(key).run { viewModel.setTextSize(this) }
+            }
+        )
     }
 
     private fun toggleBannerViews(isEnabled: Boolean) {
-        if (isEnabled) {
-            binding.imageView.show()
-            binding.titleTextView.show()
-            binding.subtitleTextView.show()
-        } else {
-            binding.imageView.hide()
-            binding.titleTextView.hide()
-            binding.subtitleTextView.hide()
-        }
+        binding.imageView.setSimpleVisibility(isEnabled)
+        binding.titleTextView.setSimpleVisibility(isEnabled)
+        binding.subtitleTextView.setSimpleVisibility(isEnabled)
     }
 
     private fun updateBanner(title: String, date: Date?, author: String?) {
         binding.titleTextView.text = HtmlCompat.fromHtml(title, 0)
+
         val formattedDate = date?.let {
             DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(it)
         }
+
         binding.subtitleTextView.text = when {
             author.isNullOrEmpty() -> formattedDate
             formattedDate.isNullOrEmpty() -> author
@@ -193,9 +152,8 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_entry, menu)
-        starItem = menu.findItem(R.id.item_star)
-        textSizeItem = menu.findItem(R.id.item_text_size)
-        viewModel.entry?.let { entry -> toggleStarOptionItem(entry.isStarred) }
+        starMenuItem = menu.findItem(R.id.item_star)
+        viewModel.entry?.let { toggleStarOptionItem(it.isStarred) }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -218,7 +176,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
     }
 
     private fun toggleStarOptionItem(isStarred: Boolean) {
-        starItem?.apply {
+        starMenuItem?.apply {
             title = if (isStarred) {
                 setIcon(R.drawable.ic_star_yellow)
                 getString(R.string.unstar)
@@ -231,14 +189,14 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     private fun handleShare(): Boolean {
         viewModel.entry?.let { entry ->
-            Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_SUBJECT, entry.title)
-                putExtra(Intent.EXTRA_TEXT, entry.url)
-            }.also { intent ->
-                val chooserIntent = Intent.createChooser(intent, getString(R.string.share_entry))
-                startActivity(chooserIntent)
-            }
+            Intent(Intent.ACTION_SEND)
+                .apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_SUBJECT, entry.title)
+                    putExtra(Intent.EXTRA_TEXT, entry.url)
+                }
+                .run { Intent.createChooser(this, getString(R.string.share_entry)) }
+                .run { startActivity(this) }
             return true
         } ?: return false
     }
@@ -257,15 +215,10 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
 
     private fun handleChangeTextSize(): Boolean {
         saveScrollPosition()
-        TextSizeFragment.newInstance(viewModel.textSize).apply {
-            setTargetFragment(fragment, 0)
-            show(fragment.parentFragmentManager, "change text size")
-        }
+        TextSizeFragment
+            .newInstance(viewModel.textSize)
+            .show(parentFragmentManager, TextSizeFragment.TAG)
         return true
-    }
-
-    override fun onTextSizeSelected(textSize: Int) {
-        viewModel.setTextSize(textSize)
     }
 
     private fun saveScrollPosition() {
@@ -283,15 +236,67 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         context?.let { NiceFeedPreferences.saveTextSize(it, viewModel.textSize) }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onDetach() {
         super.onDetach()
         callbacks = null
     }
 
+    inner class EntryWebViewClient : WebViewClient() {
+
+        override fun shouldOverrideUrlLoading(view: WebView?,
+            request: WebResourceRequest?
+        ): Boolean {
+            // Open all links with default browser.
+            request?.url?.let { url ->
+                Utils.openLink(requireActivity(), binding.root, url)
+            }
+
+            return true
+        }
+
+        override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
+
+            if (appTheme == AppCompatDelegate.MODE_NIGHT_YES && Build.VERSION.SDK_INT < 29) {
+                NIGHT_MODE_JAVASCRIPT.trimIndent().run { view?.loadUrl(this) }
+            }
+
+            if (!viewModel.isInitialLoading) {
+                val (x, y) = viewModel.lastPosition
+                binding.nestedScrollView.smoothScrollTo(x, y)
+            }
+        }
+    }
+
+    inner class EntryWebChromeClient : WebChromeClient() {
+
+        override fun onProgressChanged(view: WebView?, newProgress: Int) {
+            super.onProgressChanged(view, newProgress)
+            binding.progressBar.progress = newProgress
+            if (newProgress == 100) binding.progressBar.hide()
+        }
+    }
+
     companion object {
+
         private const val ARG_ENTRY_ID = "ARG_ENTRY_ID"
         private const val MIME_TYPE = "text/html; charset=UTF-8"
         private const val ENCODING = "base64"
+
+        private const val NIGHT_MODE_JAVASCRIPT = """javascript:(function() {
+                const node = document.createElement('style');
+                node.type = 'text/css';
+                const links = document.links;
+                const l = links.length;
+                for (let i = 0; i < l; i++) { links[i].style.color = '#444E64'; }
+                node.innerHTML = 'body { color: white; background-color: transparent; }';
+                document.head.appendChild(node);
+            })()"""
 
         fun newInstance(entryId: String): EntryFragment {
             return EntryFragment().apply {
