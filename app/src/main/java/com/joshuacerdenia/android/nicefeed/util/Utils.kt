@@ -5,7 +5,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Color
@@ -26,7 +25,11 @@ object Utils {
 
     fun openLink(context: Context, view: View?, url: Uri) {
         val intent = Intent(Intent.ACTION_VIEW, url)
-        // Check if activity is available to handle intent
+
+        // TODO: Figure out why below code doesn't work?
+        // It's meant to check if an activity is available to handle the intent.
+
+        /*
         val resolvedActivity = context.packageManager
             .resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
         if (resolvedActivity != null) {
@@ -34,6 +37,9 @@ object Utils {
         } else {
             view?.let { showErrorMessage(it, context.resources) }
         }
+        */
+
+        startActivity(context, intent, null)
     }
 
     fun copyLinkToClipboard(context: Context, stringUrl: String, view: View? = null) {

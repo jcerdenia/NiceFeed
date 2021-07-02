@@ -84,7 +84,8 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
         titleTextView = view.findViewById(R.id.title_text_view)
         subtitleTextView = view.findViewById(R.id.subtitle_text_view)
         webView = view.findViewById(R.id.web_view)
-        themeApp= AppCompatDelegate.getDefaultNightMode();
+        themeApp = AppCompatDelegate.getDefaultNightMode()
+
         webView.apply {
             setBackgroundColor(Color.TRANSPARENT)
             settings.apply {
@@ -98,7 +99,7 @@ class EntryFragment: VisibleFragment(), TextSizeFragment.Callbacks {
                     view: WebView?,
                     request: WebResourceRequest?
                 ): Boolean {
-                    // Open all links with default browser
+                    // Open all links with default browser.
                     request?.url?.let { url -> Utils.openLink(requireActivity(), webView, url) }
                     return true
                 }
