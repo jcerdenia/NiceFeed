@@ -2,6 +2,7 @@ package com.joshuacerdenia.android.nicefeed.data.model.entry
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import java.io.Serializable
 import java.util.*
 
@@ -33,5 +34,10 @@ data class Entry(
         }
         // ALL items must match to return true
         return count == checklist.size
+    }
+
+    fun toMinimal(): EntryMinimal {
+        val content = this.content?.removePrefix(FeedParser.FLAG_EXCERPT) ?: ""
+        return EntryMinimal(title, date, author, content)
     }
 }

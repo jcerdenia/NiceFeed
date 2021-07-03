@@ -22,6 +22,7 @@ import com.joshuacerdenia.android.nicefeed.databinding.ToolbarBinding
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.dialog.TextSizeFragment
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.EntryViewModel
+import com.joshuacerdenia.android.nicefeed.util.EntryToHtmlUtil
 import com.joshuacerdenia.android.nicefeed.util.Utils
 import com.joshuacerdenia.android.nicefeed.util.extensions.hide
 import com.joshuacerdenia.android.nicefeed.util.extensions.setSimpleVisibility
@@ -255,7 +256,7 @@ class EntryFragment: VisibleFragment() {
             super.onPageFinished(view, url)
 
             if (appTheme == AppCompatDelegate.MODE_NIGHT_YES && Build.VERSION.SDK_INT < 29) {
-                DARK_MODE_JAVASCRIPT.trimIndent().run { view?.loadUrl(this) }
+                EntryToHtmlUtil.DARK_MODE_JAVASCRIPT.trimIndent().run { view?.loadUrl(this) }
             }
 
             if (!viewModel.isInitialLoading) {
@@ -279,15 +280,6 @@ class EntryFragment: VisibleFragment() {
         private const val ENTRY_ID = "ENTRY_ID"
         private const val MIME_TYPE = "text/html; charset=UTF-8"
         private const val ENCODING = "base64"
-
-        private const val DARK_MODE_JAVASCRIPT = """javascript:(function() {
-                const node = document.createElement('style');
-                node.type = 'text/css';
-                const links = document.links;
-                for (let i = 0; i < links.length; i++) { links[i].style.color = '#444E64'; }
-                node.innerHTML = 'body { color: white; background-color: transparent; }';
-                document.head.appendChild(node);
-            })()"""
 
         fun newInstance(entryId: String): EntryFragment {
             return EntryFragment().apply {

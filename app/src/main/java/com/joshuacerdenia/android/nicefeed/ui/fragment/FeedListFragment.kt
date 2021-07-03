@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.databinding.FragmentFeedListBinding
@@ -36,6 +37,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         callbacks = context as Callbacks?
+        adapter = FeedListAdapter(context, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +45,6 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         viewModel = ViewModelProvider(this).get(FeedListViewModel::class.java)
         viewModel.setFeedOrder(NiceFeedPreferences.getFeedsOrder(requireContext()))
         viewModel.setMinimizedCategories(NiceFeedPreferences.getMinimizedCategories(requireContext()))
-        adapter = FeedListAdapter(context, this)
     }
 
     override fun onCreateView(
@@ -52,6 +53,8 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFeedListBinding.inflate(inflater, container, false)
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        binding.recyclerView.adapter = adapter
         return binding.root
     }
 

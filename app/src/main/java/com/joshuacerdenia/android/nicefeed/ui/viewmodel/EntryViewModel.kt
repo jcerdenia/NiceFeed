@@ -4,9 +4,8 @@ import androidx.lifecycle.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
-import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryMinimal
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
-import com.joshuacerdenia.android.nicefeed.util.EntryToHtmlFormatter
+import com.joshuacerdenia.android.nicefeed.util.EntryToHtmlUtil
 
 class EntryViewModel : ViewModel() {
 
@@ -31,18 +30,18 @@ class EntryViewModel : ViewModel() {
     var isBannerEnabled = FeedPreferences.isBannerEnabled
     var isInitialLoading = true
 
-    var entry: Entry? = null
-        private set
+    val entry: Entry? get() = entryLiveData.value
 
     private var isExcerpt = false // As of now, unused
 
     init {
         _htmlLiveData.addSource(entryLiveData) { source ->
             if (source != null) {
-                entry = source
                 isExcerpt = source.content?.startsWith(FeedParser.FLAG_EXCERPT) ?: false
-                drawHtml(source)
-            } else _htmlLiveData.value = null
+                updateHtml(source)
+            } else {
+                _htmlLiveData.value = null
+            }
         }
     }
 
@@ -52,14 +51,15 @@ class EntryViewModel : ViewModel() {
 
     fun setTextSize(textSize: Int) {
         FeedPreferences.textSize = textSize
-        entryLiveData.value?.let { entry -> drawHtml(entry) }
+        entry?.let { updateHtml(it) }
     }
 
-    private fun drawHtml(entry: Entry) {
-        EntryMinimal(
-            title = entry.title, date = entry.date, author = entry.author,
-            content = entry.content?.removePrefix(FeedParser.FLAG_EXCERPT) ?: ""
-        ).let { _htmlLiveData.value = EntryToHtmlFormatter(textSize, font, !isBannerEnabled).getHtml(it) }
+    private fun updateHtml(entry: Entry) {
+        _htmlLiveData.value = EntryToHtmlUtil
+            .setFontSize(textSize)
+            .setFontFamily(font)
+            .setShouldIncludeHeader(!isBannerEnabled)
+            .format(entry.toMinimal())
     }
 
     fun saveChanges() {

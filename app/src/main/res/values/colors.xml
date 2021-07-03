@@ -5,6 +5,7 @@
     <color name="white">#FFFF</color>
     <color name="colorAccent">#018786</color>
     <color name="colorSelect">#59FE621D</color>
+    <color name="colorLink">#444E64</color>
     <color name="topic1">#f94144</color>
     <color name="topic2">#f3722c</color>
     <color name="topic3">#f8961e</color>
