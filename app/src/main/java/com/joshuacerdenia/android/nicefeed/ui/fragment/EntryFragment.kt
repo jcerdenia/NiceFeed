@@ -32,8 +32,6 @@ import java.util.*
 
 class EntryFragment: VisibleFragment() {
 
-    interface Callbacks: OnToolbarInflated
-
     private var _binding : FragmentEntryBinding? = null
     private var _toolbarBinding: ToolbarBinding? = null
     private val binding get() = _binding!!
@@ -44,6 +42,8 @@ class EntryFragment: VisibleFragment() {
     private var callbacks: Callbacks? = null
     private var starMenuItem: MenuItem? = null
     private var appTheme = 0
+
+    interface Callbacks: OnToolbarInflated
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -60,7 +60,7 @@ class EntryFragment: VisibleFragment() {
             bannerIsEnabled = NiceFeedPreferences.bannerIsEnabled(requireContext())
         }
 
-        arguments?.getString(ARG_ENTRY_ID)?.let { entryId ->
+        arguments?.getString(ENTRY_ID)?.let { entryId ->
             viewModel.getEntryById(entryId)
         }
     }
@@ -76,13 +76,11 @@ class EntryFragment: VisibleFragment() {
 
         binding.webView.apply {
             setBackgroundColor(Color.TRANSPARENT)
+            settings.javaScriptEnabled = true
+            settings.builtInZoomControls = false
+            settings.displayZoomControls = false
             webViewClient = EntryWebViewClient()
             webChromeClient = EntryWebChromeClient()
-            settings.apply {
-                javaScriptEnabled = true
-                builtInZoomControls = false
-                displayZoomControls = false
-            }
         }
 
         toolbarBinding.toolbar.title = getString(R.string.loading)
@@ -92,14 +90,6 @@ class EntryFragment: VisibleFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        toolbarBinding.toolbar.setOnClickListener {
-            binding.nestedScrollView.smoothScrollTo(0, 0)
-        }
-
-        binding.imageView.setOnClickListener {
-            handleViewInBrowser()
-        }
 
         viewModel.htmlLiveData.observe(viewLifecycleOwner, { html ->
             if (html != null) {
@@ -127,6 +117,14 @@ class EntryFragment: VisibleFragment() {
                 result.getInt(key).run { viewModel.setTextSize(this) }
             }
         )
+
+        toolbarBinding.toolbar.setOnClickListener {
+            binding.nestedScrollView.smoothScrollTo(0, 0)
+        }
+
+        binding.imageView.setOnClickListener {
+            handleViewInBrowser()
+        }
     }
 
     private fun toggleBannerViews(isEnabled: Boolean) {
@@ -248,7 +246,8 @@ class EntryFragment: VisibleFragment() {
 
     inner class EntryWebViewClient : WebViewClient() {
 
-        override fun shouldOverrideUrlLoading(view: WebView?,
+        override fun shouldOverrideUrlLoading(
+            view: WebView?,
             request: WebResourceRequest?
         ): Boolean {
             // Open all links with default browser.
@@ -263,7 +262,7 @@ class EntryFragment: VisibleFragment() {
             super.onPageFinished(view, url)
 
             if (appTheme == AppCompatDelegate.MODE_NIGHT_YES && Build.VERSION.SDK_INT < 29) {
-                NIGHT_MODE_JAVASCRIPT.trimIndent().run { view?.loadUrl(this) }
+                DARK_MODE_JAVASCRIPT.trimIndent().run { view?.loadUrl(this) }
             }
 
             if (!viewModel.isInitialLoading) {
@@ -284,16 +283,15 @@ class EntryFragment: VisibleFragment() {
 
     companion object {
 
-        private const val ARG_ENTRY_ID = "ARG_ENTRY_ID"
+        private const val ENTRY_ID = "ENTRY_ID"
         private const val MIME_TYPE = "text/html; charset=UTF-8"
         private const val ENCODING = "base64"
 
-        private const val NIGHT_MODE_JAVASCRIPT = """javascript:(function() {
+        private const val DARK_MODE_JAVASCRIPT = """javascript:(function() {
                 const node = document.createElement('style');
                 node.type = 'text/css';
                 const links = document.links;
-                const l = links.length;
-                for (let i = 0; i < l; i++) { links[i].style.color = '#444E64'; }
+                for (let i = 0; i < links.length; i++) { links[i].style.color = '#444E64'; }
                 node.innerHTML = 'body { color: white; background-color: transparent; }';
                 document.head.appendChild(node);
             })()"""
@@ -301,7 +299,7 @@ class EntryFragment: VisibleFragment() {
         fun newInstance(entryId: String): EntryFragment {
             return EntryFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_ENTRY_ID, entryId)
+                    putString(ENTRY_ID, entryId)
                 }
             }
         }

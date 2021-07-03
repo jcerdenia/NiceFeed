@@ -13,11 +13,12 @@ import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_S
 
 class TextSizeFragment: BottomSheetDialogFragment() {
 
+    private lateinit var radioGroup: RadioGroup
+
     interface Callbacks {
+
         fun onTextSizeSelected(textSize: Int)
     }
-
-    private lateinit var radioGroup: RadioGroup
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,41 +32,40 @@ class TextSizeFragment: BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val currentSelection = arguments?.getInt(ARG_TEXT_SIZE) ?: 0
+        val currentSelection = arguments?.getInt(TEXT_SIZE) ?: 0
+
+        val map = mapOf(
+            TEXT_SIZE_NORMAL to R.id.radio_button_normal,
+            TEXT_SIZE_LARGE to R.id.radio_button_large,
+            TEXT_SIZE_LARGER to R.id.radio_button_larger
+        )
 
         radioGroup.apply {
-            when (currentSelection) {
-                TEXT_SIZE_LARGE -> R.id.radio_button_large
-                TEXT_SIZE_LARGER -> R.id.radio_button_larger
-                else -> R.id.radio_button_normal
-            }.let { selection ->
-                check(selection)
-            }
-
+            check(map[currentSelection] ?: R.id.radio_button_normal)
             setOnCheckedChangeListener { _, checkedId ->
-                val textSize = when (checkedId) {
-                    R.id.radio_button_large -> TEXT_SIZE_LARGE
-                    R.id.radio_button_larger -> TEXT_SIZE_LARGER
-                    else -> TEXT_SIZE_NORMAL
-                }
-                targetFragment?.let { fragment ->
-                    (fragment as Callbacks).onTextSizeSelected(textSize)
-                }
+                val textSize = map.getKey(checkedId) ?: TEXT_SIZE_NORMAL
+                parentFragmentManager.setFragmentResult(TEXT_SIZE, Bundle().apply {
+                    putInt(TEXT_SIZE, textSize)
+                })
+
                 dismiss()
             }
         }
+    }
+
+    private fun <K, V> Map<K, V>.getKey(value: V): K? {
+        return this.toList().find { it.first == value }?.first
     }
 
     companion object {
 
         const val TAG = "TextSizeFragment"
         const val TEXT_SIZE = "TEXT_SIZE"
-        private const val ARG_TEXT_SIZE = "ARG_TEXT_SIZE"
 
         fun newInstance(currentTextSize: Int): TextSizeFragment {
             return TextSizeFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ARG_TEXT_SIZE, currentTextSize)
+                    putInt(TEXT_SIZE, currentTextSize)
                 }
             }
         }

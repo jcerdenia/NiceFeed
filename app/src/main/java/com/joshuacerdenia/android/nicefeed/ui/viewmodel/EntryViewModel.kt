@@ -1,9 +1,6 @@
 package com.joshuacerdenia.android.nicefeed.ui.viewmodel
 
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryMinimal
@@ -15,14 +12,19 @@ class EntryViewModel : ViewModel() {
     private val repo = NiceFeedRepository.get()
 
     private val entryIdLiveData = MutableLiveData<String>()
-    private val entryLiveData = Transformations.switchMap(entryIdLiveData) { entryId ->
-        repo.getEntry(entryId)
-    }
-    val htmlLiveData = MediatorLiveData<String?>()
+    private val entryLiveData = Transformations
+        .switchMap(entryIdLiveData) { entryId ->
+            repo.getEntry(entryId)
+        }
+
+    private val _htmlLiveData = MediatorLiveData<String?>()
+    val htmlLiveData: LiveData<String?> get() = _htmlLiveData
 
     var lastPosition: Pair<Int, Int> = Pair(0, 0)
+
     var textSize = 0
         private set
+
     var font = 0
     var bannerIsEnabled = true
     var isInitialLoading = true
@@ -32,12 +34,12 @@ class EntryViewModel : ViewModel() {
     private var isExcerpt = false // As of now, unused
 
     init {
-        htmlLiveData.addSource(entryLiveData) { source ->
+        _htmlLiveData.addSource(entryLiveData) { source ->
             if (source != null) {
                 entry = source
                 isExcerpt = source.content?.startsWith(FeedParser.FLAG_EXCERPT) ?: false
                 drawHtml(source)
-            } else htmlLiveData.value = null
+            } else _htmlLiveData.value = null
         }
     }
 
@@ -54,8 +56,7 @@ class EntryViewModel : ViewModel() {
         EntryMinimal(
             title = entry.title, date = entry.date, author = entry.author,
             content = entry.content?.removePrefix(FeedParser.FLAG_EXCERPT) ?: ""
-        ).let { htmlLiveData.value = EntryToHtmlFormatter(textSize, font, !bannerIsEnabled).getHtml(it)
-        }
+        ).let { _htmlLiveData.value = EntryToHtmlFormatter(textSize, font, !bannerIsEnabled).getHtml(it) }
     }
 
     fun saveChanges() {

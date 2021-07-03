@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.joshuacerdenia.android.nicefeed.ui.dialog.SortFeedManagerFragment.Companion.SORT_BY_ADDED
 
+@Deprecated("Use FeedPreferences")
 object NiceFeedPreferences {
 
     private const val NICE_FEED_PREFS = "NICE_FEED_PREFS"

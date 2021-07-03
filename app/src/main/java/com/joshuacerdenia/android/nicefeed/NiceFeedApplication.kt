@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
+import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.local.database.NiceFeedDatabase
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedFetcher
@@ -24,6 +25,8 @@ class NiceFeedApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         Utils.setTheme(NiceFeedPreferences.getTheme(this))
+        FeedPreferences.init(this)
+
         val database = NiceFeedDatabase.build(this)
         val feedFetcher = FeedFetcher()
         val connectionMonitor = NetworkMonitor(this)
