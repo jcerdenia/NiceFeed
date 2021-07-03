@@ -36,7 +36,7 @@
         <View style="@style/Divider"/>
 
         <Button
-            android:id="@+id/recent_entries_button"
+            android:id="@+id/new_entries_button"
             style="@style/DrawerMenuButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

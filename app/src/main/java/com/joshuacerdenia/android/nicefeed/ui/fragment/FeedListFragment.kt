@@ -3,41 +3,35 @@ package com.joshuacerdenia.android.nicefeed.ui.fragment
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.databinding.FragmentFeedListBinding
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedListAdapter
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.FeedListViewModel
 import com.joshuacerdenia.android.nicefeed.util.extensions.addRipple
-import com.joshuacerdenia.android.nicefeed.util.extensions.hide
-import com.joshuacerdenia.android.nicefeed.util.extensions.show
+import com.joshuacerdenia.android.nicefeed.util.extensions.setSimpleVisibility
 
 class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
     interface Callbacks {
+
         fun onMenuItemSelected(item: Int)
+
         fun onFeedSelected(feedId: String, activeFeedId: String?)
     }
 
-    private lateinit var viewModel: FeedListViewModel
-    private lateinit var manageButton: Button
-    private lateinit var addButton: Button
-    private lateinit var newEntriesButton: Button
-    private lateinit var starredEntriesButton: Button
-    private lateinit var settingsButton: Button
-    private lateinit var bottomDivider: View
-    private lateinit var recyclerView: RecyclerView
-    lateinit var adapter: FeedListAdapter
+    private var _binding: FragmentFeedListBinding? = null
+    private val binding get() = _binding!!
 
+    private lateinit var viewModel: FeedListViewModel
+    lateinit var adapter: FeedListAdapter
     private var callbacks: Callbacks? = null
-    private val handler = Handler()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -56,58 +50,45 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_feed_list, container, false)
-        manageButton = view.findViewById(R.id.manage_button)
-        addButton = view.findViewById(R.id.add_button)
-        newEntriesButton = view.findViewById(R.id.recent_entries_button)
-        starredEntriesButton = view.findViewById(R.id.starred_entries_button)
-        settingsButton = view.findViewById(R.id.settings_button)
-        bottomDivider = view.findViewById(R.id.bottom_divider)
-        recyclerView = view.findViewById(R.id.recycler_view)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = adapter
-        return view
+    ): View {
+        _binding = FragmentFeedListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.feedListLiveData.observe(viewLifecycleOwner, { list ->
-            adapter.submitList(list)
-            if (list.isNotEmpty()) {
-                newEntriesButton.show()
-                starredEntriesButton.show()
-                manageButton.show()
-                bottomDivider.show()
-            } else {
-                newEntriesButton.hide()
-                starredEntriesButton.hide()
-                manageButton.hide()
-                bottomDivider.hide()
-                updateActiveFeedId(null)
-            }
+
+        viewModel.feedListLiveData.observe(viewLifecycleOwner, { feeds ->
+            adapter.submitList(feeds)
+            val isEmpty = feeds.isEmpty()
+            if (isEmpty) updateActiveFeedId(null)
+            binding.newEntriesButton.setSimpleVisibility(!isEmpty)
+            binding.starredEntriesButton.setSimpleVisibility(!isEmpty)
+            binding.manageButton.setSimpleVisibility(!isEmpty)
+            binding.bottomDivider.setSimpleVisibility(!isEmpty)
         })
     }
 
     override fun onStart() {
         super.onStart()
-        manageButton.setOnClickListener {
+
+        binding.manageButton.setOnClickListener {
             callbacks?.onMenuItemSelected(ITEM_MANAGE_FEEDS)
         }
 
-        addButton.setOnClickListener {
+        binding.addButton.setOnClickListener {
             callbacks?.onMenuItemSelected(ITEM_ADD_FEEDS)
         }
 
-        newEntriesButton.setOnClickListener {
+        binding.newEntriesButton.setOnClickListener {
             callbacks?.onFeedSelected(EntryListFragment.FOLDER_NEW, viewModel.activeFeedId)
         }
 
-        starredEntriesButton.setOnClickListener {
+        binding.starredEntriesButton.setOnClickListener {
             callbacks?.onFeedSelected(EntryListFragment.FOLDER_STARRED, viewModel.activeFeedId)
         }
 
-        settingsButton.setOnClickListener {
+        binding.settingsButton.setOnClickListener {
             callbacks?.onMenuItemSelected(ITEM_SETTINGS)
         }
     }
@@ -121,7 +102,9 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         resetFolderHighlights()
         callbacks?.onFeedSelected(feedId, viewModel.activeFeedId)
         viewModel.activeFeedId = feedId
-        handler.postDelayed({ recyclerView.adapter = adapter }, 500)
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.recyclerView.adapter = adapter
+        }, 500)
     }
 
     override fun onCategoryClicked(category: String) {
@@ -132,21 +115,21 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         resetFolderHighlights()
         viewModel.activeFeedId = feedId
         adapter.setActiveFeedId(feedId)
-        recyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter
 
         context?.let { context ->
             val color = ContextCompat.getColor(context, R.color.colorSelect)
             if (feedId == EntryListFragment.FOLDER_NEW) {
-                newEntriesButton.setBackgroundColor(color)
+                binding.newEntriesButton.setBackgroundColor(color)
             } else if (feedId == EntryListFragment.FOLDER_STARRED) {
-                starredEntriesButton.setBackgroundColor(color)
+                binding.starredEntriesButton.setBackgroundColor(color)
             }
         }
     }
 
     private fun resetFolderHighlights() {
-        starredEntriesButton.addRipple()
-        newEntriesButton.addRipple()
+        binding.starredEntriesButton.addRipple()
+        binding.newEntriesButton.addRipple()
     }
 
     fun getCategories(): Array<String> {
@@ -160,6 +143,11 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onDetach() {
         super.onDetach()
         callbacks = null
@@ -171,8 +159,6 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
         const val ITEM_ADD_FEEDS = 1
         const val ITEM_SETTINGS = 2
 
-        fun newInstance(): FeedListFragment {
-            return FeedListFragment()
-        }
+        fun newInstance(): FeedListFragment = FeedListFragment()
     }
 }
