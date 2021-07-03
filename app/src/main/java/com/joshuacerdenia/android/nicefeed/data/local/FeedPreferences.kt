@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 object FeedPreferences {
 
     private lateinit var prefs: SharedPreferences
-    private const val NAME = "feed_preferences"
+    private const val NAME = "FeedPreferences"
 
     private const val LAST_VIEWED_FEED_ID = "last_viewed_feed_id"
     private const val FEED_MANAGER_ORDER = "feed_manager_order"
@@ -27,6 +27,9 @@ object FeedPreferences {
     // Call on app start.
     fun init(context: Context) {
         prefs = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
+
+        // Clear data from old shared preferences.
+        context.getSharedPreferences("NICE_FEED_PREFS", Context.MODE_PRIVATE).edit().clear().apply()
     }
 
     private inline fun SharedPreferences.edit(

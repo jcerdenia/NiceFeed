@@ -49,10 +49,10 @@ class FeedFetcher {
                 val xmlReader = XmlReader(stream)
                 val rawFeed = SyndFeedInput().build(xmlReader)
 
-                val feed = parseFeed(url, rawFeed)
+                val feed = FeedParser.fromRawFeed(url, rawFeed)
                 Log.d(TAG, "Got feed: $feed")
 
-                val entries = rawFeed.entries.map { parseEntry(it) }
+                val entries = rawFeed.entries.map { EntryParser.fromRawEntry(it) }
                 Log.d(TAG, "Got ${entries.size} entries")
                 Log.d(TAG, "Entry images: ${entries.map { it.image }}")
 
@@ -64,73 +64,79 @@ class FeedFetcher {
         }
     }
 
-    private fun parseFeed(url: String, rawFeed: SyndFeed): Feed {
-        return Feed(
-            url = url,
-            title = rawFeed.title,
-            website = rawFeed.link,
-            description = rawFeed.description,
-            imageUrl = rawFeed.image?.url,
-            category = "Uncategorized",
-            unreadCount = 0
-        )
-    }
-    
-    private fun parseEntry(rawEntry: SyndEntry): Entry {
-        val content = rawEntry.contents?.joinToString { it.value }
+    private object FeedParser {
 
-        return Entry(
-            url = rawEntry.link,
-            title = rawEntry.title,
-            website = rawEntry.source?.link ?: rawEntry.link.shortened(),
-            author = rawEntry.author,
-            date = rawEntry.updatedDate ?: rawEntry.publishedDate,
-            content = content,
-            image = parseImageFromEnclosures(rawEntry.enclosures)
-                ?: parseImageFromForeignMarkup(rawEntry.foreignMarkup)
-                ?: parseImageFromContent(content)
-        )
+        fun fromRawFeed(url: String, rawFeed: SyndFeed): Feed {
+            return Feed(
+                url = url,
+                title = rawFeed.title,
+                website = rawFeed.link,
+                description = rawFeed.description,
+                imageUrl = rawFeed.image?.url,
+                category = "Uncategorized",
+                unreadCount = 0
+            )
+        }
     }
 
-    private fun parseImageFromEnclosures(enclosures: List<SyndEnclosure>): String? {
-        Log.d(TAG, "Checking entry enclosures")
-        enclosures.forEach { enclosure ->
-            if (enclosure.type.contains("image")) {
-                Log.d(TAG, "Found image: ${enclosure.url}")
-                return enclosure.url
-            }
+    private object EntryParser {
+
+        fun fromRawEntry(rawEntry: SyndEntry): Entry {
+            val content = rawEntry.contents?.joinToString { it.value }
+
+            return Entry(
+                url = rawEntry.link,
+                title = rawEntry.title,
+                website = rawEntry.source?.link ?: rawEntry.link.shortened(),
+                author = rawEntry.author,
+                date = rawEntry.updatedDate ?: rawEntry.publishedDate,
+                content = content,
+                image = parseImageFromEnclosures(rawEntry.enclosures)
+                    ?: parseImageFromForeignMarkup(rawEntry.foreignMarkup)
+                    ?: parseImageFromContent(content)
+            )
         }
 
-        return null
-    }
+        private fun parseImageFromEnclosures(enclosures: List<SyndEnclosure>): String? {
+            Log.d(TAG, "Checking entry enclosures")
+            enclosures.forEach { enclosure ->
+                if (enclosure.type.contains("image")) {
+                    Log.d(TAG, "Found image: ${enclosure.url}")
+                    return enclosure.url
+                }
+            }
 
-    private fun parseImageFromForeignMarkup(elements: List<Element>): String? {
-        Log.d(TAG, "Checking foreign markup")
-        elements.forEach { element ->
-            if (element.namespace?.prefix == "media" && element.name == "content") {
-                element.attributes.forEach { attr ->
-                    if (attr.name == "url") {
-                        Log.d(TAG, "Found image: ${attr.value}")
-                        return attr.value
+            return null
+        }
+
+        private fun parseImageFromForeignMarkup(elements: List<Element>): String? {
+            Log.d(TAG, "Checking foreign markup")
+            elements.forEach { element ->
+                if (element.namespace?.prefix == "media" && element.name == "content") {
+                    element.attributes.forEach { attr ->
+                        if (attr.name == "url") {
+                            Log.d(TAG, "Found image: ${attr.value}")
+                            return attr.value
+                        }
                     }
                 }
             }
+
+            return null
         }
 
-        return null
-    }
+        private fun parseImageFromContent(content: String?): String? {
+            // Find HTML image tag.
+            val img = content
+                ?.substringAfter("<img", "")
+                ?.substringBefore("/>", "")
+                ?: ""
 
-    private fun parseImageFromContent(content: String?): String? {
-        // Find HTML image tag.
-        val img = content
-            ?.substringAfter("<img", "")
-            ?.substringBefore("/>", "")
-            ?: ""
-
-        return if (img.isNotEmpty()) {
-            img.substringAfter("src=\"").substringBefore("\"")
-        } else {
-            null
+            return if (img.isNotEmpty()) {
+                img.substringAfter("src=\"").substringBefore("\"")
+            } else {
+                null
+            }
         }
     }
 

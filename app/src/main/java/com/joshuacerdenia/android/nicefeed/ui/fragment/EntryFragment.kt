@@ -38,7 +38,6 @@ class EntryFragment: VisibleFragment() {
     private val toolbarBinding get() = _toolbarBinding!!
 
     private lateinit var viewModel: EntryViewModel
-
     private var callbacks: Callbacks? = null
     private var starMenuItem: MenuItem? = null
     private var appTheme = 0
@@ -52,14 +51,8 @@ class EntryFragment: VisibleFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(EntryViewModel::class.java)
         appTheme = AppCompatDelegate.getDefaultNightMode()
-
-        viewModel = ViewModelProvider(this).get(EntryViewModel::class.java).apply {
-            setTextSize(NiceFeedPreferences.getTextSize(requireContext()))
-            font = NiceFeedPreferences.getFont(requireContext())
-            bannerIsEnabled = NiceFeedPreferences.bannerIsEnabled(requireContext())
-        }
-
         arguments?.getString(ENTRY_ID)?.let { entryId ->
             viewModel.getEntryById(entryId)
         }
@@ -94,10 +87,10 @@ class EntryFragment: VisibleFragment() {
         viewModel.htmlLiveData.observe(viewLifecycleOwner, { html ->
             if (html != null) {
                 binding.webView.loadData(html, MIME_TYPE, ENCODING)
-                toggleBannerViews(viewModel.bannerIsEnabled)
+                toggleBannerViews(viewModel.isBannerEnabled)
                 setHasOptionsMenu(true)
                 toolbarBinding.toolbar.title = viewModel.entry?.website?.shortened()
-                if (viewModel.bannerIsEnabled) viewModel.entry?.let { entry ->
+                if (viewModel.isBannerEnabled) viewModel.entry?.let { entry ->
                     updateBanner(entry.title, entry.date, entry.author)
                     Picasso.get().load(entry.image).fit().centerCrop()
                         .placeholder(R.drawable.vintage_newspaper).into(binding.imageView)

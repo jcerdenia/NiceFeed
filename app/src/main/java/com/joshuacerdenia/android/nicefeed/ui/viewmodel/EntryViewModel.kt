@@ -2,6 +2,7 @@ package com.joshuacerdenia.android.nicefeed.ui.viewmodel
 
 import androidx.lifecycle.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
+import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryMinimal
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
@@ -23,14 +24,16 @@ class EntryViewModel : ViewModel() {
     var lastPosition: Pair<Int, Int> = Pair(0, 0)
 
     var textSize = 0
+        get() = FeedPreferences.textSize
         private set
 
-    var font = 0
-    var bannerIsEnabled = true
+    var font = FeedPreferences.font
+    var isBannerEnabled = FeedPreferences.isBannerEnabled
     var isInitialLoading = true
 
     var entry: Entry? = null
         private set
+
     private var isExcerpt = false // As of now, unused
 
     init {
@@ -48,7 +51,7 @@ class EntryViewModel : ViewModel() {
     }
 
     fun setTextSize(textSize: Int) {
-        this.textSize = textSize
+        FeedPreferences.textSize = textSize
         entryLiveData.value?.let { entry -> drawHtml(entry) }
     }
 
@@ -56,7 +59,7 @@ class EntryViewModel : ViewModel() {
         EntryMinimal(
             title = entry.title, date = entry.date, author = entry.author,
             content = entry.content?.removePrefix(FeedParser.FLAG_EXCERPT) ?: ""
-        ).let { _htmlLiveData.value = EntryToHtmlFormatter(textSize, font, !bannerIsEnabled).getHtml(it) }
+        ).let { _htmlLiveData.value = EntryToHtmlFormatter(textSize, font, !isBannerEnabled).getHtml(it) }
     }
 
     fun saveChanges() {
