@@ -27,9 +27,7 @@ object FeedPreferences {
     // Call on app start.
     fun init(context: Context) {
         prefs = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
-
-        // Clear data from old shared preferences.
-        context.getSharedPreferences("NICE_FEED_PREFS", Context.MODE_PRIVATE).edit().clear().apply()
+        FeedPreferencesMigration(context).migrate()
     }
 
     private inline fun SharedPreferences.edit(
