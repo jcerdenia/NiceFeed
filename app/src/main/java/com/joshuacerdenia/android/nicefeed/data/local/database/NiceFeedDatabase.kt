@@ -18,20 +18,19 @@ import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedEntryCrossRef
     ],
     version = 1
 )
-@TypeConverters(com.joshuacerdenia.android.nicefeed.data.local.database.TypeConverters::class)
+@TypeConverters(DateConverters::class)
 abstract class NiceFeedDatabase : RoomDatabase() {
 
     abstract fun combinedDao(): CombinedDao
 
     companion object {
-        private const val DATABASE_NAME = "database"
+
+        private const val NAME = "database"
 
         fun build(context: Context): NiceFeedDatabase {
-            return Room.databaseBuilder(
-                context.applicationContext,
-                NiceFeedDatabase::class.java,
-                DATABASE_NAME
-            ).build()
+            return Room
+                .databaseBuilder(context, NiceFeedDatabase::class.java, NAME)
+                .build()
         }
     }
 }
