@@ -17,7 +17,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat.startActivity
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.THEME_DARK
+import com.joshuacerdenia.android.nicefeed.THEME_LIGHT
 
 // General methods needed in multiple places
 
@@ -50,8 +51,8 @@ object Utils {
 
     fun setTheme(theme: Int) {
         when (theme) {
-            NiceFeedPreferences.THEME_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
-            NiceFeedPreferences.THEME_DARK -> AppCompatDelegate.MODE_NIGHT_YES
+            THEME_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+            THEME_DARK -> AppCompatDelegate.MODE_NIGHT_YES
             else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
         }.let { AppCompatDelegate.setDefaultNightMode(it) }
     }

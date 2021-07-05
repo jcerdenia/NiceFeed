@@ -3,10 +3,10 @@ package com.joshuacerdenia.android.nicefeed.ui.viewmodel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.CategoryHeader
-import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.FeedMenuItem
+import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
+import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedLight
 import com.joshuacerdenia.android.nicefeed.util.extensions.sortedByTitle
 import com.joshuacerdenia.android.nicefeed.util.extensions.sortedByUnreadCount
 
@@ -55,7 +55,7 @@ class FeedListViewModel: ViewModel() {
     }
 
     private fun sortFeeds(feeds: List<FeedLight>, order: Int): List<FeedLight> {
-        return if (order == NiceFeedPreferences.FEED_ORDER_UNREAD) {
+        return if (order == Feed.SORT_BY_UNREAD) {
             feeds.sortedByUnreadCount()
         } else {
             feeds.sortedByTitle()

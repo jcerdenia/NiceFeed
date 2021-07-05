@@ -40,4 +40,10 @@ data class Entry(
         val content = this.content?.removePrefix(FeedParser.FLAG_EXCERPT) ?: ""
         return EntryMinimal(title, date, author, content)
     }
+
+    companion object {
+
+        const val SORT_BY_TITLE = 0
+        const val SORT_BY_UNREAD = 1
+    }
 }

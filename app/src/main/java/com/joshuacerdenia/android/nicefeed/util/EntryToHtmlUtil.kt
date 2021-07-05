@@ -1,8 +1,10 @@
 package com.joshuacerdenia.android.nicefeed.util
 
 import android.util.Base64
+import com.joshuacerdenia.android.nicefeed.FONT_SERIF
 import com.joshuacerdenia.android.nicefeed.LINK_COLOR
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.TEXT_SIZE_LARGE
+import com.joshuacerdenia.android.nicefeed.TEXT_SIZE_LARGER
 import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryMinimal
 
 object EntryToHtmlUtil {
@@ -25,8 +27,8 @@ object EntryToHtmlUtil {
 
     fun setFontSize(textSizeKey: Int): EntryToHtmlUtil {
         fontSize = when (textSizeKey) {
-            NiceFeedPreferences.TEXT_SIZE_LARGE -> "large"
-            NiceFeedPreferences.TEXT_SIZE_LARGER -> "x-large"
+            TEXT_SIZE_LARGE -> "large"
+            TEXT_SIZE_LARGER -> "x-large"
             else -> "medium"
         }
         
@@ -34,7 +36,7 @@ object EntryToHtmlUtil {
     }
 
     fun setFontFamily(fontKey: Int): EntryToHtmlUtil {
-        fontFamily = if (fontKey == NiceFeedPreferences.FONT_SERIF) "serif" else "sans-serif"
+        fontFamily = if (fontKey == FONT_SERIF) "serif" else "sans-serif"
         return this
     }
 

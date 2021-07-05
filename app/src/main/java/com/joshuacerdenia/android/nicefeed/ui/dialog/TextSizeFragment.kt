@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.widget.RadioGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_SIZE_LARGE
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_SIZE_LARGER
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences.TEXT_SIZE_NORMAL
+import com.joshuacerdenia.android.nicefeed.TEXT_SIZE_LARGE
+import com.joshuacerdenia.android.nicefeed.TEXT_SIZE_LARGER
+import com.joshuacerdenia.android.nicefeed.TEXT_SIZE_NORMAL
 
 class TextSizeFragment: BottomSheetDialogFragment() {
 

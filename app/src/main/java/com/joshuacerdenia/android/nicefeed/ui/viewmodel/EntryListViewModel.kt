@@ -2,7 +2,6 @@ package com.joshuacerdenia.android.nicefeed.ui.viewmodel
 
 import androidx.lifecycle.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.UpdateValues
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
@@ -178,7 +177,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     }
 
     private fun sortEntries(entries: List<EntryLight>, order: Int): List<EntryLight> {
-        return if (order == NiceFeedPreferences.ENTRY_ORDER_UNREAD) {
+        return if (order == Entry.SORT_BY_UNREAD) {
             entries.sortedUnreadOnTop()
         } else {
             entries.sortedByDate()
