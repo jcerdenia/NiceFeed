@@ -1,7 +1,7 @@
 
 # NiceFeed
 
-<h2>Update – Jul 2021/h2>
+## Update - July 2021
 Working on a series of updates in my spare time to address some commonly cited issues. Thanks for your continued feedback!
 
 <hr>
