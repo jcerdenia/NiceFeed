@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.databinding.FragmentFeedListBinding
 import com.joshuacerdenia.android.nicefeed.ui.adapter.FeedListAdapter
 import com.joshuacerdenia.android.nicefeed.ui.viewmodel.FeedListViewModel
@@ -43,8 +43,8 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(FeedListViewModel::class.java)
-        viewModel.setFeedOrder(NiceFeedPreferences.getFeedsOrder(requireContext()))
-        viewModel.setMinimizedCategories(NiceFeedPreferences.getMinimizedCategories(requireContext()))
+        viewModel.setFeedOrder(FeedPreferences.feedListOrder)
+        viewModel.setMinimizedCategories(FeedPreferences.minimizedCategories)
     }
 
     override fun onCreateView(
@@ -98,7 +98,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
     override fun onResume() {
         super.onResume()
-        viewModel.setFeedOrder(NiceFeedPreferences.getFeedsOrder(requireContext()))
+        viewModel.setFeedOrder(FeedPreferences.feedListOrder)
     }
 
     override fun onFeedSelected(feedId: String) {
@@ -141,9 +141,7 @@ class FeedListFragment: VisibleFragment(), FeedListAdapter.OnItemClickListener {
 
     override fun onStop() {
         super.onStop()
-        context?.let { context ->
-            NiceFeedPreferences.saveMinimizedCategories(context, viewModel.minimizedCategories)
-        }
+        FeedPreferences.minimizedCategories = viewModel.minimizedCategories
     }
 
     override fun onDestroyView() {

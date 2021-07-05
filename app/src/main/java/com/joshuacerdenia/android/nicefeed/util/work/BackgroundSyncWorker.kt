@@ -3,7 +3,7 @@ package com.joshuacerdenia.android.nicefeed.util.work
 import android.content.Context
 import androidx.work.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryToggleable
@@ -11,7 +11,7 @@ import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
 import java.util.concurrent.TimeUnit
 
 open class BackgroundSyncWorker(
-    private val context: Context,
+    context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
@@ -43,7 +43,7 @@ open class BackgroundSyncWorker(
     ) {
         val entryIds = fwe.entries.map { it.url }
         val oldEntries = storedEntries.filterNot { entryIds.contains(it.url) }
-        val entriesToDelete = if (NiceFeedPreferences.keepOldUnreadEntries(context)) {
+        val entriesToDelete = if (FeedPreferences.shouldKeepOldUnreadEntries) {
             oldEntries.filter { !it.isStarred && it.isRead }
         } else {
             oldEntries.filter { !it.isStarred }
@@ -63,21 +63,21 @@ open class BackgroundSyncWorker(
             .build()
 
         fun start(context: Context) {
-            val request = PeriodicWorkRequest.Builder(
-                BackgroundSyncWorker::class.java, 24, TimeUnit.HOURS
-            ).setConstraints(constraints).build()
-
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WORK_NAME,
                 ExistingPeriodicWorkPolicy.KEEP,
-                request
+                PeriodicWorkRequest
+                    .Builder(BackgroundSyncWorker::class.java, 24, TimeUnit.HOURS)
+                    .setConstraints(constraints)
+                    .build()
             )
         }
 
         fun runOnce(context: Context) {
-            val request = OneTimeWorkRequest.Builder(BackgroundSyncWorker::class.java)
-                .setConstraints(constraints).build()
-            WorkManager.getInstance(context).enqueue(request)
+            WorkManager.getInstance(context).enqueue(OneTimeWorkRequest
+                .Builder(BackgroundSyncWorker::class.java)
+                .setConstraints(constraints)
+                .build())
         }
 
         fun cancel(context: Context) {

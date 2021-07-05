@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryLight
 import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
@@ -79,9 +79,9 @@ open class EntryListFragment : VisibleFragment(),
         super.onCreate(savedInstanceState)
         loadEntryOnStart()
 
-        viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(requireContext()))
-        viewModel.keepOldUnreadEntries(NiceFeedPreferences.keepOldUnreadEntries(requireContext()))
-        autoUpdateOnLaunch = NiceFeedPreferences.getAutoUpdateSetting(requireContext())
+        viewModel.setOrder(FeedPreferences.entryListOrder)
+        viewModel.keepOldUnreadEntries(FeedPreferences.shouldKeepOldUnreadEntries)
+        autoUpdateOnLaunch = FeedPreferences.shouldAutoUpdate
 
         feedId = arguments?.getString(ARG_FEED_ID)
         setHasOptionsMenu(feedId != null)
@@ -192,10 +192,8 @@ open class EntryListFragment : VisibleFragment(),
 
     override fun onResume() {
         super.onResume()
-        context?.let {  context ->
-            viewModel.setOrder(NiceFeedPreferences.getEntriesOrder(context))
-            viewModel.keepOldUnreadEntries(NiceFeedPreferences.keepOldUnreadEntries(context))
-        }
+        viewModel.setOrder(FeedPreferences.entryListOrder)
+        viewModel.keepOldUnreadEntries(FeedPreferences.shouldKeepOldUnreadEntries)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -390,7 +388,7 @@ open class EntryListFragment : VisibleFragment(),
     }
 
     override fun onEntryClicked(entryId: String, view: View?) {
-        if (NiceFeedPreferences.getBrowserSetting(requireContext())) {
+        if (FeedPreferences.shouldViewInBrowser) {
             Utils.openLink(requireContext(), view, Uri.parse(entryId))
             viewModel.updateEntryIsRead(entryId, true)
         } else {
@@ -421,7 +419,7 @@ open class EntryListFragment : VisibleFragment(),
 
     override fun onStop() {
         super.onStop()
-        context?.let { NiceFeedPreferences.saveLastViewedFeedId(it, feedId) }
+        FeedPreferences.lastViewedFeedId = feedId
     }
 
     override fun onDetach() {

@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
 import com.joshuacerdenia.android.nicefeed.ui.dialog.AboutFragment
 import com.joshuacerdenia.android.nicefeed.util.Utils
@@ -81,8 +81,8 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
                 getString(R.string.light),
                 getString(R.string.dark)
             ).run { getDefaultAdapter(context, this)}
-            setSelection(NiceFeedPreferences.getTheme(context))
-            onItemSelectedListener = getSpinnerListener(context, ACTION_SAVE_THEME)
+            setSelection(FeedPreferences.theme)
+            onItemSelectedListener = getSpinnerListener(ACTION_SAVE_THEME)
         }
 
         sortFeedsSpinner.apply {
@@ -90,8 +90,8 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
                 getString(R.string.title),
                 getString(R.string.unread_items)
             ).run { getDefaultAdapter(context, this) }
-            setSelection(NiceFeedPreferences.getFeedsOrder(context))
-            onItemSelectedListener = getSpinnerListener(context, ACTION_SAVE_FEEDS_ORDER)
+            setSelection(FeedPreferences.feedListOrder)
+            onItemSelectedListener = getSpinnerListener(ACTION_SAVE_FEEDS_ORDER)
         }
 
         sortEntriesSpinner.apply {
@@ -99,8 +99,8 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
                 getString(R.string.date_published),
                 getString(R.string.unread_on_top)
             ).run { getDefaultAdapter(context, this)}
-            setSelection(NiceFeedPreferences.getEntriesOrder(context))
-            onItemSelectedListener = getSpinnerListener(context, ACTION_SAVE_ENTRIES_ORDER)
+            setSelection(FeedPreferences.entryListOrder)
+            onItemSelectedListener = getSpinnerListener(ACTION_SAVE_ENTRIES_ORDER)
         }
 
         fontSpinner.apply {
@@ -108,52 +108,62 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
                 getString(R.string.sans_serif),
                 getString(R.string.serif)
             ).run { getDefaultAdapter(context, this)}
-            setSelection(NiceFeedPreferences.getFont(context))
-            onItemSelectedListener = getSpinnerListener(context, ACTION_SAVE_FONT)
+            setSelection(FeedPreferences.font)
+            onItemSelectedListener = getSpinnerListener(ACTION_SAVE_FONT)
         }
 
         autoUpdateSwitch.apply {
-            isChecked = NiceFeedPreferences.getAutoUpdateSetting(context)
+            isChecked = FeedPreferences.shouldAutoUpdate
             setOnCheckedChangeListener { _, isOn ->
-                NiceFeedPreferences.saveAutoUpdateSetting(context, isOn)
+                FeedPreferences.shouldAutoUpdate = isOn
             }
         }
 
         keepEntriesSwitch.apply {
-            isChecked = NiceFeedPreferences.keepOldUnreadEntries(context)
+            isChecked = FeedPreferences.shouldKeepOldUnreadEntries
             setOnCheckedChangeListener { _, isOn ->
-                NiceFeedPreferences.setKeepOldUnreadEntries(context, isOn)
+                FeedPreferences.shouldKeepOldUnreadEntries = isOn
             }
         }
 
         syncSwitch.apply {
-            isChecked = NiceFeedPreferences.syncInBackground(context)
+            isChecked = FeedPreferences.shouldSyncInBackground
             setOnCheckedChangeListener { _, isOn ->
-                NiceFeedPreferences.setSyncInBackground(context, isOn)
-                if (isOn) BackgroundSyncWorker.start(context) else BackgroundSyncWorker.cancel(context)
+                FeedPreferences.shouldSyncInBackground = isOn
+
+                if (isOn) {
+                    BackgroundSyncWorker.start(context)
+                } else {
+                    BackgroundSyncWorker.cancel(context)
+                }
             }
         }
 
         bannerSwitch.apply {
-            isChecked = NiceFeedPreferences.bannerIsEnabled(context)
+            isChecked = FeedPreferences.isBannerEnabled
             setOnCheckedChangeListener { _, isOn ->
-                NiceFeedPreferences.setBannerIsEnabled(context, isOn)
+                FeedPreferences.isBannerEnabled = isOn
             }
         }
 
         browserSwitch.apply {
             // Values are reversed on purpose
-            isChecked = !NiceFeedPreferences.getBrowserSetting(context)
+            isChecked = !FeedPreferences.shouldViewInBrowser
             setOnCheckedChangeListener { _, isOn ->
-                NiceFeedPreferences.setBrowserSetting(context, !isOn)
+                FeedPreferences.shouldViewInBrowser = !isOn
             }
         }
 
         notificationSwitch.apply {
-            isChecked = NiceFeedPreferences.getPollingSetting(context)
+            isChecked = FeedPreferences.shouldPoll
             setOnCheckedChangeListener { _, isOn ->
-                NiceFeedPreferences.savePollingSetting(context, isOn)
-                if (isOn) NewEntriesWorker.start(context) else NewEntriesWorker.cancel(context)
+                FeedPreferences.shouldPoll = isOn
+
+                if (isOn) {
+                    NewEntriesWorker.start(context)
+                } else {
+                    NewEntriesWorker.cancel(context)
+                }
             }
         }
     }
@@ -179,7 +189,7 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
         }
     }
 
-    private fun getSpinnerListener(context: Context, action: Int): AdapterView.OnItemSelectedListener {
+    private fun getSpinnerListener(action: Int): AdapterView.OnItemSelectedListener {
         return object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -189,33 +199,39 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
             ) {
                 when (action) {
                     ACTION_SAVE_THEME -> {
-                        if(Build.VERSION.SDK_INT<29){
-                            if(position == 0) {
-                                NiceFeedPreferences.saveTheme(context, position)
+                        if (Build.VERSION.SDK_INT<29) {
+                            if (position == 0) {
+                                FeedPreferences.theme = position
                                 setDarkMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                             }
+
                             if (position == 2) {
-                                NiceFeedPreferences.saveTheme(context, position)
+                                FeedPreferences.theme = position
                                 setDarkMode(AppCompatDelegate.MODE_NIGHT_YES)
-                            }
-                            else{
-                                NiceFeedPreferences.saveTheme(context, position)
+                            } else {
+                                FeedPreferences.theme = position
                                 Utils.setTheme(position)
                             }
                         }
                         else {
-                            NiceFeedPreferences.saveTheme(context, position)
+                            FeedPreferences.theme = position
                             Utils.setTheme(position)
                         }
                     }
-                    ACTION_SAVE_FEEDS_ORDER -> NiceFeedPreferences.saveFeedsOrder(context, position)
-                    ACTION_SAVE_ENTRIES_ORDER -> NiceFeedPreferences.saveEntriesOrder(context, position)
-                    ACTION_SAVE_FONT -> NiceFeedPreferences.saveFont(context, position)
+                    ACTION_SAVE_FEEDS_ORDER -> FeedPreferences.feedListOrder = position
+                    ACTION_SAVE_ENTRIES_ORDER -> FeedPreferences.entryListOrder = position
+                    ACTION_SAVE_FONT -> FeedPreferences.font = position
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) { } // Do nothing
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing
+            }
         }
+    }
+
+    private fun setDarkMode(@AppCompatDelegate.NightMode darkMode: Int) {
+        AppCompatDelegate.setDefaultNightMode(darkMode)
     }
 
     override fun onGoToRepoClicked() {
@@ -235,13 +251,6 @@ class SettingsFragment: VisibleFragment(), AboutFragment.Callback {
         private const val ACTION_SAVE_ENTRIES_ORDER = 2
         private const val ACTION_SAVE_FONT = 3
 
-        fun newInstance(): SettingsFragment {
-            return SettingsFragment()
-        }
-    }
-
-    private fun setDarkMode(@AppCompatDelegate.NightMode darkMode: Int) {
-        AppCompatDelegate.setDefaultNightMode(darkMode)
-
+        fun newInstance(): SettingsFragment = SettingsFragment()
     }
 }

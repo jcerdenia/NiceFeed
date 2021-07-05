@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryLight
 import com.joshuacerdenia.android.nicefeed.util.extensions.hide
 import com.joshuacerdenia.android.nicefeed.util.extensions.shortened
@@ -34,13 +34,15 @@ class EntryListAdapter(
     var lastClickedPosition = 0
         private set
     private var theme : Int = -1
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EntryHolder {
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.list_item_entry,
             parent,
             false
         )
-        theme = NiceFeedPreferences.getTheme(parent.context)
+
+        theme = FeedPreferences.theme
         return EntryHolder(view, listener)
     }
 
@@ -76,8 +78,9 @@ class EntryListAdapter(
             titleTextView.apply {
                 text = HtmlCompat.fromHtml(entry.title, 0)
                 setTextColor(if (entry.isRead) Color.GRAY else Color.BLACK)
-                if(theme == 2)
+                if (theme == 2) {
                     setTextColor(if (entry.isRead) Color.GRAY else Color.WHITE)
+                }
             }
 
             infoTextView.text = "$date – ${entry.website.shortened()}"

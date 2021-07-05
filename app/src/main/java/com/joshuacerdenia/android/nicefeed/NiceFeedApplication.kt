@@ -24,8 +24,8 @@ class NiceFeedApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Utils.setTheme(NiceFeedPreferences.getTheme(this))
         FeedPreferences.init(this)
+        Utils.setTheme(FeedPreferences.theme)
 
         val database = NiceFeedDatabase.build(this)
         val feedFetcher = FeedFetcher()
@@ -45,8 +45,8 @@ class NiceFeedApplication : Application() {
     }
 
     private fun delayedInit() {
-        val isPolling = NiceFeedPreferences.getPollingSetting(this)
-        val isSyncing = NiceFeedPreferences.syncInBackground(this)
+        val isPolling = FeedPreferences.shouldPoll
+        val isSyncing = FeedPreferences.shouldSyncInBackground
 
         applicationScope.launch {
             if (isPolling) NewEntriesWorker.start(applicationContext)

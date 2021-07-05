@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
 import com.joshuacerdenia.android.nicefeed.ui.OnFinished
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
@@ -72,7 +72,7 @@ class ManageFeedsFragment: VisibleFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ManageFeedsViewModel::class.java)
-        viewModel.setOrder(NiceFeedPreferences.getFeedManagerOrder(requireContext()))
+        viewModel.setOrder(FeedPreferences.feedManagerOrder)
         adapter = FeedManagerAdapter(this, viewModel.selectedItems)
         opmlExporter = OpmlExporter(requireContext(), this)
         setHasOptionsMenu(true)
@@ -285,9 +285,9 @@ class ManageFeedsFragment: VisibleFragment(),
         } else {
             showFeedsRemovedNotice(feedIds.size)
             // If last viewed feed was just deleted, prevent main page from loading it:
-            val lastViewedFeedId = NiceFeedPreferences.getLastViewedFeedId(requireContext())
+            val lastViewedFeedId = FeedPreferences.lastViewedFeedId
             if (feedIds.contains(lastViewedFeedId)) {
-                NiceFeedPreferences.saveLastViewedFeedId(requireContext(), null)
+                FeedPreferences.lastViewedFeedId = null
             }
         }
         resetSelection()
@@ -374,8 +374,8 @@ class ManageFeedsFragment: VisibleFragment(),
     }
 
     override fun onStop() {
+        FeedPreferences.feedManagerOrder = viewModel.order
         super.onStop()
-        context?.let { NiceFeedPreferences.saveFeedManagerOrder(it, viewModel.order) }
     }
 
     override fun onDetach() {

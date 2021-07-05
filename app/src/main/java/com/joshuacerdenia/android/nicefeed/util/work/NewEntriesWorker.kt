@@ -9,7 +9,7 @@ import androidx.core.text.HtmlCompat
 import androidx.work.*
 import com.joshuacerdenia.android.nicefeed.NiceFeedApplication.Companion.NOTIFICATION_CHANNEL_ID
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 import com.joshuacerdenia.android.nicefeed.ui.activity.MainActivity
@@ -26,7 +26,7 @@ class NewEntriesWorker(
     override suspend fun doWork(): Result {
         val feedUrls = repo.getFeedUrlsSynchronously()
         if (feedUrls.isEmpty()) return Result.success()
-        val lastIndex = NiceFeedPreferences.getLastPolledIndex(context)
+        val lastIndex = FeedPreferences.lastPolledIndex
         val newIndex = if (lastIndex + 1 >= feedUrls.size) 0 else lastIndex + 1
         val url = feedUrls[newIndex]
 
@@ -49,7 +49,7 @@ class NewEntriesWorker(
             }
         }
 
-        NiceFeedPreferences.saveLastPolledIndex(context, newIndex)
+        FeedPreferences.lastPolledIndex = newIndex
         return Result.success()
     }
 

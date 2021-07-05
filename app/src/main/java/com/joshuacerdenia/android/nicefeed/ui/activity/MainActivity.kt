@@ -11,7 +11,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.ui.OnHomePressed
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(),
 
         if (getFragment(FRAGMENT_MAIN) == null) {
             val feedId = intent?.getStringExtra(EXTRA_FEED_ID)
-                ?: NiceFeedPreferences.getLastViewedFeedId(this)
+                ?: FeedPreferences.lastViewedFeedId
             val entryId = intent?.getStringExtra(EXTRA_ENTRY_ID)
             val mainFragment = EntryListFragment.newInstance(feedId, entryId, entryId != null)
             loadFragments(mainFragment, FeedListFragment.newInstance())

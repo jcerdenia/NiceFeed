@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
 import com.joshuacerdenia.android.nicefeed.R
-import com.joshuacerdenia.android.nicefeed.data.local.NiceFeedPreferences
+import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.databinding.FragmentEntryBinding
 import com.joshuacerdenia.android.nicefeed.databinding.ToolbarBinding
 import com.joshuacerdenia.android.nicefeed.ui.OnToolbarInflated
@@ -221,11 +221,11 @@ class EntryFragment: VisibleFragment() {
     }
 
     override fun onStop() {
-        super.onStop()
         saveScrollPosition()
         viewModel.isInitialLoading = false
         viewModel.saveChanges()
-        context?.let { NiceFeedPreferences.saveTextSize(it, viewModel.textSize) }
+        FeedPreferences.textSize = viewModel.textSize
+        super.onStop()
     }
 
     override fun onDestroyView() {
