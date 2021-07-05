@@ -1,8 +1,8 @@
 
 # NiceFeed
 
-<h2>Update – Jan 2021</h2>
-Currently taking time off from this app to focus on work and other projects. Hopefully will be able to get back to it after March. Thanks for your continued feedback!
+<h2>Update – Jul 2021/h2>
+Working on a series of updates in my spare time to address some commonly cited issues. Thanks for your continued feedback!
 
 <hr>
 
