@@ -12,7 +12,6 @@ import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
 import com.joshuacerdenia.android.nicefeed.data.remote.FeedFetcher
 import com.joshuacerdenia.android.nicefeed.util.NetworkMonitor
-import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class NiceFeedRepository private constructor(
@@ -22,7 +21,23 @@ class NiceFeedRepository private constructor(
 ) {
 
     private val dao = database.combinedDao()
-    val executor: Executor = Executors.newSingleThreadExecutor()
+    private val executor = Executors.newSingleThreadExecutor()
+
+    val feedWithEntriesLive = feedFetcher.feedWithEntriesLive
+
+    // [START] Remote data access methods
+
+    fun requestFeedAndEntriesOnline(url: String) {
+        executor.execute { feedFetcher.request(url) }
+    }
+
+    private fun resetFeedWithEntriesLive() {
+        feedFetcher.reset()
+    }
+
+    // [END] Remote data access methods
+
+    // [START] Local data access methods
 
     fun getFeed(feedId: String): LiveData<Feed?> = dao.getFeed(feedId)
 
@@ -39,12 +54,6 @@ class NiceFeedRepository private constructor(
     }
 
     fun getFeedsManageable(): LiveData<List<FeedManageable>> = dao.getFeedsManageable()
-
-    fun requestFeedAndEntriesOnline(url: String) {
-        executor.execute {
-            feedFetcher.request(url)
-        }
-    }
 
     fun getEntry(entryId: String): LiveData<Entry?> = dao.getEntry(entryId)
 
@@ -126,6 +135,8 @@ class NiceFeedRepository private constructor(
         executor.execute { dao.deleteLeftoverItems() }
     }
 
+    // [END] Local data access methods
+
     companion object {
 
         private var INSTANCE: NiceFeedRepository? = null
@@ -135,6 +146,7 @@ class NiceFeedRepository private constructor(
         }
 
         fun get(): NiceFeedRepository {
+            INSTANCE?.resetFeedWithEntriesLive()
             return INSTANCE ?: throw IllegalStateException("Repository must be initialized!")
         }
     }

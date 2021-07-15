@@ -20,9 +20,8 @@ import java.util.concurrent.TimeUnit
 
 class FeedFetcher {
 
-    private var _feedRequestLiveData = MutableLiveData<FeedWithEntries?>()
-    val feedRequestLiveData: LiveData<FeedWithEntries?>
-        get() = _feedRequestLiveData
+    private var _feedWithEntriesLive = MutableLiveData<FeedWithEntries?>()
+    val feedWithEntriesLive: LiveData<FeedWithEntries?> get() = _feedWithEntriesLive
 
     private val client: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
@@ -39,7 +38,7 @@ class FeedFetcher {
     }
 
     fun reset() {
-        _feedRequestLiveData = MutableLiveData<FeedWithEntries?>()
+        _feedWithEntriesLive = MutableLiveData<FeedWithEntries?>()
     }
 
     fun request(url: String) {
@@ -56,11 +55,11 @@ class FeedFetcher {
                 Log.d(TAG, "Got ${entries.size} entries")
                 Log.d(TAG, "Entry images: ${entries.map { it.image }}")
 
-                _feedRequestLiveData.postValue(FeedWithEntries(feed, entries))
+                _feedWithEntriesLive.postValue(FeedWithEntries(feed, entries))
             }
         } catch(e: Error) {
             Log.d(TAG, "Error: $e")
-            _feedRequestLiveData.postValue(null)
+            _feedWithEntriesLive.postValue(null)
         }
     }
 
