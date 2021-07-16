@@ -1,6 +1,7 @@
 package com.joshuacerdenia.android.nicefeed.ui.dialog
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +15,6 @@ import com.joshuacerdenia.android.nicefeed.TEXT_SIZE_NORMAL
 class TextSizeFragment: BottomSheetDialogFragment() {
 
     private lateinit var radioGroup: RadioGroup
-
-    interface Callbacks {
-
-        fun onTextSizeSelected(textSize: Int)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,6 +39,7 @@ class TextSizeFragment: BottomSheetDialogFragment() {
         radioGroup.apply {
             check(map[currentSelection] ?: R.id.radio_button_normal)
             setOnCheckedChangeListener { _, checkedId ->
+                Log.d(TAG, "Selected $checkedId")
                 val textSize = map.getKey(checkedId) ?: TEXT_SIZE_NORMAL
                 parentFragmentManager.setFragmentResult(TEXT_SIZE, Bundle().apply {
                     putInt(TEXT_SIZE, textSize)
@@ -54,7 +51,7 @@ class TextSizeFragment: BottomSheetDialogFragment() {
     }
 
     private fun <K, V> Map<K, V>.getKey(value: V): K? {
-        return this.toList().find { it.first == value }?.first
+        return this.toList().find { it.second == value }?.first
     }
 
     companion object {

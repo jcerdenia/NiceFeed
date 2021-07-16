@@ -277,6 +277,7 @@ class EntryFragment: VisibleFragment() {
 
     companion object {
 
+        private const val TAG = "EntryFragment"
         private const val ENTRY_ID = "ENTRY_ID"
         private const val MIME_TYPE = "text/html; charset=UTF-8"
         private const val ENCODING = "base64"
