@@ -21,15 +21,11 @@ class EntryViewModel : ViewModel() {
     val htmlLiveData: LiveData<String?> get() = _htmlLiveData
 
     var lastPosition: Pair<Int, Int> = Pair(0, 0)
-
     val textSize get() = FeedPreferences.textSize
     val font get() = FeedPreferences.font
     val isBannerEnabled get() = FeedPreferences.isBannerEnabled
-
     var isInitialLoading = true
-
     val entry: Entry? get() = entryLiveData.value
-
     private var isExcerpt = false // As of now, unused
 
     init {
