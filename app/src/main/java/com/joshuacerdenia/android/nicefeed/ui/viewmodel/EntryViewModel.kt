@@ -22,12 +22,10 @@ class EntryViewModel : ViewModel() {
 
     var lastPosition: Pair<Int, Int> = Pair(0, 0)
 
-    var textSize = 0
-        get() = FeedPreferences.textSize
-        private set
+    val textSize get() = FeedPreferences.textSize
+    val font get() = FeedPreferences.font
+    val isBannerEnabled get() = FeedPreferences.isBannerEnabled
 
-    var font = FeedPreferences.font
-    var isBannerEnabled = FeedPreferences.isBannerEnabled
     var isInitialLoading = true
 
     val entry: Entry? get() = entryLiveData.value
