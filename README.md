@@ -1,8 +1,8 @@
 
 # NiceFeed
 
-## Update - July 2021
-Working on a series of updates in my spare time to address some commonly cited issues. Thanks for your continued feedback!
+## Update - August 2021
+Sorry about the unaddressed issues, but I've had not much time to maintain this app lately. Next up is replacing the RSS parser with RomeTools, but I can't promise any timeline. As always, pull requests are welcome.
 
 <hr>
 
