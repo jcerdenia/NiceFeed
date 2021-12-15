@@ -4,7 +4,7 @@ import androidx.lifecycle.*
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
-import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
+import com.joshuacerdenia.android.nicefeed.data.remote.FeedFetcher
 import com.joshuacerdenia.android.nicefeed.util.EntryToHtmlUtil
 
 class EntryViewModel : ViewModel() {
@@ -31,7 +31,7 @@ class EntryViewModel : ViewModel() {
     init {
         _htmlLiveData.addSource(entryLiveData) { source ->
             if (source != null) {
-                isExcerpt = source.content?.startsWith(FeedParser.FLAG_EXCERPT) ?: false
+                isExcerpt = source.content?.startsWith(FeedFetcher.FLAG_EXCERPT) ?: false
                 updateHtml(source)
             } else {
                 _htmlLiveData.value = null

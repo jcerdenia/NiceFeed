@@ -27,9 +27,8 @@ class NiceFeedApplication : Application() {
         Utils.setTheme(FeedPreferences.theme)
 
         val database = NiceFeedDatabase.build(this)
-        val feedFetcher = FeedFetcher()
         val connectionMonitor = NetworkMonitor(this)
-        NiceFeedRepository.init(database, feedFetcher, connectionMonitor)
+        NiceFeedRepository.init(database, connectionMonitor)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = getSystemService(NotificationManager::class.java)

@@ -12,6 +12,7 @@ import com.joshuacerdenia.android.nicefeed.R
 import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
+import com.joshuacerdenia.android.nicefeed.data.remote.FeedFetcher
 import com.joshuacerdenia.android.nicefeed.ui.activity.MainActivity
 import com.joshuacerdenia.android.nicefeed.util.extensions.sortedByDate
 import java.util.concurrent.TimeUnit
@@ -22,6 +23,7 @@ class NewEntriesWorker(
 ) : BackgroundSyncWorker(context, workerParams) {
 
     private val resources = context.resources
+    private val fetcher = FeedFetcher()
 
     override suspend fun doWork(): Result {
         val feedUrls = repo.getFeedUrlsSynchronously()
@@ -34,7 +36,7 @@ class NewEntriesWorker(
         val title = feedData.feedTitle // Need user-set title saved in DB
         val storedEntries = feedData.entriesToggleable
         val storedEntryIds: List<String> = storedEntries.map { it.url }
-        val feedWithEntries: FeedWithEntries? = parser.getFeedSynchronously(url)
+        val feedWithEntries: FeedWithEntries? = fetcher.requestSynchronously(url)
 
         feedWithEntries?.let { fwe ->
             val newEntries = fwe.entries.filterNot { storedEntryIds.contains(it.url) }

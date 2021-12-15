@@ -7,7 +7,7 @@ import com.joshuacerdenia.android.nicefeed.data.local.FeedPreferences
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryToggleable
-import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
+import com.joshuacerdenia.android.nicefeed.data.remote.FeedFetcher
 import java.util.concurrent.TimeUnit
 
 open class BackgroundSyncWorker(
@@ -16,7 +16,7 @@ open class BackgroundSyncWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     val repo = NiceFeedRepository.get()
-    val parser = FeedParser(repo.networkMonitor)
+    private val fetcher = FeedFetcher()
     
     override suspend fun doWork(): Result {
         val feedUrls = repo.getFeedUrlsSynchronously()
@@ -25,7 +25,7 @@ open class BackgroundSyncWorker(
         for (url in feedUrls) {
             val storedEntries = repo.getEntriesToggleableByFeedSynchronously(url)
             val storedEntryIds: List<String> = storedEntries.map { it.url }
-            val feedWithEntries: FeedWithEntries? = parser.getFeedSynchronously(url)
+            val feedWithEntries: FeedWithEntries? = fetcher.requestSynchronously(url)
 
             feedWithEntries?.let { fwe ->
                 val newEntries = fwe.entries.filterNot { storedEntryIds.contains(it.url) }
