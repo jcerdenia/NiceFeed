@@ -1,6 +1,5 @@
 package com.joshuacerdenia.android.nicefeed.data.remote
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
@@ -50,11 +49,7 @@ class FeedFetcher {
             val rawFeed = SyndFeedInput().build(xmlReader)
 
             val feed = FeedParser.fromRawFeed(url, rawFeed)
-            Log.d(TAG, "Got feed: $feed")
-
             val entries = rawFeed.entries.map { EntryParser.fromRawEntry(it) }
-            Log.d(TAG, "Got ${entries.size} entries")
-//            Log.d(TAG, "Entry images: ${entries.map { it.image }}")
             return FeedWithEntries(feed, entries)
         }
     }
@@ -66,7 +61,6 @@ class FeedFetcher {
             }
             _feedWithEntriesLive.postValue(feedWithEntries)
         } catch(e: Error) {
-            Log.d(TAG, "Error: $e")
             _feedWithEntriesLive.postValue(null)
         }
     }
@@ -108,10 +102,8 @@ class FeedFetcher {
         }
 
         private fun parseImageFromEnclosures(enclosures: List<SyndEnclosure>): String? {
-            Log.d(TAG, "Checking entry enclosures")
             enclosures.forEach { enclosure ->
                 if (enclosure.type.contains("image")) {
-//                    Log.d(TAG, "Found image: ${enclosure.url}")
                     return enclosure.url
                 }
             }
@@ -120,12 +112,10 @@ class FeedFetcher {
         }
 
         private fun parseImageFromForeignMarkup(elements: List<Element>): String? {
-            Log.d(TAG, "Checking foreign markup")
             elements.forEach { element ->
                 if (element.namespace?.prefix == "media" && element.name == "content") {
                     element.attributes.forEach { attr ->
                         if (attr.name == "url") {
-//                            Log.d(TAG, "Found image: ${attr.value}")
                             return attr.value
                         }
                     }

@@ -10,7 +10,6 @@ import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedIdWithCategory
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedLight
 import com.joshuacerdenia.android.nicefeed.data.model.feed.FeedManageable
-import com.joshuacerdenia.android.nicefeed.data.remote.FeedFetcher
 import com.joshuacerdenia.android.nicefeed.util.NetworkMonitor
 import java.util.concurrent.Executors
 
@@ -21,26 +20,6 @@ class NiceFeedRepository private constructor(
 
     private val dao = database.combinedDao()
     private val executor = Executors.newSingleThreadExecutor()
-
-//    val feedWithEntriesLive = feedFetcher.feedWithEntriesLive
-//
-//    // [START] Remote data access methods
-//
-//    fun requestFeedAndEntriesOnline(url: String) {
-//        executor.execute { feedFetcher.request(url) }
-//    }
-//
-//    fun requestFeed(url: String): FeedWithEntries? {
-//        return feedFetcher.requestSynchronously(url)
-//    }
-//
-//    private fun resetFeedWithEntriesLive() {
-//        feedFetcher.reset()
-//    }
-
-    // [END] Remote data access methods
-
-    // [START] Local data access methods
 
     fun getFeed(feedId: String): LiveData<Feed?> = dao.getFeed(feedId)
 
@@ -137,8 +116,6 @@ class NiceFeedRepository private constructor(
     fun deleteLeftoverItems() {
         executor.execute { dao.deleteLeftoverItems() }
     }
-
-    // [END] Local data access methods
 
     companion object {
 
