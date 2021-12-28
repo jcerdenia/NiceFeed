@@ -5,6 +5,7 @@ import android.view.Gravity.START
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
@@ -19,7 +20,6 @@ import com.joshuacerdenia.android.nicefeed.util.extensions.addRipple
 import com.joshuacerdenia.android.nicefeed.util.extensions.hide
 import com.joshuacerdenia.android.nicefeed.util.extensions.show
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.list_item_feed.view.*
 
 class FeedListAdapter(
     private val context: Context?,
@@ -77,6 +77,7 @@ class FeedListAdapter(
         private lateinit var feed: FeedLight
         private val titleTextView: TextView = itemView.findViewById(R.id.title_text_view)
         private val countTextView: TextView = itemView.findViewById(R.id.item_count_text_view)
+        private val imageView: ImageView = itemView.findViewById(R.id.image_view)
 
         init {
             itemView.setOnClickListener(this)
@@ -94,7 +95,7 @@ class FeedListAdapter(
             countTextView.text = if (feed.unreadCount > 0) feed.unreadCount.toString() else null
 
             Picasso.get().load(feed.imageUrl).fit().centerCrop(START)
-                .placeholder(R.drawable.feed_icon_small).into(itemView.image_view)
+                .placeholder(R.drawable.feed_icon_small).into(imageView)
         }
 
         override fun onClick(v: View) {
