@@ -43,7 +43,7 @@ class FeedFetcher {
         _feedWithEntriesLive = MutableLiveData<FeedWithEntries?>()
     }
 
-    fun requestSynchronously(url: String): FeedWithEntries? {
+    fun requestSynchronously(url: String): FeedWithEntries {
         createCall(url).execute().use { response ->
             val stream = response.body()?.byteStream()
             val xmlReader = XmlReader(stream)
@@ -88,12 +88,10 @@ class FeedFetcher {
     private object EntryParser {
 
         fun fromRawEntry(rawEntry: SyndEntry): Entry {
-            val content: String
-
-            if (rawEntry.contents.size != 0) {
-                content = rawEntry.contents?.joinToString { it.value }.toString()
+            val content: String? = if (rawEntry.contents.size != 0) {
+                rawEntry.contents?.joinToString { it.value }.toString()
             } else {
-                content = rawEntry.description.value
+                rawEntry.description?.value
             }
 
             return Entry(
