@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.*
-import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -74,7 +73,6 @@ class EntryFragment: VisibleFragment() {
             settings.builtInZoomControls = false
             settings.displayZoomControls = false
             webViewClient = EntryWebViewClient()
-            webChromeClient = EntryWebChromeClient()
         }
 
         toolbarBinding.toolbar.title = getString(R.string.loading)
@@ -254,6 +252,7 @@ class EntryFragment: VisibleFragment() {
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
+            binding.progressBar.hide()
 
             if (appTheme == AppCompatDelegate.MODE_NIGHT_YES && Build.VERSION.SDK_INT < 29) {
                 EntryToHtmlUtil.DARK_MODE_JAVASCRIPT.trimIndent().run { view?.loadUrl(this) }
@@ -263,15 +262,6 @@ class EntryFragment: VisibleFragment() {
                 val (x, y) = viewModel.lastPosition
                 binding.nestedScrollView.smoothScrollTo(x, y)
             }
-        }
-    }
-
-    inner class EntryWebChromeClient : WebChromeClient() {
-
-        override fun onProgressChanged(view: WebView?, newProgress: Int) {
-            super.onProgressChanged(view, newProgress)
-            binding.progressBar.progress = newProgress
-            if (newProgress == 100) binding.progressBar.hide()
         }
     }
 
