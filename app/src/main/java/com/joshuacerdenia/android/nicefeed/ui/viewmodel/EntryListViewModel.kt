@@ -7,7 +7,7 @@ import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
 import com.joshuacerdenia.android.nicefeed.data.model.entry.Entry
 import com.joshuacerdenia.android.nicefeed.data.model.entry.EntryLight
 import com.joshuacerdenia.android.nicefeed.data.model.feed.Feed
-import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
+import com.joshuacerdenia.android.nicefeed.data.remote.FeedFetcher
 import com.joshuacerdenia.android.nicefeed.ui.dialog.FilterEntriesFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment
 import com.joshuacerdenia.android.nicefeed.ui.fragment.EntryListFragment.Companion.FOLDER
@@ -21,7 +21,7 @@ import java.util.*
 class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
 
     private val repo = NiceFeedRepository.get()
-    private val parser = FeedParser(repo.networkMonitor)
+    private val fetcher = FeedFetcher()
     private val updateManager = UpdateManager(this)
 
     private val feedIdLiveData = MutableLiveData<String>()
@@ -38,7 +38,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
 
     private val entriesLiveData = MediatorLiveData<List<Entry>>()
     val entriesLightLiveData = MediatorLiveData<List<EntryLight>>()
-    val updateResultLiveData = parser.feedRequestLiveData
+    val updateResultLiveData = fetcher.feedWithEntriesLive
 
     var query = ""
         private set
@@ -74,7 +74,7 @@ class EntryListViewModel: ViewModel(), UpdateManager.UpdateReceiver {
     fun requestUpdate(url: String) {
         isAutoUpdating = false
         updateWasRequested = true
-        viewModelScope.launch { parser.requestFeed(url) }
+        viewModelScope.launch { fetcher.request(url) }
     }
 
     fun onFeedRetrieved(feed: Feed?) {

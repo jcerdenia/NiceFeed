@@ -12,6 +12,8 @@ import com.rometools.rome.feed.synd.SyndEntry
 import com.rometools.rome.feed.synd.SyndFeed
 import com.rometools.rome.io.SyndFeedInput
 import com.rometools.rome.io.XmlReader
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -41,22 +43,28 @@ class FeedFetcher {
         _feedWithEntriesLive = MutableLiveData<FeedWithEntries?>()
     }
 
-    fun request(url: String) {
+    fun requestSynchronously(url: String): FeedWithEntries? {
+        createCall(url).execute().use { response ->
+            val stream = response.body()?.byteStream()
+            val xmlReader = XmlReader(stream)
+            val rawFeed = SyndFeedInput().build(xmlReader)
+
+            val feed = FeedParser.fromRawFeed(url, rawFeed)
+            Log.d(TAG, "Got feed: $feed")
+
+            val entries = rawFeed.entries.map { EntryParser.fromRawEntry(it) }
+            Log.d(TAG, "Got ${entries.size} entries")
+//            Log.d(TAG, "Entry images: ${entries.map { it.image }}")
+            return FeedWithEntries(feed, entries)
+        }
+    }
+
+    suspend fun request(url: String) {
         try {
-            createCall(url).execute().use { response ->
-                val stream = response.body()?.byteStream()
-                val xmlReader = XmlReader(stream)
-                val rawFeed = SyndFeedInput().build(xmlReader)
-
-                val feed = FeedParser.fromRawFeed(url, rawFeed)
-                Log.d(TAG, "Got feed: $feed")
-
-                val entries = rawFeed.entries.map { EntryParser.fromRawEntry(it) }
-                Log.d(TAG, "Got ${entries.size} entries")
-                Log.d(TAG, "Entry images: ${entries.map { it.image }}")
-
-                _feedWithEntriesLive.postValue(FeedWithEntries(feed, entries))
+            val feedWithEntries = withContext(Dispatchers.IO) {
+                requestSynchronously(url)
             }
+            _feedWithEntriesLive.postValue(feedWithEntries)
         } catch(e: Error) {
             Log.d(TAG, "Error: $e")
             _feedWithEntriesLive.postValue(null)
@@ -72,8 +80,7 @@ class FeedFetcher {
                 website = rawFeed.link,
                 description = rawFeed.description,
                 imageUrl = rawFeed.image?.url,
-                category = "Uncategorized",
-                unreadCount = 0
+                unreadCount = rawFeed.entries.size
             )
         }
     }
@@ -81,7 +88,13 @@ class FeedFetcher {
     private object EntryParser {
 
         fun fromRawEntry(rawEntry: SyndEntry): Entry {
-            val content = rawEntry.contents?.joinToString { it.value }
+            val content: String
+
+            if (rawEntry.contents.size != 0) {
+                content = rawEntry.contents?.joinToString { it.value }.toString()
+            } else {
+                content = rawEntry.description.value
+            }
 
             return Entry(
                 url = rawEntry.link,
@@ -100,7 +113,7 @@ class FeedFetcher {
             Log.d(TAG, "Checking entry enclosures")
             enclosures.forEach { enclosure ->
                 if (enclosure.type.contains("image")) {
-                    Log.d(TAG, "Found image: ${enclosure.url}")
+//                    Log.d(TAG, "Found image: ${enclosure.url}")
                     return enclosure.url
                 }
             }
@@ -114,7 +127,7 @@ class FeedFetcher {
                 if (element.namespace?.prefix == "media" && element.name == "content") {
                     element.attributes.forEach { attr ->
                         if (attr.name == "url") {
-                            Log.d(TAG, "Found image: ${attr.value}")
+//                            Log.d(TAG, "Found image: ${attr.value}")
                             return attr.value
                         }
                     }
@@ -140,7 +153,7 @@ class FeedFetcher {
     }
 
     companion object {
-
+        const val FLAG_EXCERPT = "com.joshuacerdenia.android.nicefeed.excerpt "
         const val TAG = "FeedFetcher"
     }
 }

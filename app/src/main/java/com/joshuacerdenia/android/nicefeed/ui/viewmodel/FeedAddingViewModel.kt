@@ -4,16 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joshuacerdenia.android.nicefeed.data.NiceFeedRepository
 import com.joshuacerdenia.android.nicefeed.data.model.cross.FeedWithEntries
-import com.joshuacerdenia.android.nicefeed.data.remote.FeedParser
+import com.joshuacerdenia.android.nicefeed.data.remote.FeedFetcher
 import kotlinx.coroutines.launch
 
 abstract class FeedAddingViewModel: ViewModel() {
 
     val repo = NiceFeedRepository.get()
-    private val parser = FeedParser(repo.networkMonitor)
-    // private val fetcher = FeedFetcher(repo.networkMonitor, repo.executor)
+    private val fetcher = FeedFetcher()
 
-    val feedRequestLiveData = parser.feedRequestLiveData
+    val feedRequestLiveData = fetcher.feedWithEntriesLive
     var currentFeedIds = listOf<String>()
 
     var isActiveRequest = false
@@ -25,7 +24,7 @@ abstract class FeedAddingViewModel: ViewModel() {
     fun requestFeed(url: String, backup: String? = null) {
         onFeedRequested()
         viewModelScope.launch {
-            parser.requestFeed(url, backup)
+            fetcher.request(url)
         }
     }
 
@@ -41,6 +40,6 @@ abstract class FeedAddingViewModel: ViewModel() {
     }
 
     fun cancelRequest() {
-        parser.cancelRequest()
+        // TODO
     }
 }

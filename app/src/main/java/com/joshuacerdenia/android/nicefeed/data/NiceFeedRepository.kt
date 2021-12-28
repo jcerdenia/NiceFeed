@@ -16,24 +16,27 @@ import java.util.concurrent.Executors
 
 class NiceFeedRepository private constructor(
     database: NiceFeedDatabase,
-    private val feedFetcher: FeedFetcher,
     val networkMonitor: NetworkMonitor
 ) {
 
     private val dao = database.combinedDao()
     private val executor = Executors.newSingleThreadExecutor()
 
-    val feedWithEntriesLive = feedFetcher.feedWithEntriesLive
-
-    // [START] Remote data access methods
-
-    fun requestFeedAndEntriesOnline(url: String) {
-        executor.execute { feedFetcher.request(url) }
-    }
-
-    private fun resetFeedWithEntriesLive() {
-        feedFetcher.reset()
-    }
+//    val feedWithEntriesLive = feedFetcher.feedWithEntriesLive
+//
+//    // [START] Remote data access methods
+//
+//    fun requestFeedAndEntriesOnline(url: String) {
+//        executor.execute { feedFetcher.request(url) }
+//    }
+//
+//    fun requestFeed(url: String): FeedWithEntries? {
+//        return feedFetcher.requestSynchronously(url)
+//    }
+//
+//    private fun resetFeedWithEntriesLive() {
+//        feedFetcher.reset()
+//    }
 
     // [END] Remote data access methods
 
@@ -141,12 +144,11 @@ class NiceFeedRepository private constructor(
 
         private var INSTANCE: NiceFeedRepository? = null
 
-        fun init(database: NiceFeedDatabase, feedFetcher: FeedFetcher, networkMonitor: NetworkMonitor) {
-            if (INSTANCE == null) INSTANCE = NiceFeedRepository(database, feedFetcher, networkMonitor)
+        fun init(database: NiceFeedDatabase, networkMonitor: NetworkMonitor) {
+            if (INSTANCE == null) INSTANCE = NiceFeedRepository(database, networkMonitor)
         }
 
         fun get(): NiceFeedRepository {
-            INSTANCE?.resetFeedWithEntriesLive()
             return INSTANCE ?: throw IllegalStateException("Repository must be initialized!")
         }
     }
