@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdkVersion 30
@@ -79,16 +78,11 @@ dependencies {
 
     // Database
     implementation "androidx.room:room-runtime:$room_version"
+    kapt("org.xerial:sqlite-jdbc:3.34.0") // Workaround for ':app:kaptDebugKotlin' build fail
     kapt "androidx.room:room-compiler:$room_version"
 
     // WorkManager
     implementation "androidx.work:work-runtime-ktx:2.6.0-beta01"
-
-    // Dependency Injection (Not Used Yet)
-    implementation "com.google.dagger:hilt-android:$hilt_version"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidx_hilt_version"
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-    kapt "androidx.hilt:hilt-compiler:$androidx_hilt_version"
 
     // Testing
     testImplementation 'junit:junit:4.13.2'
