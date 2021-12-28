@@ -204,7 +204,11 @@ class ManageFeedsFragment: VisibleFragment(),
     }
 
     private fun defaultSpeedDialItem(id: Int, iconRes: Int): SpeedDialActionItem {
+        // Setting fab image tint color to white is a workaround to the icon not showing
+        // since the SpeedDial library was updated to 3.2.0.
+        // https://github.com/leinardi/FloatingActionButtonSpeedDial/issues/168
         return SpeedDialActionItem.Builder(id, iconRes)
+            .setFabImageTintColor(ContextCompat.getColor(requireContext(), R.color.white))
             .setFabBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
             .create()
     }
