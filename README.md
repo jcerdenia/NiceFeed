@@ -1,15 +1,16 @@
 
 # NiceFeed
 
-## Update - August 2021
-Sorry about the unaddressed issues, but I've had not much time to maintain this app lately. Next up is replacing the RSS parser with RomeTools, but I can't promise any timeline. As always, pull requests are welcome.
+## Forthcoming Updates – Dec 2021
+Sorry about all the unaddressed issues, but for the foreseeable future I only have time for and interest in occasional maintenance, not for any new features (unless they are small enough). I started this as a casual personal project while learning to code, and I'm grateful for your interest and contributions. As always, pull requests are welcome.
+
+In progress:
+- Migration to RomeTools to support Atom feeds
+- Various bug fixes
 
 <hr>
 
-NiceFeed is an RSS Reader for Android. This started out as a personal project while getting the hang of Kotlin. RSS is an old technology and there are already many readers out there, but I find many of them hard to navigate and jam-packed with features I don't need. The aim is an attractive and intuitive app, leightweight but fully functional with not too many frills.
-
-<h3>Early Access</h3>
-NiceFeed is now in Beta and available on Google Play. It is also now available on F-Droid for non-Play Store users. Please note that until a stable release, some functionality may still be limited. I'm constantly updating this app and trying to make it better. I would truly appreciate any and all feedback, especially if you find any issues or bugs, or have ideas for new features (please open an issue). I also welcome contributions.<br>
+NiceFeed is available on Google Play on Beta. It is also available on F-Droid for non-Play Store users.
 
 <a href='https://play.google.com/store/apps/details?id=com.joshuacerdenia.android.nicefeed&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' height="80" src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
 <a href="https://f-droid.org/packages/com.joshuacerdenia.android.nicefeed/">
@@ -30,6 +31,3 @@ Some older screenshots that need to be updated:<br><br>
   <li>Ability to organize feeds by category</li>
   <li>Star/unstar and mark entries as read/unread</li>
 </ul>
-
-<h3>Support</h3>
-This app is intended to be always free. I'm happy to accept any contributions toward further development if you're so inclined: <a href="https://www.paypal.com/paypalme/joshuacerdenia">https://www.paypal.com/paypalme/joshuacerdenia</a>
