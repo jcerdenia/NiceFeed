@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.joshuacerdenia.android.nicefeed"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 32
         versionCode 19
         versionName "1.0.0-beta08"
