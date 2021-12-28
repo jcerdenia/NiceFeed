@@ -27,7 +27,6 @@ object FeedPreferences {
     // Call on app start.
     fun init(context: Context) {
         prefs = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
-        FeedPreferencesMigration(context).migrate()
     }
 
     private inline fun SharedPreferences.edit(
