@@ -38,11 +38,7 @@ class FeedFetcher {
         return client.newCall(request)
     }
 
-    fun reset() {
-        _feedWithEntriesLive = MutableLiveData<FeedWithEntries?>()
-    }
-
-    fun requestSynchronously(url: String): FeedWithEntries {
+    fun requestSynchronously(url: String): FeedWithEntries? {
         createCall(url).execute().use { response ->
             val stream = response.body()?.byteStream()
             val xmlReader = XmlReader(stream)
@@ -63,6 +59,10 @@ class FeedFetcher {
         } catch(e: Error) {
             _feedWithEntriesLive.postValue(null)
         }
+    }
+
+    fun cancel() {
+        _feedWithEntriesLive = MutableLiveData<FeedWithEntries?>(null)
     }
 
     private object FeedParser {
@@ -141,6 +141,7 @@ class FeedFetcher {
     }
 
     companion object {
+
         const val FLAG_EXCERPT = "com.joshuacerdenia.android.nicefeed.excerpt "
         const val TAG = "FeedFetcher"
     }

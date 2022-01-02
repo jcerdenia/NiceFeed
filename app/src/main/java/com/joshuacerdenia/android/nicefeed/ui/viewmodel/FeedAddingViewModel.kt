@@ -40,6 +40,6 @@ abstract class FeedAddingViewModel: ViewModel() {
     }
 
     fun cancelRequest() {
-        // TODO
+        fetcher.cancel()
     }
 }
