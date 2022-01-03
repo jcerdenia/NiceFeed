@@ -82,7 +82,7 @@ class FeedFetcher {
     private object EntryParser {
 
         fun fromRawEntry(rawEntry: SyndEntry): Entry {
-            val content: String? = if (rawEntry.contents.size != 0) {
+            val content: String? = if (rawEntry.contents.isNotEmpty()) {
                 rawEntry.contents?.joinToString { it.value }.toString()
             } else {
                 rawEntry.description?.value
@@ -102,27 +102,11 @@ class FeedFetcher {
         }
 
         private fun parseImageFromEnclosures(enclosures: List<SyndEnclosure>): String? {
-            enclosures.forEach { enclosure ->
-                if (enclosure.type.contains("image")) {
-                    return enclosure.url
-                }
-            }
-
-            return null
+            return enclosures.find { it.type.contains("image") }?.url
         }
 
         private fun parseImageFromForeignMarkup(elements: List<Element>): String? {
-            elements.forEach { element ->
-                if (element.namespace?.prefix == "media" && element.name == "content") {
-                    element.attributes.forEach { attr ->
-                        if (attr.name == "url") {
-                            return attr.value
-                        }
-                    }
-                }
-            }
-
-            return null
+            return elements.find { it.namespace?.prefix == "media" && it.name == "content" }?.attributes?.find { it.name == "url" }?.value
         }
 
         private fun parseImageFromContent(content: String?): String? {
