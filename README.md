@@ -1,12 +1,8 @@
 
 # NiceFeed
 
-## Forthcoming Updates – Dec 2021
-Sorry about all the unaddressed issues, but for the foreseeable future I only have time for and interest in occasional maintenance, not for any new features (unless they are small enough). I started this as a casual personal project while learning to code, and I'm grateful for your interest and contributions. As always, pull requests are welcome.
-
-In progress:
-- Migration to RomeTools to support Atom feeds
-- Various bug fixes
+## Status
+Sorry about all the unaddressed issues, but due to more important commitments this project is no longer being maintained. I started this as a casual personal project while learning to code, and I'm grateful for your interest and contributions.
 
 <hr>
 
